@@ -1,11 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 
+@import "@fontsource/cairo/400.css";
+@import "@fontsource/cairo/500.css";
+@import "@fontsource/cairo/600.css";
+@import "@fontsource/cairo/700.css";
+
+
 /* =========================
    Design Tokens
 ========================= */
 
-:root {
+@theme {
     --color-primary: #f97316;
     --color-primary-hover: #ea580c;
 
@@ -30,13 +36,13 @@
    Global Reset
 ========================= */
 
-
 body {
     min-width: 320px;
     color: var(--color-text);
     background-color: var(--color-background);
-}
+    font-family: "Cairo", sans-serif;
 
+}
 
 /* =========================
     Global Elements
