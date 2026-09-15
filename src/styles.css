@@ -5,20 +5,20 @@
 @import "@fontsource/cairo/500.css";
 @import "@fontsource/cairo/600.css";
 @import "@fontsource/cairo/700.css";
-
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 /* =========================
    Design Tokens
 ========================= */
 
 @theme {
-    --color-primary: #f97316;
-    --color-primary-hover: #ea580c;
+    --color-primary: #F97316;
+    --color-primary-hover: #FFF7ED;
 
     --color-text: #111827;
     --color-text-secondary: #6b7280;
 
-    --color-background: #ffffff;
+    --color-background: #F9F9F9;
     --color-surface: #f9fafb;
 
     --color-border: #e5e7eb;
