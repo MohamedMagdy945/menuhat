@@ -1,0 +1,9 @@
+swiper-container::part(bullet) {
+    background: white;
+    opacity: 0.5;
+}
+
+swiper-container::part(bullet-active) {
+    background: white;
+    opacity: 1;
+}
