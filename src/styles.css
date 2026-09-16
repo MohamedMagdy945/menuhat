@@ -16,9 +16,9 @@
     --color-primary-hover: #FFF7ED;
 
     --color-text: #111827;
-    --color-text-secondary: #6b7280;
+    --color-text-secondary: #F9731626;
 
-    --color-background: #F9F9F9;
+    --color-background: #F8F9FA;
     --color-surface: #f9fafb;
 
     --color-border: #e5e7eb;
@@ -58,6 +58,5 @@ img {
 }
 
 a {
-    color: inherit;
     text-decoration: none;
 }

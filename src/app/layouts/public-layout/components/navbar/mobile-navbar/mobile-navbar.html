@@ -1,12 +1,25 @@
 <nav class="fixed bottom-4 left-4 right-4 z-50 rounded-full bg-whit e shadow-lg md:hidden">
-    <ul class="flex  flex-row-reverse items-center justify-between px-3 py-2">
-       <!-- Home -->
-        <li>
-            <a href="#" class="flex items-center gap-2 rounded-full bg-primary px-5 py-3 font-semibold text-white">
-                <span>الرئيسية</span>
-                <span><i class="fa-solid fa-house"></i></span>
+    <ul class="flex  flex-row-reverse items-center justify-between px-3 py-4">
+       
+        <!-- Home -->
+       <li>
+            <a
+                routerLink="/"
+                routerLinkActive="bg-primary-hover text-primary"
+                [routerLinkActiveOptions]="{ exact: true }"
+                #home="routerLinkActive"
+                class="flex items-center gap-1 rounded-full px-5 py-3 hover:bg-primary-hover"
+            >
+                @if (home.isActive) {
+                    <span>الرئيسية</span>
+                }
+
+                <span>
+                    <i class="fa-solid fa-house"></i>
+                </span>
             </a>
         </li>
+
         <!-- Profile -->
         <li>
             <a href="#" class="flex flex-row-reverse h-12 w-12 items-center justify-center text-gray-400">
