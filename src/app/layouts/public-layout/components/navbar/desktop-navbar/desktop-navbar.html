@@ -1,13 +1,13 @@
 <!-- navbar.component.html -->
-<nav class="hidden md:block w-full bg-white shadow-sm border-b border-border" dir="rtl">
+<nav class="hidden md:block w-full bg-white shadow-sm border-b border-border bg-surface" dir="rtl">
 
     <!-- Top Row -->
-    <div class="flex items-center justify-between px-6 py-3 gap-4">
+    <div class="flex items-center justify-between px-6 py-1 gap-4 bg-surface">
 
         <!-- Logo (right side in RTL) -->
-        <a href="/" class="flex items-center gap-1 shrink-0">
-            <span class="text-2xl font-extrabold text-primary tracking-tight">M<span
-                    class="text-text">enuhat</span></span>
+        <a routerLink="/" class="inline-flex items-center gap-3 decoration-0 focus:outline-none">
+            <!-- SVG Logo from Assets -->
+            <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-12 w-auto object-contain" />
         </a>
 
         <!-- Location -->
@@ -32,9 +32,9 @@
             </button>
 
             <input type="text" dir="rtl" placeholder="ابحث عن المطاعم، الوجبات..."
-                class="flex-1 px-3 py-2 text-sm text-right bg-white outline-none text-text placeholder-gray-400" />
+                class="bg-background flex-1 px-3 py-2 text-sm text-right  outline-none text-text placeholder-gray-400" />
 
-            <button class="px-3 py-2 text-gray-400 hover:text-primary transition-colors">
+            <button class="bg-background px-3 py-2 text-gray-400 hover:text-primary transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
@@ -90,107 +90,134 @@
     </div>
 
     <!-- Bottom Nav Row -->
-    <div class="border-t border-border px-6 bg-background">
-        <div class="flex items-center justify-between overflow-x-auto scrollbar-hide">
+    <div class="bg-background p-2">
+        <div class="border-t  border-border mx-6 px-3 rounded-xl bg-surface py-2">
+            <div class="flex items-center justify-between overflow-x-auto scrollbar-hide">
 
-            <!-- Primary Nav Items (right side) -->
-            <div class="flex items-center gap-1">
+                <!-- Primary Nav Items (right side) -->
+                <ul class="flex items-center gap-1">
 
-                <!-- Active: الرئيسية -->
-                <a href="/"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm font-semibold text-primary border-b-2 border-primary whitespace-nowrap">
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                    </svg>
-                    الرئيسية
-                </a>
+                    <!-- الرئيسية -->
+                    <li>
+                        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+                            class="flex  rounded-lg items-center gap-2 px-4 font-semibold py-2 text-sm hover:text-primary hover:bg-primary-hover transition-all duration-300 whitespace-nowrap">
 
-                <!-- الأكثر طلبا -->
-                <a href="#"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    الأكثر طلبا
-                </a>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
 
-                <!-- الأكثر زيارة -->
-                <a href="#"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    الأكثر زيارة
-                </a>
+                            الرئيسية
+                        </a>
+                    </li>
 
-                <!-- رائج الآن -->
-                <a href="#"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-                    </svg>
-                    رائج الآن
-                </a>
-            </div>
+                    <!-- الأكثر طلبا -->
+                    <li>
+                        <a routerLink="/most-ordered"
+                            routerLinkActive="font-semibold text-primary border-b-2 border-primary"
+                            class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            الأكثر طلبا
+                        </a>
+                    </li>
 
-            <!-- Secondary Nav Items (left side) -->
-            <div class="flex items-center gap-1">
+                    <!-- الأكثر زيارة -->
+                    <li>
+                        <a routerLink="/most-visited"
+                            routerLinkActive="font-semibold text-primary border-b-2 border-primary"
+                            class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            الأكثر زيارة
+                        </a>
+                    </li>
 
-                <!-- طلباتي -->
-                <a href="#"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
-                    طلباتي
-                </a>
+                    <!-- رائج الآن -->
+                    <li>
+                        <a routerLink="/trending"
+                            routerLinkActive="font-semibold text-primary border-b-2 border-primary"
+                            class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                            </svg>
+                            رائج الآن
+                        </a>
+                    </li>
 
-                <!-- الاشتراكات -->
-                <a href="#"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                    </svg>
-                    الاشتراكات
-                </a>
+                </ul>
 
-                <!-- الدعم الفني -->
-                <a href="#"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    الدعم الفني
-                </a>
+                <!-- Secondary Nav Items (left side) -->
+                <div class="flex items-center gap-1">
 
-                <!-- تتبع الشكوى -->
-                <a href="#"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                    </svg>
-                    تتبع الشكوى
-                </a>
+                    <!-- طلباتي -->
+                    <a routerLink="/cart" routerLinkActive="text-primary bg-primary-hover"
+                        class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
 
-                <!-- خطط الأسعار -->
-                <a href="#"
-                    class="flex items-center gap-1.5 px-3 py-3 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                    </svg>
-                    خطط الأسعار
-                </a>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
 
+                        طلباتي
+                    </a>
+
+                    <!-- الاشتراكات -->
+                    <a routerLink="/subscriptions" routerLinkActive="text-primary bg-primary-hover"
+                        class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
+
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                        </svg>
+
+                        الاشتراكات
+                    </a>
+
+                    <!-- الدعم الفني -->
+                    <a routerLink="/support" routerLinkActive="text-primary bg-primary-hover"
+                        class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
+
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+
+                        الدعم الفني
+                    </a>
+
+                    <!-- تتبع الشكوى -->
+                    <a routerLink="/complaint-tracking" routerLinkActive="text-primary bg-primary-hover"
+                        class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
+
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+
+                        تتبع الشكوى
+                    </a>
+
+                    <!-- خطط الأسعار -->
+                    <a routerLink="/pricing" routerLinkActive="text-primary bg-primary-hover"
+                        class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
+
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                        </svg>
+
+                        خطط الأسعار
+                    </a>
+
+                </div>
             </div>
         </div>
     </div>
