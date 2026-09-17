@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MobileNavbar } from './components/navbar/mobile-navbar/mobile-navbar';
 import { DesktopNavbar } from './components/navbar/desktop-navbar/desktop-navbar';
-import { Footer } from '../../pages/footer/footer';
+import { Footer } from './components/footer/footer';
 
 @Component({
   imports: [RouterOutlet, MobileNavbar, DesktopNavbar, Footer],
