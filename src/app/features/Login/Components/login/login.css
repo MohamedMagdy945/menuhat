@@ -1,0 +1,216 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 380px;
+  padding: 30px 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Logo */
+.logo-wrapper {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.logo {
+  max-width: 220px;
+  height: auto;
+}
+
+/* Form Styles */
+.login-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.form-input {
+    width: 100%;
+    height: 45px;
+    padding: 0px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-input:focus {
+  border-color: #ff6600;
+}
+
+/* Password Field Wrapper */
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password {
+  position: absolute;
+  left: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* Forgot Password */
+.forgot-password-container {
+  text-align: right;
+  margin-bottom: 24px;
+}
+
+.forgot-password-link {
+  color: #ff6600;
+  font-size: 13px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  height: 50px;
+  background-color: #ff5500;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: #e04b00;
+}
+
+.submit-btn:disabled {
+  background-color: #fdba74;
+  cursor: not-allowed;
+}
+
+/* Divider */
+.divider {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+  line-height: 0.1em;
+  margin: 32px 0 24px;
+}
+
+.divider span {
+  background: #fff;
+  padding: 0 12px;
+  color: #6b7280;
+  font-size: 13px;
+}
+
+/* Social Login */
+.social-login {
+  margin-bottom: 32px;
+}
+
+.google-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f3f4f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.google-btn:hover {
+  background-color: #e5e7eb;
+}
+
+/* Footer Signup Text */
+.signup-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+.signup-title {
+  font-size: 0.95rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.signup-actions {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.signup-link {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 11px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333333;
+    background-color: #f8f9fa;
+    border: 1.5px solid #e9ecef;
+    white-space: nowrap;
+}
+
+.signup-link:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+}
+
+/* تمييز حساب صاحب المطعم برونق خاص */
+.signup-link.highlight {
+  color: #ffffff;
+  background: chocolate;
+  border: none;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.signup-link.highlight:hover {
+  background: linear-gradient(135deg, #ff5252, #ff7b39);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+  transform: translateY(-2px);
+} 

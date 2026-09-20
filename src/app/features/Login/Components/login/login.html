@@ -1,0 +1,128 @@
+<div class="login-container" dir="rtl">
+  <!-- Logo Section -->
+  <div class="logo-wrapper">
+    <img src="/images/MenuhatLogo.png" alt="Menouhat Logo" class="logo" />
+  </div>
+
+  <!-- Login Form -->
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <!-- Email Field -->
+    <div class="form-group">
+      <label for="email" class="form-label">البريد الإلكتروني</label>
+      <input
+        type="email"
+        id="email"
+        formControlName="mobile"
+        placeholder="أدخل بريدك الإلكتروني"
+        class="form-input"
+      />
+    </div>
+
+    <!-- Password Field -->
+    <div class="form-group">
+      <label for="password" class="form-label">كلمة المرور</label>
+      <div class="password-input-wrapper">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          formControlName="password"
+          placeholder="أدخل كلمة المرور"
+          class="form-input"
+        />
+        <button
+          type="button"
+          class="toggle-password"
+          (click)="togglePasswordVisibility()"
+          aria-label="Toggle password visibility"
+        >
+          <!-- Eye icon / eye-slash icon placeholder -->
+          <svg
+            *ngIf="!showPassword"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#aaa"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <svg
+            *ngIf="showPassword"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#aaa"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Forgot Password Link -->
+    <div class="forgot-password-container">
+      <a routerLink="/forgot-password" class="forgot-password-link">
+        نسيت كلمة المرور؟
+      </a>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="submit-btn" [disabled]="loginForm.invalid">
+      تسجيل الدخول
+    </button>
+  </form>
+
+  <!-- Divider -->
+  <div class="divider">
+    <span>أو التسجيل بواسطة</span>
+  </div>
+
+  <!-- Social Login -->
+  <div class="social-login">
+    <button type="button" class="google-btn" (click)="loginWithGoogle()">
+      <svg width="24" height="24" viewBox="0 0 24 24">
+        <path
+          fill="#4285F4"
+          d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+        />
+        <path
+          fill="#34A853"
+          d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.1 0-5.73-2.1-6.67-4.93H1.37v3.15C3.35 21.32 7.39 24 12 24z"
+        />
+        <path
+          fill="#FBBC05"
+          d="M5.33 14.27c-.24-.72-.38-1.49-.38-2.27s.14-1.55.38-2.27V6.58H1.37A11.95 11.95 0 0 0 0 12c0 1.92.46 3.74 1.37 5.42l3.96-3.15z"
+        />
+        <path
+          fill="#EA4335"
+          d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.39 0 3.35 2.68 1.37 6.58l3.96 3.15c.94-2.83 3.57-4.98 6.67-4.98z"
+        />
+      </svg>
+    </button>
+  </div>
+
+<div class="signup-footer">
+  <span class="signup-title">ليس لديك حساب؟</span>
+  <div class="signup-actions">
+    <a routerLink="/register/user" class="signup-link">
+      <i class="fas fa-user"></i>
+      <span>إنشاء حساب مستخدم</span>
+    </a>
+    <a routerLink="/register/merchant" class="signup-link highlight">
+      <i class="fas fa-store"></i>
+      <span>إنشاء حساب صاحب مطعم</span>
+    </a>
+  </div>
+</div>
+</div>

@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   imports: [RouterLink, RouterLinkActive],
@@ -7,4 +7,5 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './desktop-navbar.css',
   templateUrl: './desktop-navbar.html',
 })
-export class DesktopNavbar { }
+export class DesktopNavbar {
+ }

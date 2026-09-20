@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { IOrder, OrderStatus } from '../../../../layouts/public-layout/Interfaces/iorder';
+import { Component, inject, OnInit } from '@angular/core';
+import { IOrder, OrderStatus } from '../Models/iorder';
+import { Subscription } from 'rxjs';
+import { CartService } from '../Services/CartService';
 @Component({
   imports: [CommonModule],
   selector: 'app-cart',
@@ -8,7 +10,19 @@ import { IOrder, OrderStatus } from '../../../../layouts/public-layout/Interface
   templateUrl: './cart.html',
 })
 
-export class Cart {
+export class Cart implements OnInit {
+  private readonly _CartService = inject(CartService);
+  
+  GetAllCartItems !: Subscription
+
+    ngOnInit(): void {
+     this.GetAllCartItems = this._CartService.GetUserCart().subscribe({
+            next:(res) => {  console.log(res.items);},
+      error:(err) => { console.log(err); }
+    });
+  }
+
+
   activeStatus: OrderStatus = 'all';
   filterTabs: { label: string; value: OrderStatus }[] = [
     { label: 'الكل', value: 'all' },
@@ -80,11 +94,9 @@ allOrders: IOrder[] = [
     this.activeStatus = status;
   }
 
-  onCancelOrder(id: string): void {
-    alert(`تم إلغاء الطلب رقم: #${id}`);
+    onCancelOrder(orderId: string): void {
   }
 
-  onViewDetails(id: string): void {
-    alert(`تفاصيل الطلب رقم: #${id}`);
+    onViewDetails(orderId: string): void {
   }
 }
