@@ -3,6 +3,13 @@
 } @else {
 <app-desktop-home />
 }
-<div class="resturants">
-    <app-restaurants></app-restaurants>
+
+<!-- restaurant section -->
+<div class="restaurant px-3 md:px-10">
+
+    <app-home-restaurant-section title="رائج الآن" [restaurants]="trendingRestaurants()" />
+
+    <app-home-restaurant-section title="الأكثر طلباً في منطقتك" [restaurants]="popularRestaurants()" />
+
+    <app-home-restaurant-section title="الأكثر زيارة" [restaurants]="mostVisitedRestaurants()" />
 </div>

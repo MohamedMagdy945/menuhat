@@ -1,0 +1,33 @@
+<section dir="rtl">
+
+    <div class="mb-4 flex items-center justify-between mt-8">
+
+        <h2 class="text-lg font-bold text-gray-900">
+            {{ title() }}
+        </h2>
+
+        <button type="button" class="text-sm font-medium text-orange-500">
+            عرض الكل
+        </button>
+
+    </div>
+
+    <div class="overflow-x-auto scrollbar-hide cursor-grab select-none active:cursor-grabbing"
+        (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()"
+        (mouseleave)="onMouseLeave()">
+
+        <div class="flex w-max gap-4">
+
+            @for (restaurant of restaurants(); track restaurant.id) {
+
+            <div class="w-[260px] shrink-0">
+                <app-restaurant-item [restaurant]="restaurant" />
+            </div>
+
+            }
+
+        </div>
+
+    </div>
+
+</section>

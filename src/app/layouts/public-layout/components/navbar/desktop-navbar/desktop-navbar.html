@@ -100,7 +100,7 @@
                     <!-- الرئيسية -->
                     <li>
                         <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-                            class="buttonNav flex rounded-lg items-center gap-2 px-4 font-semibold py-2 text-sm transition-all duration-300 whitespace-nowrap">
+                            class="flex  rounded-lg items-center gap-2 px-4 font-semibold py-2 text-sm hover:text-primary hover:bg-primary-hover transition-all duration-300 whitespace-nowrap">
 
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -114,12 +114,13 @@
                     <!-- الأكثر طلبا -->
                     <li>
                         <a routerLink="/most-ordered"
-                            routerLinkActive="active"
-                            class="buttonNav flex items-center gap-1.5 px-2 py-2 text-sm text-text transition-colors whitespace-nowrap rounded-sm">
+                            routerLinkActive="font-semibold text-primary border-b-2 border-primary"
+                            class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                             </svg>
+
                             الأكثر طلبا
                         </a>
                     </li>
@@ -127,14 +128,15 @@
                     <!-- الأكثر زيارة -->
                     <li>
                         <a routerLink="/most-visited"
-                            routerLinkActive="active"
-                            class="buttonNav flex items-center gap-1.5 px-2 py-2 text-sm text-text transition-colors whitespace-nowrap rounded-sm">
+                            routerLinkActive="font-semibold text-primary border-b-2 border-primary"
+                            class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
+
                             الأكثر زيارة
                         </a>
                     </li>
@@ -142,17 +144,19 @@
                     <!-- رائج الآن -->
                     <li>
                         <a routerLink="/trending"
-                            routerLinkActive="active"
-                            class="buttonNav flex items-center gap-1.5 px-2 py-2 text-sm text-text transition-colors whitespace-nowrap rounded-sm">
+                            routerLinkActive="font-semibold text-primary border-b-2 border-primary"
+                            class="flex items-center gap-1.5 px-2 py-2 text-sm text-text hover:text-primary hover:bg-primary-hover transition-colors whitespace-nowrap rounded-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
                             </svg>
+
                             رائج الآن
                         </a>
                     </li>
 
                 </ul>
+
 
                 <!-- Secondary Nav Items (left side) -->
                 <div class="flex items-center gap-1">
@@ -204,7 +208,7 @@
 
                         تتبع الشكوى
                     </a>
-        
+
                 </div>
             </div>
         </div>
