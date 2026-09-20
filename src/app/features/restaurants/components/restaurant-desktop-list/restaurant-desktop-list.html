@@ -1,0 +1,13 @@
+<section dir="rtl">
+
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+
+        @for (restaurant of restaurants(); track restaurant.id) {
+
+        <app-restaurant-item [restaurant]="restaurant" />
+
+        }
+
+    </div>
+
+</section>

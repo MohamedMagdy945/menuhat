@@ -1,7 +1,8 @@
-<div class="hidden md:block">
-    <app-desktop-home />
-</div>
-
-<div class="block md:hidden">
-    <app-mobile-home />
+@if (isMobile()) {
+<app-mobile-home />
+} @else {
+<app-desktop-home />
+}
+<div class="resturants">
+    <app-restaurants></app-restaurants>
 </div>

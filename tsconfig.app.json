@@ -7,7 +7,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/features/restaurants/components/restaurant-desktop/restaurant-desktopt.js"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]
