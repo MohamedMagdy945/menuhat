@@ -5,6 +5,7 @@ import { Cart } from './features/cart/pages/cart/cart';
 import { Favorites } from './features/favorites/pages/favorites/favorites';
 import { Offers } from './features/offers/pages/offers/offers';
 import { Profile } from './features/profile/pages/profile/profile';
+import { RestaurantAll } from './features/restaurants/components/restaurant-all/restaurant-all';
 
 
 export const routes: Routes = [
@@ -16,6 +17,20 @@ export const routes: Routes = [
             {
                 path: '',
                 component: Home
+            },
+            {
+                path: 'most-ordered',
+                component: RestaurantAll
+            },
+
+            {
+                path: 'most-visited',
+                component: RestaurantAll
+            },
+
+            {
+                path: 'trending',
+                component: RestaurantAll
             },
             {
                 path: 'cart',
