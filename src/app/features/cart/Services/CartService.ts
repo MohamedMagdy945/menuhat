@@ -9,7 +9,7 @@ export class CartService {
 
   GetUserCart(): Observable<any> {
     return this._HttpClient.get(
-        `${environment.apiUrl}EMHome/GetMyOrders?SortField=id`
+        `${environment.apiUrl}/EMHome/GetMyOrders?SortField=id`
     );
 }
 }
