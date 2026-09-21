@@ -1,0 +1,50 @@
+
+<div class="otp-container">
+  <!-- الشعار أعلى الصفحة -->
+  <div class="logo-container">
+    <img src="/images/MenuhatLogo.png" alt="Menuhat Logo">
+  </div>
+
+  <!-- كارت تأكيد الرمز -->
+  <div class="card">
+    <h1 class="title">تأكيد رمز التحقق</h1>
+
+    <!-- حقول أدخال الأرقام الستة -->
+    <div class="otp-inputs">
+      <input 
+        *ngFor="let digit of otpDigits; let i = index" 
+        type="text" 
+        maxLength="1" 
+        class="otp-field"
+        [id]="'otp-input-' + i"
+        (input)="onOtpInput($event, i)"
+        (keydown)="onOtpKeyDown($event, i)"
+      >
+    </div>
+
+    <p class="subtitle">تم إرسال رمز التحقق إلى بريدك الإلكتروني</p>
+
+    <!-- زر التأكيد -->
+    <button type="button" class="btn-primary" [disabled]="isLoading" (click)="onVerifyCode()">
+      <span *ngIf="!isLoading">تأكيد الرمز</span>
+      <span *ngIf="isLoading">جاري التحقق...</span>
+    </button>
+
+    <p *ngIf="errorMessage" class="error-text">{{ errorMessage }}</p>
+
+    <!-- قسم العداد وتغيير البريد -->
+    <div class="resend-section">
+      <p *ngIf="timer > 0" class="timer-text">
+        إعادة إرسال الرمز خلال <span class="timer-count">00:{{ timer < 10 ? '0' + timer : timer }}</span>
+      </p>
+      
+      <button *ngIf="timer === 0" type="button" class="resend-btn" (click)="resendCode()">
+        إعادة إرسال الرمز
+      </button>
+
+      <p class="change-email">
+        أدخلت بريداً خاطئاً؟ <a (click)="changeEmail()">تغيير البريد</a>
+      </p>
+    </div>
+  </div>
+</div>
