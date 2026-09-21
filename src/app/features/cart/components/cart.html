@@ -1,0 +1,89 @@
+<div class="max-w-4xl mx-auto p-4 space-y-6" dir="rtl">
+  
+  <!-- عنوان الصفحة -->
+  <h1 class="text-2xl font-bold text-gray-800 text-right">طلباتي</h1>
+
+  <!-- شريط الفلترة والأزرار -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-2 border-b border-gray-100 no-scrollbar">
+    @for (tab of filterTabs; track tab.value) {
+      <button 
+        (click)="setStatusFilter(tab.value)"
+        [class]="activeStatus === tab.value 
+          ? 'bg-orange-500 text-white font-bold shadow-sm' 
+          : 'bg-gray-50 text-gray-600 hover:bg-gray-100 font-medium'"
+        class="py-2 px-5 rounded-xl text-sm transition-all whitespace-nowrap FilterButton"
+      >
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  <!-- قائمة الطلبات بعد عكس الاتجاه -->
+  <div class="space-y-4">
+    @for (order of filteredOrders; track order.menuOrdersId) {
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4 hover:shadow-md transition-shadow">
+        
+        <!-- تفاصيل الطلب والصورة (صار على اليسار) -->
+        <div class="flex items-center gap-4 w-full sm:w-auto justify-start order-1">
+<img 
+  [src]="order?.logoURL ? (env.apiUrl + '/' + order.logoURL) : 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150&auto=format&fit=crop&q=80'"
+  (error)="$any($event.target).src = 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150&auto=format&fit=crop&q=80'"
+  [alt]="order?.clientName ?? 'صورة المطعم'" 
+  class="w-16 h-16 rounded-xl object-cover border border-gray-100"
+/>
+
+          <div class="text-right">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs text-gray-400">طلب #{{ order.serialOrder }}</span>
+              <span 
+                class="text-xs px-2.5 py-0.5 rounded-full font-medium"
+                [ngClass]="{
+                  'bg-amber-100 text-amber-700': order.orderStatusId === 0,
+                  'bg-blue-100 text-blue-700': order.orderStatusId === 1,
+                  'bg-orange-100 text-orange-600': order.orderStatusId === 2,
+                  'bg-emerald-100 text-emerald-600': order.orderStatusId === 3,
+                  'bg-rose-100 text-rose-600': order.orderStatusId === 4
+                }"
+              >
+                {{ order.orderStatusName_Ar }}
+              </span>
+            </div>
+
+           <h3 class="text-lg font-bold text-gray-800 mb-1"> {{ order?.clientName?.trim() || 'لا يوجد اسم لهذا المطعم' }} </h3>
+
+            <div class="flex items-center gap-1 text-xs text-gray-400">
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/>
+              </svg>
+              <span>{{ order.orderDate }}</span>
+              <span>•</span>
+              <!-- <span>{{ order.orderTime }}</span> -->
+            </div>
+          </div>
+        </div>
+
+        <!-- الأزرار (صارت على اليمين) -->
+        <div class="flex items-center gap-3 w-full sm:w-auto order-2 justify-end">
+          <button 
+            (click)="onCancelOrder(order.menuOrdersId)"
+            class="flex-1 sm:flex-none border border-gray-300 text-gray-500 hover:bg-gray-50 py-2 px-6 rounded-xl text-sm transition-colors"
+          >
+            إلغاء الطلب
+          </button>
+          <button 
+            (click)="onViewDetails(order.menuOrdersId)"
+            class="flex-1 sm:flex-none border-2 border-orange-500 text-orange-500 hover:bg-orange-50 font-bold py-2 px-6 rounded-xl text-sm transition-colors"
+          >
+            عرض التفاصيل
+          </button>
+        </div>
+
+      </div>
+    } @empty {
+      <div class="text-center py-12 text-gray-400">
+        لا توجد طلبات متطابقة مع هذا الفلتر حالياً.
+      </div>
+    }
+  </div>
+
+</div>
