@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { IOrder, OrderStatus } from '../Models/iorder';
+import { IOrder, OrderStatus } from '../models/order';
 import { Subscription } from 'rxjs';
-import { CartService } from '../Services/CartService';
+import { CartService } from '../services/cart.service';
 import { environment } from '../../../core/environments/environment';
 @Component({
   imports: [CommonModule],
@@ -13,15 +13,15 @@ import { environment } from '../../../core/environments/environment';
 
 export class Cart implements OnInit {
   private readonly _CartService = inject(CartService);
- 
+
   env = environment;
   GetAllCartItems !: Subscription
-  CartList:WritableSignal<IOrder[]> = signal([]);
-  
+  CartList: WritableSignal<IOrder[]> = signal([]);
+
   ngOnInit(): void {
-     this.GetAllCartItems = this._CartService.GetUserCart().subscribe({
-            next:(res) => { console.log(res.items); this.CartList.set(res.items);},
-      error:(err) => { console.log(err); }
+    this.GetAllCartItems = this._CartService.GetUserCart().subscribe({
+      next: (res) => { console.log(res.items); this.CartList.set(res.items); },
+      error: (err) => { console.log(err); }
     });
     console.log(this.env.apiUrl);
   }
@@ -36,7 +36,7 @@ export class Cart implements OnInit {
     { label: 'المرفوضة', value: 5 }
   ];
 
- get filteredOrders(): IOrder[] {
+  get filteredOrders(): IOrder[] {
     if (this.activeStatus === 0) {
       return this.CartList();
     }
@@ -48,10 +48,10 @@ export class Cart implements OnInit {
     this.activeStatus = status;
   }
 
-    onCancelOrder(orderId: number): void {
+  onCancelOrder(orderId: number): void {
   }
 
-    onViewDetails(orderId: number): void {
+  onViewDetails(orderId: number): void {
   }
 }
 
