@@ -1,0 +1,148 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.otp-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8fafc;
+  direction: rtl;
+  padding: 20px;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+
+  img {
+    max-width: 200px;
+    height: auto;
+  }
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background-color: #ffffff;
+  border-radius: 24px;
+  padding: 35px 30px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 25px;
+}
+
+/* خانات الـ OTP الستة */
+.otp-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 15px;
+  direction: ltr; /* لجعل تسلسل التركيز من اليسار إلى اليمين */
+}
+
+.otp-field {
+  width: 48px;
+  height: 52px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  outline: none;
+  background-color: #ffffff;
+  transition: border-color 0.3s;
+
+  &:focus {
+    border-color: #ff6600;
+  }
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 25px;
+}
+
+.btn-primary {
+  width: 100%;
+  background-color: #ff6600;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 20px;
+
+  &:hover {
+    background-color: #e65c00;
+  }
+
+  &:disabled {
+    background-color: #fdba74;
+    cursor: not-allowed;
+  }
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.resend-section {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.timer-text {
+  margin-bottom: 8px;
+}
+
+.timer-count {
+  color: #ff6600;
+  font-weight: bold;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: #ff6600;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 8px;
+  font-size: 13px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.change-email {
+  a {
+    color: #ff6600;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
