@@ -5,7 +5,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 
   selector: 'app-desktop-home',
-  styleUrl: './desktop-home.css',
-  templateUrl: './desktop-home.html',
+  styleUrl: './desktop-home.component.css',
+  templateUrl: './desktop-home.component.html',
 })
 export class DesktopHome { }

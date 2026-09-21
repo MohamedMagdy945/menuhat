@@ -1,23 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
-
-import { DesktopHome } from './components/desktop-home/desktop-home';
-import { MobileHome } from './components/mobile-home/mobile-home';
-import { HomeRestaurantSection } from '../../features/restaurants/components/home-restaurant-section/home-restaurant-section';
-
-import { ResponsiveService } from '../../core/services/responsive.service';
-
-import { Restaurant } from '../../features/restaurants/models/restaurant';
-import { MOCK_RESTAURANT_PAGES } from '../../features/restaurants/mocks/restaurant.mock';
+import { DesktopHome } from '../components/desktop-home/desktop-home.component';
+import { MobileHome } from '../components/mobile-home/mobile-home.component';
+import { HomeRestaurantSection } from '../../restaurants/components/home-restaurant-section/home-restaurant-section';
+import { ResponsiveService } from '../../../core/services/responsive.service';
+import { Restaurant } from '../../restaurants/models/restaurant';
+import { MOCK_RESTAURANT_PAGES } from '../../restaurants/mocks/restaurant.mock';
 
 @Component({
-  imports: [
-    DesktopHome,
-    MobileHome,
-    HomeRestaurantSection
+  imports: [DesktopHome, MobileHome, HomeRestaurantSection
   ],
   selector: 'app-home',
-  styleUrl: './home.css',
-  templateUrl: './home.html',
+  styleUrl: './home.component.css',
+  templateUrl: './home.component.html',
 })
 export class Home {
 

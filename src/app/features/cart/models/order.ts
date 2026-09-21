@@ -1,5 +1,23 @@
 export type OrderStatus = 0 | 1 | 2 | 3 | 4 | 5;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  export interface IOrder {
   menuOrdersId: number;
   clientName: string;
@@ -51,3 +69,5 @@ interface MenuProduct {
   description: string;
   description_En: null;
 }
+
+

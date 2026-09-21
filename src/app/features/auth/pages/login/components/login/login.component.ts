@@ -8,8 +8,8 @@ import { LoginService } from '../../services/login.service';
 @Component({
   selector: 'app-login',
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './login.html',
-  styleUrl: './login.css'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
 export class Login {
 

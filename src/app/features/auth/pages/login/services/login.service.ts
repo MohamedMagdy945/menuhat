@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { environment } from '../../../core/environments/environment';
+import { environment } from '../../../../../core/environments/environment';
 import { jwtDecode } from 'jwt-decode';
 
 @Service()
