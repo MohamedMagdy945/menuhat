@@ -1,6 +1,6 @@
 <section dir="rtl">
 
-    <div class="mb-4 flex items-center justify-between mt-8">
+    <div class=" flex items-center justify-between mt-8 mb-4">
 
         <h2 class="text-lg font-bold text-gray-900">
             {{ title() }}
@@ -20,7 +20,7 @@
 
             @for (restaurant of restaurants(); track restaurant.id) {
 
-            <div class="w-[260px] shrink-0">
+            <div class="w-[240px] shrink-0">
                 <app-restaurant-item [restaurant]="restaurant" />
             </div>
 

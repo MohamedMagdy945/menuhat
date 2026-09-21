@@ -1,17 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MobileNavbar } from './components/navbar/mobile-navbar/mobile-navbar.component';
-import { DesktopNavbar } from './components/navbar/desktop-navbar/desktop-navbar.component';
+import { MobileNavbar } from './components/mobile-navbar/mobile-navbar.component';
+import { DesktopNavbarComponent } from './components/desktop-navbar/desktop-navbar.component';
 import { Footer } from './components/footer/footer.component';
 import { LocationService } from '../../core/services/location.service';
+import { ResponsiveService } from '../../core/services/responsive.service';
 
 @Component({
-  imports: [RouterOutlet, MobileNavbar, DesktopNavbar, Footer],
+  imports: [RouterOutlet, MobileNavbar, DesktopNavbarComponent, Footer],
   selector: 'app-main-layout',
   styleUrl: './main-layout.component.css',
   templateUrl: './main-layout.component.html',
 })
-export class PublicLayout {
+export class MainLayoutComponent {
   // Inject the LocationService
   protected locationService = inject(LocationService);
 
@@ -21,6 +22,9 @@ export class PublicLayout {
   // Address displayed in the Navbar
   currentAddress = this.locationService.displayAddress;
 
+  private readonly responsiveService = inject(ResponsiveService);
+
+  readonly isMobile = this.responsiveService.isMobile;
   /**
    * Triggers smart location detection from the Navbar button
    */

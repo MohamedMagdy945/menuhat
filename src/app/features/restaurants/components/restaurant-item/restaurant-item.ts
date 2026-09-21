@@ -10,5 +10,8 @@ import { Restaurant } from '../../models/restaurant';
 
 })
 export class RestaurantItem {
+onCardClick() {
+throw new Error('Method not implemented.');
+}
   restaurant = input.required<Restaurant>();
 }
