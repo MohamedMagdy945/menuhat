@@ -1,49 +1,67 @@
 import { Routes } from '@angular/router';
+
+
 import { Home } from './features/home/pages/home.component';
 import { Favorites } from './features/favorites/pages/favorites/favorites';
 import { Offers } from './features/offers/pages/offers/offers';
 import { Profile } from './features/profile/pages/profile/profile';
-<<<<<<< HEAD
 import { Cart } from './features/cart/components/cart';
-import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
 import { RestaurantAll } from './features/restaurants/components/restaurant-all/restaurant-all';
+import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
 
 
 export const routes: Routes = [
+    // Authentication
     {
         path: 'login',
-        loadComponent: () => import('./features/auth/pages/login/components/login/login.component').then(m => m.Login)
-    }, // canActivate: [logedGuard]
+        loadComponent: () =>
+            import('./features/auth/pages/login/components/login/login.component')
+                .then(m => m.Login)
+    },
 
-=======
-import { Cart } from './features/cart/Components/cart';
-import { SendEmail } from './features/auth/pages/Register/components/SendEmail/send-email/send-email.component';
+    
 
-
-export const routes: Routes = [
-    { path: 'login', loadComponent: () => import('./features/auth/pages/login/components/login/login.component').then(m => m.Login) }, //canActivate: [logedGuard]
-    { path: 'sendEmail', loadComponent: () => import('./features/auth/pages/Register/components/SendEmail/send-email/send-email.component').then(m => m.SendEmail) },
-    { path: 'ValidateOtp', loadComponent: () => import('./features/auth/pages/Register/components/ValidateOtp/validate-otp/validate-otp.component').then(m => m.ValidateOtp) },
->>>>>>> MoLotfi
+    // Main application
     {
         path: '',
         component: MainLayoutComponent,
         children: [
             { path: '', component: Home },
             { path: 'home', component: Home },
+
             { path: 'cart', component: Cart },
             { path: 'favorites', component: Favorites },
             { path: 'offers', component: Offers },
             { path: 'profile', component: Profile },
 
-            // المسارات المضافة حديثاً لتوجيه الـ Navbar
-            { path: 'most-ordered', component: RestaurantAll, data: { filter: 'most-ordered' } },
-            { path: 'most-visited', component: RestaurantAll, data: { filter: 'most-visited' } },
-            { path: 'trending', component: RestaurantAll, data: { filter: 'trending' } },
-            { path: 'my-orders', component: Cart }, // أو المكون الخاص بطلباتي
+            // Restaurants
+            {
+                path: 'most-ordered',
+                component: RestaurantAll,
+                data: { filter: 'most-ordered' }
+            },
+            {
+                path: 'most-visited',
+                component: RestaurantAll,
+                data: { filter: 'most-visited' }
+            },
+            {
+                path: 'trending',
+                component: RestaurantAll,
+                data: { filter: 'trending' }
+            },
+
+            // Orders
+            {
+                path: 'my-orders',
+                component: Cart
+            }
         ]
     },
 
-    // Wildcard Route للتحويل المباشر للرئيسية في حال كتابة مسار غير معروف
-    { path: '**', redirectTo: '' }
+    // Unknown routes
+    {
+        path: '**',
+        redirectTo: ''
+    }
 ];
