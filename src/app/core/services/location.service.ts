@@ -1,7 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { LocationAddress } from '../models/location-address';
 
-
 @Injectable({
     providedIn: 'root'
 })
@@ -36,7 +35,6 @@ export class LocationService {
     readonly currentLocation =
         this.currentLocationSignal.asReadonly();
 
-
     // =========================================================
     // Computed Values
     // =========================================================
@@ -59,12 +57,10 @@ export class LocationService {
         return location.address;
     });
 
-
     /**
      * Short address for Navbar.
      *
      * Example:
-     *
      * السادات، المنوفية
      */
     readonly displayShortAddress = computed(() => {
@@ -85,16 +81,53 @@ export class LocationService {
             : location.address;
     });
 
-
     /**
      * Indicates whether a location has been selected.
      */
     readonly hasLocation = computed(() => {
-
         return this.currentLocationSignal() !== null;
-
     });
 
+    // =========================================================
+    // Constructor
+    // =========================================================
+
+    constructor() {
+        this.initializeLocation();
+    }
+
+    // =========================================================
+    // Initialization
+    // =========================================================
+
+    /**
+     * Get the user's real location automatically
+     * when the application starts.
+     *
+     * If a location already exists in localStorage,
+     * keep using it.
+     */
+    private async initializeLocation(): Promise<void> {
+
+        const savedLocation =
+            this.currentLocationSignal();
+
+        if (savedLocation) {
+            return;
+        }
+
+        try {
+
+            await this.getCurrentGeoLocation();
+
+        } catch (error) {
+
+            console.warn(
+                'Initial location detection failed:',
+                error
+            );
+        }
+    }
 
     // =========================================================
     // Public Methods
@@ -115,7 +148,6 @@ export class LocationService {
         this.saveLocation(location);
     }
 
-
     /**
      * Clear current location.
      *
@@ -131,39 +163,18 @@ export class LocationService {
         localStorage.removeItem(this.STORAGE_KEY);
     }
 
-
     /**
-     * Get user's location using the following strategy:
+     * Get user's real location.
      *
-     * 1. Browser GPS
-     * 2. If GPS fails:
-     *    - Mobile → throw error
-     *    - Desktop → IP location
+     * Uses browser GPS only.
+     *
+     * We do not use IP location as an automatic fallback
+     * because IP location can return an incorrect city.
      */
     async getSmartLocation(): Promise<LocationAddress> {
 
-        try {
-
-            return await this.getCurrentGeoLocation();
-
-        } catch (error) {
-
-            console.warn(
-                'GPS location failed:',
-                error
-            );
-
-            if (this.isMobileDevice()) {
-
-                throw new Error(
-                    'يرجى تفعيل الموقع على هاتفك للحصول على عنوان دقيق.'
-                );
-            }
-
-            return await this.getLocationByIP();
-        }
+        return await this.getCurrentGeoLocation();
     }
-
 
     /**
      * Get precise location using Browser Geolocation API.
@@ -183,7 +194,6 @@ export class LocationService {
                 return;
             }
 
-
             navigator.geolocation.getCurrentPosition(
 
                 async (position) => {
@@ -194,7 +204,6 @@ export class LocationService {
                     const lng =
                         position.coords.longitude;
 
-
                     try {
 
                         const location =
@@ -202,7 +211,6 @@ export class LocationService {
                                 lat,
                                 lng
                             );
-
 
                         this.setLocation(location);
 
@@ -215,7 +223,6 @@ export class LocationService {
                             error
                         );
 
-
                         /**
                          * GPS worked but reverse geocoding failed.
                          *
@@ -227,18 +234,15 @@ export class LocationService {
                                 lng
                             );
 
-
                         this.setLocation(
                             fallbackLocation
                         );
-
 
                         resolve(
                             fallbackLocation
                         );
                     }
                 },
-
 
                 (error) => {
 
@@ -251,119 +255,14 @@ export class LocationService {
                     );
                 },
 
-
                 {
                     enableHighAccuracy: true,
-
                     timeout: 15000,
-
                     maximumAge: 0
                 }
             );
         });
     }
-
-
-    /**
-     * Desktop fallback.
-     *
-     * Gets approximate location using IP address.
-     */
-    async getLocationByIP(): Promise<LocationAddress> {
-
-        try {
-
-            const response =
-                await fetch(
-                    'https://ipapi.co/json/'
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    `IP location request failed: ${response.status}`
-                );
-            }
-
-
-            const data =
-                await response.json();
-
-
-            const location: LocationAddress = {
-
-                address: [
-                    data.city,
-                    data.region,
-                    data.country_name
-                ]
-                    .filter(Boolean)
-                    .join('، ') || 'موقع غير محدد',
-
-
-                country:
-                    data.country_name ?? '',
-
-
-                governorate:
-                    data.region ?? '',
-
-
-                city:
-                    data.city ?? '',
-
-
-                area: '',
-
-
-                street: '',
-
-
-                lat:
-                    data.latitude ?? null,
-
-
-                lng:
-                    data.longitude ?? null,
-
-
-                notes: ''
-            };
-
-
-            this.setLocation(location);
-
-
-            return location;
-
-        } catch (error) {
-
-            console.error(
-                'IP location failed:',
-                error
-            );
-
-
-            /**
-             * We don't have an accurate location.
-             *
-             * Return an empty location instead of
-             * assuming the user is in Cairo.
-             */
-            const fallbackLocation =
-                this.createEmptyLocation();
-
-
-            this.setLocation(
-                fallbackLocation
-            );
-
-
-            return fallbackLocation;
-        }
-    }
-
 
     // =========================================================
     // Reverse Geocoding
@@ -373,7 +272,10 @@ export class LocationService {
      * Convert latitude/longitude into
      * a detailed address using Nominatim.
      */
-    private async reverseGeocode(lat: number, lng: number): Promise<LocationAddress> {
+    private async reverseGeocode(
+        lat: number,
+        lng: number
+    ): Promise<LocationAddress> {
 
         const url =
             'https://nominatim.openstreetmap.org/reverse' +
@@ -383,10 +285,8 @@ export class LocationService {
             `&accept-language=ar` +
             `&addressdetails=1`;
 
-
         const response =
             await fetch(url);
-
 
         if (!response.ok) {
 
@@ -395,14 +295,11 @@ export class LocationService {
             );
         }
 
-
         const data =
             await response.json();
 
-
         const address =
             data.address ?? {};
-
 
         // -----------------------------------------------------
         // Country
@@ -410,7 +307,6 @@ export class LocationService {
 
         const country =
             address.country ?? '';
-
 
         // -----------------------------------------------------
         // Governorate / State
@@ -420,7 +316,6 @@ export class LocationService {
             address.state ??
             address.governorate ??
             '';
-
 
         // -----------------------------------------------------
         // City
@@ -434,7 +329,6 @@ export class LocationService {
             address.county ??
             '';
 
-
         // -----------------------------------------------------
         // Area / District
         // -----------------------------------------------------
@@ -447,7 +341,6 @@ export class LocationService {
             address.district ??
             '';
 
-
         // -----------------------------------------------------
         // Street
         // -----------------------------------------------------
@@ -458,7 +351,6 @@ export class LocationService {
             address.street ??
             '';
 
-
         // -----------------------------------------------------
         // Building
         // -----------------------------------------------------
@@ -467,7 +359,6 @@ export class LocationService {
             address.house_number ??
             address.building ??
             '';
-
 
         // -----------------------------------------------------
         // Street + Building
@@ -485,7 +376,6 @@ export class LocationService {
             .filter(Boolean)
             .join(' ');
 
-
         // -----------------------------------------------------
         // Full Address
         // -----------------------------------------------------
@@ -493,19 +383,14 @@ export class LocationService {
         const fullAddress = [
 
             streetDetails,
-
             area,
-
             city,
-
             governorate,
-
             country
 
         ]
             .filter(Boolean)
             .join('، ');
-
 
         // -----------------------------------------------------
         // Return complete object
@@ -516,7 +401,6 @@ export class LocationService {
             address:
                 fullAddress ||
                 'موقع محدد',
-
 
             country,
 
@@ -529,7 +413,6 @@ export class LocationService {
             street:
                 streetDetails,
 
-
             lat,
 
             lng,
@@ -537,7 +420,6 @@ export class LocationService {
             notes: ''
         };
     }
-
 
     // =========================================================
     // Local Storage
@@ -555,12 +437,9 @@ export class LocationService {
                     this.STORAGE_KEY
                 );
 
-
             if (!saved) {
-
                 return null;
             }
-
 
             return JSON.parse(
                 saved
@@ -573,16 +452,13 @@ export class LocationService {
                 error
             );
 
-
             localStorage.removeItem(
                 this.STORAGE_KEY
             );
 
-
             return null;
         }
     }
-
 
     /**
      * Save location to localStorage.
@@ -592,28 +468,14 @@ export class LocationService {
     ): void {
 
         localStorage.setItem(
-
             this.STORAGE_KEY,
-
             JSON.stringify(location)
-
         );
     }
-
 
     // =========================================================
     // Helpers
     // =========================================================
-
-    /**
-     * Check whether current device is mobile.
-     */
-    private isMobileDevice(): boolean {
-
-        return /iPhone|iPad|iPod|Android/i
-            .test(navigator.userAgent);
-    }
-
 
     /**
      * Create location object when GPS coordinates
@@ -647,38 +509,6 @@ export class LocationService {
         };
     }
 
-
-    /**
-     * Empty fallback location.
-     *
-     * We intentionally don't assume
-     * that the user is in a specific city.
-     */
-    private createEmptyLocation(): LocationAddress {
-
-        return {
-
-            address: 'موقع غير محدد',
-
-            country: '',
-
-            governorate: '',
-
-            city: '',
-
-            area: '',
-
-            street: '',
-
-            lat: null,
-
-            lng: null,
-
-            notes: ''
-        };
-    }
-
-
     /**
      * Convert browser geolocation errors
      * into user-friendly messages.
@@ -697,7 +527,6 @@ export class LocationService {
                     'من إعدادات المتصفح.'
                 );
 
-
             case error.POSITION_UNAVAILABLE:
 
                 return (
@@ -705,14 +534,12 @@ export class LocationService {
                     'غير متوفرة حالياً.'
                 );
 
-
             case error.TIMEOUT:
 
                 return (
                     'استغرق تحديد موقع الـ GPS ' +
                     'وقتاً أطول من المتوقع.'
                 );
-
 
             default:
 
