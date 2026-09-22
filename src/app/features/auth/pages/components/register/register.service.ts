@@ -11,7 +11,7 @@ sendemail(data: object): Observable<any> {
   return this._HttpClient.post(`${environment.apiUrl}/Auth/SendOtp`, data);
 }
 
-calidateOtp(data: object): Observable<any> {
+ValidateOtp(data: object): Observable<any> {
   return this._HttpClient.post(`${environment.apiUrl}/Auth/ValidateOtp`, data);
 }
 }
