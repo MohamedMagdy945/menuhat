@@ -20,24 +20,23 @@ export const routes: Routes = [
     {
         path: 'login',
         loadComponent: () =>
-            import(
-                './features/auth/pages/login/components/login/login.component'
+            import('./features/auth/pages/login/components/login/login.component'
             ).then(m => m.Login)
     },
 
     {
-        path: 'send-email',
+        path: 'sendEmail',
         loadComponent: () =>
             import(
-                './features/auth/pages/components/send-email/send-email.component'
+                './features/auth/pages/Register/components/send-email/send-email.component'
             ).then(m => m.SendEmail)
     },
 
     {
-        path: 'validate-otp',
+        path: 'ValidateOtp',
         loadComponent: () =>
             import(
-                './features/auth/pages/components/validate-otp/validate-otp.component'
+                './features/auth/pages/Register/components/validate-otp/validate-otp.component'
             ).then(m => m.ValidateOtp)
     },
 
@@ -45,7 +44,7 @@ export const routes: Routes = [
         path: 'register',
         loadComponent: () =>
             import(
-                './features/auth/pages/components/register/register.component'
+                './features/auth/pages/Register/components/register/register.component'
             ).then(m => m.Register)
     },
 

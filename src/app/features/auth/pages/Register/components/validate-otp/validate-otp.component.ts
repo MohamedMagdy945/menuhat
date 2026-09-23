@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { timer, Subscription } from 'rxjs'; // استيراد timer و Subscription من RxJS
-import { RegisterService } from '../register/register.service';
+import { timer, Subscription } from 'rxjs';
+import { RegisterService } from '../../services/register.service';
+import { SweetAlertService } from '../../../../../../core/sweet-alert/sweet-alert';
 
 export interface ValidateOtpPayload {
   email: string;
@@ -21,11 +22,13 @@ export class ValidateOtp implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly registerService = inject(RegisterService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly swal = inject(SweetAlertService);
 
   email: string = '';
   otpDigits: string[] = ['', '', '', '', '', ''];
   timeLeft: number = 55;
-  private timerSubscription?: Subscription; // اشتراك العداد
+  private timerSubscription?: Subscription;
 
   isLoading: boolean = false;
   errorMessage: string = '';
@@ -35,7 +38,6 @@ export class ValidateOtp implements OnInit, OnDestroy {
       this.email = params['email'] || '';
     });
 
-    // تشغيل التايمر تلقائياً فور فتح الصفحة
     this.startTimer();
   }
 
@@ -43,18 +45,17 @@ export class ValidateOtp implements OnInit, OnDestroy {
     return index;
   }
 
-  // العداد التنازلي باستخدام RxJS ليعمل تلقائياً بدقة
   startTimer(): void {
     this.timeLeft = 55;
-    this.timerSubscription?.unsubscribe(); // إلغاء أي عداد سابق إن وجد
+    this.timerSubscription?.unsubscribe();
 
-    // يشتغل كل 1000 ملي ثانية (ثانية واحدة)
     this.timerSubscription = timer(0, 1000).subscribe(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
       } else {
         this.timerSubscription?.unsubscribe();
       }
+      this.cdr.detectChanges();
     });
   }
 
@@ -115,7 +116,12 @@ export class ValidateOtp implements OnInit, OnDestroy {
     const otpCode = this.otpDigits.join('');
 
     if (otpCode.length < 6) {
-      this.errorMessage = 'يرجى إدخال رمز التحقق كاملاً (6 أرقام)';
+      this.swal.showToast('يرجى إدخال رمز التحقق كاملاً (6 أرقام)', 'warning');
+      return;
+    }
+
+    if (!this.email) {
+      this.swal.showAlert('البريد الإلكتروني غير متاح، يرجى إعادة محاولة الإرسال', 'error');
       return;
     }
 
@@ -130,12 +136,12 @@ export class ValidateOtp implements OnInit, OnDestroy {
 
     this.registerService.ValidateOtp(payload).subscribe({
       next: (response) => {
-        this.isLoading = false;
-        console.log('OTP Validated successfully:', response);
+          this.swal.showToast('تم التحقق بنجاح, يرجي تسجيل بياناتك الأن', 'success');      
+          this.router.navigate(['/register'], { queryParams: { email: this.email } });
       },
       error: (err) => {
+        this.swal.showAlert(err.error?.message,'error');
         this.isLoading = false;
-        this.errorMessage = err?.error?.message || 'رمز التحقق غير صحيح، يرجى المحاولة مرة أخرى';
       }
     });
   }
@@ -144,7 +150,6 @@ export class ValidateOtp implements OnInit, OnDestroy {
     if (!this.email) return;
 
     this.isLoading = true;
-    this.errorMessage = '';
 
     const payload = {
       email: this.email,
@@ -155,11 +160,13 @@ export class ValidateOtp implements OnInit, OnDestroy {
     this.registerService.sendemail(payload).subscribe({
       next: () => {
         this.isLoading = false;
-        this.startTimer(); // إعادة تشغيل العداد عند طلب رمز جديد
+        this.startTimer();
+        this.swal.showToast('تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني', 'info');
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err?.error?.message || 'حدث خطأ أثناء إعادة إرسال الرمز';
+        const msg = 'حدث خطأ أثناء إعادة إرسال الرمز';
+        this.swal.showAlert(msg, 'error');
       }
     });
   }

@@ -15,6 +15,7 @@ export class Login {
 
   private readonly _AuthServices = inject(LoginService);
   private readonly _Router = inject(Router);
+  private readonly _tostar = inject(Router);
 
   ErrorMsg = '';
   loginForm!: FormGroup;
@@ -51,8 +52,8 @@ export class Login {
     this._AuthServices.SetLoginForm(loginData).subscribe({
 
       next: (res) => {
-
-        if (res.message === 'LoggedIn Successfully') {
+        console.log(res);
+        if (res) {
           localStorage.setItem(
             'usertoken',
             res.data.token

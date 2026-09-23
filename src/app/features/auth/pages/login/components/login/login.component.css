@@ -204,7 +204,7 @@
 /* تمييز حساب صاحب المطعم برونق خاص */
 .signup-link.highlight {
   color: #ffffff;
-  background: chocolate;
+  background: #ff5500;
   border: none;
   box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
 }

@@ -1,0 +1,259 @@
+:host {
+  display: block;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  overflow: hidden;
+}
+.register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  box-sizing: border-box;
+}
+
+/* الشعار */
+.logo-container {
+  margin-bottom: 7px;
+  text-align: center;
+}
+
+.logo-container img {
+  max-width: 220px;
+  height: auto;
+}
+
+.card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 480px;
+    padding: 16px 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2b2b2b;
+  margin-bottom: 8px;
+  text-align: right;
+}
+
+/* المدخلات والقوائم */
+.input-field {
+  width: 100%;
+  height: 48px;
+  padding: 0 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+  font-size: 13.5px;
+  color: #333;
+  outline: none;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
+}
+
+.input-field::placeholder {
+  color: #a0aec0;
+}
+
+.input-field:focus {
+  border-color: #ff6600;
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
+}
+
+/* إخفاء سهم خيار الإدخال في القوائم وإضافة سهم مخصص */
+.select-wrapper {
+  position: relative;
+}
+
+.select-field {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.select-wrapper::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 6px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0aec0'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.btn-primary {
+  width: 100%;
+  height: 50px;
+  background-color: #ff6600;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background-color: #e65c00;
+}
+
+.btn-primary:active {
+  transform: scale(0.99);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+.login-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #718096;
+}
+
+.login-text a {
+  color: #ff6600;
+  font-weight: 700;
+  text-decoration: none;
+  margin-right: 4px;
+}
+
+.login-text a:hover {
+  text-decoration: underline;
+}
+.avatar-upload-group {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.avatar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar-preview {
+    width: 100px;
+    height: 100px;
+    border-radius: 20%;
+    object-fit: cover;
+    border: 2px solid #d9d9d9;
+    background-color: #f0f0f0;
+}
+
+.btn-upload {
+  background-color: #f0f2f5;
+  border: 1px solid #dcdfe6;
+  padding: 6px 16px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a5568;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-upload:hover {
+  background-color: #e2e8f0;
+  color: #2d3748;
+}
+
+.btn-delete-photo {
+    top: 0;
+    right: 0;
+    background-color: #ff6600;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 16px;
+    white-space: nowrap;
+}
+.btn-delete-photo:hover {
+ background-color: hwb(24 13% 27%);;
+  color: #ffffff;
+}
+.form-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.form-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #ff6600;
+  margin: 0 0 6px 0;
+}
+.avatar-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.password-wrapper {
+  position: relative;
+}
+
+/* إعطاء مساحة داخلية جهة اليسار في حقل النص لمنع تداخل النص مع الأيقونة */
+.password-wrapper .input-field {
+  padding-left: 42px;
+}
+
+/* زر إظهار وإخفاء كلمة المرور */
+.toggle-password {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
