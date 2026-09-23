@@ -1,18 +1,18 @@
 import { Component, inject, signal } from '@angular/core';
-import { DesktopHome } from '../components/desktop-home/desktop-home.component';
-import { MobileHome } from '../components/mobile-home/mobile-home.component';
-import { ResponsiveService } from '../../../core/services/responsive.service';
-import { Restaurant } from '../../restaurants/models/restaurant';
-import { MOCK_RESTAURANT_PAGES } from '../../restaurants/mocks/restaurant.mock';
-import { FeaturedRestaurantsComponent } from '../components/featured-restaurants/featured-restaurants.component';
+import { DesktopHomeComponent } from './components/desktop-home/desktop-home.component';
+import { MobileHomeComponent } from './components/mobile-home/mobile-home.component';
+import { ResponsiveService } from '../../core/services/responsive.service';
+import { Restaurant } from '../restaurants/models/restaurant';
+import { MOCK_RESTAURANT_PAGES } from '../restaurants/mocks/restaurant.mock';
+import { FeaturedRestaurantsComponent } from './components/featured-restaurants/featured-restaurants.component';
 
 @Component({
-  imports: [DesktopHome, MobileHome, FeaturedRestaurantsComponent],
+  imports: [DesktopHomeComponent, MobileHomeComponent, FeaturedRestaurantsComponent, DesktopHomeComponent],
   selector: 'app-home',
   styleUrl: './home.component.css',
   templateUrl: './home.component.html',
 })
-export class Home {
+export class HomeComponent {
 
   private readonly responsiveService = inject(ResponsiveService);
 

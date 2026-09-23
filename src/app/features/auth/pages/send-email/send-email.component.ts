@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { RegisterService } from '../../services/register.service';
-import { SweetAlertService } from '../../../../../../core/sweet-alert/sweet-alert';
+import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
@@ -15,7 +15,7 @@ export class SendEmail implements OnInit, OnDestroy {
   private readonly _fb = inject(FormBuilder);
   private readonly _registerService = inject(RegisterService);
   private readonly _Route = inject(Router);
-  private readonly _SweetAlertService= inject(SweetAlertService);
+  private readonly _SweetAlertService = inject(SweetAlertService);
 
   signupForm!: FormGroup;
   isCodeSent: boolean = false;
@@ -60,7 +60,7 @@ export class SendEmail implements OnInit, OnDestroy {
 
         this._Route.navigate(['/ValidateOtp'], {
           queryParams: { email: this.signupForm.value.email }
-        }); 
+        });
       },
       error: (err) => {
         this._SweetAlertService.showAlert(err?.error?.message, 'error');

@@ -1,0 +1,103 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+
+  <!-- Account Info -->
+
+  <h3 class="mt-3 text-13 font-bold text-[#262b31]">
+    معلومات الحساب
+  </h3>
+
+  <div class="mt-2 grid grid-cols-2 gap-x-5 gap-y-[8px] max-[480px]:grid-cols-1">
+
+    <!-- Full Name -->
+    <app-form-input formControlName="fullName" label="الاسم بالكامل" placeholder="أدخل الاسم بالكامل"
+      autocomplete="name">
+      <svg input-icon class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+        <path
+          d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+      </svg>
+    </app-form-input>
+
+
+    <!-- Username -->
+    <app-form-input formControlName="username" label="اسم المستخدم" placeholder="أدخل اسم المستخدم" autocomplete="off">
+      <svg input-icon class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+        <path
+          d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+      </svg>
+    </app-form-input>
+
+
+    <!-- Password -->
+    <app-form-input formControlName="password" label="كلمة المرور" placeholder="أدخل كلمة المرور" type="password"
+      autocomplete="new-password">
+      <svg input-icon class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+        <path
+          d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+      </svg>
+    </app-form-input>
+
+
+    <!-- Confirm Password -->
+    <app-form-input formControlName="confirmPassword" label="تأكيد كلمة المرور" placeholder="أعد إدخال كلمة المرور"
+      type="password" autocomplete="new-password">
+      <svg input-icon class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+        <path
+          d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" />
+      </svg>
+    </app-form-input>
+
+  </div>
+
+
+  <!-- Location Info -->
+  <div class="mb-[18px]">
+
+    <h3 class="mt-3 text-13 font-bold text-[#262b31]">
+      معلومات الموقع
+    </h3>
+
+
+
+
+    <div class="grid grid-cols-2 mt-2 gap-x-5 gap-y-[10px] max-[480px]:grid-cols-1">
+
+      <!-- Governorate -->
+      <app-form-select formControlName="governmentId" label="المحافظة"
+        [placeholder]="isLoadingGovernorates ? 'جاري تحميل المحافظات...' : 'أختار المحافظة'" [options]="governorates"
+        [disabled]="isLoadingGovernorates">
+      </app-form-select>
+
+      <!-- City -->
+      <app-form-select formControlName="cityId" label="المدينة"
+        [placeholder]="isLoadingCities ? 'جاري تحميل المدن...' : 'أختار المدينة'" [options]="cities"
+        [disabled]="isLoadingCities">
+      </app-form-select>
+
+      <!-- Address -->
+      <div class="col-span-full min-w-0 max-[480px]:col-auto">
+
+        <app-form-input formControlName="address" label="العنوان" placeholder="أدخل المنطقة والشارع"
+          autocomplete="street-address">
+          <svg input-icon class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+            <path
+              d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+          </svg>
+        </app-form-input>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Submit -->
+  <button type="submit" [disabled]="isLoading"
+    class="h-10 w-full cursor-pointer rounded-[5px] border-0 bg-[#ff6900] text-[12px] font-bold text-white transition duration-200 hover:bg-[#f45f00] active:scale-[0.995] disabled:cursor-not-allowed disabled:opacity-60">
+    @if (!isLoading) {
+    إنشاء الحساب
+    } @else {
+    جاري التسجيل...
+    }
+  </button>
+</form>

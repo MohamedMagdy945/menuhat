@@ -1,0 +1,41 @@
+<div class="min-w-0">
+
+  <label class="mb-[6px] block text-[14px] font-semibold text-[#30353b]">
+    {{ label() }}
+  </label>
+
+  <div class="relative w-full">
+
+    <select
+      [value]="value"
+      [disabled]="disabled"
+      (change)="onSelect($event)"
+      (blur)="onBlur()"
+      class="box-border h-[44px] w-full cursor-pointer appearance-none rounded-[5px] border border-[#dfe3e7] bg-[#fafbfc] px-3 pl-[38px] text-[13px] text-[#353a40] outline-none transition duration-200 focus:border-[#ff6900] focus:bg-white focus:ring-1 focus:ring-[rgba(255,105,0,0.08)]">
+
+      <option value="" disabled>
+        {{ placeholder() }}
+      </option>
+
+      @for (option of options(); track option.value) {
+        <option [value]="option.value">
+          {{ option.label }}
+        </option>
+      }
+
+    </select>
+
+    <span
+      class="pointer-events-none absolute left-[12px] top-1/2 -translate-y-1/2 text-[#89919a]">
+
+      <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
+        <path d="M7 10l5 5 5-5z" />
+      </svg>
+
+    </span>
+
+  </div>
+
+  <!-- Error هنا -->
+
+</div>

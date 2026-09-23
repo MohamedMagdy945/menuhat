@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { IOrder, OrderStatus } from '../models/order';
+import { IOrder, OrderStatus } from './models/order';
 import { Subscription } from 'rxjs';
-import { CartService } from '../services/cart.service';
-import { environment } from '../../../core/environments/environment';
+import { environment } from '../../core/environments/environment';
+import { CartService } from './cart.service';
 @Component({
   imports: [CommonModule],
   selector: 'app-cart',
-  styleUrl: './cart.css',
-  templateUrl: './cart.html',
+  styleUrl: './cart.component.css',
+  templateUrl: './cart.component.html',
 })
 
-export class Cart implements OnInit {
+export class CartComponent implements OnInit {
   private readonly _CartService = inject(CartService);
 
   env = environment;

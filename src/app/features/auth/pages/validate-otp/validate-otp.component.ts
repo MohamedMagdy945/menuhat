@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { timer, Subscription } from 'rxjs';
 import { RegisterService } from '../../services/register.service';
-import { SweetAlertService } from '../../../../../../core/sweet-alert/sweet-alert';
+import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
 
 export interface ValidateOtpPayload {
   email: string;
@@ -136,11 +136,11 @@ export class ValidateOtp implements OnInit, OnDestroy {
 
     this.registerService.ValidateOtp(payload).subscribe({
       next: (response) => {
-          this.swal.showToast('تم التحقق بنجاح, يرجي تسجيل بياناتك الأن', 'success');      
-          this.router.navigate(['/register'], { queryParams: { email: this.email } });
+        this.swal.showToast('تم التحقق بنجاح, يرجي تسجيل بياناتك الأن', 'success');
+        this.router.navigate(['/register'], { queryParams: { email: this.email } });
       },
       error: (err) => {
-        this.swal.showAlert(err.error?.message,'error');
+        this.swal.showAlert(err.error?.message, 'error');
         this.isLoading = false;
       }
     });

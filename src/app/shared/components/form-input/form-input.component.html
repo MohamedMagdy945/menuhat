@@ -1,0 +1,21 @@
+<div class="min-w-0">
+
+  <label class="mb-[6px] block text-[14px] font-semibold text-[#30353b]">
+    {{ label() }}
+  </label>
+
+  <div class="relative w-full">
+
+    <input [type]="type()" [value]="value" [disabled]="disabled" [placeholder]="placeholder()"
+      (input)="handleInput($event)" (blur)="handleBlur()"
+      class="box-border h-12 w-full rounded-[5px] border border-[#dfe3e7] bg-[#fafbfc] px-3 pr-[38px] text-[13px] text-[#353a40] outline-none transition duration-200 placeholder:text-[#aeb4bb] focus:border-[#ff6900] focus:bg-white focus:ring-1 focus:ring-[rgba(255,105,0,0.08)]" />
+
+    <span class="pointer-events-none absolute right-[12px] top-1/2 -translate-y-1/2 text-[#89919a]">
+      <ng-content select="[input-icon]" />
+    </span>
+
+  </div>
+
+  <!-- Error هنا -->
+
+</div>

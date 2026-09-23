@@ -6,4 +6,4 @@ import { Component } from '@angular/core';
   styleUrl: './mobile-home.component.css',
   templateUrl: './mobile-home.component.html',
 })
-export class MobileHome { }
+export class MobileHomeComponent { }
