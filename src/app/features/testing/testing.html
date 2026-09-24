@@ -1,0 +1,44 @@
+<!-- GLOBAL LOADING OVERLAY WITH MODAL CARD -->
+@if (isLoading) {
+<div class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/10 backdrop-blur-[2px] transition-all duration-300"
+    dir="rtl">
+
+    <!-- White Popup Card -->
+    <div
+        class="relative rounded-lg flex w-[90%] max-w-[340px] flex-col items-center justify-center  bg-white px-6 py-8 text-center ">
+
+        <!-- Circular Spinner Container -->
+        <div class="relative mb-5 flex h-20 w-20 items-center justify-center">
+            <!-- Background Soft Ring -->
+            <div class="absolute inset-0 rounded-full border-[3.5px] border-[#ff6900]/15"></div>
+
+            <!-- Rotating Orange Ring -->
+            <div
+                class="absolute inset-0 rounded-full border-[3.5px] border-transparent border-t-[#ff6900] border-r-[#ff6900] animate-spin">
+            </div>
+
+            <!-- Center Logo/Icon -->
+            <img src="/icons/logo.png" alt="">
+        </div>
+
+        <!-- Main Title -->
+        <h3 class="mb-1 text-[15px] font-bold text-[#20242a]">
+            جاري تحميل البيانات...
+        </h3>
+
+        <!-- Subtitle -->
+        <p class="mb-4 text-[11px] font-medium text-[#8c939b]">
+            يرجى الانتظار لحظة بسيطة
+        </p>
+
+        <!-- Animated 3 Dots -->
+        <div class="flex items-center gap-1.5">
+            <span class="h-2 w-2 rounded-full bg-[#ff6900] animate-bounce [animation-delay:-0.3s]"></span>
+            <span class="h-2 w-2 rounded-full bg-[#ff6900] animate-bounce [animation-delay:-0.15s]"></span>
+            <span class="h-2 w-2 rounded-full bg-[#ff6900] animate-bounce"></span>
+        </div>
+
+    </div>
+
+</div>
+}

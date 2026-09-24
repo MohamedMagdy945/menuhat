@@ -1,15 +1,31 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners
+} from '@angular/core';
+
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+
+import {
+  provideHttpClient,
+  withInterceptors
+} from '@angular/common/http';
+
 import { authInterceptor } from './core/interceptors/auth-interceptor';
+import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([ authInterceptor ]))
 
+    provideRouter(routes),
+
+    provideHttpClient(
+      withInterceptors([
+        authInterceptor,
+        loadingInterceptor
+      ])
+    )
   ]
 };
 // export const appConfig: ApplicationConfig = {
@@ -23,7 +39,7 @@ export const appConfig: ApplicationConfig = {
 
 //     provideToastr(),
 
-//     importProvidersFrom( 
+//     importProvidersFrom(
 //       NgxSpinnerModule,
 //       TranslateModule.forRoot({
 //         defaultLanguage: 'en',

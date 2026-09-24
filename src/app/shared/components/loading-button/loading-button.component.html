@@ -1,0 +1,20 @@
+<button type="button" [disabled]="loading() || disabled()" (click)="clicked.emit()" class="
+    flex h-12 min-w-[160px]
+    items-center justify-center gap-2
+    rounded-xl
+    bg-primary
+    px-6
+    font-medium text-white
+    transition-all duration-200
+    hover:bg-orange-400
+    disabled:cursor-not-allowed
+    disabled:opacity-80
+  ">
+    @if (loading()) {
+    <span class="h-5 w-5 animate-spin rounded-full border-2 border-white/5 border-t-white"></span>
+
+    <span dir="rtl">جاري التنفيذ...</span>
+    } @else {
+    <span>{{ text() }}</span>
+    }
+</button>

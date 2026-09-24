@@ -1,12 +1,14 @@
 import { Routes } from '@angular/router';
 
-import { Home } from './features/home/home.component';
-import { Favorites } from './features/favorites/favorites.component';
 import { Offers } from './features/offers/pages/offers/offers';
 import { Profile } from './features/profile/pages/profile/profile';
 import { RestaurantAll } from './features/restaurants/components/restaurant-all/restaurant-all';
-import { Cart } from './features/cart/cart.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
+import { HomeComponent } from './features/home/home.component';
+import { CartComponent } from './features/cart/cart.component';
+import { FavoritesComponent } from './features/favorites/favorites.component';
+import { TestLoadingComponent } from './features/testing/testing';
+import { Test1Component } from './features/testing/test1/test1.component';
 
 
 export const routes: Routes = [
@@ -47,6 +49,7 @@ export const routes: Routes = [
     },
 
 
+
     // =====================================================
     // Main Application
     // =====================================================
@@ -60,24 +63,24 @@ export const routes: Routes = [
             // Home
             {
                 path: '',
-                component: Home
+                component: HomeComponent
             },
 
             {
                 path: 'home',
-                component: Home
+                component: HomeComponent
             },
 
 
             // User
             {
                 path: 'cart',
-                component: Cart
+                component: CartComponent
             },
 
             {
                 path: 'favorites',
-                component: Favorites
+                component: FavoritesComponent
             },
 
             {
@@ -89,7 +92,10 @@ export const routes: Routes = [
                 path: 'profile',
                 component: Profile
             },
-
+            {
+                path: 'test',
+                component: Test1Component
+            },
 
             // =================================================
             // Restaurants
@@ -126,7 +132,7 @@ export const routes: Routes = [
 
             {
                 path: 'my-orders',
-                component: Cart
+                component: CartComponent
             }
 
         ]

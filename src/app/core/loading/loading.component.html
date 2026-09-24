@@ -1,0 +1,75 @@
+@if (loadingService.isLoading()) {
+<div class="
+      fixed inset-0 z-[9999]
+      flex items-center justify-center
+      bg-black/20
+      backdrop-blur-[3px]
+    ">
+    <div class="
+        relative
+        flex flex-col items-center justify-center
+        h-28 w-28
+        rounded-3xl
+        border border-white/60
+        bg-white/90
+        shadow-2xl
+      ">
+
+        <!-- Glow -->
+        <div class="
+          absolute
+          h-16 w-16
+          rounded-full
+          bg-orange-400/20
+          blur-xl
+          animate-pulse
+        "></div>
+
+        <!-- Spinner -->
+        <div class="
+          relative
+          h-12 w-12
+          rounded-full
+          border-[3px]
+          border-orange-100
+        ">
+            <div class="
+            absolute inset-0
+            rounded-full
+            border-[3px]
+            border-transparent
+            border-t-orange-500
+            border-r-orange-400
+            animate-spin
+          "></div>
+        </div>
+
+        <!-- Dots -->
+        <div class="mt-4 flex gap-1">
+            <span class="
+            h-1.5 w-1.5
+            rounded-full
+            bg-orange-500
+            animate-bounce
+          "></span>
+
+            <span class="
+            h-1.5 w-1.5
+            rounded-full
+            bg-orange-400
+            animate-bounce
+            [animation-delay:150ms]
+          "></span>
+
+            <span class="
+            h-1.5 w-1.5
+            rounded-full
+            bg-orange-300
+            animate-bounce
+            [animation-delay:300ms]
+          "></span>
+        </div>
+
+    </div>
+</div>
+}

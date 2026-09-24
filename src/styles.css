@@ -41,9 +41,6 @@ body {
     Global Elements
 ========================= */
 
-button {
-    cursor: pointer;
-}
 
 img {
     display: block;
