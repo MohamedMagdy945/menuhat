@@ -1,17 +1,18 @@
 import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, input, output } from '@angular/core';
 import { Restaurant } from '../../../restaurants/models/restaurant';
-import { RestaurantItem } from '../../../restaurants/components/restaurant-item/restaurant-item';
+import { RestaurantItemComponent } from '../../../restaurants/components/restaurant-item/restaurant-item.component';
 
 @Component({
-  imports: [RestaurantItem],
-  schemas: [],
-  selector: 'app-featured-restaurants',
-  styleUrl: './featured-restaurants.component.css',
-  templateUrl: './featured-restaurants.component.html',
+  imports: [RestaurantItemComponent, RestaurantItemComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+
+  selector: 'app-home-restaurant-section',
+  styleUrl: './home-restaurant-section.component.css',
+  templateUrl: './home-restaurant-section.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
-export class FeaturedRestaurantsComponent {
+export class HomeRestaurantSectionComponent {
   private isDragging = false;
   private startX = 0;
   private startScrollLeft = 0;

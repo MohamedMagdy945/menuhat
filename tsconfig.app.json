@@ -7,7 +7,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "src/app/features/restaurants/components/restaurant-all/restaurant-all.ts",
+    "src/app/features/restaurants/restaurants.component.ts",
     "src/app/features/auth/pages/register/components/register/.component.ts"
   ],
   "exclude": [

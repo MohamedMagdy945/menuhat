@@ -1,6 +1,6 @@
 <section dir="rtl">
 
-    <div class=" flex items-center justify-between mt-8 mb-4">
+    <div class=" flex items-center justify-between">
 
         <h2 class="text-lg font-bold text-gray-900">
             {{ title() }}
@@ -12,7 +12,7 @@
 
     </div>
 
-    <div class="overflow-x-auto scrollbar-hide cursor-grab select-none active:cursor-grabbing"
+    <div class="overflow-x-auto scrollbar-hide cursor-grab select-none active:cursor-grabbing mt-2"
         (mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp()"
         (mouseleave)="onMouseLeave()">
 
@@ -20,7 +20,7 @@
 
             @for (restaurant of restaurants(); track restaurant.id) {
 
-            <div class="w-[240px] shrink-0">
+            <div class="w-[230px] shrink-0">
                 <app-restaurant-item [restaurant]="restaurant" />
             </div>
 

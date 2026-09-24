@@ -1,13 +1,12 @@
-import { Component, inject, signal } from '@angular/core';
-import { DesktopHomeComponent } from './components/desktop-home/desktop-home.component';
-import { MobileHomeComponent } from './components/mobile-home/mobile-home.component';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
 import { ResponsiveService } from '../../core/services/responsive.service';
 import { Restaurant } from '../restaurants/models/restaurant';
-import { MOCK_RESTAURANT_PAGES } from '../restaurants/mocks/restaurant.mock';
-import { FeaturedRestaurantsComponent } from './components/featured-restaurants/featured-restaurants.component';
+import { MOCK_RESTAURANT_PAGES } from '../../core/mocks/restaurant.mock';
+import { HomeRestaurantSectionComponent } from './components/home-restaurant-section/home-restaurant-section.component';
 
 @Component({
-  imports: [DesktopHomeComponent, MobileHomeComponent, FeaturedRestaurantsComponent, DesktopHomeComponent],
+  imports: [HomeRestaurantSectionComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   selector: 'app-home',
   styleUrl: './home.component.css',
   templateUrl: './home.component.html',

@@ -1,4 +1,4 @@
-import { Restaurant } from '../models/restaurant';
+import { Restaurant } from '../../features/restaurants/models/restaurant';
 
 const RESTAURANT_NAMES = [
     ['مطعم البرج', 'Al Borg Restaurant'],

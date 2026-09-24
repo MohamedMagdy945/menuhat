@@ -4,14 +4,14 @@ import { Restaurant } from '../../models/restaurant';
 @Component({
   imports: [],
   selector: 'app-restaurant-item',
-  styleUrl: './restaurant-item.css',
-  templateUrl: './restaurant-item.html',
+  styleUrl: './restaurant-item.component.css',
+  templateUrl: './restaurant-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
-export class RestaurantItem {
-onCardClick() {
-throw new Error('Method not implemented.');
-}
+export class RestaurantItemComponent {
   restaurant = input.required<Restaurant>();
+  onCardClick() {
+    throw new Error('Method not implemented.');
+  }
 }

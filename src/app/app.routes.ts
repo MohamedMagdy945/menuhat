@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 
 import { Offers } from './features/offers/pages/offers/offers';
 import { Profile } from './features/profile/pages/profile/profile';
-import { RestaurantAll } from './features/restaurants/components/restaurant-all/restaurant-all';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
 import { HomeComponent } from './features/home/home.component';
 import { CartComponent } from './features/cart/cart.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
 import { TestLoadingComponent } from './features/testing/testing';
 import { Test1Component } from './features/testing/test1/test1.component';
+import { RestaurantsComponent } from './features/restaurants/restaurants.component';
 
 
 export const routes: Routes = [
@@ -103,7 +103,7 @@ export const routes: Routes = [
 
             {
                 path: 'most-ordered',
-                component: RestaurantAll,
+                component: RestaurantsComponent,
                 data: {
                     filter: 'most-ordered'
                 }
@@ -111,7 +111,7 @@ export const routes: Routes = [
 
             {
                 path: 'most-visited',
-                component: RestaurantAll,
+                component: RestaurantsComponent,
                 data: {
                     filter: 'most-visited'
                 }
@@ -119,7 +119,7 @@ export const routes: Routes = [
 
             {
                 path: 'trending',
-                component: RestaurantAll,
+                component: RestaurantsComponent,
                 data: {
                     filter: 'trending'
                 }

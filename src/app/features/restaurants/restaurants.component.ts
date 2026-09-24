@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MOCK_RESTAURANTS } from '../../mocks/restaurant.mock';
-import { Restaurant } from '../../models/restaurant';
-import { RestaurantItem } from '../restaurant-item/restaurant-item';
+import { MOCK_RESTAURANTS } from '../../core/mocks/restaurant.mock';
+import { Restaurant } from './models/restaurant';
+import { RestaurantItemComponent } from './components/restaurant-item/restaurant-item.component';
 
 @Component({
-  imports: [RestaurantItem],
-  selector: 'app-restaurant-all',
-  styleUrl: './restaurant-all.css',
-  templateUrl: './restaurant-all.html',
+  imports: [RestaurantItemComponent],
+  selector: 'app-restaurants',
+  styleUrl: './restaurants.component.css',
+  templateUrl: './restaurants.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
-export class RestaurantAll {
+export class RestaurantsComponent {
   private readonly route = inject(ActivatedRoute);
 
   readonly restaurants = signal<Restaurant[]>(MOCK_RESTAURANTS);

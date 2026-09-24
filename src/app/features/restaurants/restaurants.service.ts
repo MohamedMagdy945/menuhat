@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { signal } from '@angular/core';
-import { Restaurant } from '../models/restaurant';
-import { PageData } from '../../../shared/models/pagination/page-data';
-import { environment } from '../../../core/environments/environment';
+import { environment } from '../../core/environments/environment';
+import { Restaurant } from './models/restaurant';
+import { PageData } from '../../shared/models/pagination/page-data';
+
 
 
 @Injectable({

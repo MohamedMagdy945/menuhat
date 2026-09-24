@@ -1,4 +1,4 @@
-<section dir="rtl" class="container mx-auto px-4 py-8">
+<section dir="rtl" class="mx-auto px-8 pt-4  bg-white">
 
     <!-- Header -->
 
@@ -17,17 +17,13 @@
 
     <!-- Restaurants Grid -->
 
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-5">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-5">
 
-        @for (
-        restaurant of restaurants();
-        track restaurant.id
-        ) {
+        @for (restaurant of restaurants(); track restaurant.id ) {
 
         <app-restaurant-item [restaurant]="restaurant" />
 
         }
-
     </div>
 
 </section>
