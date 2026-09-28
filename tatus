@@ -1,0 +1,235 @@
+[33mcommit 0f183b19f47d71205f4cb994b74687be76a0c34d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Mon Sep 28 14:54:07 2026 +0300
+
+    feat: connect home page with backend url
+
+[33mcommit 58d1ea5c996966cfafe32cb9cfd6fff2bff5133c[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Sun Sep 27 17:46:59 2026 +0300
+
+    rafactor: change the style in nav bar and add button left right in home page
+
+[33mcommit 238628d03f95942cc096b7f93805b8518f17266e[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Thu Sep 24 19:06:40 2026 +0300
+
+    feat:refactor some styles
+
+[33mcommit a22c062f8d413e8f823bf668de8833925c873cb9[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Thu Sep 24 17:46:36 2026 +0300
+
+    feat: add loading  intercetor and adding loading button
+
+[33mcommit ea65c6ad2627e51fe651df38d476a99bed9c7f33[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Thu Sep 24 14:47:40 2026 +0300
+
+    feat: add loading interceptor and add loading component
+
+[33mcommit 613d4d0c486d046e3ec6f874b16b4c7c73c138a6[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Wed Sep 23 18:02:07 2026 +0300
+
+    feat : add register page with good ui/ux
+
+[33mcommit a7a1adc02516769e97a250e6678205a8a2ac5440[m
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Wed Sep 23 10:25:43 2026 +0300
+
+    feat: add register pages
+
+[33mcommit 8b8d63b409cee8816794b168ad9341db2ac6b3ec[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 22 11:31:12 2026 +0300
+
+    refacotr: chage padding size
+
+[33mcommit 1346759f68ff72effe2ad6e509ca2a6208a8569f[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 22 11:09:22 2026 +0300
+
+    refactor: delete unneccary pages
+
+[33mcommit e3313493f2f93bfc66d7b65871e8709e49b6101a[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 22 11:05:35 2026 +0300
+
+    fix: fix bags in program's pathes and names
+
+[33mcommit d9ae56836e026505077e16d53153840cb7c87ea9[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 22 08:00:22 2026 +0300
+
+    fix: change routes page and fix conflict
+
+[33mcommit 4e1a960aca749a75609bf16619cf7e11c700bff5[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 22 07:55:47 2026 +0300
+
+    refactor: delete repeated component
+
+[33mcommit 36a40c1335d84218f24bd403c5f1bc912d25838f[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Mon Sep 21 18:22:11 2026 +0300
+
+    feat: fix componet cart name
+
+[33mcommit 31f89b3bf37dd83c944c70bcbd9974e6e2df4877[m
+Merge: 2f496b5 915cd38
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Mon Sep 21 18:16:15 2026 +0300
+
+    fix: resolve merge conflicts
+
+[33mcommit 915cd38653ce31ceb3c3c1e5fde241da2b603d81[m
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Mon Sep 21 18:09:35 2026 +0300
+
+    feat: add verification page
+
+[33mcommit 2f496b56439ddea0029800f2bcf0699610ba6b99[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Mon Sep 21 18:07:35 2026 +0300
+
+    refactor: change html main code
+
+[33mcommit 034f0981de06bf78735bd0864b183d0148576159[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Mon Sep 21 15:35:42 2026 +0300
+
+    refactor: refactor archecture code
+
+[33mcommit 7c95517cd1b067b71e09404815cdb3d3a1fddfc2[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Mon Sep 21 10:44:28 2026 +0300
+
+    refactor: fix some naming convinsions
+
+[33mcommit 11d277fb5fdeeb1a339ace4ec9c16af4f541e264[m
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Mon Sep 21 02:33:37 2026 +0300
+
+    Add Interceptor File And Update CartItem
+
+[33mcommit f23cdee6decb7c29ccc8430052735c231277aaf8[m
+Merge: 3756c72 9516d21
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Sun Sep 20 21:53:01 2026 +0300
+
+    Resolve merge conflicts
+
+[33mcommit 3756c72f70d609bc9cfcbf9cfb22c64ef5547b36[m
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Sun Sep 20 21:50:37 2026 +0300
+
+    Save local changes
+
+[33mcommit 062ee1626e7de5847545151d0c90a4fea2f3f588[m
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Sun Sep 20 18:01:33 2026 +0300
+
+    Feed And Login Page
+
+[33mcommit 9516d21aca366089f90a963c7d07676cd0873973[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Sun Sep 20 17:43:53 2026 +0300
+
+    feat: add  resturnat page mock data
+
+[33mcommit 897a0363195d5bd51d2b4cc2d856545e526e4485[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Sun Sep 20 16:37:56 2026 +0300
+
+    feat: add  home page resturnat list static data
+
+[33mcommit 8f62f3cf18785a53568d1c2b2c7bbc9a7ff889d1[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Sun Sep 20 13:35:03 2026 +0300
+
+    feat: add  home page resturnat list static data
+
+[33mcommit 51dba8391592eb669ff22d02cc16ff4dd8a1098c[m[33m ([m[1;31morigin/MoLotfi[m[33m)[m
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Sun Sep 20 02:13:08 2026 +0300
+
+    Add IOrder Interface file and change in Cart files
+
+[33mcommit c3c7d59d417543ca90f46dbbc7ade0e1c760ba34[m
+Author: Mohamed-Lotfi20 <mohamedlotfi3000@gmail.com>
+Date:   Sun Sep 20 02:06:18 2026 +0300
+
+    Add IOrder Interface file And Change in Cart Files
+
+[33mcommit e787f9fb29219855e039359085b5c2ef26bcbfbb[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Thu Sep 17 12:25:48 2026 +0300
+
+    refactor: change navbar main li elments
+
+[33mcommit 0759d34f8cdb3e5e9e7eb68a460ef99349711ffd[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Thu Sep 17 12:12:55 2026 +0300
+
+    feat: add footer paegs
+
+[33mcommit e4b67dac2c517e3d0245b085a9e3e4761734a127[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Wed Sep 16 17:54:51 2026 +0300
+
+    feat: add first slide in home page
+
+[33mcommit d0d242313ed982da1c0eafade543648bd7d79509[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Wed Sep 16 15:08:03 2026 +0300
+
+    refactor: change navbar components
+
+[33mcommit 87b5669f3fd2ca80902e9cadc158ac0b082d53df[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Wed Sep 16 12:44:56 2026 +0300
+
+    fea: add navbar desktop page
+
+[33mcommit 15cb8b8132e2117b45686cde9e42f0439619bf90[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Wed Sep 16 11:26:27 2026 +0300
+
+    feat: add main components pages
+
+[33mcommit 94685d99d3668ca6a10c95085f44223c21446f3d[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Wed Sep 16 08:31:49 2026 +0300
+
+    refactor: fix mobile navbar
+
+[33mcommit ead2f7a56a3a313acceea608700a804886471951[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 15 18:02:52 2026 +0300
+
+    chore: install font aswome
+
+[33mcommit 92e86eb3612be452be39ccc157c08e268be73f9a[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 15 17:35:47 2026 +0300
+
+    chore: add angular clean archeticture
+
+[33mcommit cf87d63fc2008f016bbdcd47951bbb43a1be5baf[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 15 16:36:45 2026 +0300
+
+    chore: initialize tailwind css
+
+[33mcommit f53ce0b357848d56deacab3c131bed5e21503c1d[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 15 16:23:07 2026 +0300
+
+    chore: initialize tailwind css
+
+[33mcommit 4f3c2cd8e19aa7ede4d7e153f799a19c16ec206a[m
+Author: MohamedMagdy945 <mohamedmagdy9452@gmail.com>
+Date:   Tue Sep 15 16:00:44 2026 +0300
+
+    chore: initialize Angular project

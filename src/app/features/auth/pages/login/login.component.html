@@ -112,17 +112,11 @@
     </button>
   </div>
 
-<div class="signup-footer">
-  <span class="signup-title">ليس لديك حساب؟</span>
-  <div class="signup-actions">
-    <a routerLink="/sendEmail" class="signup-link">
-      <i class="fas fa-user"></i>
-      <span>إنشاء حساب مستخدم</span>
-    </a>
-    <a routerLink="/sendEmail" class="signup-link highlight">
-      <i class="fas fa-store"></i>
-      <span>إنشاء حساب صاحب مطعم</span>
-    </a>
-  </div>
+<div class="flex items-center justify-center gap-2 text-sm whitespace-nowrap">
+  <span class="text-gray-600">ليس لديك حساب؟</span>
+  <a routerLink="/sendEmail" class="inline-flex items-center gap-1.5 font-bold text-[#ff6900] hover:underline">
+    <i class="fas fa-store text-xs"></i>
+    <span>إنشاء حساب</span>
+  </a>
 </div>
 </div>

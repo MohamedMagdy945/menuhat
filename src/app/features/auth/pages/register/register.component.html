@@ -8,7 +8,7 @@
         <div class="w-full px-3 md:px-7">
 
           <!-- ================= TABS NAVIGATION ================= -->
-          <div class="my-2 flex w-full border-b border-[#f0f0f0]">
+          <div class="my-5 flex w-full border-b border-[#f0f0f0]">
 
             <!-- Tab 1: المطعم -->
             <button type="button" (click)="setTab('restaurant')" [ngClass]="activeTab === 'restaurant'
@@ -61,7 +61,7 @@
 
             لديك حساب بالفعل؟
 
-            <a href="#" class="mr-1 font-bold text-[#ff6900] no-underline hover:underline">
+            <a routerLink="/login" class="mr-1 font-bold text-[#ff6900] no-underline hover:underline">
               تسجيل الدخول
             </a>
 

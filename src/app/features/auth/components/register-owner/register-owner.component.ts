@@ -1,8 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { register } from 'swiper/element/bundle';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormInputComponent } from '../../../../shared/components/form-input/form-input.component';
 import { FormSelectComponent } from '../../../../shared/components/form-select/form-select.component';
+import { CommonDateService } from '../../../../core/common-data/common-date';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RegisterService } from '../../services/register.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
 
 
 @Component({
@@ -13,105 +19,176 @@ import { FormSelectComponent } from '../../../../shared/components/form-select/f
   styleUrls: ['./register-owner.component.css']
 })
 export class RegisterOwnerComponent {
-  private readonly fb = inject(FormBuilder);
+  private readonly _FormBuilder = inject(FormBuilder);
+  private readonly _CommonDateService = inject(CommonDateService);
+  private readonly _cdr = inject(ChangeDetectorRef);
+  readonly defaultAvatar = 'assets/images/default-avatar.png';
+  private readonly _route = inject(ActivatedRoute);
+   private readonly _router = inject(Router);
+  private readonly _Register = inject(RegisterService);
+  private readonly swal = inject(SweetAlertService);
 
-  readonly form = this.fb.group({
-    // Account Info
-    fullName: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(100),
-      ],
-    ],
+  governorates: { value: string; label: string }[] = [];
+  cities: { value: string; label: string }[] = [];
+  isLoadingGovernorates = false;
+  isLoadingCities = false;
+  isLoading = false;
+  photoPreviewUrl = this.defaultAvatar;
+  emailFromQuery: string = '';
 
-    username: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(3),
-        Validators.maxLength(50),
-      ],
-    ],
+  readonly form = this._FormBuilder.group({
+      fullName: [null, [Validators.required]],
+      username: ['', [Validators.required, Validators.pattern(/^(?=.{6,20}$)(?![0-9]+$)(?!.*@)[a-zA-Z0-9._]+$/)]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: [null, [Validators.required, Validators.minLength(8)]],
+      governmentId: [null, [Validators.required]],
+      cityId: [null, [Validators.required]],
+      address: [null, [Validators.required]]
+    }, { validators: this.ConfirmPass });
 
-    email: [
-      '',
-      [
-        Validators.required,
-        Validators.email,
-      ],
-    ],
+  ConfirmPass(g: AbstractControl) {
+    const pass = g.get('password')?.value;
+    const confirmPassControl = g.get('confirmPassword');
+    const confirmPass = confirmPassControl?.value;
 
-    password: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(8),
-      ],
-    ],
+    if (!pass || !confirmPass) {
+      return null;
+    }
 
-    confirmPassword: [
-      '',
-      [
-        Validators.required,
-      ],
-    ],
+    if (pass !== confirmPass) {
+      confirmPassControl?.setErrors({ ...confirmPassControl.errors, missmatch: true });
+      return { missmatch: true };
+    } else {
+      if (confirmPassControl?.hasError('missmatch')) {
+        delete confirmPassControl.errors?.['missmatch'];
+        if (!Object.keys(confirmPassControl.errors || {}).length) {
+          confirmPassControl.setErrors(null);
+        }
+      }
+      return null;
+    }
+  }
 
-    // Restaurant Info
-    restaurantName: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(100),
-      ],
-    ],
+  ngOnInit(): void {
+    this.loadGovernorates();
+    this.emailFromQuery = this._route.snapshot.queryParams['email'] || '';
+  }
+  
+  private loadGovernorates(): void {
+    this.isLoadingGovernorates = true;
 
-    restaurantType: [
-      '',
-      [
-        Validators.required,
-      ],
-    ],
+    this._CommonDateService.getGovernments().subscribe({
+      next: (res) => {
+        this.governorates = res.map(item => ({
+          value: item.id.toString(),
+          label: item.name
+        }));
 
-    phone: [
-      '',
-      [
-        Validators.required,
-      ],
-    ],
+        this.isLoadingGovernorates = false;
+        this._cdr.detectChanges();
+      },
+      error: (err) => {
+        this.isLoadingGovernorates = false;
+        this._cdr.detectChanges();
+      }
+    });
+  }
 
-    city: [
-      '',
-      [
-        Validators.required,
-      ],
-    ],
+  onGovernorateChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const governmentId = Number(select.value);
 
-    address: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(5),
-        Validators.maxLength(200),
-      ],
-    ],
-  });
+    this.cities = [];
+    this.form.patchValue({ cityId: null });
+
+    if (!governmentId) return;
+
+    this.loadCities(governmentId);
+  }
+
+  private loadCities(governmentId: number): void {
+    this.isLoadingCities = true;
+    this._cdr.detectChanges();
+
+    this._CommonDateService.getCitiesByGovernmentId(governmentId).subscribe({
+      next: (res) => {
+        this.cities = res.map(item => ({
+          value: item.id.toString(),
+          label: item.name
+        }));
+
+        this.isLoadingCities = false;
+        this._cdr.detectChanges();
+      },
+      error: (err) => {
+        this.isLoadingCities = false;
+        this._cdr.detectChanges();
+      }
+    });
+  }
 
   submit(): void {
+    console.log("Doinw");
     if (this.form.invalid) {
+      console.log("Doinw2");
       this.form.markAllAsTouched();
       return;
     }
 
-    const request = this.form.getRawValue();
+    const rawValue = this.form.getRawValue();
+    const { confirmPassword, ...cleanFormValue } = rawValue;
 
-    console.log(request);
+    const payload = {
+      ...cleanFormValue,
+      userTypeId: 1,
+      appId: 2,
+      governmentId: Number(cleanFormValue.governmentId),
+      cityId: Number(cleanFormValue.cityId),
+      mobile: null,
+      mobile2: null,
+      email: this.emailFromQuery,
+      defaultLang: 'ar',
+      photoURL: this.photoPreviewUrl !== this.defaultAvatar ? this.photoPreviewUrl : ''
+    };
+console.log(payload);
+    this._Register.SetRegister(payload).subscribe({
+      next: (res) => {
+        if (res) {
+          localStorage.setItem('usertoken', res.data.token);
+          this._router.navigate(['/home']);
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.swal.showToast(err?.error?.message, 'error');
+      }
+    });
   }
-  readonly cities = [
-    { value: 'cairo', label: 'القاهرة' },
-    { value: 'alex', label: 'الإسكندرية' },
-    { value: 'giza', label: 'الجيزة' },
-  ];
+
+    onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (!input.files?.length) {
+      return;
+    }
+
+    const file = input.files[0];
+
+    if (!file.type.startsWith('image/')) {
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      this.photoPreviewUrl = reader.result as string;
+      this._cdr.detectChanges();
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  removePhoto(fileInput: HTMLInputElement): void {
+    this.photoPreviewUrl = this.defaultAvatar;
+    fileInput.value = '';
+  }
 }

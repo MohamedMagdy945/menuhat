@@ -12,12 +12,10 @@ export interface DropdownItem {
 export class CommonDateService {
   private readonly _HttpClient = inject(HttpClient);
 
-  // جلب المحافظات
   getGovernments(): Observable<DropdownItem[]> {
     return this._HttpClient.get<DropdownItem[]>(`${environment.apiUrl}/CommonData/FillGovernmentsDropdown`);
   }
 
-  // جلب المدن بناءً على id المحافظة
   getCitiesByGovernmentId(governmentId: number): Observable<DropdownItem[]> {
     return this._HttpClient.get<DropdownItem[]>(`${environment.apiUrl}/CommonData/FillCitiesDropdown/${governmentId}`);
   }

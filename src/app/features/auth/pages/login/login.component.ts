@@ -17,7 +17,6 @@ export class Login {
   private readonly _Router = inject(Router);
   private readonly _tostar = inject(Router);
 
-  ErrorMsg = '';
   loginForm!: FormGroup;
   showPassword = false;
   appId = 2;
@@ -40,8 +39,6 @@ export class Login {
       this.loginForm.markAllAsTouched();
       return;
     }
-
-    this.ErrorMsg = '';
 
     const loginData = {
       appId: this.appId,
@@ -66,10 +63,6 @@ export class Login {
       },
 
       error: (err: HttpErrorResponse) => {
-        this.ErrorMsg =
-          err.error?.message ||
-          'حدث خطأ أثناء تسجيل الدخول';
-
         console.log('Login Error:', err);
       }
 
