@@ -1,8 +1,8 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { ResponsiveService } from '../../core/services/responsive.service';
-import { Restaurant } from '../restaurants/models/restaurant';
-import { MOCK_RESTAURANT_PAGES } from '../../core/mocks/restaurant.mock';
 import { HomeRestaurantSectionComponent } from './components/home-restaurant-section/home-restaurant-section.component';
+import { RestaurantService } from '../restaurants/restaurant.service';
+import { LocationService } from '../../core/services/location.service';
 
 @Component({
   imports: [HomeRestaurantSectionComponent],
@@ -11,117 +11,47 @@ import { HomeRestaurantSectionComponent } from './components/home-restaurant-sec
   styleUrl: './home.component.css',
   templateUrl: './home.component.html',
 })
-export class HomeComponent {
-
+export class HomeComponent implements OnInit {
   private readonly responsiveService = inject(ResponsiveService);
+  protected readonly restaurantService = inject(RestaurantService);
+  private readonly locationService = inject(LocationService);
 
   readonly isMobile = this.responsiveService.isMobile;
 
+  ngOnInit(): void {
+    if (this.restaurantService.trending().length === 0) {
+      this.restaurantService.loadTrending();
+    }
 
-  // =========================
-  // Trending
-  // =========================
+    this.loadNearest();
 
-  trendingRestaurants = signal<Restaurant[]>([
-    ...MOCK_RESTAURANT_PAGES[0]
-  ]);
+    if (this.restaurantService.mostVisited().length === 0) {
+      this.restaurantService.loadMostVisited();
+    }
+  }
 
-  private trendingPage = 0;
+  private loadNearest(): void {
+    if (this.restaurantService.nearst().length > 0) {
+      return;
+    }
 
+    const location = this.locationService.currentLocation();
 
-  // =========================
-  // Popular
-  // =========================
+    const lat = location?.lat ?? 30.0444;
+    const lng = location?.lng ?? 31.2357;
 
-  popularRestaurants = signal<Restaurant[]>([
-    ...MOCK_RESTAURANT_PAGES[0]
-  ]);
-
-  private popularPage = 0;
-
-
-  // =========================
-  // Most Visited
-  // =========================
-
-  mostVisitedRestaurants = signal<Restaurant[]>([
-    ...MOCK_RESTAURANT_PAGES[0]
-  ]);
-
-  private mostVisitedPage = 0;
-
-
-  // =========================
-  // Trending
-  // =========================
+    this.restaurantService.loadNearst(lat, lng);
+  }
 
   loadMoreTrending(): void {
-
-    if (
-      this.trendingPage >=
-      MOCK_RESTAURANT_PAGES.length - 1
-    ) {
-      return;
-    }
-
-    this.trendingPage++;
-
-    const nextPage =
-      MOCK_RESTAURANT_PAGES[this.trendingPage];
-
-    this.trendingRestaurants.update(restaurants => [
-      ...restaurants,
-      ...nextPage
-    ]);
+    this.restaurantService.loadTrending();
   }
-
-
-  // =========================
-  // Popular
-  // =========================
 
   loadMorePopular(): void {
-
-    if (
-      this.popularPage >=
-      MOCK_RESTAURANT_PAGES.length - 1
-    ) {
-      return;
-    }
-
-    this.popularPage++;
-
-    const nextPage =
-      MOCK_RESTAURANT_PAGES[this.popularPage];
-
-    this.popularRestaurants.update(restaurants => [
-      ...restaurants,
-      ...nextPage
-    ]);
+    this.loadNearest();
   }
 
-
-  // =========================
-  // Most Visited
-  // =========================
-
   loadMoreMostVisited(): void {
-
-    if (
-      this.mostVisitedPage >=
-      MOCK_RESTAURANT_PAGES.length - 1
-    ) {
-      return;
-    }
-
-    this.mostVisitedPage++;
-
-    const nextPage =
-      MOCK_RESTAURANT_PAGES[this.mostVisitedPage];
-
-    this.mostVisitedRestaurants.update(restaurants => [
-      ...restaurants,
-      ...nextPage
-    ]);
+    this.restaurantService.loadMostVisited();
   }
 }

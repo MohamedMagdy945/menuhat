@@ -1,71 +1,87 @@
 <section dir="rtl" class="relative w-full group">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-4 px-1">
+    <h2 class="text-xl font-bold text-gray-900 tracking-tight">
+      {{ title() }}
+    </h2>
 
-    <!-- Header Section -->
-    <div class="flex items-center justify-between mb-4 px-1">
-        <h2 class="text-xl font-bold text-gray-900 tracking-tight">
-            {{ title() }}
-        </h2>
+    <button
+      type="button"
+      class="text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors duration-200"
+    >
+      عرض الكل
+    </button>
+  </div>
 
-        <button type="button" class="text-sm font-semibold text-orange-500 hover:text-orange-600 transition-colors duration-200">
-            عرض الكل
-        </button>
-    </div>
+  <!-- Carousel -->
+  <div class="relative group/carousel">
+    <!-- Right Button -->
+    @if (canScrollRight()) {
+      <button
+        type="button"
+        aria-label="Scroll Right"
+        (click)="scroll('right')"
+        class="absolute right-1 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-500 border border-gray-200 shadow-sm transition-colors duration-200 hover:bg-gray-50 hover:text-gray-700 focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-4 h-4"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </button>
+    }
 
-    <!-- Relative Track Container -->
-    <div class="relative group/carousel">
+    <!-- Left Button -->
+    @if (canScrollLeft()) {
+      <button
+        type="button"
+        aria-label="Scroll Left"
+        (click)="scroll('left')"
+        class="absolute left-1 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-500 border border-gray-200 shadow-sm transition-colors duration-200 hover:bg-gray-50 hover:text-gray-700 focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-4 h-4"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
+      </button>
+    }
 
-        <!-- Scroll Right Button (In RTL, scrolls back toward start) -->
-        @if (canScrollRight()) {
-            <button 
-                type="button"
-                aria-label="Scroll Right"
-                (click)="scroll('right')"
-                class="absolute -right-3 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-9 h-9 bg-white/95 text-gray-800 border border-gray-100 rounded-full shadow-lg backdrop-blur-sm opacity-90 group-hover/carousel:opacity-100  active:scale-95 transition-all duration-200 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </button>
+    <!-- Scroll Container -->
+    <div
+      #scrollContainer
+      class="overflow-x-auto scrollbar-hide cursor-grab select-none active:cursor-grabbing py-2 px-1 scroll-smooth"
+      (scroll)="onScroll($event)"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp()"
+      (mouseleave)="onMouseLeave()"
+    >
+      <div class="flex w-max items-stretch gap-2 md:gap-4">
+        @for (restaurant of restaurants(); track restaurant.id) {
+          <div class="flex w-55 md:w-61 shrink-0">
+            <app-restaurant-item class="block w-full" [restaurant]="restaurant" />
+          </div>
         }
 
-        <!-- Scroll Left Button (In RTL, scrolls forward toward more content) -->
-        @if (canScrollLeft()) {
-            <button 
-                type="button"
-                aria-label="Scroll Left"
-                (click)="scroll('left')"
-                class="absolute -left-3 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center w-9 h-9 bg-white/95 text-gray-800 border border-gray-100 rounded-full shadow-lg backdrop-blur-sm opacity-90 group-hover/carousel:opacity-100  active:scale-95 transition-all duration-200 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                </svg>
-            </button>
+        @if (isLoadingMore()) {
+          <div
+            class="flex w-55 md:w-61 shrink-0 items-center justify-center rounded-xl bg-gray-100"
+          >
+            <span class="text-xs font-medium text-gray-400"> جاري التحميل... </span>
+          </div>
         }
-
-        <!-- Scrollable Track -->
-        <div #scrollContainer
-            class="overflow-x-auto scrollbar-hide cursor-grab select-none active:cursor-grabbing py-2 px-1 scroll-smooth"
-            (scroll)="onScroll($event)"
-            (mousedown)="onMouseDown($event)" 
-            (mousemove)="onMouseMove($event)" 
-            (mouseup)="onMouseUp()"
-            (mouseleave)="onMouseLeave()">
-
-            <div class="flex w-max gap-3 md:gap-5">
-                @for (restaurant of restaurants(); track restaurant.id) {
-                    <div class="w-62 shrink-0">
-                        <app-restaurant-item [restaurant]="restaurant" />
-                    </div>
-                }
-
-                <!-- API Loading Skeleton Indicator (Shown when fetching next page) -->
-                @if (isLoadingMore()) {
-                    <div class="w-62 shrink-0 h-48 bg-gray-100 animate-pulse rounded-xl flex items-center justify-center">
-                        <span class="text-xs text-gray-400 font-medium">جاري التحميل...</span>
-                    </div>
-                }
-            </div>
-
-        </div>
-
+      </div>
     </div>
-
+  </div>
 </section>

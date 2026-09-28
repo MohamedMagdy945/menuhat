@@ -1,12 +1,12 @@
 <!-- desktop home -->
-<div class="py-4 px-8 hidden md:block">
+<div class="py-4 px-8 hidden md:block ">
     <swiper-container class="rounded-3xl " slides-per-view="1" space-between="0" loop="true" autoplay-delay="3000"
         autoplay-disable-on-interaction="false" pagination="true">
 
         <!-- Banner 1 -->
         <swiper-slide>
             <section
-                class="relative  rounded-3xl  overflow-hidden bg-linear-to-r from-[#3d2212] to-[#9b6029] shadow-2xl md:h-[335px]">
+                class="relative  rounded-3xl  overflow-hidden bg-linear-to-r from-[#3d2212] to-[#9b6029] shadow-2xl md:h-82">
 
                 <div dir="rtl"
                     class="relative z-10 mx-auto flex h-full w-full max-w-screen-2xl items-center px-4 py-8 sm:px-8 md:px-12 lg:px-16">
@@ -57,7 +57,7 @@
 
         <!-- Banner 2 -->
         <swiper-slide>
-            <section class="relative rounded-3xl w-full overflow-hidden shadow-2xl md:h-[335px] ">
+            <section class="relative rounded-3xl w-full overflow-hidden shadow-2xl md:h-82">
 
                 <!-- Background Gradient -->
                 <div class="absolute inset-0 bg-linear-to-r from-[#FFCB55] via-[#FFA52F] to-[#F47716]"></div>
@@ -105,16 +105,24 @@
 </div>
 <!-- restaurant section -->
 <div class="restaurant md:px-8">
-    <div class="mt-4">
-        <app-home-restaurant-section title="رائج الآن" [restaurants]="trendingRestaurants()" />
-    </div>
+  <div class="mt-4">
+    <app-home-restaurant-section
+      title="رائج الآن"
+      [restaurants]="restaurantService.trending()"
+    />
+  </div>
 
-    <div class="mt-4">
-        <app-home-restaurant-section title="الأكثر طلباً في منطقتك" [restaurants]="popularRestaurants()" />
+  <div class="mt-4">
+    <app-home-restaurant-section
+      title="الأكثر طلباً في منطقتك"
+      [restaurants]="restaurantService.nearst()"
+    />
+  </div>
 
-    </div>
-    <div class="mt-4">
-        <app-home-restaurant-section title="الأكثر زيارة" [restaurants]="mostVisitedRestaurants()" />
-    </div>
-
+  <div class="mt-4">
+    <app-home-restaurant-section
+      title="الأكثر زيارة"
+      [restaurants]="restaurantService.mostVisited()"
+    />
+  </div>
 </div>

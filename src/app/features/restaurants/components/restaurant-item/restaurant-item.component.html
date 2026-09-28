@@ -3,12 +3,12 @@
   (keydown.enter)="onCardClick()"
   tabindex="0"
   dir="rtl"
-  class="cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white"
+  class="flex h-full w-full flex-col cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white"
 >
   <!-- Image -->
   <div class="relative h-36 overflow-hidden bg-gray-100">
     <img
-      [src]="restaurant().logoURL"
+      [src]="restaurant().logoURL ? apiUrl + restaurant().logoURL : defaultImage"
       [alt]="restaurant().clientName"
       class="h-full w-full object-cover"
     />
@@ -16,7 +16,7 @@
     <!-- Rating -->
     @if (restaurant().rate !== null) {
       <div
-        class="absolute left-2 top-2 flex items-center gap-1 rounded-lg bg-black px-1.5 py-1 text-xs font-bold text-white shadow-md"
+        class="absolute bottom-2 left-2 flex items-center gap-1 rounded-lg bg-white px-2 py-1 text-xs font-bold text-gray-700 shadow-sm"
       >
         <span>{{ restaurant().rate }}</span>
         <span class="text-yellow-400">★</span>
@@ -40,7 +40,7 @@
     <div class="mt-1.5 space-y-1 text-sm text-gray-700">
       <!-- Restaurant Field -->
       <div class="flex min-w-0 items-center gap-1">
-        <div class="rounded-lg  text-gray-400">
+        <div class="rounded-lg text-gray-400">
           <svg
             class="h-4 w-4 shrink-0"
             viewBox="0 0 24 24"
@@ -90,7 +90,7 @@
       <div class="flex items-center justify-between gap-4">
         <div class="flex min-w-0 items-center gap-1">
           <!-- Clock -->
-          <div class="  text-gray-400">
+          <div class="text-gray-400">
             <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
               <path
                 d="M12 2.75a9.25 9.25 0 1 0 9.25 9.25A9.26 9.26 0 0 0 12 2.75Zm0 16.5a7.25 7.25 0 1 1 7.25-7.25A7.26 7.26 0 0 1 12 19.25Zm1-11.25h-2v5.25l4 2.5 1-1.65-3-1.85V8.25Z"

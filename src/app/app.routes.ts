@@ -94,7 +94,7 @@ export const routes: Routes = [
             },
             {
                 path: 'test',
-                component: Test1Component
+                component: TestLoadingComponent
             },
 
             // =================================================
