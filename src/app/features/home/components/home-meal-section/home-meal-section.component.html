@@ -1,0 +1,101 @@
+<section dir="rtl" class="relative w-full group">
+  <!-- Header -->
+  <div class="mb-4 flex items-center justify-between px-1">
+    <h2 class="text-xl font-bold tracking-tight text-gray-900">
+      {{ title() }}
+    </h2>
+
+    <button
+      type="button"
+      class="text-sm font-semibold text-orange-500 transition-colors duration-200 hover:text-orange-600"
+    >
+      عرض الكل
+    </button>
+  </div>
+
+  <!-- Carousel -->
+  <div class="relative">
+    <!-- Right Button -->
+    @if (canScrollRight()) {
+      <button
+        type="button"
+        aria-label="Scroll right"
+        (click)="scroll('right')"
+        class="absolute right-1 top-1/2 z-30 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors duration-200 hover:bg-gray-50 hover:text-gray-700 focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="h-4 w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M8.25 4.5l7.5 7.5-7.5 7.5"
+          />
+        </svg>
+      </button>
+    }
+
+    <!-- Left Button -->
+    @if (canScrollLeft()) {
+      <button
+        type="button"
+        aria-label="Scroll left"
+        (click)="scroll('left')"
+        class="absolute left-1 top-1/2 z-30 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 shadow-sm transition-colors duration-200 hover:bg-gray-50 hover:text-gray-700 focus:outline-none"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="h-4 w-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
+      </button>
+    }
+
+    <!-- Scroll Container -->
+    <div
+      #scrollContainer
+      class="scrollbar-hide flex cursor-grab select-none overflow-x-auto scroll-smooth px-1 py-2 active:cursor-grabbing"
+      (scroll)="onScroll($event)"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp()"
+      (mouseleave)="onMouseLeave()"
+    >
+      <div class="flex w-max items-stretch gap-2 md:gap-3">
+        @for (product of products(); track product.mostrequestesId) {
+          <div class="w-52 shrink-0 md:w-55">
+            <app-home-meal-card
+              class="block w-full"
+              [product]="product"
+            />
+          </div>
+        }
+
+        <!-- Loading More -->
+        @if (isLoadingMore()) {
+          <div
+            class="flex w-55 shrink-0 items-center justify-center rounded-xl bg-gray-100 md:w-61"
+          >
+            <span class="text-xs font-medium text-gray-400">
+              جاري التحميل...
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

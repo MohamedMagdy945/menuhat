@@ -1,0 +1,69 @@
+<article class="overflow-hidden bg-white border border-gray-100 cursor-pointer rounded-2xl">
+  <!-- الصورة والحالة -->
+  <div class="relative h-35 w-full overflow-hidden  bg-gray-100">
+    <img
+      [src]="
+        product().photoURL ? apiUrl + product().photoURL : 'assets/images/meal-placeholder.jpg'
+      "
+      [alt]="product().productName"
+      class="h-full w-full object-cover"
+    />
+
+    <!-- زر المفضلة (أعلى اليسار) -->
+    <button
+      type="button"
+      class="absolute cursor-pointer top-2.5 left-2.5 flex h-8 w-8 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur-sm transition hover:bg-black/40"
+    >
+      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21.364l-7.682-7.682a4.5 4.5 0 010-6.364z"
+        />
+      </svg>
+    </button>
+
+    <!-- شارة الخصم (أعلى اليمين) -->
+    @if (product().oldPrice > product().price) {
+      <span
+        class="absolute top-2.5 right-2.5 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white"
+      >
+        خصم
+        {{
+          product().discountPercentage ||
+            Math.round(((product().oldPrice - product().price) / product().oldPrice) * 100)
+        }}%
+      </span>
+    }
+  </div>
+
+  <!-- المحتوى -->
+  <div class="px-3 py-2 text-right">
+    <!-- اسم الوجبة -->
+    <h3 class="truncate text-base font-bold text-gray-900">
+      {{ product().productName }}
+    </h3>
+
+    <!-- اسم المطعم -->
+    <p class="mt-0.5 truncate text-sm text-gray-400">
+      {{ product().clientName }}
+    </p>
+
+    <!-- السعر والتقييم -->
+    <div class="mt-2 flex items-center justify-between">
+      <!-- السعر -->
+      <div class="flex items-baseline gap-1 text-orange-500 font-extrabold text-base">
+        <span>{{ product().price }}</span>
+        <span class="text-xs">ج.م</span>
+      </div>
+
+      <!-- التقييم (ثابت أو من الـ Model لو موجود) -->
+      <div class="flex items-center gap-1 text-sm text-gray-400">
+        <span class="font-bold text-gray-700">4.8</span>
+        <span class="text-yellow-400">★</span>
+        <span>(1.2k تقييم)</span>
+      </div>
+    </div>
+  </div>
+</article>
