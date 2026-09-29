@@ -36,7 +36,6 @@ export class SendEmail implements OnInit, OnDestroy {
     return this.signupForm.get('email');
   }
 
-  // دالة إرسال الرمز للبريد
   onSendCode(): void {
     if (this.signupForm.invalid) {
       this.signupForm.markAllAsTouched();
@@ -63,9 +62,8 @@ export class SendEmail implements OnInit, OnDestroy {
         });
       },
       error: (err) => {
-        this._SweetAlertService.showAlert(err?.error?.message, 'error');
-
         this.isLoading = false;
+        this._SweetAlertService.showAlert(err?.error?.message, 'error');
       }
     });
   }
@@ -87,7 +85,6 @@ export class SendEmail implements OnInit, OnDestroy {
     }
   }
 
-  // إدارة العداد التنازلي
   startTimer(): void {
     this.timer = 55;
     if (this.intervalId) clearInterval(this.intervalId);

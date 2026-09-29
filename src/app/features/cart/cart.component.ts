@@ -20,10 +20,9 @@ export class CartComponent implements OnInit {
 
   ngOnInit(): void {
     this.GetAllCartItems = this._CartService.GetUserCart().subscribe({
-      next: (res) => { console.log(res.items); this.CartList.set(res.items); },
-      error: (err) => { console.log(err); }
+      next: (res) => { this.CartList.set(res.items); },
+      error: (err) => {}
     });
-    console.log(this.env.apiUrl);
   }
 
   activeStatus: OrderStatus = 0;

@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { Offers } from './features/offers/pages/offers/offers';
-import { Profile } from './features/profile/pages/profile/profile';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
 import { HomeComponent } from './features/home/home.component';
 import { CartComponent } from './features/cart/cart.component';
@@ -9,6 +8,8 @@ import { FavoritesComponent } from './features/favorites/favorites.component';
 import { TestLoadingComponent } from './features/testing/testing';
 import { Test1Component } from './features/testing/test1/test1.component';
 import { RestaurantsComponent } from './features/restaurants/restaurants.component';
+import { TechnicalSupportComponent } from './features/technicalSupport/components/technical-support/technical-support.component';
+import { RetauranProfileComponent } from './features/profile/restaurantProfile/components/retauran-profile/retauran-profile.component';
 
 
 export const routes: Routes = [
@@ -18,7 +19,7 @@ export const routes: Routes = [
     // =====================================================
 
     {
-        path: 'login',
+        path: 'login',//, canActivate: [logedGuard],
         loadComponent: () =>
             import('./features/auth/pages/login/login.component'
             ).then(m => m.Login)
@@ -55,7 +56,7 @@ export const routes: Routes = [
     // =====================================================
 
     {
-        path: '',
+        path: '',// canActivate: [authGuard],
         component: MainLayoutComponent,
 
         children: [
@@ -88,10 +89,6 @@ export const routes: Routes = [
                 component: Offers
             },
 
-            {
-                path: 'profile',
-                component: Profile
-            },
             {
                 path: 'test',
                 component: TestLoadingComponent
@@ -133,8 +130,14 @@ export const routes: Routes = [
             {
                 path: 'my-orders',
                 component: CartComponent
-            }
+            },
 
+            {
+                path: 'support',
+                component: TechnicalSupportComponent
+            },
+
+           { path: 'restaurantProfile/:id', component: RetauranProfileComponent },
         ]
     },
 

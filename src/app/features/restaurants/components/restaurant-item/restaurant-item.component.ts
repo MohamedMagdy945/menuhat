@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { Restaurant } from '../../models/restaurant';
 import { environment } from '../../../../core/environments/environment';
+import { Router } from '@angular/router';
 
 @Component({
   imports: [],
@@ -13,12 +14,15 @@ import { environment } from '../../../../core/environments/environment';
 export class RestaurantItemComponent {
     readonly apiUrl = environment.filesUrl;
     readonly defaultImage = '/images/default-restaurant.png';
-
+    private readonly router = inject(Router);
 
     restaurant = input.required<Restaurant>();
 
-  
     onCardClick() {
-      throw new Error('Method not implemented.');
+     const serial = this.restaurant().serial;     
+     if (serial) {
+      console.log("Serial fom item",serial);
+      this.router.navigate(['/restaurantProfile', serial]);
     }
+  }
 }

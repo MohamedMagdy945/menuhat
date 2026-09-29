@@ -67,7 +67,7 @@ export class RestaurantService {
       },
       `${this.apiUrl}/EMHomeApp/GetAllMenus`,
       (page) => ({
-        SortField: '1',
+        SortField: 'id',
         PageNumber: page,
         PageSize: 10,
         ...(lat !== undefined && lon !== undefined ? { lat, lon } : {}),

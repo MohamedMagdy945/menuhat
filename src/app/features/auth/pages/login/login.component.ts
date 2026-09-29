@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoginService } from '../../services/login.service';
+import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class Login {
 
   private readonly _AuthServices = inject(LoginService);
   private readonly _Router = inject(Router);
-  private readonly _tostar = inject(Router);
+  private readonly _SweetAlertService = inject(SweetAlertService);
 
   loginForm!: FormGroup;
   showPassword = false;
@@ -46,27 +47,25 @@ export class Login {
       password: this.loginForm.value.password
     };
 
-    this._AuthServices.SetLoginForm(loginData).subscribe({
+this._AuthServices.SetLoginForm(loginData).subscribe({
+  next: (res) => {
+    console.log(res);
+    if (res && res.data) {
+      // 1. حفظ الـ Token
+      localStorage.setItem('usertoken', res.data.token);
 
-      next: (res) => {
-        console.log(res);
-        if (res) {
-          localStorage.setItem(
-            'usertoken',
-            res.data.token
-          );
+      localStorage.setItem('userData', JSON.stringify(res.data));
 
-          this._AuthServices.SaveUserData();
+      this._AuthServices.SaveUserData(res.data);
 
-          this._Router.navigate(['/home']);
-        }
-      },
+      this._Router.navigate(['/home']);
+    }
+  },
 
-      error: (err: HttpErrorResponse) => {
-        console.log('Login Error:', err);
-      }
-
-    });
+  error: (err: HttpErrorResponse) => {
+    this._SweetAlertService.showToast(err?.error?.message, 'error');
+  }
+});
   }
 
   loginWithGoogle(): void {

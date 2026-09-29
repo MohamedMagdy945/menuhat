@@ -1,0 +1,119 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center p-4 font-['Cairo']" dir="rtl">
+  <div class="bg-white w-full max-w-2xl rounded-2xl p-6 md:p-10 shadow-sm text-center">
+    
+    <!-- الشعار -->
+    <div class="flex justify-center mb-4">
+      <div class="w-12 h-12 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-xl overflow-hidden">
+        <img src="icons/Overlay.svg" alt="وصف الصورة" class="max-w-full max-h-full object-contain" />
+      </div>
+    </div>
+
+    <!-- العنوان والوصف -->
+    <h1 class="text-2xl font-bold text-gray-800 mb-2">الدعم الفني</h1>
+    <p class="text-xs md:text-sm text-gray-500 leading-relaxed mb-8 px-2">
+      هل تواجه مشكلة تقنية؟ هل ترغب في إرسال ملاحظاتك حول ميزة جديدة أو تحتاج إلى تفاصيل حول خطط أعمالنا؟ نحن هنا لمساعدتك.
+    </p>
+
+    <!-- النموذج -->
+    <form [formGroup]="supportForm" (ngSubmit)="onSubmit()" class="text-right space-y-5">
+      
+      <!-- البريد والموبايل -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="email" class="block text-xs font-bold text-gray-700 mb-2">البريد الإلكتروني</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            placeholder="example@mail.com"
+            class="w-full p-3 bg-gray-100 border border-transparent rounded-lg text-xs text-gray-800 outline-none focus:bg-white focus:border-orange-500 transition-all">
+        </div>
+
+        <div>
+          <label for="phone" class="block text-xs font-bold text-gray-700 mb-2">رقم الموبايل</label>
+          <input 
+            type="tel" 
+            id="phone" 
+            formControlName="phone" 
+            placeholder="01xxxxxxxxx"
+            class="w-full p-3 bg-gray-100 border border-transparent rounded-lg text-xs text-gray-800 outline-none focus:bg-white focus:border-orange-500 transition-all">
+        </div>
+      </div>
+
+      <!-- عنوان الشكوى -->
+    <div>
+        <label for="subject" class="block text-xs font-bold text-gray-700 mb-2">عنوان الشكوى</label>
+        <input 
+            type="text" 
+            id="subject" 
+            formControlName="title" 
+            placeholder="أدخل عنوان الشكوى المختصر..."
+            class="w-full p-3 bg-gray-100 border border-transparent rounded-lg text-xs text-gray-800 outline-none focus:bg-white focus:border-orange-500 transition-all">
+    </div>
+
+      <!-- تفاصيل المشكلة -->
+      <div>
+        <label for="details" class="block text-xs font-bold text-gray-700 mb-2">تفاصيل الشكوى كاملة</label>
+        <textarea 
+          id="details" 
+          rows="4" 
+          formControlName="discription" 
+          placeholder="اشرح لنا ما تواجهه بالتفصيل..."
+          class="w-full p-3 bg-gray-100 border border-transparent rounded-lg text-xs text-gray-800 outline-none focus:bg-white focus:border-orange-500 transition-all resize-y"></textarea>
+      </div>
+
+      <!-- رفع الملفات -->
+      <div>
+        <label class="block text-xs font-bold text-gray-700 mb-2">إرفاق صور للتوضيح</label>
+        <div 
+          (click)="fileInput.click()" 
+          class="border-2 border-dashed border-gray-200 hover:border-orange-500 bg-white rounded-lg p-6 flex flex-col items-center gap-2 cursor-pointer transition-colors">
+          <i class="fa-solid fa-cloud-arrow-up text-2xl text-gray-400"></i>
+          <span class="text-xs text-gray-400">
+            {{ selectedFileName ? selectedFileName : 'اضغط هنا لرفع الصور أو اسحبها' }}
+          </span>
+          <input 
+            #fileInput 
+            type="file" 
+            multiple 
+            accept="image/*" 
+            (change)="onFileSelected($event)" 
+            class="hidden">
+        </div>
+      </div>
+
+      <!-- زر الإرسال -->
+      <button 
+        type="submit" 
+        [disabled]="supportForm.invalid"
+        class="w-full py-3.5 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold rounded-xl text-base transition-colors shadow-sm">
+        إرسال الطلب
+      </button>
+    </form>
+
+    <!-- طرق التواصل المباشر -->
+    <div class="mt-10 pt-6 border-t border-gray-100">
+      <h3 class="text-sm font-bold text-gray-800 mb-6">طرق التواصل المباشر</h3>
+      
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- رقم الدعم -->
+  <div class="flex flex-col items-center">
+         <div class="w-12 h-12 text-orange-500 rounded-full flex items-center justify-center text-xl overflow-hidden">
+        <img src="icons/phone.svg" alt="وصف الصورة" class="max-w-full max-h-full object-contain" />
+      </div>
+    <span class="text-[11px] text-gray-400 mb-0.5">رقم الدعم Support</span>
+    <span class="text-xs font-bold text-gray-800" dir="ltr">1063917687</span>
+  </div>
+
+  <!-- العنوان -->
+  <div class="flex flex-col items-center">
+     <div class="w-12 h-12 text-orange-500 rounded-full flex items-center justify-center text-xl overflow-hidden">
+        <img src="icons/location.svg" alt="وصف الصورة" class="max-w-full max-h-full object-contain" />
+      </div>
+    <span class="text-[11px] text-gray-400 mb-0.5">العنوان</span>
+  <span class="text-xs font-bold text-gray-800">السادات، المنوفيه، سيتي مول</span>
+  </div>
+</div>
+
+  </div>
+</div>
