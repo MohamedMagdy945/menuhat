@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
+import { finalize } from 'rxjs';
 
 import { MostRequestedQuery } from '../models/most-requested-query';
 import { USE_GLOBAL_LOADING } from '../../../core/loading/loading-context';
@@ -17,11 +18,20 @@ export class HomeMealService {
   readonly mostRequested = signal<MenuProduct[]>([]);
   readonly mostRequestedPage = signal(1);
   readonly mostRequestedHasNext = signal(true);
+  readonly isLoadingMostRequested = signal(false);
 
-  loadMostRequested(extraParams: Partial<MostRequestedQuery> = {}): void {
-    if (!this.mostRequestedHasNext()) {
+  loadMostRequested({
+    globalLoading = true,
+    extraParams = {},
+  }: {
+    globalLoading?: boolean;
+    extraParams?: Partial<MostRequestedQuery>;
+  }): void {
+    if (!this.mostRequestedHasNext() || this.isLoadingMostRequested()) {
       return;
     }
+
+    this.isLoadingMostRequested.set(true);
 
     const params = {
       SortField: 'rowNo',
@@ -30,14 +40,22 @@ export class HomeMealService {
       ...extraParams,
     };
 
+    const context = new HttpContext().set(USE_GLOBAL_LOADING, globalLoading);
+
     this.http
-      .get<any>(`${this.apiUrl}/EMHome/Mostrequested`, {
+      .get<{ items?: MenuProduct[] }>(`${this.apiUrl}/EMHome/Mostrequested`, {
         params: params as any,
-        context: new HttpContext().set(USE_GLOBAL_LOADING, true),
+        context,
       })
+      .pipe(
+        finalize(() => {
+          this.isLoadingMostRequested.set(false);
+        }),
+      )
       .subscribe({
         next: (response) => {
-          const items = Array.isArray(response?.items) ? response.items : [];
+          console.log(response)
+          const items = Array.isArray(response.items) ? response.items : [];
 
           if (!items.length) {
             this.mostRequestedHasNext.set(false);

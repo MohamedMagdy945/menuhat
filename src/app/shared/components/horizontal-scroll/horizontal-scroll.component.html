@@ -1,0 +1,123 @@
+<div class="w-full">
+  <!-- Horizontal Scroll -->
+  <div
+    #scrollContainer
+    class="scrollbar-hide flex w-full overflow-x-auto px-1 py-2"
+    style="overflow-anchor: none"
+    (scroll)="onScroll()"
+  >
+    <ng-content />
+  </div>
+
+  <!-- Navigation -->
+  <div
+    dir="ltr"
+    class="mt-1 flex w-full items-center justify-start gap-1 px-1"
+  >
+    <!-- FAR LEFT -->
+    <button
+      type="button"
+      aria-label="Scroll far left"
+      [disabled]="!canScrollLeft()"
+      (click)="scrollFarLeft()"
+      class="flex h-8 w-8 items-center justify-center rounded-lg
+             border border-gray-200 bg-white text-primary
+             transition-all duration-200
+             hover:border-primary hover:bg-primary/5
+             active:scale-95
+             disabled:pointer-events-none disabled:opacity-30"
+    >
+      <svg
+        class="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 18L12 12L18 6" />
+        <path d="M12 18L6 12L12 6" />
+      </svg>
+    </button>
+
+    <!-- LEFT -->
+    <button
+      type="button"
+      aria-label="Scroll left"
+      [disabled]="!canScrollLeft()"
+      (click)="scrollLeft()"
+      class="flex h-8 w-8 items-center justify-center rounded-lg
+             border border-gray-200 bg-white text-primary
+             transition-all duration-200
+             hover:border-primary hover:bg-primary/5
+             active:scale-95
+             disabled:pointer-events-none disabled:opacity-30"
+    >
+      <svg
+        class="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M15 18L9 12L15 6" />
+      </svg>
+    </button>
+
+    <!-- RIGHT -->
+    <button
+      type="button"
+      aria-label="Scroll right"
+      [disabled]="!canScrollRight()"
+      (click)="scrollRight()"
+      class="flex h-8 w-8 items-center justify-center rounded-lg
+             border border-gray-200 bg-white text-primary
+             transition-all duration-200
+             hover:border-primary hover:bg-primary/5
+             active:scale-95
+             disabled:pointer-events-none disabled:opacity-30"
+    >
+      <svg
+        class="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M9 18L15 12L9 6" />
+      </svg>
+    </button>
+
+    <!-- FAR RIGHT -->
+    <button
+      type="button"
+      aria-label="Scroll far right"
+      [disabled]="!canScrollRight()"
+      (click)="scrollFarRight()"
+      class="flex h-8 w-8 items-center justify-center rounded-lg
+             border border-gray-200 bg-white text-primary
+             transition-all duration-200
+             hover:border-primary hover:bg-primary/5
+             active:scale-95
+             disabled:pointer-events-none disabled:opacity-30"
+    >
+      <svg
+        class="h-4 w-4"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M6 18L12 12L6 6" />
+        <path d="M12 18L18 12L12 6" />
+      </svg>
+    </button>
+  </div>
+</div>

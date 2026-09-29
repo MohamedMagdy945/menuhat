@@ -117,10 +117,12 @@
 </div>
 
 <!-- product section -->
-<div class="mt-4 px-6">
+<div class="mt-4 px-2 md:px-6">
   <app-home-meal-section
     title="الأكثر طلبًا في منطقتك"
     [products]="mostRequested()"
     [hasMoreData]="mostRequestedHasNext()"
+    [isLoadingMore]="isLoadingMostRequested()"
+    (loadMore)="loadMoreMostRequested()"
   />
 </div>

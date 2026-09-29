@@ -10,6 +10,6 @@ import { environment } from '../../../../core/environments/environment';
 })
 export class HomeMealCardComponent {
   readonly product = input.required<MenuProduct>();
-  readonly apiUrl =environment.filesUrl;
-Math: any;
+  readonly apiUrl = environment.filesUrl;
+  Math: any;
 }

@@ -1,10 +1,8 @@
 <article class="overflow-hidden bg-white border border-gray-100 cursor-pointer rounded-2xl">
   <!-- الصورة والحالة -->
-  <div class="relative h-35 w-full overflow-hidden  bg-gray-100">
+  <div class="relative h-35 w-full overflow-hidden bg-gray-100">
     <img
-      [src]="
-        product().photoURL ? apiUrl + product().photoURL : 'assets/images/meal-placeholder.jpg'
-      "
+      [src]="product().photoURL ? apiUrl + product().photoURL : '/images/default-meal.png'"
       [alt]="product().productName"
       class="h-full w-full object-cover"
     />
@@ -52,17 +50,16 @@
 
     <!-- السعر والتقييم -->
     <div class="mt-2 flex items-center justify-between">
-      <!-- السعر -->
-      <div class="flex items-baseline gap-1 text-orange-500 font-extrabold text-base">
-        <span>{{ product().price }}</span>
-        <span class="text-xs">ج.م</span>
-      </div>
-
       <!-- التقييم (ثابت أو من الـ Model لو موجود) -->
       <div class="flex items-center gap-1 text-sm text-gray-400">
         <span class="font-bold text-gray-700">4.8</span>
         <span class="text-yellow-400">★</span>
         <span>(1.2k تقييم)</span>
+      </div>
+      <!-- السعر -->
+      <div class="flex items-baseline gap-1 text-orange-500 font-extrabold text-base">
+        <span>{{ product().price }}</span>
+        <span class="text-xs">ج.م</span>
       </div>
     </div>
   </div>
