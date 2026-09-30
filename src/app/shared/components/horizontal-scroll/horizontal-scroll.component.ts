@@ -1,3 +1,5 @@
+import { LucideChevronLeft,LucideChevronRight } from '@lucide/angular';
+
 import {
   AfterViewInit,
   Component,
@@ -13,6 +15,8 @@ import {
 
 @Component({
   selector: 'app-horizontal-scroll',
+    imports: [LucideChevronLeft, LucideChevronRight],
+
   templateUrl: './horizontal-scroll.component.html',
   styleUrl: './horizontal-scroll.component.css',
 })

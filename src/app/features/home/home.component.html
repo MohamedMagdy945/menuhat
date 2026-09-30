@@ -118,11 +118,11 @@
 
 <!-- product section -->
 <div class="mt-4 px-2 md:px-6">
-  <app-home-meal-section
+  <app-home-menu-item-section
     title="الأكثر طلبًا في منطقتك"
-    [products]="mostRequested()"
-    [hasMoreData]="mostRequestedHasNext()"
-    [isLoadingMore]="isLoadingMostRequested()"
+    [menuItems]="menuItemService.mostRequested()"
+    [hasMoreData]="menuItemService.mostRequestedHasNext()"
+    [isLoadingMore]="menuItemService.isLoadingMostRequested()"
     (loadMore)="loadMoreMostRequested()"
   />
 </div>

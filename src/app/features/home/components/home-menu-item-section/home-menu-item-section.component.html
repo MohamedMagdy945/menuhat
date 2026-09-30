@@ -1,10 +1,12 @@
 <section dir="rtl" class="relative w-full">
-  <!-- Header -->
+  <!-- Section Header -->
   <div class="mb-4 flex items-center justify-between px-1">
+    <!-- Title -->
     <h2 class="text-xl font-bold tracking-tight text-gray-900">
       {{ title() }}
     </h2>
 
+    <!-- View All -->
     <button
       type="button"
       class="text-sm font-semibold text-orange-500 transition-colors duration-200 hover:text-orange-600"
@@ -13,19 +15,21 @@
     </button>
   </div>
 
+  <!-- Horizontal MenuItems -->
   <app-horizontal-scroll
     (loadMore)="onLoadMore()"
     [hasMore]="hasMoreData()"
     [isLoading]="isLoadingMore()"
   >
     <div class="flex w-max items-stretch gap-2 md:gap-3">
-      @for (product of products(); track product.mostrequestesId) {
+      <!-- Menu Items -->
+      @for (menuItem of menuItems(); track menuItem.mostrequestesId) {
         <div class="w-48 shrink-0 md:w-52">
-          <app-home-meal-card class="block w-full" [product]="product" />
+          <app-home-menu-item-card class="block w-full" [menuItem]="menuItem" />
         </div>
       }
 
-      <!-- هتعمل لوپ هنا برة، والـ ng-container مش بينزل في الـ DOM خالص -->
+      <!-- Loading Skeletons -->
       @if (isLoadingMore()) {
         <app-horizontal-card-skeleton />
       }

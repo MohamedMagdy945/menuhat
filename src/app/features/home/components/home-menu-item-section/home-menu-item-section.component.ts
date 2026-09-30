@@ -4,28 +4,31 @@ import {
   output,
 } from '@angular/core';
 
+
 import { HorizontalScrollComponent } from '../../../../shared/components/horizontal-scroll/horizontal-scroll.component';
+
 import { HorizontalCardSkeletonComponent } from '../../../../shared/skeleton/horizontal-card-skeleton/horizontal-card-skeleton.component';
-import { Restaurant } from '../../../restaurants/models/restaurant';
-import { HomeRestaurantCardComponent } from '../home-restaurant-card/home-restaurant-card.component';
+import { MenuItem } from '../../../menu-items/models/menu-item.model';
+import { HomeMenuItemCardComponent } from '../home-menu-item-card/home-menu-item-card.component';
+
 
 @Component({
-  selector: 'app-home-restaurant-section',
+  selector: 'app-home-menu-item-section',
   imports: [
+    HomeMenuItemCardComponent,
     HorizontalScrollComponent,
     HorizontalCardSkeletonComponent,
-    HomeRestaurantCardComponent,
   ],
-  templateUrl: './home-restaurant-section.component.html',
-  styleUrl: './home-restaurant-section.component.css',
+  templateUrl: './home-menu-item-section.component.html',
+  styleUrl: './home-menu-item-section.component.css',
 })
-export class HomeRestaurantSectionComponent {
+export class HomeMenuItemSectionComponent {
 
   // Section title
   readonly title = input.required<string>();
 
-  // Restaurants displayed inside the section
-  readonly restaurants = input.required<Restaurant[]>();
+  // Products displayed inside the section
+  readonly menuItems = input.required<MenuItem[]>();
 
   // Pagination state
   readonly hasMoreData = input(true);

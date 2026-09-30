@@ -2,19 +2,19 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { environment } from '../../../core/environments/environment';
-import { MenuProduct } from '../models/menu.product.model';
 import { MostRequestedQuery } from '../models/most-requested-query';
 import { USE_GLOBAL_LOADING } from '../../../core/loading/loading-context';
+import { MenuItem } from '../models/menu-item.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MealService {
+export class MenuItemService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl = environment.apiUrl;
 
-  readonly mostRequested = signal<MenuProduct[]>([]);
+  readonly mostRequested = signal<MenuItem[]>([]);
   readonly mostRequestedPage = signal(1);
   readonly mostRequestedHasNext = signal(true);
   readonly isLoadingMostRequested = signal(false);
@@ -42,7 +42,7 @@ export class MealService {
     const context = new HttpContext().set(USE_GLOBAL_LOADING, globalLoading);
 
     this.http
-      .get<{ items?: MenuProduct[] }>(`${this.apiUrl}/EMHome/Mostrequested`, {
+      .get<{ items?: MenuItem[] }>(`${this.apiUrl}/EMHome/Mostrequested`, {
         params: params as any,
         context,
       })

@@ -14,12 +14,9 @@
       aria-label="Scroll left"
       [disabled]="leftDisabled()"
       (click)="scrollLeft()"
-      class="flex h-8 w-8 items-center justify-center rounded-full border border-gray-100 bg-gray-50  text-primary shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
+      class="flex h-8 w-8 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
     >
-      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M15 18L9 12L15 6" />
-      </svg>
+      <svg lucideChevronLeft class="h-5 w-5" [strokeWidth]="2.2"></svg>
     </button>
 
     <button
@@ -27,12 +24,9 @@
       aria-label="Scroll right"
       [disabled]="rightDisabled()"
       (click)="scrollRight()"
-      class="flex h-8 w-8 items-center justify-center rounded-full border border-gray-100 bg-gray-50  text-primary shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
+      class="flex h-8 w-8 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
     >
-      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-           stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M9 18L15 12L9 6" />
-      </svg>
+      <svg lucideChevronRight class="h-5 w-5" [strokeWidth]="2.2"></svg>
     </button>
   </div>
 </div>

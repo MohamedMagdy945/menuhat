@@ -1,6 +1,6 @@
 swiper-container {
   /* Active dot color (Primary Color) */
-  --swiper-pagination-color: #f97316; /* Replace with your primary color hex code */
+  --swiper-pagination-color: var(--color-primary); /* Replace with your primary color hex code */
 
   /* Optional: Inactive dots color & opacity */
   --swiper-pagination-bullet-inactive-color: #94a3b8;
