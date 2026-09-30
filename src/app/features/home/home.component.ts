@@ -4,8 +4,8 @@ import { ResponsiveService } from '../../core/services/responsive.service';
 import { RestaurantService } from '../restaurants/restaurant.service';
 import { LocationService } from '../../core/services/location.service';
 
-import { HomeMealService } from './services/home-meal.service';
 import { HomeMealSectionComponent } from './components/home-meal-section/home-meal-section.component';
+import { MealService } from '../meals/services/meal.service';
 
 @Component({
   selector: 'app-home',
@@ -15,29 +15,28 @@ import { HomeMealSectionComponent } from './components/home-meal-section/home-me
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit {
-  private readonly homeMealService = inject(HomeMealService);
+  private readonly mealService = inject(MealService);
 
   private readonly responsiveService = inject(ResponsiveService);
 
   protected readonly restaurantService = inject(RestaurantService);
 
-  private readonly locationService = inject(LocationService);
 
   readonly isMobile = this.responsiveService.isMobile;
 
-  readonly mostRequested = this.homeMealService.mostRequested;
+  readonly mostRequested = this.mealService.mostRequested;
 
-  readonly mostRequestedHasNext = this.homeMealService.mostRequestedHasNext;
+  readonly mostRequestedHasNext = this.mealService.mostRequestedHasNext;
 
-  readonly isLoadingMostRequested = this.homeMealService.isLoadingMostRequested;
+  readonly isLoadingMostRequested = this.mealService.isLoadingMostRequested;
 
   ngOnInit(): void {
-    this.homeMealService.loadMostRequested({
+    this.mealService.loadMostRequested({
       globalLoading: true,
     });
   }
   loadMoreMostRequested(): void {
-    this.homeMealService.loadMostRequested({
+    this.mealService.loadMostRequested({
       globalLoading: false,
     });
   }

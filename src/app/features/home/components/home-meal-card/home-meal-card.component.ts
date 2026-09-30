@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { MenuProduct } from '../../models/menu.product.model';
+import { MenuProduct } from '../../../meals/models/menu.product.model';
 import { environment } from '../../../../core/environments/environment';
 
 @Component({

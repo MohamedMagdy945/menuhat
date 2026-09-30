@@ -13,18 +13,21 @@
     </button>
   </div>
 
-  <app-horizontal-scroll (loadMore)="onLoadMore()" [hasMore]="hasMoreData()" [isLoading]="isLoadingMore()">
+  <app-horizontal-scroll
+    (loadMore)="onLoadMore()"
+    [hasMore]="hasMoreData()"
+    [isLoading]="isLoadingMore()"
+  >
     <div class="flex w-max items-stretch gap-2 md:gap-3">
       @for (product of products(); track product.mostrequestesId) {
-        <div class="w-52 shrink-0 md:w-55">
+        <div class="w-48 shrink-0 md:w-52">
           <app-home-meal-card class="block w-full" [product]="product" />
         </div>
       }
 
+      <!-- هتعمل لوپ هنا برة، والـ ng-container مش بينزل في الـ DOM خالص -->
       @if (isLoadingMore()) {
-        <div class="flex w-52 shrink-0 items-center justify-center rounded-xl bg-gray-100 md:w-55">
-          <span class="text-xs font-medium text-gray-400"> جاري التحميل... </span>
-        </div>
+        <app-horizontal-card-skeleton />
       }
     </div>
   </app-horizontal-scroll>

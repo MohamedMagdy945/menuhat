@@ -1,15 +1,14 @@
 import {
-  AfterContentChecked,
   AfterViewInit,
   Component,
-  ChangeDetectorRef,
+  computed,
+  effect,
   ElementRef,
-  OnDestroy,
-  ViewChild,
-  inject,
   input,
+  OnDestroy,
   output,
   signal,
+  ViewChild,
 } from '@angular/core';
 
 @Component({
@@ -18,335 +17,353 @@ import {
   styleUrl: './horizontal-scroll.component.css',
 })
 export class HorizontalScrollComponent
-  implements AfterContentChecked, AfterViewInit, OnDestroy
+  implements AfterViewInit, OnDestroy
 {
-  private readonly changeDetector = inject(ChangeDetectorRef);
-
   @ViewChild('scrollContainer')
   scrollContainer!: ElementRef<HTMLElement>;
 
+  // Inputs / Outputs
   readonly isLoading = input(false);
   readonly hasMore = input(false);
-
   readonly loadMore = output<void>();
 
-  readonly canScrollLeft = signal(false);
-  readonly canScrollRight = signal(false);
+  // حالة أزرار التنقل
+  private readonly canScrollLeft = signal(false);
+  private readonly canScrollRight = signal(false);
 
+  // نحتاج RTL لمعرفة اتجاه نهاية المحتوى
+  private readonly isRtl = signal(false);
+
+  // هل يوجد بيانات إضافية قادمة؟
+  private readonly moreComing = computed(
+    () => this.hasMore() || this.isLoading(),
+  );
+
+  // زرار اليسار يفضل شغال لو لسه فيه محتوى ناحية اليسار
+  // أو لو RTL ولسه فيه بيانات إضافية
+  readonly leftDisabled = computed(
+    () =>
+      !this.canScrollLeft() &&
+      !(this.isRtl() && this.moreComing()),
+  );
+
+  // زرار اليمين يفضل شغال لو لسه فيه محتوى ناحية اليمين
+  // أو لو LTR ولسه فيه بيانات إضافية
+  readonly rightDisabled = computed(
+    () =>
+      !this.canScrollRight() &&
+      !(!this.isRtl() && this.moreComing()),
+  );
+
+  // نسبة الحركة في كل ضغطة
+  // 0.7 = يتحرك 70% من عرض الـ container
+  private readonly scrollPercentage = 0.7;
+
+  // مدة الحركة بالـ milliseconds
+  private readonly animationDuration = 400;
+
+  // المسافة التي عندها نطلب بيانات جديدة
+  private readonly threshold = 50;
+
+  // Animation الحالية للحركة
+  private animationFrame?: number;
+
+  // يمنع تشغيل أكثر من update في نفس الـ frame
+  private frame?: number;
+
+  // يمنع إرسال أكثر من request في نفس الوقت
+  private loadRequested = false;
+
+  // مراقبة تغيير حجم الـ container
   private resizeObserver?: ResizeObserver;
-  private mutationObserver?: MutationObserver;
-  private rtlScrollType?: 'negative' | 'reverse' | 'default';
-  private scrollAnimationFrame?: number;
 
-  private loadMoreTriggered = false;
+  // مراقبة إضافة أو إزالة المنتجات
+  private mutationObserver?: MutationObserver;
+
+  constructor() {
+    // لما التحميل يخلص، نعيد فحص حالة الـ container
+    effect(() => {
+      if (this.isLoading()) {
+        return;
+      }
+
+      this.loadRequested = false;
+
+      requestAnimationFrame(() => {
+        this.update();
+        this.fillIfNeeded();
+      });
+    });
+  }
 
   ngAfterViewInit(): void {
     const container = this.scrollContainer.nativeElement;
 
+    // لو حجم الـ container اتغير
+    // نعيد حساب حالة أزرار التنقل
     this.resizeObserver = new ResizeObserver(() => {
-      this.updateScrollButtons();
+      this.update();
     });
 
     this.resizeObserver.observe(container);
-    this.observeScrollContent(container);
 
+    // لو المنتجات اتضافت أو اتمسحت
+    // نعيد حساب حالة الـ navigation
     this.mutationObserver = new MutationObserver(() => {
-      this.loadMoreTriggered = false;
-      this.observeScrollContent(container);
-
-      requestAnimationFrame(() => {
-        this.updateScrollButtons();
-      });
+      this.update();
     });
 
     this.mutationObserver.observe(container, {
       childList: true,
-      subtree: true,
     });
 
-    this.updateScrollButtons();
-
+    // أول تحديث بعد ظهور الـ view
     requestAnimationFrame(() => {
-      this.updateScrollButtons();
+      this.update();
+      this.fillIfNeeded();
     });
   }
 
   ngOnDestroy(): void {
+    // تنظيف الـ observers
     this.resizeObserver?.disconnect();
     this.mutationObserver?.disconnect();
-    if (this.scrollAnimationFrame !== undefined) {
-      cancelAnimationFrame(this.scrollAnimationFrame);
+
+    // إلغاء أي animation شغالة
+    if (this.frame !== undefined) {
+      cancelAnimationFrame(this.frame);
+    }
+
+    if (this.animationFrame !== undefined) {
+      cancelAnimationFrame(this.animationFrame);
     }
   }
 
-  ngAfterContentChecked(): void {
-    this.updateScrollButtons();
-  }
-
-  // ==============================
-  // SCROLL EVENT
-  // ==============================
-
+  /**
+   * يتم استدعاؤها مع حدث scroll.
+   *
+   * نستخدم requestAnimationFrame
+   * حتى لا ننفذ update مع كل حركة صغيرة.
+   */
   onScroll(): void {
-    this.updateScrollButtons();
-
-    this.checkLoadMore();
-  }
-
-  // ==============================
-  // BUTTONS
-  // ==============================
-
-  scrollFarLeft(): void {
-    this.scrollToVisual('left', this.getFarStep());
-  }
-
-  scrollLeft(): void {
-    this.scrollToVisual('left', 300);
-  }
-
-  scrollRight(): void {
-    this.scrollToVisual('right', 300);
-  }
-
-  scrollFarRight(): void {
-    this.scrollToVisual('right', this.getFarStep());
-  }
-
-  // ==============================
-  // VISUAL SCROLL
-  // ==============================
-
-  private scrollToVisual(
-    direction: 'left' | 'right',
-    amount: number,
-  ): void {
-    const container = this.scrollContainer.nativeElement;
-
-    const maxScroll =
-      container.scrollWidth - container.clientWidth;
-
-    if (maxScroll <= 0) {
+    if (this.frame !== undefined) {
       return;
     }
 
-    const current = this.getVisualPosition();
+    this.frame = requestAnimationFrame(() => {
+      this.frame = undefined;
 
-    let target: number;
-
-    if (direction === 'left') {
-      target = current - amount;
-    } else {
-      target = current + amount;
-    }
-
-    target = Math.max(0, Math.min(target, maxScroll));
-
-    this.animateToVisual(target);
-  }
-
-  private animateToVisual(target: number): void {
-    if (this.scrollAnimationFrame !== undefined) {
-      cancelAnimationFrame(this.scrollAnimationFrame);
-    }
-
-    const start = this.getVisualPosition();
-    const distance = target - start;
-    const duration = 400;
-    const startTime = performance.now();
-
-    const animate = (now: number): void => {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const easedProgress = 1 - Math.pow(1 - progress, 3);
-
-      this.setVisualPosition(start + distance * easedProgress);
-
-      if (progress < 1) {
-        this.scrollAnimationFrame = requestAnimationFrame(animate);
-      } else {
-        this.scrollAnimationFrame = undefined;
-      }
-    };
-
-    this.scrollAnimationFrame = requestAnimationFrame(animate);
-  }
-
-  // ==============================
-  // VISUAL POSITION
-  //
-  // 0 = LEFT
-  // max = RIGHT
-  // ==============================
-
-  private getVisualPosition(): number {
-    const container = this.scrollContainer.nativeElement;
-
-    const maxScroll = Math.max(
-      container.scrollWidth - container.clientWidth,
-      0,
-    );
-
-    const direction = getComputedStyle(container).direction;
-
-    if (direction !== 'rtl') {
-      return container.scrollLeft;
-    }
-
-    switch (this.getRtlScrollType()) {
-      case 'negative':
-        return maxScroll + container.scrollLeft;
-      case 'reverse':
-        return maxScroll - container.scrollLeft;
-      default:
-        return container.scrollLeft;
-    }
-  }
-
-  // ==============================
-  // SET VISUAL POSITION
-  // ==============================
-
-  private setVisualPosition(position: number): void {
-    const container = this.scrollContainer.nativeElement;
-
-    const maxScroll = Math.max(
-      container.scrollWidth - container.clientWidth,
-      0,
-    );
-
-    const target = Math.max(
-      0,
-      Math.min(position, maxScroll),
-    );
-
-    const direction = getComputedStyle(container).direction;
-
-    if (direction !== 'rtl') {
-      container.scrollTo({
-        left: target,
-        behavior: 'auto',
-      });
-
-      return;
-    }
-
-    const rtlScrollType = this.getRtlScrollType();
-    container.scrollTo({
-      left:
-        rtlScrollType === 'negative'
-          ? target - maxScroll
-          : rtlScrollType === 'reverse'
-            ? maxScroll - target
-            : target,
-      behavior: 'auto',
+      this.update();
+      this.checkLoadMore();
     });
   }
 
-  private getRtlScrollType(): 'negative' | 'reverse' | 'default' {
-    if (this.rtlScrollType) {
-      return this.rtlScrollType;
-    }
-
-    const outer = document.createElement('div');
-    const inner = document.createElement('div');
-    outer.dir = 'rtl';
-    outer.style.cssText =
-      'position:absolute;width:4px;height:1px;overflow:scroll;top:-1000px';
-    inner.style.width = '8px';
-    outer.appendChild(inner);
-    document.body.appendChild(outer);
-    void outer.offsetWidth;
-
-    if (outer.scrollLeft > 0) {
-      this.rtlScrollType = 'default';
-    } else {
-      outer.scrollLeft = 1;
-      this.rtlScrollType = outer.scrollLeft === 0 ? 'negative' : 'reverse';
-    }
-
-    outer.remove();
-    return this.rtlScrollType;
+  /**
+   * تحريك المحتوى ناحية اليسار.
+   */
+  scrollLeft(): void {
+    this.scroll(-1);
   }
 
-  private observeScrollContent(container: HTMLElement): void {
-    for (const child of Array.from(container.children)) {
-      this.resizeObserver?.observe(child);
-    }
+  /**
+   * تحريك المحتوى ناحية اليمين.
+   */
+  scrollRight(): void {
+    this.scroll(1);
   }
 
-  // ==============================
-  // LOAD MORE
-  // ==============================
-
-  private checkLoadMore(): void {
-    if (
-      this.isLoading() ||
-      !this.hasMore() ||
-      this.loadMoreTriggered
-    ) {
+  /**
+   * تنفيذ الحركة.
+   *
+   * direction:
+   * -1 = يسار
+   * +1 = يمين
+   *
+   * مقدار الحركة = 70% من عرض الـ container.
+   */
+  private scroll(direction: number): void {
+    // لو فيه حركة شغالة، نتجاهل الضغطة
+    // عشان الـ animations متتراكمش
+    if (this.animationFrame !== undefined) {
       return;
     }
 
     const container = this.scrollContainer.nativeElement;
 
-    const maxScroll = Math.max(
-      container.scrollWidth - container.clientWidth,
+    // نحسب المسافة حسب حجم الـ container الحالي
+    const amount =
+      container.clientWidth *
+      this.scrollPercentage *
+      direction;
+
+    const start = container.scrollLeft;
+    const target = start + amount;
+
+    const startTime = performance.now();
+
+    /**
+     * Animation بسيطة باستخدام requestAnimationFrame
+     * بدل behavior: smooth
+     *
+     * عشان نتحكم في الحركة ومايحصلش تراكم
+     * لو المستخدم ضغط بسرعة.
+     */
+    const animate = (currentTime: number): void => {
+      // نسبة تقدم الحركة من 0 إلى 1
+      const progress = Math.min(
+        (currentTime - startTime) /
+          this.animationDuration,
+        1,
+      );
+
+      // Ease-out:
+      // تبدأ الحركة بشكل طبيعي
+      // وتنتهي بهدوء
+      const eased =
+        1 - Math.pow(1 - progress, 3);
+
+      // تحديث مكان الـ scroll
+      container.scrollLeft =
+        start + (target - start) * eased;
+
+      // لو الحركة لسه مخلصتش
+      if (progress < 1) {
+        this.animationFrame =
+          requestAnimationFrame(animate);
+
+        return;
+      }
+
+      // الحركة انتهت
+      this.animationFrame = undefined;
+
+      // نحدث حالة الأزرار
+      this.update();
+
+      // نشوف هل وصلنا قرب نهاية البيانات
+      this.checkLoadMore();
+    };
+
+    // بدء الـ animation
+    this.animationFrame =
+      requestAnimationFrame(animate);
+  }
+
+  /**
+   * لو وصلنا قريب من نهاية المحتوى
+   * نطلب بيانات إضافية.
+   */
+  private checkLoadMore(): void {
+    const container =
+      this.scrollContainer.nativeElement;
+
+    // أقصى مسافة ممكنة للـ scroll
+    const max = Math.max(
+      container.scrollWidth -
+        container.clientWidth,
       0,
     );
 
-    const current = this.getVisualPosition();
+    // المسافة المتبقية حتى النهاية
+    const distanceToEnd =
+      max - Math.abs(container.scrollLeft);
 
-    if (current <= 100) {
-      if (this.scrollAnimationFrame !== undefined) {
-        cancelAnimationFrame(this.scrollAnimationFrame);
-        this.scrollAnimationFrame = undefined;
-      }
-
-      this.loadMoreTriggered = true;
-
-      this.loadMore.emit();
+    // لو قربنا من النهاية نطلب المزيد
+    if (distanceToEnd <= this.threshold) {
+      this.requestMore();
     }
   }
 
-  // ==============================
-  // BUTTON STATE
-  // ==============================
-
-  private updateScrollButtons(): void {
-    const container = this.scrollContainer?.nativeElement;
+  /**
+   * لو المنتجات الحالية لا تملأ العرض
+   * نطلب بيانات إضافية تلقائيًا.
+   */
+  private fillIfNeeded(): void {
+    const container =
+      this.scrollContainer?.nativeElement;
 
     if (!container) {
       return;
     }
 
-    const maxScroll = Math.max(
-      container.scrollWidth - container.clientWidth,
-      0,
-    );
-
-    const current = this.getVisualPosition();
-
-    const canScrollLeft = current > 1;
-    const canScrollRight = current < maxScroll - 1;
-
+    // مفيش scroll أصلاً
+    // إذن ممكن نحتاج منتجات إضافية
     if (
-      this.canScrollLeft() !== canScrollLeft ||
-      this.canScrollRight() !== canScrollRight
+      container.scrollWidth <=
+      container.clientWidth
     ) {
-      this.canScrollLeft.set(canScrollLeft);
-      this.canScrollRight.set(canScrollRight);
-      this.changeDetector.detectChanges();
+      this.requestMore();
     }
   }
 
-  // ==============================
-  // FAR BUTTON DISTANCE
-  // ==============================
+  /**
+   * إرسال طلب تحميل المزيد.
+   *
+   * loadRequested يمنع تكرار الطلب
+   * أثناء نفس عملية التحميل.
+   */
+  private requestMore(): void {
+    if (
+      !this.hasMore() ||
+      this.isLoading() ||
+      this.loadRequested
+    ) {
+      return;
+    }
 
-  private getFarStep(): number {
-    return Math.max(
-      400,
-      this.scrollContainer.nativeElement.clientWidth * 0.5,
+    this.loadRequested = true;
+
+    this.loadMore.emit();
+  }
+
+  /**
+   * تحديث حالة أزرار التنقل.
+   *
+   * نحسب:
+   * - هل يوجد محتوى ناحية اليسار؟
+   * - هل يوجد محتوى ناحية اليمين؟
+   * - هل الـ container RTL؟
+   */
+  private update(): void {
+    const container =
+      this.scrollContainer?.nativeElement;
+
+    if (!container) {
+      return;
+    }
+
+    // أقصى scroll ممكن
+    const max = Math.max(
+      container.scrollWidth -
+        container.clientWidth,
+      0,
+    );
+
+    // معرفة اتجاه الـ container
+    const rtl =
+      getComputedStyle(container).direction ===
+      'rtl';
+
+    /*
+     * في LTR:
+     * scrollLeft من 0 إلى max
+     *
+     * في RTL:
+     * scrollLeft من -max إلى 0
+     */
+    const min = rtl ? -max : 0;
+    const end = rtl ? 0 : max;
+
+    this.isRtl.set(rtl);
+
+    // هل يوجد محتوى ناحية اليسار؟
+    this.canScrollLeft.set(
+      container.scrollLeft > min + 1,
+    );
+
+    // هل يوجد محتوى ناحية اليمين؟
+    this.canScrollRight.set(
+      container.scrollLeft < end - 1,
     );
   }
 }

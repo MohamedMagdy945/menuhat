@@ -1,16 +1,15 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { finalize } from 'rxjs';
-
-import { MostRequestedQuery } from '../models/most-requested-query';
-import { USE_GLOBAL_LOADING } from '../../../core/loading/loading-context';
 import { environment } from '../../../core/environments/environment';
 import { MenuProduct } from '../models/menu.product.model';
+import { MostRequestedQuery } from '../models/most-requested-query';
+import { USE_GLOBAL_LOADING } from '../../../core/loading/loading-context';
 
 @Injectable({
   providedIn: 'root',
 })
-export class HomeMealService {
+export class MealService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl = environment.apiUrl;
@@ -54,7 +53,7 @@ export class HomeMealService {
       )
       .subscribe({
         next: (response) => {
-          console.log(response)
+          console.log(response);
           const items = Array.isArray(response.items) ? response.items : [];
 
           if (!items.length) {

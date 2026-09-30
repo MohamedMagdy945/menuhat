@@ -1,4 +1,4 @@
-    export interface MenuProduct {
+export interface MenuProduct {
   mostrequestesId: number;
   productName: string;
   productName_En: string | null;
