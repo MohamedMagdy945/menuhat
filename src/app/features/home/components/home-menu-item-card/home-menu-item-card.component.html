@@ -1,12 +1,11 @@
 <article class="overflow-hidden bg-white border border-slate-200 cursor-pointer rounded-2xl">
   <!-- الصورة والحالة -->
-  <div class="relative h-44 w-full overflow-hidden bg-gray-100">
+  <div class="relative h-30 w-full overflow-hidden bg-gray-100">
     <img
       [src]="menuItem().photoURL ? apiUrl + menuItem().photoURL : '/images/default-meal.png'"
       [alt]="menuItem().productName"
-      class="h-full w-full object-cover"
+      class="h-full w-full object-contain"
     />
-
     <!-- زر المفضلة (أعلى اليسار) -->
     <button
       type="button"

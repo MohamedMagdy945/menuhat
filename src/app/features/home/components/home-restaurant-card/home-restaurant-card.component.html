@@ -1,0 +1,77 @@
+<article
+  class="relative flex flex-col cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white"
+  dir="rtl"
+>
+  <!-- ===== Image Section ===== -->
+  <div class="relative h-29 w-full overflow-hidden bg-slate-50">
+    <img
+      [src]="
+        restaurant().logoURL ? apiUrl + restaurant().logoURL : '/images/default-restaurant.png'
+      "
+      [alt]="restaurant().clientName"
+      class="h-full w-full object-contain"
+    />
+
+    <!-- Rating Badge -->
+    <div
+      class="absolute bottom-2 left-2 flex items-center gap-1 rounded-md bg-white px-1 py-1 text-xs font-bold text-slate-700 shadow-sm"
+    >
+      <span>{{ restaurant().rate ?? '0.0' }}</span>
+      <svg lucideStar class="h-2.5 w-2.5 fill-yellow-400 text-yellow-500"></svg>
+    </div>
+  </div>
+
+  <!-- ===== Body Section ===== -->
+  <div class="flex flex-1 flex-col p-3 text-right text-sm">
+    <div class="flex min-w-0 items-center gap-1">
+      <div class="rounded-lg">
+        <svg
+          lucideTag
+          class="h-3.5 w-3.5 shrink-0  text-gray-400 "
+       
+        ></svg>
+      </div>
+
+      <span class="truncate">
+        {{ restaurant().field_Ar }}
+      </span>
+    </div>
+
+    <!-- Address -->
+    @if (restaurant().address) {
+      <div class="flex min-w-0 items-center gap-1">
+        <svg lucideMapPin class="h-3.5 w-3.5 shrink-0 text-gray-400" [strokeWidth]="1.8"></svg>
+
+        <span class="truncate">
+          {{ restaurant().address }}
+        </span>
+      </div>
+    }
+
+    <!-- Working Hours + Status -->
+    <div class="flex items-center justify-between gap-4 text-xs">
+      <div class="flex min-w-0 items-center gap-1">
+        <!-- Clock -->
+        <div class="text-gray-400">
+          <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2.75a9.25 9.25 0 1 0 9.25 9.25A9.26 9.26 0 0 0 12 2.75Zm0 16.5a7.25 7.25 0 1 1 7.25-7.25A7.26 7.26 0 0 1 12 19.25Zm1-11.25h-2v5.25l4 2.5 1-1.65-3-1.85V8.25Z"
+            />
+          </svg>
+        </div>
+
+        <span class="truncate">10:00 ص - 02:00 ص</span>
+      </div>
+
+      <span
+        class="shrink-0 rounded-full px-1.5 py-1 font-semibold text-xs"
+        [class.bg-emerald-50]="restaurant().isOpen"
+        [class.text-emerald-500]="restaurant().isOpen"
+        [class.bg-red-50]="!restaurant().isOpen"
+        [class.text-red-400]="!restaurant().isOpen"
+      >
+        {{ restaurant().isOpen ? 'مفتوح الآن' : 'مغلق الآن' }}
+      </span>
+    </div>
+  </div>
+</article>

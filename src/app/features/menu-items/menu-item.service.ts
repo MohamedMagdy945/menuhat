@@ -1,10 +1,10 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { finalize } from 'rxjs';
-import { environment } from '../../../core/environments/environment';
-import { MostRequestedQuery } from '../models/most-requested-query';
-import { USE_GLOBAL_LOADING } from '../../../core/loading/loading-context';
-import { MenuItem } from '../models/menu-item.model';
+import { MostRequestedQuery } from './models/most-requested-query';
+import { MenuItem } from './models/menu-item.model';
+import { environment } from '../../core/environments/environment';
+import { USE_GLOBAL_LOADING } from '../../core/loading/loading-context';
 
 @Injectable({
   providedIn: 'root',
@@ -53,7 +53,6 @@ export class MenuItemService {
       )
       .subscribe({
         next: (response) => {
-          console.log(response);
           const items = Array.isArray(response.items) ? response.items : [];
 
           if (!items.length) {

@@ -95,7 +95,6 @@ export class HorizontalScrollComponent
 
       requestAnimationFrame(() => {
         this.update();
-        this.fillIfNeeded();
       });
     });
   }

@@ -24,7 +24,7 @@
     <div class="flex w-max items-stretch gap-2 md:gap-3">
       <!-- Menu Items -->
       @for (menuItem of menuItems(); track menuItem.mostrequestesId) {
-        <div class="w-48 shrink-0 md:w-52">
+        <div class="w-46 shrink-0 md:w-48">
           <app-home-menu-item-card class="block w-full" [menuItem]="menuItem" />
         </div>
       }

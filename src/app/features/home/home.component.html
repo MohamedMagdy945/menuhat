@@ -117,12 +117,45 @@
 </div>
 
 <!-- product section -->
-<div class="mt-4 px-2 md:px-6">
+<div class="mt-4 px-2 md:px-8">
   <app-home-menu-item-section
     title="الأكثر طلبًا في منطقتك"
     [menuItems]="menuItemService.mostRequested()"
     [hasMoreData]="menuItemService.mostRequestedHasNext()"
     [isLoadingMore]="menuItemService.isLoadingMostRequested()"
     (loadMore)="loadMoreMostRequested()"
+  />
+</div>
+
+<!-- restaurants section -->
+<div class="mt-2 px-2 md:px-8">
+  <app-home-restaurant-section
+    title="الأكثر زيارة"
+    [restaurants]="restaurantsService.topVisits()"
+    [hasMoreData]="restaurantsService.topVisitsHasNext()"
+    [isLoadingMore]="restaurantsService.isLoadingTopVisits()"
+    (loadMore)="loadMoreTopVisits()"
+  />
+</div>
+
+<!-- Nearest Restaurants -->
+<div class="mt-6 px-2 md:px-6">
+  <app-home-restaurant-section
+    title="الأقرب إلى منطقتك"
+    [restaurants]="restaurantsService.nearestRestaurants()"
+    [hasMoreData]="restaurantsService.nearestRestaurantsHasNext()"
+    [isLoadingMore]="restaurantsService.isLoadingNearestRestaurants()"
+    (loadMore)="loadMoreNearestRestaurants()"
+  />
+</div>
+
+<!-- Top Rated Restaurants -->
+<div class="mt-6 px-2 md:px-6">
+  <app-home-restaurant-section
+    title="الأعلى تقييماً"
+    [restaurants]="restaurantsService.topRates()"
+    [hasMoreData]="restaurantsService.topRatesHasNext()"
+    [isLoadingMore]="restaurantsService.isLoadingTopRates()"
+    (loadMore)="loadMoreTopRates()"
   />
 </div>

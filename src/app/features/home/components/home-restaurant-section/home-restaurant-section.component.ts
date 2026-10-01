@@ -12,14 +12,17 @@ import { HomeRestaurantCardComponent } from '../home-restaurant-card/home-restau
 @Component({
   selector: 'app-home-restaurant-section',
   imports: [
+    HomeRestaurantCardComponent,
     HorizontalScrollComponent,
     HorizontalCardSkeletonComponent,
-    HomeRestaurantCardComponent,
   ],
   templateUrl: './home-restaurant-section.component.html',
   styleUrl: './home-restaurant-section.component.css',
 })
 export class HomeRestaurantSectionComponent {
+
+
+
 
   // Section title
   readonly title = input.required<string>();
@@ -35,9 +38,6 @@ export class HomeRestaurantSectionComponent {
   readonly loadMore = output<void>();
 
   onLoadMore(): void {
-    // Don't request more data if:
-    // - There is no more data
-    // - A request is already running
     if (!this.hasMoreData() || this.isLoadingMore()) {
       return;
     }

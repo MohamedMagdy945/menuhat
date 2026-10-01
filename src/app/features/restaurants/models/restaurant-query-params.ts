@@ -1,4 +1,4 @@
-export interface MenuQueryParams {
+export interface RestaurantQueryParams {
     PageNumber?: number;
     PageSize?: number;
     SearchValue?: string;
