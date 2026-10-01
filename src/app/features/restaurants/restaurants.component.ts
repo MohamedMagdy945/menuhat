@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MOCK_RESTAURANTS } from '../../core/mocks/restaurant.mock';
-import { Restaurant } from './models/restaurant';
 import { RestaurantItemComponent } from './components/restaurant-item/restaurant-item.component';
+import { RestaurantsService } from './restaurants.service';
 
 @Component({
   imports: [RestaurantItemComponent],
@@ -12,37 +11,50 @@ import { RestaurantItemComponent } from './components/restaurant-item/restaurant
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
-export class RestaurantsComponent {
+export class RestaurantsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly restaurantsService = inject(RestaurantsService);
+  private readonly filter = this.route.snapshot.data['filter'] as string | undefined;
 
-  readonly restaurants = signal<Restaurant[]>(MOCK_RESTAURANTS);
+  readonly restaurants = computed(() =>
+    this.filter === 'top-rated'
+      ? this.restaurantsService.topRates()
+      : this.restaurantsService.topVisits(),
+  );
 
-  readonly title = signal('كل المطاعم');
-  constructor() {
+  readonly title = computed(() =>
+    this.filter === 'top-rated' ? 'الأعلى تقييمًا' : 'الأكثر زيارة',
+  );
+  readonly hasMore = computed(() =>
+    this.filter === 'top-rated'
+      ? this.restaurantsService.topRatesHasNext()
+      : this.restaurantsService.topVisitsHasNext(),
+  );
+  readonly isLoading = computed(() =>
+    this.filter === 'top-rated'
+      ? this.restaurantsService.isLoadingTopRates()
+      : this.restaurantsService.isLoadingTopVisits(),
+  );
 
-    this.route.queryParams.subscribe(params => {
-
-      const section = params['section'];
-
-      switch (section) {
-
-        case 'trending':
-          this.title.set('رائج الآن');
-          break;
-
-        case 'popular':
-          this.title.set('الأكثر طلباً في منطقتك');
-          break;
-
-        case 'most-visited':
-          this.title.set('الأكثر زيارة');
-          break;
-
-        default:
-          this.title.set('كل المطاعم');
+  ngOnInit(): void {
+    if (this.filter === 'top-rated') {
+      if (this.restaurantsService.topRates().length === 0) {
+        this.restaurantsService.loadTopRates({ globalLoading: false });
       }
+      return;
+    }
 
-    });
+    if (this.restaurantsService.topVisits().length === 0) {
+      this.restaurantsService.loadTopVisits({ globalLoading: false });
+    }
+  }
 
+  loadMore(): void {
+    if (this.filter === 'top-rated') {
+      this.restaurantsService.loadTopRates({ globalLoading: false });
+      return;
+    }
+
+    this.restaurantsService.loadTopVisits({ globalLoading: false });
   }
 }

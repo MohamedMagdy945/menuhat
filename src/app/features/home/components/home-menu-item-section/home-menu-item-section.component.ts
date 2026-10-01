@@ -8,7 +8,7 @@ import {
 import { HorizontalScrollComponent } from '../../../../shared/components/horizontal-scroll/horizontal-scroll.component';
 
 import { HorizontalCardSkeletonComponent } from '../../../../shared/skeleton/horizontal-card-skeleton/horizontal-card-skeleton.component';
-import { MenuItem } from '../../../menu-items/models/menu-item.model';
+import { MenuItem } from '../../../menu-items/models/menu-item';
 import { HomeMenuItemCardComponent } from '../home-menu-item-card/home-menu-item-card.component';
 
 

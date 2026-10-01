@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { MostRequestedQuery } from './models/most-requested-query';
-import { MenuItem } from './models/menu-item.model';
+import { MenuItem } from './models/menu-item';
 import { environment } from '../../core/environments/environment';
 import { USE_GLOBAL_LOADING } from '../../core/loading/loading-context';
 

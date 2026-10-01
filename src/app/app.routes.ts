@@ -9,6 +9,7 @@ import { TestLoadingComponent } from './features/testing/testing';
 import { RestaurantsComponent } from './features/restaurants/restaurants.component';
 import { RetauranProfileComponent } from './features/profile/restaurantProfile/components/retauran-profile/retauran-profile.component';
 import { TechnicalSupportComponent } from './features/technical-support/components/technical-support/technical-support.component';
+import { MealsComponent } from './features/menu-items/menu-item.component';
 
 
 export const routes: Routes = [
@@ -99,10 +100,7 @@ export const routes: Routes = [
 
             {
                 path: 'most-ordered',
-                component: RestaurantsComponent,
-                data: {
-                    filter: 'most-ordered'
-                }
+                component: MealsComponent
             },
 
             {
@@ -114,11 +112,17 @@ export const routes: Routes = [
             },
 
             {
-                path: 'trending',
+                path: 'top-rated',
                 component: RestaurantsComponent,
                 data: {
-                    filter: 'trending'
+                    filter: 'top-rated'
                 }
+            },
+
+            {
+                path: 'trending',
+                redirectTo: 'most-visited',
+                pathMatch: 'full'
             },
 
 

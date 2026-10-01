@@ -26,4 +26,23 @@
         }
     </div>
 
+    @if (restaurants().length === 0 && isLoading()) {
+        <p class="py-12 text-center text-sm text-gray-500">جاري تحميل المطاعم...</p>
+    } @else if (restaurants().length === 0) {
+        <p class="py-12 text-center text-sm text-gray-500">لا توجد مطاعم متاحة حاليًا</p>
+    }
+
+    @if (restaurants().length > 0 && hasMore()) {
+        <div class="mt-6 flex justify-start">
+            <button
+                type="button"
+                class="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                [disabled]="isLoading()"
+                (click)="loadMore()"
+            >
+                {{ isLoading() ? 'جاري التحميل...' : 'عرض المزيد' }}
+            </button>
+        </div>
+    }
+
 </section>
