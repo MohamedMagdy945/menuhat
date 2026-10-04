@@ -1,77 +1,142 @@
-<article
-  class="relative flex flex-col cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white"
-  dir="rtl"
->
-  <!-- ===== Image Section ===== -->
-  <div class="relative h-29 w-full overflow-hidden bg-slate-50">
+<article dir="rtl" class="w-full overflow-hidden rounded-lg border border-gray-200 bg-white">
+  <!-- ================= IMAGE ================= -->
+  <div class="relative h-36.25 w-full overflow-hidden p-1">
     <img
       [src]="
         restaurant().logoURL ? apiUrl + restaurant().logoURL : '/images/default-restaurant.png'
       "
       [alt]="restaurant().clientName"
-      class="h-full w-full object-contain"
+      class="block h-full w-full object-contain"
     />
 
-    <!-- Rating Badge -->
-    <div
-      class="absolute bottom-2 left-2 flex items-center gap-1 rounded-md bg-white px-1 py-1 text-xs font-bold text-slate-700 shadow-sm"
+    <!-- Favorite -->
+    <button
+      type="button"
+      class="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 shadow-sm"
+      aria-label="إضافة للمفضلة"
     >
-      <span>{{ restaurant().rate ?? '0.0' }}</span>
-      <svg lucideStar class="h-2.5 w-2.5 fill-yellow-400 text-yellow-500"></svg>
-    </div>
+      <span class="material-symbols-rounded select-none text-[18px] leading-none text-slate-500">
+        favorite_border
+      </span>
+    </button>
+
+    <!-- Sponsored -->
+    @if (restaurant().isSponser) {
+      <span
+        class="absolute right-2 top-2 rounded-md bg-orange-500 px-2 py-1 text-[11px] font-bold leading-none text-white"
+      >
+        مميز
+      </span>
+    }
   </div>
 
-  <!-- ===== Body Section ===== -->
-  <div class="flex flex-1 flex-col p-3 text-right text-sm">
-    <div class="flex min-w-0 items-center gap-1">
-      <div class="rounded-lg">
-        <svg
-          lucideTag
-          class="h-3.5 w-3.5 shrink-0  text-gray-400 "
-       
-        ></svg>
-      </div>
+  <!-- ================= CONTENT ================= -->
+  <!-- التحكم في المسافات بين الأقسام يتم هنا عن طريق كلاس gap-2 -->
+  <div class="px-2 md:px-3 pb-2 mt-1 flex flex-col gap-0.5">
+   
+    <!-- Category -->
+    <div>
+      <div
+        class="inline-flex *:max-w-full items-center rounded-md bg-primary/5 px-1 py-1 text-primary"
+      >
+        <span class="material-symbols-rounded icon-fill select-none text-[16px] leading-none">
+          restaurant
+        </span>
 
-      <span class="truncate">
-        {{ restaurant().field_Ar }}
-      </span>
+        <span class="truncate text-sm font-semibold leading-5">
+          {{ restaurant().field_Ar }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Restaurant Name + Status -->
+    <div class="flex min-w-0 items-center gap-1">
+      <!-- Name -->
+      <h3 class="min-w-0 flex-1 truncate font-bold text-sm leading-6 text-gray-900">
+        {{ restaurant().clientName }}
+      </h3>
+
+      <!-- Open Status -->
+      <div
+        class="flex shrink-0 items-center gap-1 text-xs font-semibold"
+        [class.text-emerald-500]="restaurant().isOpen"
+        [class.text-red-400]="!restaurant().isOpen"
+      >
+        <span class="leading-3">
+          {{ restaurant().isOpen ? 'مفتوح الآن' : 'مغلق الآن' }}
+        </span>
+        <span
+          class="h-1.5 w-1.5 shrink-0 rounded-full"
+          [class.bg-emerald-500]="restaurant().isOpen"
+          [class.bg-red-400]="!restaurant().isOpen"
+        ></span>
+      </div>
     </div>
 
     <!-- Address -->
     @if (restaurant().address) {
-      <div class="flex min-w-0 items-center gap-1">
-        <svg lucideMapPin class="h-3.5 w-3.5 shrink-0 text-gray-400" [strokeWidth]="1.8"></svg>
-
-        <span class="truncate">
+      <div class="flex min-w-0 flex-1 items-center gap-1 font-semibold">
+       <svg
+              class="h-4 w-4 shrink-0 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path
+                d="M12 21s7-5.75 7-11a7 7 0 1 0-14 0c0 5.25 7 11 7 11Z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="12" cy="10" r="2.75" />
+            </svg>
+        <span class="min-w-0 truncate text-[14px] leading-5 text-gray-400">
           {{ restaurant().address }}
         </span>
       </div>
     }
+    @else {
+      <div class="flex min-w-0 flex-1 items-center gap-1 font-semibold">
+       <svg
+              class="h-4 w-4 shrink-0 text-gray-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            >
+              <path
+                d="M12 21s7-5.75 7-11a7 7 0 1 0-14 0c0 5.25 7 11 7 11Z"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="12" cy="10" r="2.75" />
+            </svg>
 
-    <!-- Working Hours + Status -->
-    <div class="flex items-center justify-between gap-4 text-xs">
-      <div class="flex min-w-0 items-center gap-1">
-        <!-- Clock -->
-        <div class="text-gray-400">
-          <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12 2.75a9.25 9.25 0 1 0 9.25 9.25A9.26 9.26 0 0 0 12 2.75Zm0 16.5a7.25 7.25 0 1 1 7.25-7.25A7.26 7.26 0 0 1 12 19.25Zm1-11.25h-2v5.25l4 2.5 1-1.65-3-1.85V8.25Z"
-            />
-          </svg>
-        </div>
-
-        <span class="truncate">10:00 ص - 02:00 ص</span>
+        <span class="min-w-0 truncate text-[14px] leading-5 text-gray-400">
+           لا يوجد       </span>
       </div>
+    }
 
-      <span
-        class="shrink-0 rounded-full px-1.5 py-1 font-semibold text-xs"
-        [class.bg-emerald-50]="restaurant().isOpen"
-        [class.text-emerald-500]="restaurant().isOpen"
-        [class.bg-red-50]="!restaurant().isOpen"
-        [class.text-red-400]="!restaurant().isOpen"
-      >
-        {{ restaurant().isOpen ? 'مفتوح الآن' : 'مغلق الآن' }}
-      </span>
+    <!-- Divider -->
+    <div class="border-slate-100"></div>
+
+    <!-- ================= BOTTOM ================= -->
+    <div class="flex h-5 items-center">
+      <!-- Rating -->
+      <div class="flex items-center gap-1">
+        <span
+          class="material-symbols-rounded icon-fill select-none text-[15px] leading-none text-amber-400"
+        >
+          star
+        </span>
+        <span class="text-sm font-semibold text-slate-700">
+          {{ restaurant().rate ?? '4.6' }}
+        </span>
+      </div>
+      <!-- Reviews -->
+      <div class="flex items-center gap-1 mr-3">
+        <span class="text-xs font-medium text-slate-400"> 251 تقييم </span>
+      </div>
     </div>
   </div>
 </article>

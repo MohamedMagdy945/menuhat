@@ -17,11 +17,11 @@
 
     <!-- Restaurants Grid -->
 
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,250px))] gap-3">
 
         @for (restaurant of restaurants(); track restaurant.id ) {
 
-        <app-restaurant-item [restaurant]="restaurant" />
+        <app-restaurant-card [restaurant]="restaurant" />
 
         }
     </div>
@@ -36,7 +36,7 @@
         <div class="mt-6 flex justify-start">
             <button
                 type="button"
-                class="rounded-md bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                class="rounded-lg bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
                 [disabled]="isLoading()"
                 (click)="loadMore()"
             >

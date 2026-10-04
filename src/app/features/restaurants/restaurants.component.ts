@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RestaurantItemComponent } from './components/restaurant-item/restaurant-item.component';
 import { RestaurantsService } from './restaurants.service';
+import { RestaurantCardComponent } from './components/restaurant-card/restaurant-card.component';
+import { HomeRestaurantCardComponent } from '../home/components/home-restaurant-card/home-restaurant-card.component';
 
 @Component({
-  imports: [RestaurantItemComponent],
+  imports: [RestaurantCardComponent],
   selector: 'app-restaurants',
   styleUrl: './restaurants.component.css',
   templateUrl: './restaurants.component.html',

@@ -7,9 +7,10 @@ import { CartComponent } from './features/cart/cart.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
 import { TestLoadingComponent } from './features/testing/testing';
 import { RestaurantsComponent } from './features/restaurants/restaurants.component';
-import { RetauranProfileComponent } from './features/profile/restaurantProfile/components/retauran-profile/retauran-profile.component';
+import { RetauranProfileComponent } from './features/restaurants/components/restaurant-details/restaurant-details.component';
 import { TechnicalSupportComponent } from './features/technical-support/components/technical-support/technical-support.component';
 import { MealsComponent } from './features/menu-items/menu-item.component';
+import { RestaurantDetailsComponent } from './features/restaurants/components/restaurant-details/restaurant-details.component';
 
 
 export const routes: Routes = [
@@ -139,8 +140,16 @@ export const routes: Routes = [
                 path: 'support',
                 component: TechnicalSupportComponent
             },
+            
 
            { path: 'restaurantProfile/:id', component: RetauranProfileComponent },
+
+           
+            {
+                path: 'details',
+                component: RestaurantDetailsComponent
+            },
+
         ]
     },
 

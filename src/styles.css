@@ -5,7 +5,7 @@
 @import "@fontsource/cairo/500.css";
 @import "@fontsource/cairo/600.css";
 @import "@fontsource/cairo/700.css";
-
+@import 'material-symbols/rounded.css';
 
 /* =========================
    Design Tokens
@@ -40,6 +40,9 @@ body {
 /* =========================
     Global Elements
 ========================= */
+.material-symbols-rounded {
+  font-size: inherit;
+}
 
 
 img {
@@ -49,4 +52,8 @@ img {
 
 a {
     text-decoration: none;
+}
+
+.icon-fill {
+  font-variation-settings: 'FILL' 1;
 }

@@ -5,13 +5,13 @@ import { Router } from '@angular/router';
 
 @Component({
   imports: [],
-  selector: 'app-restaurant-item',
-  styleUrl: './restaurant-item.component.css',
-  templateUrl: './restaurant-item.component.html',
+  selector: 'app-restaurant-card',
+  styleUrl: './restaurant-card.component.css',
+  templateUrl: './restaurant-card.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 
 })
-export class RestaurantItemComponent {
+export class RestaurantCardComponent {
     readonly apiUrl = environment.filesUrl;
     readonly defaultImage = '/images/default-restaurant.png';
     private readonly router = inject(Router);

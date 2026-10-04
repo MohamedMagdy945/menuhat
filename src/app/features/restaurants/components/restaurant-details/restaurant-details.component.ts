@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ResuaurantProfileService } from '../../services/resuaurant-profile-service';
+import { ResuaurantProfileService } from '../../../profile/restaurantProfile/services/resuaurant-profile-service';
 import { ActivatedRoute } from '@angular/router';
 
 interface MenuItem {
@@ -19,14 +18,14 @@ interface StatItem {
 }
 
 @Component({
-  selector: 'app-retauran-profile',
+  selector: 'app-restaurant-details',
   standalone: true,
-  imports: [CommonModule],
-  templateUrl: './retauran-profile.component.html',
-  styleUrl: './retauran-profile.component.css',
+  imports: [],
+  templateUrl: './restaurant-details.component.html',
+  styleUrl: './restaurant-details.component.css',
 })
 
-export class RetauranProfileComponent {
+export class RestaurantDetailsComponent {
   private readonly _RestauranProfileService = inject(ResuaurantProfileService);
   private route = inject(ActivatedRoute);
   
