@@ -1,20 +1,19 @@
-import { Component, inject, signal } from '@angular/core';
-import { ResuaurantProfileService } from '../../../profile/restaurantProfile/services/resuaurant-profile-service';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
-interface MenuItem {
-  id: number;
-  name: string;
-  price: number;
-  image: string;
-  badge?: string;
-  badgeColor?: string;
-}
+import { RestaurantDetails, RestaurantMenuProduct } from '../../models/restaurant-details';
+import { ResuaurantProfileService } from '../../../profile/restaurantProfile/services/resuaurant-profile-service';
+import { environment } from '../../../../core/environments/environment';
 
 interface StatItem {
   icon: string;
   label: string;
   value: string;
+}
+
+interface DisplayMenuItem {
+  product: RestaurantMenuProduct;
+  categoryName: string;
+  subCategoryName: string;
 }
 
 @Component({
@@ -24,121 +23,117 @@ interface StatItem {
   templateUrl: './restaurant-details.component.html',
   styleUrl: './restaurant-details.component.css',
 })
-
 export class RestaurantDetailsComponent {
-  selectedCategory = signal('All');
+  readonly apiUrl = environment.filesUrl;
+  readonly selectedCategory = signal<number | null>(null);
+  readonly restaurantData = signal<RestaurantDetails | null>(null);
+  readonly isLoading = signal(true);
+  readonly errorMessage = signal<string | null>(null);
 
-selectCategory(category: string): void {
-  this.selectedCategory.set(category);
-}
-  private readonly _RestauranProfileService = inject(ResuaurantProfileService);
+  private readonly restaurantProfileService = inject(ResuaurantProfileService);
   private readonly route = inject(ActivatedRoute);
 
-  
-  restaurantName = "BkBite's Hub";
-  restaurantDescription = 'برجر وساندويتشات فاخرة • وجبات سريعة ومقرمشة';
-  restaurantData = signal<any>(null);
-  isLoading = signal<boolean>(true);
-  
-  stats: StatItem[] = [
-    { icon: 'fa-regular fa-clock', label: 'ساعات العمل', value: '10:00 ص - 12:00 م' },
-    { icon: 'fa-solid fa-users', label: 'عدد الزوار', value: 'زيارة +15k' },
-    { icon: 'fa-solid fa-location-dot', label: 'الموقع', value: 'المعادي، القاهرة' },
-    { icon: 'fa-solid fa-truck-fast', label: 'نطاق التوصيل', value: 'داخل القاهرة' },
-    { icon: 'fa-solid fa-bolt', label: 'مدة التوصيل', value: '25-35 دقيقة' },
-  ];
+  readonly stats = computed<StatItem[]>(() => {
+    const main = this.restaurantData()?.main;
+    if (!main) {
+      return [];
+    }
 
+    return [
+      {
+        icon: 'fa-regular fa-clock',
+        label: 'ساعات العمل',
+        value: `${main.fromTime} - ${main.toTime}`,
+      },
+      {
+        icon: 'fa-solid fa-users',
+        label: 'عدد الزيارات',
+        value: `${main.visitsCount}`,
+      },
+      {
+        icon: 'fa-solid fa-location-dot',
+        label: 'الموقع',
+        value: `${main.city_Ar}، ${main.government_Ar}`,
+      },
+      {
+        icon: 'fa-solid fa-utensils',
+        label: 'التصنيف',
+        value: main.field_Ar,
+      },
+      {
+        icon: 'fa-solid fa-truck-fast',
+        label: 'شروط الطلب',
+        value: main.orderConditions_Ar,
+      },
+    ];
+  });
 
-  ngOnInit() {
+  readonly menuItems = computed<DisplayMenuItem[]>(() => {
+    const selectedCategory = this.selectedCategory();
+    return (this.restaurantData()?.details ?? [])
+      .filter((category) => selectedCategory === null || category.id === selectedCategory)
+      .flatMap((category) =>
+        category.subCategories.flatMap((subCategory) =>
+          subCategory.menuProducts
+            .filter((product) => !product.isHidden)
+            .map((product) => ({
+              product,
+              categoryName: category.name,
+              subCategoryName: subCategory.name,
+            })),
+        ),
+      );
+  });
+
+  ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const serial = params.get('serial');
-      console.log("serial from Restaurant Profile",serial);
-      if (serial) {
-        this.fetchDataWithLocation(serial);
+      if (!serial) {
+        this.errorMessage.set('تعذر تحديد المطعم.');
+        this.isLoading.set(false);
+        return;
       }
+
+      this.fetchDataWithLocation(serial);
     });
   }
 
-  fetchDataWithLocation(serial: string) {
+  selectCategory(categoryId: number | null): void {
+    this.selectedCategory.set(categoryId);
+  }
+
+  fetchDataWithLocation(serial: string): void {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const lat = position.coords.latitude;
-          const long = position.coords.longitude;
-          this.loadDetails(serial, lat, long);
+          this.loadDetails(serial, position.coords.latitude, position.coords.longitude);
         },
         (error) => {
           console.warn('لم يتم الحصول على الموقع، سيتم الإرسال بدون lat و long:', error);
           this.loadDetails(serial, null, null);
-        }
+        },
       );
-    } else {
-      this.loadDetails(serial, null, null);
+      return;
     }
+
+    this.loadDetails(serial, null, null);
   }
 
-  loadDetails(serial: string, lat: number | null, long: number | null) {
+  private loadDetails(serial: string, lat: number | null, long: number | null): void {
     this.isLoading.set(true);
-    
-    this._RestauranProfileService.GetRestaurantDetails(serial).subscribe({
-      next: (res) => {
-        console.log("res",res);
-        this.restaurantData.set(res);
+    this.errorMessage.set(null);
+
+    this.restaurantProfileService.GetRestaurantDetails(serial, lat, long).subscribe({
+      next: (response) => {
+        this.restaurantData.set(response);
+        this.selectedCategory.set(null);
         this.isLoading.set(false);
       },
-      error: (err) => {
-        console.log("err",err);
-        console.error('حدث خطأ:', err);
+      error: (error: unknown) => {
+        console.error('حدث خطأ أثناء تحميل تفاصيل المطعم:', error);
+        this.errorMessage.set('تعذر تحميل بيانات المطعم. يرجى المحاولة مرة أخرى.');
         this.isLoading.set(false);
-      }
+      },
     });
   }
-  // stats: StatItem[] = null;
-
-  // categories: string[];
-
-  // menuItems: MenuItem[];
-categories: string[] = [
-    'جميع الأقسام',
-    'الكل',
-    'برجر',
-    'دجاج مقرمش',
-    'كريبات',
-    'بيتزا',
-    'فطير',
-    'ستيك',
-    'حلويات',
-  ];
-
-  menuItems: MenuItem[] = [
-    {
-      id: 1,
-      name: 'بيج ماك برجر',
-      price: 150,
-      image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80',
-      badge: 'الأكثر مبيعاً',
-      badgeColor: 'bg-orange-500',
-    },
-    {
-      id: 2,
-      name: 'دجاج مقلي',
-      price: 120.0,
-      image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=500&q=80',
-      badge: 'وجبة مقرمشة',
-      badgeColor: 'bg-amber-500',
-    },
-    {
-      id: 3,
-      name: 'دبل بيكون برجر',
-      price: 175,
-      image: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=500&q=80',
-    },
-    {
-      id: 4,
-      name: 'ستريبس كريسبي بوكس',
-      price: 135,
-      image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=500&q=80',
-    },
-  ];
-  
 }

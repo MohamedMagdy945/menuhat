@@ -115,9 +115,9 @@ export const routes: Routes = [
                         component: RestaurantsComponent
                     },
 
-                    // /restaurants/:id
+                    // /restaurants/:serial
                     {
-                        path: ':id',
+                        path: ':serial',
                         component: RestaurantDetailsComponent
                     }
                 ]

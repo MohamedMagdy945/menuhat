@@ -19,10 +19,6 @@ export class RestaurantCardComponent {
     restaurant = input.required<Restaurant>();
 
     onCardClick() {
-     const serial = this.restaurant().serial;     
-     if (serial) {
-      console.log("Serial fom item",serial);
-      this.router.navigate(['/restaurantProfile', serial]);
-    }
+      this.router.navigate(['/restaurants', this.restaurant().serial]);
   }
 }

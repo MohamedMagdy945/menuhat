@@ -1,143 +1,176 @@
-<div class="max-w-6xl mx-auto px-4 pt-4" dir="ltr">
-  <!-- Header / Banner Section -->
-  <div
-    class="relative rounded-2xl overflow-hidden shadow-sm bg-linear-to-r from-orange-400 to-amber-200 h-64 md:h-80"
-  >
-    <!-- Action Buttons -->
-    <div class="absolute top-4 left-4 flex gap-2 z-10">
-      <button
-        class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition"
+@if (isLoading()) {
+  <p class="py-16 text-center text-sm text-gray-500" role="status">جاري تحميل بيانات المطعم...</p>
+} @else if (errorMessage()) {
+  <p class="py-16 text-center text-sm text-red-500" role="alert">{{ errorMessage() }}</p>
+} @else if (restaurantData(); as data) {
+  <div class="mx-auto px-4 pt-4 md:px-8" dir="rtl">
+    <!-- Restaurant Banner -->
+    <div class="relative h-64 overflow-hidden rounded-2xl bg-gray-100 shadow-sm md:h-80">
+      <img
+        src="/images/restaurant-bg.png"
+        [alt]="data.main.clientName"
+        class="absolute inset-0 h-full w-full object-cover object-center"
+      />
+      <div class="absolute inset-0 bg-black/20"></div>
+
+      <div
+        class="absolute bottom-4 left-4 flex items-center gap-1.5 rounded-lg bg-black/60 px-3 py-1.5 text-xs text-white backdrop-blur-md"
       >
-        <i class="fa-regular fa-heart"></i>
-      </button>
-      <button
-        class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition"
+        <i class="fa-solid fa-star text-yellow-400"></i>
+        <span class="font-bold">{{ data.main.rate ?? 'لا يوجد تقييم' }}</span>
+      </div>
+    </div>
+
+    <!-- Restaurant Info -->
+    <div class="mt-4 flex items-start justify-between gap-4 px-2">
+      <div class="min-w-0">
+        <h1 class="text-2xl font-extrabold text-gray-900 md:text-3xl">
+          {{ data.main.clientName }}
+        </h1>
+        <p class="mt-1 text-xs text-gray-500 md:text-sm">
+          {{ data.main.notes || data.main.field_Ar }}
+        </p>
+        <span
+          class="mt-2 inline-flex rounded-full px-2.5 py-1 text-xs font-bold"
+          [class.bg-emerald-50]="data.main.isOpen"
+          [class.text-emerald-600]="data.main.isOpen"
+          [class.bg-red-50]="!data.main.isOpen"
+          [class.text-red-500]="!data.main.isOpen"
+        >
+          {{ data.main.isOpen ? 'مفتوح الآن' : 'مغلق الآن' }}
+        </span>
+      </div>
+
+      <div
+        class="-mt-10 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-orange-500 text-2xl font-black text-white shadow-md md:h-20 md:w-20"
       >
-        <i class="fa-solid fa-share-nodes"></i>
-      </button>
+        @if (data.main.logoURL) {
+          <img
+            [src]="apiUrl + data.main.logoURL"
+            [alt]="data.main.clientName"
+            class="h-full w-full object-cover"
+          />
+        } @else {
+          {{ data.main.clientName.charAt(0) }}
+        }
+      </div>
     </div>
 
-    <!-- Rating Badge -->
-    <div
-      class="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5"
-    >
-      <i class="fa-solid fa-star text-yellow-400"></i>
-      <span class="font-bold">4.8</span>
-      <span class="text-gray-300">(+1,200 تقييم)</span>
-    </div>
-  </div>
+    <!-- Restaurant Information -->
+    <div class="mt-6 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+      <div class="mb-4 flex items-center justify-center gap-1 text-center text-sm font-bold text-gray-700 md:justify-start">
+        <span class="h-2 w-2 rounded-full bg-orange-500"></span>
+        {{ data.main.orderConditions_Ar }}
+      </div>
 
-  <!-- Restaurant Info Header -->
-  <div class="flex justify-between items-start mt-4 px-2">
-    <div>
-      <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">{{ restaurantName }}</h1>
-      <p class="text-xs md:text-sm text-gray-500 mt-1">{{ restaurantDescription }}</p>
-    </div>
-    <!-- Logo Avatar -->
-    <div
-      class="w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-full flex items-center justify-center text-white text-2xl md:text-3xl font-black shadow-md -mt-10 border-4 border-white z-10"
-    >
-      b
-    </div>
-  </div>
-
-  <!-- Info / Stats Bar -->
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mt-6">
-    <p
-      class="text-center md:text-right text-sm font-bold text-gray-700 mb-4 flex items-center justify-center md:justify-start gap-1"
-    >
-      <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-      أفضل المكونات الطازجة لتجربة برجر لا تُنسى.
-    </p>
-
-    <div
-      class="grid grid-cols-2 md:grid-cols-5 gap-4 pt-2 border-t border-gray-100 text-center md:text-right"
-    >
-      @for (stat of stats; track stat.label) {
-        <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg shrink-0"
-          >
-            <i [class]="stat.icon"></i>
+      <div
+        class="grid grid-cols-1 gap-4 border-t border-gray-100 pt-4 text-center sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 md:text-right"
+      >
+        @for (stat of stats(); track stat.label) {
+          <div class="flex items-center gap-3">
+            <div
+              class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-lg text-orange-500"
+            >
+              <i [class]="stat.icon"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="text-[10px] text-gray-400">{{ stat.label }}</div>
+              <div class="truncate text-xs font-bold text-gray-800">{{ stat.value }}</div>
+            </div>
           </div>
-          <div>
-            <div class="text-[10px] text-gray-400">{{ stat.label }}</div>
-            <div class="text-xs font-bold text-gray-800">{{ stat.value }}</div>
-          </div>
-        </div>
-      }
+        }
+      </div>
     </div>
-  </div>
 
-  <!-- Navigation Tabs -->
-  <div
-    class="flex items-center justify-end gap-8 border-b border-gray-200 mt-8 pb-3 text-sm font-semibold"
-  >
-    <button class="text-gray-500 hover:text-gray-800">التقييمات</button>
-    <button class="text-gray-500 hover:text-gray-800">المنيو</button>
-    <button class="text-orange-500 border-b-2 border-orange-500 pb-3 -mb-3 font-bold">
-      الأكثر طلباً
-    </button>
-  </div>
+    <!-- Menu -->
+    <div class="mt-8 border-b border-gray-200 pb-3 text-sm font-bold text-orange-500">
+      قائمة الطعام
+    </div>
 
-  <!-- Filter Pills -->
-  <div class="flex items-center justify-end gap-2 my-6 overflow-x-auto pb-2 text-xs font-medium">
-    @for (category of categories; track category) {
+    <div class="my-6 flex items-center gap-2 overflow-x-auto pb-2 text-xs font-medium">
       <button
         type="button"
-        (click)="selectCategory(category)"
-        class="whitespace-nowrap rounded-xl px-4 py-2 transition"
-        [class.bg-orange-500]="selectedCategory() === category"
-        [class.text-white]="selectedCategory() === category"
-        [class.font-bold]="selectedCategory() === category"
-        [class.shadow-sm]="selectedCategory() === category"
-        [class.bg-white]="selectedCategory() !== category"
-        [class.border]="selectedCategory() !== category"
-        [class.border-gray-200]="selectedCategory() !== category"
-        [class.text-gray-600]="selectedCategory() !== category"
-        [class.hover:bg-gray-50]="selectedCategory() !== category"
+        (click)="selectCategory(null)"
+        class="whitespace-nowrap rounded-xl border px-4 py-2 transition"
+        [class.border-orange-500]="selectedCategory() === null"
+        [class.bg-orange-500]="selectedCategory() === null"
+        [class.font-bold]="selectedCategory() === null"
+        [class.text-white]="selectedCategory() === null"
+        [class.border-gray-200]="selectedCategory() !== null"
+        [class.bg-white]="selectedCategory() !== null"
+        [class.text-gray-600]="selectedCategory() !== null"
       >
-        {{ category }}
+        الكل
       </button>
-    }
-  </div>
+      @for (category of data.details; track category.id) {
+        <button
+          type="button"
+          (click)="selectCategory(category.id)"
+          class="whitespace-nowrap rounded-xl border px-4 py-2 transition"
+          [class.border-orange-500]="selectedCategory() === category.id"
+          [class.bg-orange-500]="selectedCategory() === category.id"
+          [class.font-bold]="selectedCategory() === category.id"
+          [class.text-white]="selectedCategory() === category.id"
+          [class.border-gray-200]="selectedCategory() !== category.id"
+          [class.bg-white]="selectedCategory() !== category.id"
+          [class.text-gray-600]="selectedCategory() !== category.id"
+        >
+          {{ category.name }}
+        </button>
+      }
+    </div>
 
-  <!-- Food Cards Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-    @for (item of menuItems; track item.name) {
-      <div
-        class="bg-white rounded-2xl p-3 border border-gray-100 shadow-sm hover:shadow-md transition"
-      >
-        <div class="relative h-44 rounded-xl overflow-hidden mb-3">
-          <img [src]="item.image" [alt]="item.name" class="w-full h-full object-cover" />
-          <button
-            class="absolute top-2 left-2 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center text-xs text-gray-600 hover:bg-white"
+    @if (menuItems().length > 0) {
+      <div class="grid grid-cols-1 gap-5 pb-8 sm:grid-cols-2 lg:grid-cols-4">
+        @for (item of menuItems(); track item.product.id) {
+          <article
+            class="overflow-hidden rounded-2xl border border-gray-100 bg-white p-3 shadow-sm transition hover:shadow-md"
           >
-            <i class="fa-regular fa-heart"></i>
-          </button>
-          @if (item.badge) {
-            <span
-              [class]="
-                'absolute top-2 right-2 text-white text-[10px] font-bold px-2 py-0.5 rounded-md ' +
-                item.badgeColor
-              "
-            >
-              {{ item.badge }}
-            </span>
-          }
-        </div>
-        <h3 class="font-bold text-gray-800 text-sm mb-4">{{ item.name }}</h3>
-        <div class="flex items-center justify-between pt-2 border-t border-gray-50">
-          <span class="font-extrabold text-orange-500 text-sm">
-            {{ item.price }} <span class="text-xs font-normal">ج.م</span>
-          </span>
-          <button
-            class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-orange-500 hover:text-white transition flex items-center justify-center text-gray-600"
-          >
-            <i class="fa-solid fa-plus text-xs"></i>
-          </button>
-        </div>
+            <div class="relative mb-3 h-44 overflow-hidden rounded-xl bg-gray-100">
+              <img
+                [src]="item.product.photoURL ? apiUrl + item.product.photoURL : '/images/default-meal.png'"
+                [alt]="item.product.productName"
+                class="h-full w-full object-cover"
+              />
+              @if (item.product.isOffer) {
+                <span
+                  class="absolute right-2 top-2 rounded-md bg-orange-500 px-2 py-0.5 text-[10px] font-bold text-white"
+                >
+                  عرض
+                </span>
+              }
+            </div>
+
+            <div class="mb-1 text-xs text-gray-400">
+              {{ item.categoryName }} · {{ item.subCategoryName }}
+            </div>
+            <h2 class="mb-2 font-bold text-gray-800">{{ item.product.productName }}</h2>
+            @if (item.product.description) {
+              <p class="mb-3 line-clamp-2 text-xs text-gray-500">
+                {{ item.product.description }}
+              </p>
+            }
+
+            <div class="flex items-center justify-between border-t border-gray-50 pt-2">
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-extrabold text-orange-500">
+                  {{ item.product.price }} <span class="text-xs font-normal">ج.م</span>
+                </span>
+                @if (item.product.oldPrice > item.product.price) {
+                  <span class="text-xs text-gray-400 line-through">
+                    {{ item.product.oldPrice }} ج.م
+                  </span>
+                }
+              </div>
+              @if (item.product.isFavorite) {
+                <i class="fa-solid fa-heart text-sm text-red-500" aria-label="في المفضلة"></i>
+              }
+            </div>
+          </article>
+        }
       </div>
+    } @else {
+      <p class="py-12 text-center text-sm text-gray-500">لا توجد منتجات في هذا القسم حاليًا</p>
     }
   </div>
-</div>
+}
