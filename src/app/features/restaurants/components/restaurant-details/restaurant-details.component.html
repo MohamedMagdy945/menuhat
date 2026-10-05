@@ -1,107 +1,143 @@
-            <div class="max-w-6xl mx-auto px-4 pt-4" dir="rtl">
+<div class="max-w-6xl mx-auto px-4 pt-4" dir="ltr">
+  <!-- Header / Banner Section -->
+  <div
+    class="relative rounded-2xl overflow-hidden shadow-sm bg-linear-to-r from-orange-400 to-amber-200 h-64 md:h-80"
+  >
+    <!-- Action Buttons -->
+    <div class="absolute top-4 left-4 flex gap-2 z-10">
+      <button
+        class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition"
+      >
+        <i class="fa-regular fa-heart"></i>
+      </button>
+      <button
+        class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition"
+      >
+        <i class="fa-solid fa-share-nodes"></i>
+      </button>
+    </div>
 
-            <!-- Header / Banner Section -->
-            <div class="relative rounded-2xl overflow-hidden shadow-sm bg-linear-to-r from-orange-400 to-amber-200 h-64 md:h-80">
-                <!-- Action Buttons -->
-                <div class="absolute top-4 left-4 flex gap-2 z-10">
-                <button class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition">
-                    <i class="fa-regular fa-heart"></i>
-                </button>
-                <button class="w-10 h-10 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-700 hover:bg-white transition">
-                    <i class="fa-solid fa-share-nodes"></i>
-                </button>
-                </div>
+    <!-- Rating Badge -->
+    <div
+      class="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+    >
+      <i class="fa-solid fa-star text-yellow-400"></i>
+      <span class="font-bold">4.8</span>
+      <span class="text-gray-300">(+1,200 تقييم)</span>
+    </div>
+  </div>
 
-                <!-- Rating Badge -->
-                <div class="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                <i class="fa-solid fa-star text-yellow-400"></i>
-                <span class="font-bold">4.8</span>
-                <span class="text-gray-300">(+1,200 تقييم)</span>
-                </div>
-            </div>
+  <!-- Restaurant Info Header -->
+  <div class="flex justify-between items-start mt-4 px-2">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">{{ restaurantName }}</h1>
+      <p class="text-xs md:text-sm text-gray-500 mt-1">{{ restaurantDescription }}</p>
+    </div>
+    <!-- Logo Avatar -->
+    <div
+      class="w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-full flex items-center justify-center text-white text-2xl md:text-3xl font-black shadow-md -mt-10 border-4 border-white z-10"
+    >
+      b
+    </div>
+  </div>
 
-            <!-- Restaurant Info Header -->
-            <div class="flex justify-between items-start mt-4 px-2">
-                <div>
-                <h1 class="text-2xl md:text-3xl font-extrabold text-gray-900">{{ restaurantName }}</h1>
-                <p class="text-xs md:text-sm text-gray-500 mt-1">{{ restaurantDescription }}</p>
-                </div>
-                <!-- Logo Avatar -->
-                <div class="w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-full flex items-center justify-center text-white text-2xl md:text-3xl font-black shadow-md -mt-10 border-4 border-white z-10">
-                b
-                </div>
-            </div>
+  <!-- Info / Stats Bar -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mt-6">
+    <p
+      class="text-center md:text-right text-sm font-bold text-gray-700 mb-4 flex items-center justify-center md:justify-start gap-1"
+    >
+      <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
+      أفضل المكونات الطازجة لتجربة برجر لا تُنسى.
+    </p>
 
-            <!-- Info / Stats Bar -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mt-6">
-                <p class="text-center md:text-right text-sm font-bold text-gray-700 mb-4 flex items-center justify-center md:justify-start gap-1">
-                <span class="w-2 h-2 bg-orange-500 rounded-full"></span>
-                أفضل المكونات الطازجة لتجربة برجر لا تُنسى.
-                </p>
-                
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 pt-2 border-t border-gray-100 text-center md:text-right">
-                @for (stat of stats; track stat.label) {
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg shrink-0">
-                    <i [class]="stat.icon"></i>
-                    </div>
-                    <div>
-                    <div class="text-[10px] text-gray-400">{{ stat.label }}</div>
-                    <div class="text-xs font-bold text-gray-800">{{ stat.value }}</div>
-                    </div>
-                </div>
-                }
-                </div>
-            </div>
+    <div
+      class="grid grid-cols-2 md:grid-cols-5 gap-4 pt-2 border-t border-gray-100 text-center md:text-right"
+    >
+      @for (stat of stats; track stat.label) {
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg shrink-0"
+          >
+            <i [class]="stat.icon"></i>
+          </div>
+          <div>
+            <div class="text-[10px] text-gray-400">{{ stat.label }}</div>
+            <div class="text-xs font-bold text-gray-800">{{ stat.value }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
 
-            <!-- Navigation Tabs -->
-            <div class="flex items-center justify-end gap-8 border-b border-gray-200 mt-8 pb-3 text-sm font-semibold">
-                <button class="text-gray-500 hover:text-gray-800">التقييمات</button>
-                <button class="text-gray-500 hover:text-gray-800">المنيو</button>
-                <button class="text-orange-500 border-b-2 border-orange-500 pb-3 -mb-3 font-bold">الأكثر طلباً</button>
-            </div>
+  <!-- Navigation Tabs -->
+  <div
+    class="flex items-center justify-end gap-8 border-b border-gray-200 mt-8 pb-3 text-sm font-semibold"
+  >
+    <button class="text-gray-500 hover:text-gray-800">التقييمات</button>
+    <button class="text-gray-500 hover:text-gray-800">المنيو</button>
+    <button class="text-orange-500 border-b-2 border-orange-500 pb-3 -mb-3 font-bold">
+      الأكثر طلباً
+    </button>
+  </div>
 
-            <!-- Filter Pills -->
-            <div class="flex items-center justify-end gap-2 my-6 overflow-x-auto pb-2 text-xs font-medium">
-                @for (category of categories; track category) {
-                <button
-                (click)="selectCategory(category)"
-                [ngClass]="{
-                    'bg-orange-500 text-white font-bold shadow-sm': selectedCategory === category,
-                    'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50': selectedCategory !== category
-                }"
-                class="px-4 py-2 rounded-xl whitespace-nowrap transition">
-                {{ category }}
-                </button>
-                }
-            </div>
+  <!-- Filter Pills -->
+  <div class="flex items-center justify-end gap-2 my-6 overflow-x-auto pb-2 text-xs font-medium">
+    @for (category of categories; track category) {
+      <button
+        type="button"
+        (click)="selectCategory(category)"
+        class="whitespace-nowrap rounded-xl px-4 py-2 transition"
+        [class.bg-orange-500]="selectedCategory() === category"
+        [class.text-white]="selectedCategory() === category"
+        [class.font-bold]="selectedCategory() === category"
+        [class.shadow-sm]="selectedCategory() === category"
+        [class.bg-white]="selectedCategory() !== category"
+        [class.border]="selectedCategory() !== category"
+        [class.border-gray-200]="selectedCategory() !== category"
+        [class.text-gray-600]="selectedCategory() !== category"
+        [class.hover:bg-gray-50]="selectedCategory() !== category"
+      >
+        {{ category }}
+      </button>
+    }
+  </div>
 
-            <!-- Food Cards Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                @for (item of menuItems; track item.name) {
-                <div class="bg-white rounded-2xl p-3 border border-gray-100 shadow-sm hover:shadow-md transition">
-                <div class="relative h-44 rounded-xl overflow-hidden mb-3">
-                    <img [src]="item.image" [alt]="item.name" class="w-full h-full object-cover">
-                    <button class="absolute top-2 left-2 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center text-xs text-gray-600 hover:bg-white">
-                    <i class="fa-regular fa-heart"></i>
-                    </button>
-                    @if (item.badge) {
-                    <span [class]="'absolute top-2 right-2 text-white text-[10px] font-bold px-2 py-0.5 rounded-md ' + item.badgeColor">
-                    {{ item.badge }}
-                    </span>
-                    }
-                </div>
-                <h3 class="font-bold text-gray-800 text-sm mb-4">{{ item.name }}</h3>
-                <div class="flex items-center justify-between pt-2 border-t border-gray-50">
-                    <span class="font-extrabold text-orange-500 text-sm">
-                    {{ item.price }} <span class="text-xs font-normal">ج.م</span>
-                    </span>
-                    <button class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-orange-500 hover:text-white transition flex items-center justify-center text-gray-600">
-                    <i class="fa-solid fa-plus text-xs"></i>
-                    </button>
-                </div>
-                </div>
-                }
-            </div>
-
-            </div>
+  <!-- Food Cards Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    @for (item of menuItems; track item.name) {
+      <div
+        class="bg-white rounded-2xl p-3 border border-gray-100 shadow-sm hover:shadow-md transition"
+      >
+        <div class="relative h-44 rounded-xl overflow-hidden mb-3">
+          <img [src]="item.image" [alt]="item.name" class="w-full h-full object-cover" />
+          <button
+            class="absolute top-2 left-2 w-7 h-7 bg-white/80 rounded-full flex items-center justify-center text-xs text-gray-600 hover:bg-white"
+          >
+            <i class="fa-regular fa-heart"></i>
+          </button>
+          @if (item.badge) {
+            <span
+              [class]="
+                'absolute top-2 right-2 text-white text-[10px] font-bold px-2 py-0.5 rounded-md ' +
+                item.badgeColor
+              "
+            >
+              {{ item.badge }}
+            </span>
+          }
+        </div>
+        <h3 class="font-bold text-gray-800 text-sm mb-4">{{ item.name }}</h3>
+        <div class="flex items-center justify-between pt-2 border-t border-gray-50">
+          <span class="font-extrabold text-orange-500 text-sm">
+            {{ item.price }} <span class="text-xs font-normal">ج.م</span>
+          </span>
+          <button
+            class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-orange-500 hover:text-white transition flex items-center justify-center text-gray-600"
+          >
+            <i class="fa-solid fa-plus text-xs"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

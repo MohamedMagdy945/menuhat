@@ -1,142 +1,120 @@
-<article dir="rtl" class="w-full overflow-hidden rounded-lg border border-gray-200 bg-white">
-  <!-- ================= IMAGE ================= -->
-  <div class="relative h-36.25 w-full overflow-hidden p-1">
-    <img
-      [src]="
-        restaurant().logoURL ? apiUrl + restaurant().logoURL : '/images/default-restaurant.png'
-      "
-      [alt]="restaurant().clientName"
-      class="block h-full w-full object-contain"
-    />
-
-    <!-- Favorite -->
-    <button
-      type="button"
-      class="absolute left-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-white/95 shadow-sm"
-      aria-label="إضافة للمفضلة"
-    >
-      <span class="material-symbols-rounded select-none text-[18px] leading-none text-slate-500">
-        favorite_border
-      </span>
-    </button>
-
-    <!-- Sponsored -->
-    @if (restaurant().isSponser) {
-      <span
-        class="absolute right-2 top-2 rounded-md bg-orange-500 px-2 py-1 text-[11px] font-bold leading-none text-white"
-      >
-        مميز
-      </span>
-    }
-  </div>
-
-  <!-- ================= CONTENT ================= -->
-  <!-- التحكم في المسافات بين الأقسام يتم هنا عن طريق كلاس gap-2 -->
-  <div class="px-2 md:px-3 pb-2 mt-1 flex flex-col gap-0.5">
-   
-    <!-- Category -->
-    <div>
-      <div
-        class="inline-flex *:max-w-full items-center rounded-md bg-primary/5 px-1 py-1 text-primary"
-      >
-        <span class="material-symbols-rounded icon-fill select-none text-[16px] leading-none">
-          restaurant
-        </span>
-
-        <span class="truncate text-sm font-semibold leading-5">
-          {{ restaurant().field_Ar }}
-        </span>
+<article
+  dir="rtl"
+  class="relative w-full overflow-hidden rounded-lg border border-gray-200 bg-white"
+>
+  <!-- ONE LINK -->
+  <a [routerLink]="['/restaurants', restaurant().id]" class="block">
+    <!-- ================= IMAGE ================= -->
+    <div class="relative w-full overflow-hidden p-1">
+      <div class="h-32 w-full overflow-hidden rounded-md">
+        <img
+          [src]="
+            restaurant().logoURL ? apiUrl + restaurant().logoURL : '/images/default-restaurant.png'
+          "
+          [alt]="restaurant().clientName"
+          class="h-full w-full object-contain"
+        />
       </div>
-    </div>
 
-    <!-- Restaurant Name + Status -->
-    <div class="flex min-w-0 items-center gap-1">
-      <!-- Name -->
-      <h3 class="min-w-0 flex-1 truncate font-bold text-sm leading-6 text-gray-900">
-        {{ restaurant().clientName }}
-      </h3>
-
-      <!-- Open Status -->
-      <div
-        class="flex shrink-0 items-center gap-1 text-xs font-semibold"
-        [class.text-emerald-500]="restaurant().isOpen"
-        [class.text-red-400]="!restaurant().isOpen"
-      >
-        <span class="leading-3">
-          {{ restaurant().isOpen ? 'مفتوح الآن' : 'مغلق الآن' }}
-        </span>
+      @if (restaurant().isSponser) {
         <span
-          class="h-1.5 w-1.5 shrink-0 rounded-full"
-          [class.bg-emerald-500]="restaurant().isOpen"
-          [class.bg-red-400]="!restaurant().isOpen"
-        ></span>
-      </div>
-    </div>
-
-    <!-- Address -->
-    @if (restaurant().address) {
-      <div class="flex min-w-0 flex-1 items-center gap-1 font-semibold">
-       <svg
-              class="h-4 w-4 shrink-0 text-gray-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-            >
-              <path
-                d="M12 21s7-5.75 7-11a7 7 0 1 0-14 0c0 5.25 7 11 7 11Z"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <circle cx="12" cy="10" r="2.75" />
-            </svg>
-        <span class="min-w-0 truncate text-[14px] leading-5 text-gray-400">
-          {{ restaurant().address }}
-        </span>
-      </div>
-    }
-    @else {
-      <div class="flex min-w-0 flex-1 items-center gap-1 font-semibold">
-       <svg
-              class="h-4 w-4 shrink-0 text-gray-400"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-            >
-              <path
-                d="M12 21s7-5.75 7-11a7 7 0 1 0-14 0c0 5.25 7 11 7 11Z"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <circle cx="12" cy="10" r="2.75" />
-            </svg>
-
-        <span class="min-w-0 truncate text-[14px] leading-5 text-gray-400">
-           لا يوجد       </span>
-      </div>
-    }
-
-    <!-- Divider -->
-    <div class="border-slate-100"></div>
-
-    <!-- ================= BOTTOM ================= -->
-    <div class="flex h-5 items-center">
-      <!-- Rating -->
-      <div class="flex items-center gap-1">
-        <span
-          class="material-symbols-rounded icon-fill select-none text-[15px] leading-none text-amber-400"
+          class="absolute right-2 top-2 z-10 rounded-md bg-orange-500 px-2 py-1 text-[11px] font-bold leading-none text-white"
         >
-          star
+          مميز
         </span>
-        <span class="text-sm font-semibold text-slate-700">
-          {{ restaurant().rate ?? '4.6' }}
-        </span>
+      }
+    </div>
+
+    <!-- ================= CONTENT ================= -->
+    <div class="flex flex-col gap-0.5 px-2 pb-2 md:px-4">
+      <!-- Category -->
+      <div>
+        <div
+          class="inline-flex max-w-full items-center rounded-md bg-primary/5 px-1 py-1 text-primary"
+        >
+          <span class="material-symbols-sharp icon-fill select-none text-[16px] leading-none">
+            restaurant
+          </span>
+
+          <span class="truncate text-sm font-semibold leading-5">
+            {{ restaurant().field_Ar }}
+          </span>
+        </div>
       </div>
-      <!-- Reviews -->
-      <div class="flex items-center gap-1 mr-3">
-        <span class="text-xs font-medium text-slate-400"> 251 تقييم </span>
+
+      <!-- Restaurant Name + Status -->
+      <div class="flex min-w-0 items-center gap-1">
+        <h3 class="min-w-0 flex-1 truncate text-sm font-bold leading-6 text-gray-900">
+          {{ restaurant().clientName }}
+        </h3>
+
+        <div
+          class="flex shrink-0 items-center gap-1 text-xs font-semibold"
+          [class.text-emerald-500]="restaurant().isOpen"
+          [class.text-red-400]="!restaurant().isOpen"
+        >
+          <span class="leading-3">
+            {{ restaurant().isOpen ? 'مفتوح الآن' : 'مغلق الآن' }}
+          </span>
+
+          <span
+            class="h-1.5 w-1.5 shrink-0 rounded-full"
+            [class.bg-emerald-500]="restaurant().isOpen"
+            [class.bg-red-400]="!restaurant().isOpen"
+          ></span>
+        </div>
+      </div>
+
+      <!-- Address -->
+      <div class="flex min-w-0 items-center gap-1 font-semibold">
+        <span class="material-symbols-sharp shrink-0 text-[16px] leading-none text-gray-400">
+          location_on
+        </span>
+
+        @if (restaurant().address) {
+          <span class="min-w-0 truncate text-[14px] leading-5 text-gray-400">
+            {{ restaurant().address }}
+          </span>
+        } @else {
+          <span class="min-w-0 truncate text-[14px] leading-5 text-gray-400"> لا يوجد </span>
+        }
+      </div>
+
+      <!-- Divider -->
+      <div class="border-slate-100"></div>
+
+      <!-- Bottom -->
+      <div class="flex h-5 items-center">
+        <!-- Rating -->
+        <div class="flex items-center gap-1">
+          <span
+            class="material-symbols-sharp icon-fill select-none text-[15px] leading-none text-amber-400"
+          >
+            star
+          </span>
+
+          <span class="text-sm font-semibold text-slate-700">
+            {{ restaurant().rate ?? '4.6' }}
+          </span>
+        </div>
+
+        <!-- Reviews -->
+        <div class="mr-3 flex items-center gap-1">
+          <span class="text-xs font-medium text-slate-400"> 251 تقييم </span>
+        </div>
       </div>
     </div>
-  </div>
+  </a>
+
+  <!-- Favorite - OUTSIDE LINK -->
+  <button
+    type="button"
+    class="absolute left-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full shadow-sm"
+    aria-label="إضافة للمفضلة"
+    (click)="toggleFavorite()"
+  >
+    <span class="material-symbols-sharp select-none text-[18px] leading-none text-slate-500">
+      favorite_border
+    </span>
+  </button>
 </article>

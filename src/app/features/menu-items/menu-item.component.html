@@ -1,13 +1,13 @@
-<section dir="rtl" class="mx-auto min-h-full bg-white px-4 py-6 md:px-8">
+<section dir="rtl" class="mx-auto min-h-full  px-4 py-6 md:px-8">
     <header class="mb-6">
         <h1 class="text-2xl font-bold text-gray-900">الوجبات الأكثر طلبًا</h1>
         <p class="mt-1 text-sm text-gray-500">اكتشف الوجبات التي يفضلها الجميع</p>
     </header>
 
     @if (menuItemService.mostRequested().length > 0) {
-        <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3">
+        <div class="grid grid-cols-[repeat(auto-fit,minmax(205px,1fr))] gap-3">
             @for (menuItem of menuItemService.mostRequested(); track menuItem.mostrequestesId) {
-                <app-meal-item [menuItem]="menuItem" />
+                <app-menu-item-card [menuItem]="menuItem" />
             }
         </div>
     }

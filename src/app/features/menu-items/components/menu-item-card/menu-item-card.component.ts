@@ -1,15 +1,15 @@
 import { Component, input, signal } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
 import { MenuItem } from '../../models/menu-item';
-import { LucideHeart } from '@lucide/angular';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [LucideHeart],
-  selector: 'app-meal-item',
-  styleUrl: './meal-items.component.css',
-  templateUrl: './meal-items.component.html',
+  imports: [RouterLink],
+  selector: 'app-menu-item-card',
+  styleUrl: './menu-item-card.component.css',
+  templateUrl: './menu-item-card.component.html',
 })
-export class MealItemsComponent {
+export class MenuItemCard {
   readonly menuItem = input.required<MenuItem>();
   readonly apiUrl = environment.filesUrl;
   readonly isFavorite = signal(false);

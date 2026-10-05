@@ -6,11 +6,13 @@ import { HomeComponent } from './features/home/home.component';
 import { CartComponent } from './features/cart/cart.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
 import { TestLoadingComponent } from './features/testing/testing';
+
 import { RestaurantsComponent } from './features/restaurants/restaurants.component';
-import { RetauranProfileComponent } from './features/restaurants/components/restaurant-details/restaurant-details.component';
-import { TechnicalSupportComponent } from './features/technical-support/components/technical-support/technical-support.component';
-import { MealsComponent } from './features/menu-items/menu-item.component';
 import { RestaurantDetailsComponent } from './features/restaurants/components/restaurant-details/restaurant-details.component';
+
+import { TechnicalSupportComponent } from './features/technical-support/components/technical-support/technical-support.component';
+
+import { MealsComponent } from './features/menu-items/menu-item.component';
 
 
 export const routes: Routes = [
@@ -20,36 +22,32 @@ export const routes: Routes = [
     // =====================================================
 
     {
-        path: 'login',//, canActivate: [logedGuard],
+        path: 'login',
         loadComponent: () =>
-            import('./features/auth/pages/login/login.component'
-            ).then(m => m.Login)
+            import('./features/auth/pages/login/login.component')
+                .then(m => m.Login)
     },
 
     {
         path: 'sendEmail',
         loadComponent: () =>
-            import(
-                './features/auth/pages/send-email/send-email.component'
-            ).then(m => m.SendEmail)
+            import('./features/auth/pages/send-email/send-email.component')
+                .then(m => m.SendEmail)
     },
 
     {
         path: 'ValidateOtp',
         loadComponent: () =>
-            import(
-                './features/auth/pages/validate-otp/validate-otp.component'
-            ).then(m => m.ValidateOtp)
+            import('./features/auth/pages/validate-otp/validate-otp.component')
+                .then(m => m.ValidateOtp)
     },
 
     {
         path: 'register',
         loadComponent: () =>
-            import(
-                './features/auth/pages/register/register.component'
-            ).then(m => m.RegisterComponent)
+            import('./features/auth/pages/register/register.component')
+                .then(m => m.RegisterComponent)
     },
-
 
 
     // =====================================================
@@ -57,12 +55,15 @@ export const routes: Routes = [
     // =====================================================
 
     {
-        path: '',// canActivate: [authGuard],
+        path: '',
         component: MainLayoutComponent,
 
         children: [
 
+            // =================================================
             // Home
+            // =================================================
+
             {
                 path: '',
                 component: HomeComponent
@@ -74,7 +75,10 @@ export const routes: Routes = [
             },
 
 
+            // =================================================
             // User
+            // =================================================
+
             {
                 path: 'cart',
                 component: CartComponent
@@ -95,8 +99,33 @@ export const routes: Routes = [
                 component: TestLoadingComponent
             },
 
+
             // =================================================
             // Restaurants
+            // =================================================
+
+            {
+                path: 'restaurants',
+
+                children: [
+
+                    // /restaurants
+                    {
+                        path: '',
+                        component: RestaurantsComponent
+                    },
+
+                    // /restaurants/:id
+                    {
+                        path: ':id',
+                        component: RestaurantDetailsComponent
+                    }
+                ]
+            },
+
+
+            // =================================================
+            // Restaurant Categories / Sections
             // =================================================
 
             {
@@ -128,6 +157,30 @@ export const routes: Routes = [
 
 
             // =================================================
+            // Menu Items
+            // =================================================
+
+            {
+                path: 'menu-items',
+
+                children: [
+
+                    // /menu-items
+                    {
+                        path: '',
+                        component: MealsComponent
+                    },
+
+                    // // /menu-items/:id
+                    // {
+                    //     path: ':id',
+                    //     component: MenuItemDetailsComponent
+                    // }
+                ]
+            },
+
+
+            // =================================================
             // Orders
             // =================================================
 
@@ -136,20 +189,15 @@ export const routes: Routes = [
                 component: CartComponent
             },
 
+
+            // =================================================
+            // Support
+            // =================================================
+
             {
                 path: 'support',
                 component: TechnicalSupportComponent
-            },
-            
-
-           { path: 'restaurantProfile/:id', component: RetauranProfileComponent },
-
-           
-            {
-                path: 'details',
-                component: RestaurantDetailsComponent
-            },
-
+            }
         ]
     },
 
@@ -162,5 +210,4 @@ export const routes: Routes = [
         path: '**',
         redirectTo: ''
     }
-
 ];

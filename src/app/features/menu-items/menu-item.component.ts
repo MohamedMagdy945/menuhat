@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MenuItemService } from './menu-item.service';
-import { MealItemsComponent } from './components/meal-item/meal-items.component';
+import { MenuItemCard } from './components/menu-item-card/menu-item-card.component';
 
 @Component({
-  imports: [MealItemsComponent],
+  imports: [MenuItemCard],
   selector: 'app-meals',
   styleUrl: './menu-item.component.css',
   templateUrl: './menu-item.component.html',

@@ -26,14 +26,19 @@ interface StatItem {
 })
 
 export class RestaurantDetailsComponent {
+  selectedCategory = signal('All');
+
+selectCategory(category: string): void {
+  this.selectedCategory.set(category);
+}
   private readonly _RestauranProfileService = inject(ResuaurantProfileService);
-  private route = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
+
   
   restaurantName = "BkBite's Hub";
   restaurantDescription = 'برجر وساندويتشات فاخرة • وجبات سريعة ومقرمشة';
   restaurantData = signal<any>(null);
   isLoading = signal<boolean>(true);
-  selectedCategory = 'جميع الأقسام';
   
   stats: StatItem[] = [
     { icon: 'fa-regular fa-clock', label: 'ساعات العمل', value: '10:00 ص - 12:00 م' },
@@ -43,9 +48,6 @@ export class RestaurantDetailsComponent {
     { icon: 'fa-solid fa-bolt', label: 'مدة التوصيل', value: '25-35 دقيقة' },
   ];
 
-  selectCategory(category: string) {
-    this.selectedCategory = category;
-  }
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -138,4 +140,5 @@ categories: string[] = [
       image: 'https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=500&q=80',
     },
   ];
+  
 }
