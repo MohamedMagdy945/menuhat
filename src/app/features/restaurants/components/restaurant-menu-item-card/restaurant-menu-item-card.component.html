@@ -1,0 +1,127 @@
+<!-- Main Product Card Article -->
+<article dir="rtl" class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2">
+  <!-- Main Container: Stacks all card sections vertically with a vertical gap (gap-3) -->
+  <div class="flex flex-col gap-1">
+    <!-- Section 1: Product Image & Floating Badges (Favorite & Discount) -->
+    <div class="relative h-30 w-full overflow-hidden bg-gray-100">
+      <!-- Image Wrapper Link to navigate to item details page -->
+      <a
+        [routerLink]="['/menu-items', item().id]"
+        class="block h-full w-full"
+        [attr.aria-label]="'عرض تفاصيل ' + item().productName"
+      >
+        <img
+          [src]="item().photoURL ? apiUrl + item().photoURL : '/images/default-meal.png'"
+          [alt]="item().productName"
+          class="h-full w-full object-contain"
+        />
+      </a>
+
+      <!-- Favorite Button (Toggle product favorite status) -->
+      <button
+        type="button"
+        aria-label="Favorite"
+        (click)="toggleFavorite()"
+        class="absolute left-2.5 top-2.5 z-10 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-black/20 text-lg text-white shadow-sm transition"
+      >
+        <span
+          class="material-symbols-sharp transition-colors duration-200"
+          [class.text-red-500]="item().isFavorite"
+          [class.icon-fill]="item().isFavorite"
+        >
+          {{ item().isFavorite ? 'favorite' : 'favorite_border' }}
+        </span>
+      </button>
+
+      <!-- Discount Badge (Shows only if old price is greater than current price) -->
+      @if (item().oldPrice > item().price) {
+        <span
+          class="absolute right-2.5 top-2.5 z-10 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white"
+        >
+          خصم {{ item().discountPercentage }}%
+        </span>
+      }
+    </div>
+
+    <!-- Section 2: Product Content (Title, Price & Add-to-Cart Button) -->
+    <div class="px-2 mt-1 text-right">
+      <!-- Product Title -->
+      <h3 class="truncate  text-sm font-semibold text-gray-900">
+        {{ item().productName }}
+      </h3>
+
+      <!-- Section 2.1: Price & Add to Cart Container -->
+      <div class="flex items-center justify-between">
+        <!-- Price Block -->
+        <div class="flex items-center">
+          <!-- Current Price with Currency -->
+          <div class="flex items-baseline gap-1 text-base font-extrabold text-orange-500">
+            <span>{{ item().price }}</span>
+            <span class="text-xs">ج.م</span>
+          </div>
+
+          <!-- Strikethrough Old Price (Optional) -->
+          @if (item().oldPrice > item().price) {
+            <span class="text-xs text-gray-400 line-through"> {{ item().oldPrice }} ج.م </span>
+          }
+        </div>
+
+        <!-- Add to Cart Interactive Button -->
+        <button
+          type="button"
+          aria-label="إضافة إلى السلة"
+          (click)="addToCart()"
+          [disabled]="isAddingToCart()"
+          class="cursor-pointer disabled:cursor-wait"
+        >
+          <div
+            class="relative flex h-8 w-8 items-center justify-center rounded-full border transition"
+            [class.border-gray-200]="!isAddedToCart()"
+            [class.bg-gray-50]="!isAddedToCart()"
+            [class.border-green-500]="isAddedToCart()"
+            [class.bg-green-50]="isAddedToCart()"
+          >
+            <!-- State 1: Loading / Adding item to cart spinner -->
+            @if (isAddingToCart()) {
+              <div class="h-5 w-5">
+                <span
+                  class="block h-full w-full animate-spin rounded-full border-2 border-gray-400 border-t-transparent"
+                ></span>
+              </div>
+            }
+            <!-- State 2: Item successfully added to cart -->
+            @else if (isAddedToCart()) {
+              <div class="relative flex h-5 w-5 items-center justify-center text-[20px]">
+                <!-- Cart Icon -->
+                <span
+                  class="material-symbols-sharp icon-fill select-none leading-none text-green-500"
+                >
+                  shopping_cart
+                </span>
+
+                <!-- Floating Checkmark Badge -->
+                <div
+                  class="absolute -right-3 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 text-[14px]"
+                >
+                  <span class="material-symbols-sharp select-none leading-none text-white">
+                    check
+                  </span>
+                </div>
+              </div>
+            }
+            <!-- State 3: Default Add (+) Icon -->
+            @else {
+              <div class="flex h-2 w-2 items-center justify-center text-[21px]">
+                <span
+                  class="material-symbols-sharp icon-fill select-none leading-none text-gray-400"
+                >
+                  add
+                </span>
+              </div>
+            }
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</article>

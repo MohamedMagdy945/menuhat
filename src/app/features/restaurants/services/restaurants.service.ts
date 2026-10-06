@@ -2,11 +2,11 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { finalize } from 'rxjs';
 
-import { environment } from '../../core/environments/environment';
-import { USE_GLOBAL_LOADING } from '../../core/loading/loading-context';
-import { Restaurant } from './models/restaurant';
-import { RestaurantQueryParams } from './models/restaurant-query-params';
-import { RestaurantResponse } from './models/restaurant-response';
+import { environment } from '../../../core/environments/environment';
+import { USE_GLOBAL_LOADING } from '../../../core/loading/loading-context';
+import { Restaurant } from '../models/restaurant';
+import { RestaurantQueryParams } from '../models/restaurant-query-params';
+import { RestaurantResponse } from '../models/restaurant-response';
 
 @Injectable({
   providedIn: 'root',

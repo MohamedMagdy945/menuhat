@@ -9,7 +9,7 @@ import { ResponsiveService } from '../../core/services/responsive.service';
 import { LocationService } from '../../core/services/location.service';
 
 import { MenuItemService } from '../menu-items/menu-item.service';
-import { RestaurantsService } from '../restaurants/restaurants.service';
+import { RestaurantsService } from '../restaurants/services/restaurants.service';
 
 import { HomeMenuItemSectionComponent } from './components/home-menu-item-section/home-menu-item-section.component';
 import { HomeRestaurantSectionComponent } from './components/home-restaurant-section/home-restaurant-section.component';

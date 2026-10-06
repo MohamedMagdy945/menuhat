@@ -1,8 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RestaurantDetails, RestaurantMenuProduct } from '../../models/restaurant-details';
-import { ResuaurantProfileService } from '../../../profile/restaurantProfile/services/resuaurant-profile-service';
 import { environment } from '../../../../core/environments/environment';
+import { ResuaurantProfileService } from '../../services/resuaurant-profile.service';
+import { RestaurantMenuItemCardComponent } from '../restaurant-menu-item-card/restaurant-menu-item-card.component';
 
 interface StatItem {
   icon: string;
@@ -19,11 +20,14 @@ interface DisplayMenuItem {
 @Component({
   selector: 'app-restaurant-details',
   standalone: true,
-  imports: [],
+  imports: [RestaurantMenuItemCardComponent],
   templateUrl: './restaurant-details.component.html',
   styleUrl: './restaurant-details.component.css',
 })
 export class RestaurantDetailsComponent {
+isAddedToCart() {
+throw new Error('Method not implemented.');
+}
   readonly apiUrl = environment.filesUrl;
   readonly selectedCategory = signal<number | null>(null);
   readonly restaurantData = signal<RestaurantDetails | null>(null);
@@ -94,7 +98,7 @@ export class RestaurantDetailsComponent {
         return;
       }
 
-      this.fetchDataWithLocation(serial);
+      this.loadDetails(serial);
     });
   }
 
@@ -102,28 +106,11 @@ export class RestaurantDetailsComponent {
     this.selectedCategory.set(categoryId);
   }
 
-  fetchDataWithLocation(serial: string): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.loadDetails(serial, position.coords.latitude, position.coords.longitude);
-        },
-        (error) => {
-          console.warn('لم يتم الحصول على الموقع، سيتم الإرسال بدون lat و long:', error);
-          this.loadDetails(serial, null, null);
-        },
-      );
-      return;
-    }
-
-    this.loadDetails(serial, null, null);
-  }
-
-  private loadDetails(serial: string, lat: number | null, long: number | null): void {
+  private loadDetails(serial: string): void {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    this.restaurantProfileService.GetRestaurantDetails(serial, lat, long).subscribe({
+    this.restaurantProfileService.GetRestaurantDetails(serial).subscribe({
       next: (response) => {
         this.restaurantData.set(response);
         this.selectedCategory.set(null);
