@@ -8,13 +8,13 @@
     <ng-content />
   </div>
 
-  <div dir="ltr" class="mt-1 flex w-full items-center justify-start gap-1 px-1">
+  <div dir="ltr" class="mt-1 flex w-full items-center justify-start gap-5 px-1">
     <button
       type="button"
       aria-label="Scroll left"
       [disabled]="leftDisabled()"
       (click)="scrollLeft()"
-      class="flex h-8 w-8 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
+      class="flex h-8 w-8 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-primary  transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
     >
       <svg lucideChevronLeft class="h-5 w-5" [strokeWidth]="2.2"></svg>
     </button>
@@ -24,7 +24,7 @@
       aria-label="Scroll right"
       [disabled]="rightDisabled()"
       (click)="scrollRight()"
-      class="flex h-8 w-8 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-primary shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
+      class="flex h-8 w-8 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-primary transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
     >
       <svg lucideChevronRight class="h-5 w-5" [strokeWidth]="2.2"></svg>
     </button>

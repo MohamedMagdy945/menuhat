@@ -1,9 +1,14 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { RestaurantDetails, RestaurantMenuProduct } from '../../models/restaurant-details';
 import { environment } from '../../../../core/environments/environment';
 import { ResuaurantProfileService } from '../../services/resuaurant-profile.service';
 import { RestaurantMenuItemCardComponent } from '../restaurant-menu-item-card/restaurant-menu-item-card.component';
+import { RestaurantCategoriesComponent } from '../restaurant-categories/restaurant-categories.component';
+import { RestaurantRatingsComponent } from '../restaurant-ratings/restaurant-ratings.component';
+import { DecimalPipe } from '@angular/common';
+import { RestaurantDetails, RestaurantMenuProduct } from '../../models/restaurant-details';
+
+import { AddRatingModalComponent } from '../add-rating-modal/add-rating-modal.component';
 
 interface StatItem {
   icon: string;
@@ -20,7 +25,7 @@ interface DisplayMenuItem {
 @Component({
   selector: 'app-restaurant-details',
   standalone: true,
-  imports: [RestaurantMenuItemCardComponent],
+  imports: [RestaurantMenuItemCardComponent, RestaurantCategoriesComponent, RestaurantRatingsComponent, DecimalPipe, AddRatingModalComponent],
   templateUrl: './restaurant-details.component.html',
   styleUrl: './restaurant-details.component.css',
 })
@@ -30,9 +35,11 @@ throw new Error('Method not implemented.');
 }
   readonly apiUrl = environment.filesUrl;
   readonly selectedCategory = signal<number | null>(null);
+  readonly activeTab = signal<'menu' | 'images' | 'reviews' | 'most-ordered'>('menu');
   readonly restaurantData = signal<RestaurantDetails | null>(null);
   readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
+  readonly isAddRatingModalOpen = signal(false);
 
   private readonly restaurantProfileService = inject(ResuaurantProfileService);
   private readonly route = inject(ActivatedRoute);
@@ -121,6 +128,24 @@ throw new Error('Method not implemented.');
         this.errorMessage.set('تعذر تحميل بيانات المطعم. يرجى المحاولة مرة أخرى.');
         this.isLoading.set(false);
       },
+    });
+  }
+
+  submitReview(review: { rating: number; comment: string }): void {
+    const serial = this.restaurantData()?.main?.serial;
+    if (!serial) return;
+
+    this.restaurantProfileService.AddRate({
+      serial,
+      rate: review.rating,
+      comment: review.comment
+    }).subscribe({
+      next: () => {
+        this.isAddRatingModalOpen.set(false);
+      },
+      error: (err) => {
+        console.error('Failed to add rating', err);
+      }
     });
   }
 }

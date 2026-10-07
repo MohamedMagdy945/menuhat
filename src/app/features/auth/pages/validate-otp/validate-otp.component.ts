@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { timer, Subscription } from 'rxjs';
 import { RegisterService } from '../../services/register.service';
-import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
+import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
 
 export interface ValidateOtpPayload {
   email: string;

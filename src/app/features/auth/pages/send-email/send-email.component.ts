@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { RegisterService } from '../../services/register.service';
-import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
+import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
 
 @Component({
   imports: [CommonModule, ReactiveFormsModule, RouterModule],

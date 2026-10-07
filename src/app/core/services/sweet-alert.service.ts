@@ -32,7 +32,7 @@ export class SweetAlertService {
     return Swal.fire({
       title: title,
       icon: icon,
-      iconColor: this.PRIMARY_ICON_COLOR, 
+      iconColor: this.PRIMARY_ICON_COLOR,
       confirmButtonText: 'Ok',
       confirmButtonColor: this.PRIMARY_ICON_COLOR
     });

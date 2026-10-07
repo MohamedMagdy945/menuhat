@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LoginService } from '../../services/login.service';
-import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
+import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
 
 @Component({
   selector: 'app-login',
@@ -47,25 +47,25 @@ export class Login {
       password: this.loginForm.value.password
     };
 
-this._AuthServices.SetLoginForm(loginData).subscribe({
-  next: (res) => {
-    console.log(res);
-    if (res && res.data) {
-      // 1. حفظ الـ Token
-      localStorage.setItem('usertoken', res.data.token);
+    this._AuthServices.SetLoginForm(loginData).subscribe({
+      next: (res) => {
+        console.log(res);
+        if (res && res.data) {
+          // 1. حفظ الـ Token
+          localStorage.setItem('usertoken', res.data.token);
 
-      localStorage.setItem('userData', JSON.stringify(res.data));
+          localStorage.setItem('userData', JSON.stringify(res.data));
 
-      this._AuthServices.SaveUserData(res.data);
+          this._AuthServices.SaveUserData(res.data);
 
-      this._Router.navigate(['/home']);
-    }
-  },
+          this._Router.navigate(['/home']);
+        }
+      },
 
-  error: (err: HttpErrorResponse) => {
-    this._SweetAlertService.showToast(err?.error?.message, 'error');
-  }
-});
+      error: (err: HttpErrorResponse) => {
+        this._SweetAlertService.showToast(err?.error?.message, 'error');
+      }
+    });
   }
 
   loginWithGoogle(): void {

@@ -6,7 +6,7 @@ import { RegisterService } from "../../services/register.service";
 import { CommonDateService } from "../../../../core/common-data/common-date";
 import { ActivatedRoute, Router } from "@angular/router";
 import { HttpErrorResponse } from "@angular/common/http";
-import { SweetAlertService } from "../../../../core/sweet-alert/sweet-alert";
+import { SweetAlertService } from "../../../../core/services/sweet-alert.service";
 
 @Component({
   selector: 'app-register-customer',
@@ -44,29 +44,29 @@ export class RegisterCustomerComponent implements OnInit {
     cityId: [null, [Validators.required]],
     address: [null, [Validators.required]]
   }, { validators: this.ConfirmPass });
-  
+
   ConfirmPass(g: AbstractControl) {
-  const pass = g.get('password')?.value;
-  const confirmPassControl = g.get('confirmPassword');
-  const confirmPass = confirmPassControl?.value;
+    const pass = g.get('password')?.value;
+    const confirmPassControl = g.get('confirmPassword');
+    const confirmPass = confirmPassControl?.value;
 
-  if (!pass || !confirmPass) {
-    return null;
-  }
-
-  if (pass !== confirmPass) {
-    confirmPassControl?.setErrors({ ...confirmPassControl.errors, missmatch: true });
-    return { missmatch: true };
-  } else {
-    if (confirmPassControl?.hasError('missmatch')) {
-      delete confirmPassControl.errors?.['missmatch'];
-      if (!Object.keys(confirmPassControl.errors || {}).length) {
-        confirmPassControl.setErrors(null);
-      }
+    if (!pass || !confirmPass) {
+      return null;
     }
-    return null;
+
+    if (pass !== confirmPass) {
+      confirmPassControl?.setErrors({ ...confirmPassControl.errors, missmatch: true });
+      return { missmatch: true };
+    } else {
+      if (confirmPassControl?.hasError('missmatch')) {
+        delete confirmPassControl.errors?.['missmatch'];
+        if (!Object.keys(confirmPassControl.errors || {}).length) {
+          confirmPassControl.setErrors(null);
+        }
+      }
+      return null;
+    }
   }
-}
   ngOnInit(): void {
     this.loadGovernorates();
     this.emailFromQuery = this._route.snapshot.queryParams['email'] || '';
@@ -146,10 +146,10 @@ export class RegisterCustomerComponent implements OnInit {
       defaultLang: 'ar',
       photoURL: this.photoPreviewUrl !== this.defaultAvatar ? this.photoPreviewUrl : ''
     };
-    console.log("Done",payload);
+    console.log("Done", payload);
     this._Register.SetRegister(payload).subscribe({
       next: (res) => {
-        console.log("res",res);
+        console.log("res", res);
         if (res) {
           localStorage.setItem('usertoken', res.data.token);
           this.swal.showToast('تم انشاء الحساب بنجاح', 'success');

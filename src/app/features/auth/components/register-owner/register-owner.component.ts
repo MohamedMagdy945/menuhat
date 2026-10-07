@@ -8,7 +8,7 @@ import { CommonDateService } from '../../../../core/common-data/common-date';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RegisterService } from '../../services/register.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
+import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class RegisterOwnerComponent {
   private readonly _cdr = inject(ChangeDetectorRef);
   readonly defaultAvatar = 'assets/images/default-avatar.png';
   private readonly _route = inject(ActivatedRoute);
-   private readonly _router = inject(Router);
+  private readonly _router = inject(Router);
   private readonly _Register = inject(RegisterService);
   private readonly swal = inject(SweetAlertService);
 
@@ -37,14 +37,14 @@ export class RegisterOwnerComponent {
   emailFromQuery: string = '';
 
   readonly form = this._FormBuilder.group({
-      fullName: [null, [Validators.required]],
-      username: ['', [Validators.required, Validators.pattern(/^(?=.{6,20}$)(?![0-9]+$)(?!.*@)[a-zA-Z0-9._]+$/)]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: [null, [Validators.required, Validators.minLength(8)]],
-      governmentId: [null, [Validators.required]],
-      cityId: [null, [Validators.required]],
-      address: [null, [Validators.required]]
-    }, { validators: this.ConfirmPass });
+    fullName: [null, [Validators.required]],
+    username: ['', [Validators.required, Validators.pattern(/^(?=.{6,20}$)(?![0-9]+$)(?!.*@)[a-zA-Z0-9._]+$/)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+    confirmPassword: [null, [Validators.required, Validators.minLength(8)]],
+    governmentId: [null, [Validators.required]],
+    cityId: [null, [Validators.required]],
+    address: [null, [Validators.required]]
+  }, { validators: this.ConfirmPass });
 
   ConfirmPass(g: AbstractControl) {
     const pass = g.get('password')?.value;
@@ -73,7 +73,7 @@ export class RegisterOwnerComponent {
     this.loadGovernorates();
     this.emailFromQuery = this._route.snapshot.queryParams['email'] || '';
   }
-  
+
   private loadGovernorates(): void {
     this.isLoadingGovernorates = true;
 
@@ -150,7 +150,7 @@ export class RegisterOwnerComponent {
       defaultLang: 'ar',
       photoURL: this.photoPreviewUrl !== this.defaultAvatar ? this.photoPreviewUrl : ''
     };
-console.log(payload);
+    console.log(payload);
     this._Register.SetRegister(payload).subscribe({
       next: (res) => {
         if (res) {
@@ -164,7 +164,7 @@ console.log(payload);
     });
   }
 
-    onFileSelected(event: Event): void {
+  onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
 
     if (!input.files?.length) {

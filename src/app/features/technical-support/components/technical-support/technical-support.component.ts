@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { UserDataService } from '../../../../core/services/userData.service';
 import { SupportService } from '../../services/support-service';
 import { Router } from '@angular/router';
-import { SweetAlertService } from '../../../../core/sweet-alert/sweet-alert';
+import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -41,8 +41,8 @@ export class TechnicalSupportComponent implements OnInit {
     const files: FileList = event.target.files;
     if (files && files.length > 0) {
       this.selectedFiles = Array.from(files);
-      this.selectedFileName = files.length === 1 
-        ? files[0].name 
+      this.selectedFileName = files.length === 1
+        ? files[0].name
         : `تم اختيار ${files.length} صور`;
     }
   }
