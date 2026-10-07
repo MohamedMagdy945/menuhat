@@ -6,7 +6,9 @@ import { RestaurantMenuItemCardComponent } from '../restaurant-menu-item-card/re
 import { RestaurantCategoriesComponent } from '../restaurant-categories/restaurant-categories.component';
 import { RestaurantRatingsComponent } from '../restaurant-ratings/restaurant-ratings.component';
 import { DecimalPipe } from '@angular/common';
-import { RestaurantDetails, RestaurantMenuProduct } from '../../models/restaurant-details';
+import { RestaurantDetails } from '../../models/restaurant-details';
+import { RestaurantMenuProduct } from '../../models/restaurant-menu-product';
+import { RestaurantMenuSubCategory } from '../../models/restaurant-menu-sub-category';
 
 import { AddRatingModalComponent } from '../add-rating-modal/add-rating-modal.component';
 
@@ -35,11 +37,24 @@ throw new Error('Method not implemented.');
 }
   readonly apiUrl = environment.filesUrl;
   readonly selectedCategory = signal<number | null>(null);
+  readonly selectedSubCategory = signal<number | null>(null);
   readonly activeTab = signal<'menu' | 'images' | 'reviews' | 'most-ordered'>('menu');
   readonly restaurantData = signal<RestaurantDetails | null>(null);
   readonly isLoading = signal(true);
   readonly errorMessage = signal<string | null>(null);
   readonly isAddRatingModalOpen = signal(false);
+
+  readonly currentSubCategories = computed<RestaurantMenuSubCategory[]>(() => {
+    const selectedCategory = this.selectedCategory();
+    const details = this.restaurantData()?.details ?? [];
+    
+    if (selectedCategory === null) {
+      return [];
+    }
+
+    const category = details.find(c => c.id === selectedCategory);
+    return category?.subCategories ?? [];
+  });
 
   private readonly restaurantProfileService = inject(ResuaurantProfileService);
   private readonly route = inject(ActivatedRoute);
@@ -81,18 +96,26 @@ throw new Error('Method not implemented.');
 
   readonly menuItems = computed<DisplayMenuItem[]>(() => {
     const selectedCategory = this.selectedCategory();
-    return (this.restaurantData()?.details ?? [])
-      .filter((category) => selectedCategory === null || category.id === selectedCategory)
+    const selectedSubCategory = this.selectedSubCategory();
+    
+    let categoriesToProcess = this.restaurantData()?.details ?? [];
+    if (selectedCategory !== null) {
+      categoriesToProcess = categoriesToProcess.filter(c => c.id === selectedCategory);
+    }
+    
+    return categoriesToProcess
       .flatMap((category) =>
-        category.subCategories.flatMap((subCategory) =>
-          subCategory.menuProducts
-            .filter((product) => !product.isHidden)
-            .map((product) => ({
-              product,
-              categoryName: category.name,
-              subCategoryName: subCategory.name,
-            })),
-        ),
+        category.subCategories
+          .filter(sub => selectedSubCategory === null || sub.id === selectedSubCategory)
+          .flatMap((subCategory) =>
+            subCategory.menuProducts
+              .filter((product) => !product.isHidden)
+              .map((product) => ({
+                product,
+                categoryName: category.name,
+                subCategoryName: subCategory.name,
+              })),
+          )
       );
   });
 
@@ -111,6 +134,11 @@ throw new Error('Method not implemented.');
 
   selectCategory(categoryId: number | null): void {
     this.selectedCategory.set(categoryId);
+    this.selectedSubCategory.set(null);
+  }
+
+  selectSubCategory(subCategoryId: number | null): void {
+    this.selectedSubCategory.set(subCategoryId);
   }
 
   private loadDetails(serial: string): void {
@@ -121,6 +149,7 @@ throw new Error('Method not implemented.');
       next: (response) => {
         this.restaurantData.set(response);
         this.selectedCategory.set(null);
+        this.selectedSubCategory.set(null);
         this.isLoading.set(false);
       },
       error: (error: unknown) => {

@@ -13,6 +13,7 @@ import { RestaurantDetailsComponent } from './features/restaurants/components/re
 import { TechnicalSupportComponent } from './features/technical-support/components/technical-support/technical-support.component';
 
 import { MealsComponent } from './features/menu-items/menu-item.component';
+import { MenuItemDetailsComponent } from './features/menu-items/components/menu-item-details/menu-item-details.component';
 
 
 export const routes: Routes = [
@@ -171,11 +172,11 @@ export const routes: Routes = [
                         component: MealsComponent
                     },
 
-                    // // /menu-items/:id
-                    // {
-                    //     path: ':id',
-                    //     component: MenuItemDetailsComponent
-                    // }
+                    // /menu-items/:id
+                    {
+                        path: ':id',
+                        component: MenuItemDetailsComponent
+                    }
                 ]
             },
 

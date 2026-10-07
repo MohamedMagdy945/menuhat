@@ -1,0 +1,304 @@
+@if (item(); as currentItem) {
+<div class="min-h-screen bg-slate-50 pb-32 ">
+  
+  <!-- =========================
+       Header
+  ========================== -->
+  <header class="sticky top-0 z-50 bg-slate-50/80 px-4 py-4 backdrop-blur-md md:px-8">
+    <div class="mx-auto flex max-w-4xl items-center justify-between">
+      
+      <!-- Back Button -->
+      <button 
+        onclick="history.back()"
+        class="flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50"
+      >
+        الرجوع للمطعم
+        <span class="material-symbols-sharp text-[18px]">arrow_forward</span>
+      </button>
+
+      <!-- Center Title (Hidden on small mobile, visible on larger) -->
+      <h1 class="hidden text-xl font-black text-gray-900 md:block">
+        {{ currentItem.productName }}
+      </h1>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <button class="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition hover:bg-gray-50">
+          <span class="material-symbols-sharp text-[18px] text-gray-600">ios_share</span>
+        </button>
+        <button 
+          (click)="toggleFavorite()"
+          class="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition hover:bg-gray-50"
+        >
+          <span 
+            class="material-symbols-sharp text-[18px] transition-colors"
+            [class.text-red-500]="isFavorite()"
+            [class.icon-fill]="isFavorite()"
+            [class.text-gray-600]="!isFavorite()"
+          >
+            {{ isFavorite() ? 'favorite' : 'favorite_border' }}
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- =========================
+       Main Content
+  ========================== -->
+  <main class="mx-auto max-w-4xl px-4 md:px-8">
+    
+    <!-- Product Details Card -->
+    <div class="mt-4 flex flex-col overflow-hidden rounded-3xl bg-white shadow-xs md:flex-row">
+      
+    
+
+      <!-- Info Area -->
+      <div class="flex w-full flex-col justify-between p-5 md:p-6 lg:p-8">
+        
+        <!-- Top: Tags Row -->
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="rounded-full bg-orange-50 px-3 py-1 text-[11px] font-bold text-orange-600">
+            {{ $any(currentItem).clientName || 'مطعم غير معروف' }}
+          </span>
+          <div class="flex items-center gap-1 text-[11px] font-bold text-gray-500">
+            <span class="material-symbols-sharp icon-fill text-[14px] text-amber-400">star</span>
+            <span class="text-gray-800">4.9</span>
+            <span class="text-gray-400 font-medium">+1.2k تقييم</span>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <h2 class="mt-3 text-xl font-black text-gray-900 md:text-2xl lg:text-3xl">
+          {{ currentItem.productName }}
+        </h2>
+
+        <!-- Description -->
+        <p class="mt-2 text-[13px] leading-relaxed text-gray-500">
+          {{ currentItem.description || 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
+        </p>
+
+        <!-- Bottom: Price Row -->
+        <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
+          
+          <!-- Discount Badge -->
+          @if (currentItem.discountPercentage || currentItem.oldPrice > currentItem.price) {
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1.5 text-[12px] font-bold text-red-500">
+              <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+              وفر {{ getDiscount(currentItem) }}%
+            </span>
+          }
+
+          <!-- Price -->
+          <div class="flex items-baseline gap-2 mr-auto">
+            <div class="flex items-baseline gap-1">
+              <span class="text-sm font-bold text-gray-400">ج.م</span>
+              <span class="text-3xl font-black text-gray-900">{{ currentItem.price | number:'1.2-2' }}</span>
+            </div>
+            @if (currentItem.oldPrice > currentItem.price) {
+              <span class="text-sm font-semibold text-gray-300 line-through">
+                {{ currentItem.oldPrice | number:'1.2-2' }} ج.م
+              </span>
+            }
+          </div>
+        </div>
+
+      </div>
+
+        <!-- Image Area -->
+      <div class="relative w-full shrink-0 md:w-5/12">
+        <div class="aspect-4/3 h-full w-full overflow-hidden  md:aspect-auto md:min-h-70">
+          <img
+            [src]="currentItem.photoURL ? apiUrl + currentItem.photoURL : '/images/default-meal.png'"
+            [alt]="currentItem.productName"
+            class="h-full w-full object-cover"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Sizes Card -->
+    <div class="mt-6 rounded-3xl bg-white p-5 shadow-xs md:p-6 lg:p-8">
+      <div class="mb-4">
+        <h3 class="text-xl font-black text-gray-900">اختر الحجم</h3>
+        <p class="mt-1 text-xs text-gray-400 font-medium">حدد الحجم المناسب لوجبتك</p>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 md:gap-4">
+        <!-- Small -->
+        <button 
+          (click)="selectedSize.set('small')"
+          class="flex flex-col items-center justify-center rounded-2xl border-2 p-3 transition-colors"
+          [class.border-orange-500]="selectedSize() === 'small'"
+          [class.bg-orange-50]="selectedSize() === 'small'"
+          [class.border-gray-100]="selectedSize() !== 'small'"
+        >
+          <div class="flex w-full justify-between items-center mb-2">
+            <div 
+              class="h-4 w-4 rounded-full border-2 flex items-center justify-center"
+              [class.border-orange-500]="selectedSize() === 'small'"
+              [class.border-gray-300]="selectedSize() !== 'small'"
+            >
+              @if (selectedSize() === 'small') {
+                <div class="h-2 w-2 rounded-full bg-orange-500"></div>
+              }
+            </div>
+            <span class="text-sm font-bold" [class.text-gray-900]="selectedSize() === 'small'" [class.text-gray-600]="selectedSize() !== 'small'">صغير</span>
+          </div>
+          <span class="text-xs font-semibold text-gray-400">{{ getSmallPrice(currentItem) | number:'1.2-2' }} ج.م</span>
+        </button>
+
+        <!-- Medium -->
+        <button 
+          (click)="selectedSize.set('medium')"
+          class="flex flex-col items-center justify-center rounded-2xl border-2 p-3 transition-colors"
+          [class.border-orange-500]="selectedSize() === 'medium'"
+          [class.bg-orange-50]="selectedSize() === 'medium'"
+          [class.border-gray-100]="selectedSize() !== 'medium'"
+        >
+          <div class="flex w-full justify-between items-center mb-2">
+            <div 
+              class="h-4 w-4 rounded-full border-2 flex items-center justify-center"
+              [class.border-orange-500]="selectedSize() === 'medium'"
+              [class.border-gray-300]="selectedSize() !== 'medium'"
+            >
+              @if (selectedSize() === 'medium') {
+                <div class="h-2 w-2 rounded-full bg-orange-500"></div>
+              }
+            </div>
+            <span class="text-sm font-bold" [class.text-gray-900]="selectedSize() === 'medium'" [class.text-gray-600]="selectedSize() !== 'medium'">وسط</span>
+          </div>
+          <span class="text-xs font-semibold text-gray-400">{{ currentItem.price | number:'1.2-2' }} ج.م</span>
+        </button>
+
+        <!-- Large -->
+        <button 
+          (click)="selectedSize.set('large')"
+          class="flex flex-col items-center justify-center rounded-2xl border-2 p-3 transition-colors"
+          [class.border-orange-500]="selectedSize() === 'large'"
+          [class.bg-orange-50]="selectedSize() === 'large'"
+          [class.border-gray-100]="selectedSize() !== 'large'"
+        >
+          <div class="flex w-full justify-between items-center mb-2">
+            <div 
+              class="h-4 w-4 rounded-full border-2 flex items-center justify-center"
+              [class.border-orange-500]="selectedSize() === 'large'"
+              [class.border-gray-300]="selectedSize() !== 'large'"
+            >
+              @if (selectedSize() === 'large') {
+                <div class="h-2 w-2 rounded-full bg-orange-500"></div>
+              }
+            </div>
+            <span class="text-sm font-bold" [class.text-gray-900]="selectedSize() === 'large'" [class.text-gray-600]="selectedSize() !== 'large'">كبير (دبل)</span>
+          </div>
+          <span class="text-xs font-semibold text-gray-400">{{ getLargePrice(currentItem) | number:'1.2-2' }} ج.م</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Addons Card -->
+    <div class="mt-6 rounded-3xl bg-white p-5 shadow-xs md:p-6 lg:p-8">
+      <div class="mb-4 flex items-start justify-between">
+        <div>
+          <h3 class="text-xl font-black text-gray-900">إضافات ومقليات مقترحة</h3>
+          <p class="mt-1 text-xs text-gray-400 font-medium">اختر وجباتك بلمسات مميزة</p>
+        </div>
+        <span class="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold text-gray-500">
+          اختياري
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:gap-4">
+        @for (addon of addons(); track addon.id) {
+          <label 
+            class="flex cursor-pointer items-center justify-between rounded-2xl border border-gray-100 p-3 transition-colors hover:bg-gray-50"
+            [class.border-orange-200]="addon.selected"
+            [class.bg-orange-50]="addon.selected"
+          >
+            <div class="flex items-center gap-3">
+              <input 
+                type="checkbox" 
+                class="h-5 w-5 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
+                [checked]="addon.selected"
+                (change)="toggleAddon(addon.id)"
+              />
+              <div>
+                <span class="block text-sm font-bold text-gray-900">{{ addon.name }}</span>
+                <span class="block text-xs font-bold text-orange-500 mt-1">+ {{ addon.price | number:'1.2-2' }} ج.م</span>
+              </div>
+            </div>
+            <div class="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-gray-100">
+              <img [src]="addon.image" [alt]="addon.name" class="h-full w-full object-cover" onerror="this.src='/images/default-meal.png'" />
+            </div>
+          </label>
+        }
+      </div>
+    </div>
+
+  </main>
+
+  <!-- =========================
+       Bottom Action Bar
+  ========================== -->
+  <div class="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white px-4 py-4 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] md:px-8">
+    <div class="mx-auto flex max-w-4xl items-center justify-between gap-4">
+      
+      <!-- Quantity -->
+      <div class="flex h-12 w-28 shrink-0 items-center justify-between rounded-full bg-gray-100 px-2">
+        <button 
+          (click)="incrementQuantity()"
+          class="flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-gray-700 shadow-sm transition hover:bg-gray-50"
+        >
+          +
+        </button>
+        <span class="text-sm font-black text-gray-900">{{ quantity() }}</span>
+        <button 
+          (click)="decrementQuantity()"
+          class="flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-gray-700 shadow-sm transition hover:bg-gray-50"
+          [disabled]="quantity() <= 1"
+          [class.opacity-50]="quantity() <= 1"
+        >
+          -
+        </button>
+      </div>
+
+      <!-- Info & Submit -->
+      <div class="flex flex-1 items-center justify-between">
+        <div class="hidden flex-col md:flex">
+          <span class="text-[11px] font-bold text-gray-400">الإجمالي للصنف</span>
+          <div class="flex items-baseline gap-1 text-xl font-black text-orange-600">
+            <span>{{ getTotalPrice() | number:'1.2-2' }}</span>
+            <span class="text-sm text-gray-600">ج.م</span>
+          </div>
+        </div>
+
+        <button 
+          (click)="addToCart()"
+          [disabled]="isAddingToCart()"
+          class="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-black px-6 font-bold text-white transition-all hover:bg-gray-900 disabled:cursor-wait md:flex-none md:min-w-[200px]"
+        >
+          @if (isAddingToCart()) {
+            <span class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+            <span>جاري الإضافة...</span>
+          } @else if (isAddedToCart()) {
+            <span class="material-symbols-sharp text-[20px]">check</span>
+            <span>تمت الإضافة</span>
+          } @else {
+            <span class="material-symbols-sharp text-[20px]">local_mall</span>
+            <span>إضافة إلى السلة</span>
+          }
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+} @else {
+  <div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-gray-500 bg-slate-50">
+    <span class="material-symbols-sharp text-6xl text-gray-300">restaurant_menu</span>
+    <p class="font-bold">لم يتم العثور على تفاصيل المنتج.</p>
+    <button onclick="history.back()" class="mt-2 text-sm font-bold text-orange-500 hover:underline">العودة للصفحة السابقة</button>
+  </div>
+}

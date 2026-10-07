@@ -1,5 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RestaurantMenuCategory } from '../../models/restaurant-details';
+
+export interface CategoryItem {
+  id: number;
+  name: string;
+}
 
 @Component({
   selector: 'app-restaurant-categories',
@@ -9,7 +13,7 @@ import { RestaurantMenuCategory } from '../../models/restaurant-details';
   styleUrl: './restaurant-categories.component.css',
 })
 export class RestaurantCategoriesComponent {
-  @Input({ required: true }) categories: RestaurantMenuCategory[] = [];
+  @Input({ required: true }) categories: CategoryItem[] = [];
   @Input({ required: true }) selectedCategory: number | null = null;
   @Output() categorySelected = new EventEmitter<number | null>();
 

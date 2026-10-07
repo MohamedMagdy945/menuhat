@@ -33,7 +33,7 @@
   <div class="relative z-20 flex flex-col items-center md:flex-row md:items-start gap-4 px-2">
     <!-- Logo -->
     <div
-      class="-mt-16 flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-orange-500 text-3xl font-black text-white shadow-md md:h-36 md:w-36">
+      class="-mt-13 flex h-26 w-26 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-orange-500 text-3xl font-black text-white shadow-md md:h-30 md:w-30">
       @if (data.main.logoURL) {
       <img [src]="apiUrl + data.main.logoURL" [alt]="data.main.clientName" class="h-full w-full object-cover" />
       } @else {
@@ -93,112 +93,131 @@
     <!-- =========================
            Information Cards
       ========================== -->
-    <div class="flex flex-wrap justify-between gap-y-1 md:gap-5">
+   <div class="grid grid-cols-[3fr_7fr] gap-2 md:flex md:flex-wrap md:gap-5">
 
+  <!-- عدد الزيارات -->
+  <div
+    class="flex h-10  flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
+  >
+    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
+      groups
+    </span>
 
-      <!-- عدد الزيارات -->
-      <div
-        class="flex h-10 md:h-15 w-[36%] md:w-auto min-w-0 md:flex-1 items-center gap-2 text-xl rounded-2xl md:border border-gray-100 bg-white px-4">
-        <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-          groups
-        </span>
+    <div class="min-w-0">
+      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
+        عدد الزيارات
+      </p>
 
-        <div class="min-w-0">
-          <p class="text-sm font-semibold leading-4 text-gray-400 hidden md:block">عدد الزيارات</p>
-
-          <p class="truncate text-sm font-semibold text-gray-800">
-            {{ data.main.visitsCount }}
-          </p>
-        </div>
-      </div>
-      <!-- ساعات العمل -->
-      <div
-        class="flex h-10 md:h-15 w-[62%] md:w-auto min-w-0 md:flex-1 items-center gap-2 text-xl rounded-2xl md:border border-gray-100 bg-white px-4">
-        <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-          schedule
-        </span>
-
-        <div class="min-w-0">
-          <p class="text-sm font-semibold leading-4 text-gray-400 hidden md:block">ساعات العمل</p>
-
-          <p class="truncate text-sm font-semibold text-gray-800">
-            {{ data.main.fromTime }} - {{ data.main.toTime }}
-          </p>
-        </div>
-      </div>
-
-
-      <!-- المسافة -->
-      <div
-        class="flex h-10 md:h-15 w-[36%] md:w-auto min-w-0 md:flex-1 items-center gap-2 text-xl rounded-2xl md:border border-gray-100 bg-white px-4">
-        <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-          near_me
-        </span>
-
-        <div class="min-w-0">
-          <p class="text-sm font-semibold leading-4 text-gray-400 hidden md:block">المسافة</p>
-
-          <p class="truncate text-sm font-semibold text-gray-800">
-            @if (data.main.straightDistance != null) {
-            {{ data.main.straightDistance | number: '1.0-1' }} كم
-            } @else {
-            غير متاح
-            }
-          </p>
-        </div>
-      </div>
-      <!-- الموقع -->
-      <div
-        class="flex h-10 md:h-15 w-[62%] md:w-auto min-w-0 md:flex-1 items-center gap-2 text-xl rounded-2xl md:border border-gray-100 bg-white px-4">
-        <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-          location_on
-        </span>
-
-        <div class="min-w-0">
-          <p class="text-sm font-semibold leading-4 text-gray-400 hidden md:block">الموقع</p>
-
-          <p class="truncate text-sm font-semibold text-gray-800">
-            {{ data.main.city_Ar }}، {{ data.main.government_Ar }}
-          </p>
-        </div>
-      </div>
-
-      <!-- مسافة القيادة -->
-      <div
-        class="flex h-10 md:h-15 w-[36%] md:w-auto min-w-0 md:flex-1 items-center gap-2 text-xl rounded-2xl md:border border-gray-100 bg-white px-4">
-        <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-          route
-        </span>
-
-        <div class="min-w-0">
-          <p class="text-sm font-semibold leading-4 text-gray-400 hidden md:block">مسافة القيادة</p>
-
-          <p class="truncate text-sm font-semibold text-gray-800">
-            @if (data.main.drivingDistance != null) {
-            {{ data.main.drivingDistance | number: '1.0-1' }} كم
-            } @else {
-            غير متاح
-            }
-          </p>
-        </div>
-      </div>
-
-      <!-- شروط الطلب -->
-      <div
-        class="flex h-10 md:h-15 w-[62%] md:w-auto min-w-0 md:flex-1 items-center gap-2 text-xl rounded-2xl md:border border-gray-100 bg-white px-4">
-        <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-          bolt
-        </span>
-
-        <div class="min-w-0">
-          <p class="text-sm font-semibold leading-4 text-gray-400 hidden md:block">شروط الطلب</p>
-
-          <p class="truncate text-sm font-semibold text-gray-800">
-            {{ data.main.orderConditions_Ar }}
-          </p>
-        </div>
-      </div>
+      <p class="truncate text-sm font-semibold text-gray-800">
+        {{ data.main.visitsCount }}
+      </p>
     </div>
+  </div>
+
+  <!-- ساعات العمل -->
+  <div
+    class="flex h-10  flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
+  >
+    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
+      schedule
+    </span>
+
+    <div class="min-w-0">
+      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
+        ساعات العمل
+      </p>
+
+      <p class="truncate text-sm font-semibold text-gray-800">
+        {{ data.main.fromTime }} - {{ data.main.toTime }}
+      </p>
+    </div>
+  </div>
+
+  <!-- المسافة -->
+  <div
+    class="flex h-10  flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
+  >
+    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
+      near_me
+    </span>
+
+    <div class="min-w-0">
+      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
+        المسافة
+      </p>
+
+      <p class="truncate text-sm font-semibold text-gray-800">
+        @if (data.main.straightDistance != null) {
+          {{ data.main.straightDistance | number: '1.0-1' }} كم
+        } @else {
+          غير متاح
+        }
+      </p>
+    </div>
+  </div>
+
+  <!-- الموقع -->
+  <div
+    class="flex h-10  flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
+  >
+    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
+      location_on
+    </span>
+
+    <div class="min-w-0">
+      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
+        الموقع
+      </p>
+
+      <p class="truncate text-sm font-semibold text-gray-800">
+        {{ data.main.city_Ar }}، {{ data.main.government_Ar }}
+      </p>
+    </div>
+  </div>
+
+  <!-- مسافة القيادة -->
+  <div
+    class="flex h-10 flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
+  >
+    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
+      route
+    </span>
+
+    <div class="min-w-0">
+      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
+        مسافة القيادة
+      </p>
+
+      <p class="truncate text-sm font-semibold text-gray-800">
+        @if (data.main.drivingDistance != null) {
+          {{ data.main.drivingDistance | number: '1.0-1' }} كم
+        } @else {
+          غير متاح
+        }
+      </p>
+    </div>
+  </div>
+
+  <!-- شروط الطلب -->
+  <div
+    class="flex h-10 flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
+  >
+    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
+      bolt
+    </span>
+
+    <div class="min-w-0">
+      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
+        شروط الطلب
+      </p>
+
+      <p class="truncate text-sm font-semibold text-gray-800">
+        {{ data.main.orderConditions_Ar }}
+      </p>
+    </div>
+  </div>
+
+</div>
   </div>
 
   <!-- =========================
@@ -209,36 +228,32 @@
            Tabs Navigation
       ========================== -->
     <div class="flex items-center justify-between border-b border-gray-200">
-      <div class="flex overflow-x-auto text-xs font-bold text-gray-500 whitespace-nowrap">
+      <div class="flex overflow-x-auto text-sm font-bold text-gray-500 whitespace-nowrap">
         <button class="px-3 py-2 transition-colors border-b-2"
-          [class]="activeTab() === 'menu' ? 'border-orange-500 text-orange-500' : 'border-transparent'" (click)="activeTab.set('menu')">
+          [class]="activeTab() === 'menu' ? 'border-orange-500 text-orange-500' : 'border-transparent'"
+          (click)="activeTab.set('menu')">
           المنيو
         </button>
-        <button 
-          class="px-3 py-3  transition-colors border-b-2"
-          [class]="activeTab() === 'most-ordered' ? 'border-orange-500 text-orange-500' : 'border-transparent'" 
+        <button class="px-3 py-3  transition-colors border-b-2"
+          [class]="activeTab() === 'most-ordered' ? 'border-orange-500 text-orange-500' : 'border-transparent'"
           (click)="activeTab.set('most-ordered')">
           الأكثر طلباً
         </button>
-        <button 
-          class="px-3 py-3  transition-colors border-b-2"
-          [class]="activeTab() === 'images' ? 'border-orange-500 text-orange-500' : 'border-transparent'" 
+        <button class="px-3 py-3  transition-colors border-b-2"
+          [class]="activeTab() === 'images' ? 'border-orange-500 text-orange-500' : 'border-transparent'"
           (click)="activeTab.set('images')">
           الصور
         </button>
-        <button 
-          class="px-3 py-3  transition-colors border-b-2"
-          [class]="activeTab() === 'reviews' ? 'border-orange-500 text-orange-500' : 'border-transparent'" 
+        <button class="px-3 py-3  transition-colors border-b-2"
+          [class]="activeTab() === 'reviews' ? 'border-orange-500 text-orange-500' : 'border-transparent'"
           (click)="activeTab.set('reviews')">
-          التقييمات 
+          التقييمات
         </button>
       </div>
 
       <!-- Add Rating Button (Only visible in reviews tab) -->
       @if (activeTab() === 'reviews') {
-      <button
-        type="button"
-        (click)="isAddRatingModalOpen.set(true)"
+      <button type="button" (click)="isAddRatingModalOpen.set(true)"
         class="hidden md:flex items-center gap-1 rounded-md border border-dashed border-orange-400 bg-orange-50 px-3 py-1.5 text-sm font-bold text-orange-500 transition-colors hover:bg-orange-100">
         <span class="text-lg leading-none">+</span>
         إضافة تقييم
@@ -257,6 +272,15 @@
       <app-restaurant-categories [categories]="data.details" [selectedCategory]="selectedCategory()"
         (categorySelected)="selectCategory($event)">
       </app-restaurant-categories>
+
+      <!-- =========================
+               Sub Categories
+          ========================== -->
+      @if (currentSubCategories().length > 0) {
+        <app-restaurant-categories [categories]="currentSubCategories()" [selectedCategory]="selectedSubCategory()"
+          (categorySelected)="selectSubCategory($event)">
+        </app-restaurant-categories>
+      }
 
       <!-- =========================
                Products
@@ -283,9 +307,7 @@
 }
 
 @if (isAddRatingModalOpen()) {
-  <app-add-rating-modal 
-    [restaurantName]="restaurantData()?.main?.clientName || ''"
-    (close)="isAddRatingModalOpen.set(false)" 
-    (submitReview)="submitReview($event)">
-  </app-add-rating-modal>
+<app-add-rating-modal [restaurantName]="restaurantData()?.main?.clientName || ''"
+  (close)="isAddRatingModalOpen.set(false)" (submitReview)="submitReview($event)">
+</app-add-rating-modal>
 }

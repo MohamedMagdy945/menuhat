@@ -3,7 +3,8 @@
   <div class="relative h-30 w-full overflow-hidden">
     <!-- رابط تفاصيل الوجبة -->
     <a
-      [routerLink]="['/menu-items', menuItem().menuId]"
+      [routerLink]="['/menu-items', menuItem().mostrequestesId]"
+      [state]="{ item: menuItem() }"
       class="block h-full w-full"
       [attr.aria-label]="'عرض تفاصيل ' + menuItem().productName"
     >

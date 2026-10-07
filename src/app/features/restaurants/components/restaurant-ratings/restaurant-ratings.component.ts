@@ -2,11 +2,12 @@ import { Component, Input, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ResuaurantProfileService } from '../../services/resuaurant-profile.service';
 import { RestaurantRating } from '../../models/restaurant-rating';
+import { RatingSkeletonComponent } from '../../../../shared/skeleton/rating-skeleton/rating-skeleton.component';
 
 @Component({
   selector: 'app-restaurant-ratings',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule, DatePipe, RatingSkeletonComponent],
   templateUrl: './restaurant-ratings.component.html',
   styleUrl: './restaurant-ratings.component.css'
 })

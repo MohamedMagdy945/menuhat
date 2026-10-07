@@ -1,9 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { MenuItemService } from './menu-item.service';
 import { MenuItemCard } from './components/menu-item-card/menu-item-card.component';
+import { MenuItemSkeletonComponent } from '../../shared/skeleton/menu-item-skeleton/menu-item-skeleton.component';
 
 @Component({
-  imports: [MenuItemCard],
+  imports: [MenuItemCard, MenuItemSkeletonComponent],
   selector: 'app-meals',
   styleUrl: './menu-item.component.css',
   templateUrl: './menu-item.component.html',
