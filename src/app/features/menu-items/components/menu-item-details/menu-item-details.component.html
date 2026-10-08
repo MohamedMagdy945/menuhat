@@ -1,41 +1,49 @@
 @if (item(); as currentItem) {
-<div class="min-h-screen bg-slate-50 pb-32 ">
-  
-  <!-- =========================
-       Header
-  ========================== -->
-  <header class="sticky top-0 z-50 bg-slate-50/80 px-4 py-4 backdrop-blur-md md:px-8">
-    <div class="mx-auto flex max-w-4xl items-center justify-between">
-      
-      <!-- Back Button -->
-      <button 
-        onclick="history.back()"
-        class="flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50"
-      >
-        الرجوع للمطعم
-        <span class="material-symbols-sharp text-[18px]">arrow_forward</span>
+<div class="min-h-screen bg-slate-50/60 pb-12 sm:pb-16 text-gray-900">
+
+  <!-- ========================================================================= -->
+  <!-- Header / Navigation Bar                                                  -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 border-b border-gray-100 bg-white/90 backdrop-blur-md">
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6">
+
+      <!-- Back Button (Arrow pointing towards navigation origin) -->
+      <button type="button" (click)="goBack()"
+        class="group inline-flex items-center gap-2 rounded-xl border border-gray-200/80 bg-white px-3.5 py-2 text-sm font-semibold text-gray-700 shadow-2xs transition hover:border-gray-300 hover:bg-gray-50 active:scale-95 cursor-pointer"
+        aria-label="الرجوع">
+        <span
+          class="material-symbols-sharp text-[20px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
+        <span>الرجوع</span>
       </button>
 
-      <!-- Center Title (Hidden on small mobile, visible on larger) -->
-      <h1 class="hidden text-xl font-black text-gray-900 md:block">
-        {{ currentItem.productName }}
-      </h1>
+      <!-- Center Title -->
+      <div class="hidden max-w-xs truncate text-center md:block">
+        <span class="text-sm font-bold text-gray-800">{{ currentItem.productName }}</span>
+        @if ($any(currentItem).clientName) {
+        <span class="block text-xs text-gray-400 font-medium truncate">{{ $any(currentItem).clientName }}</span>
+        }
+      </div>
 
-      <!-- Actions -->
+      <!-- Action Buttons (Share & Favorite) -->
       <div class="flex items-center gap-2">
-        <button class="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition hover:bg-gray-50">
-          <span class="material-symbols-sharp text-[18px] text-gray-600">ios_share</span>
+        <button type="button" (click)="shareItem()"
+          class="relative flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200/80 bg-white text-gray-600 shadow-2xs transition hover:border-gray-300 hover:bg-gray-50 active:scale-95 cursor-pointer"
+          title="مشاركة الصنف" aria-label="مشاركة الصنف">
+          <span class="material-symbols-sharp text-[20px]">ios_share</span>
+          @if (copiedShare()) {
+          <span
+            class="absolute -bottom-8 whitespace-nowrap rounded-md bg-gray-900 px-2 py-0.5 text-[11px] font-semibold text-white shadow-md animate-fade-in">
+            تم نسخ الرابط!
+          </span>
+          }
         </button>
-        <button 
-          (click)="toggleFavorite()"
-          class="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition hover:bg-gray-50"
-        >
-          <span 
-            class="material-symbols-sharp text-[18px] transition-colors"
-            [class.text-red-500]="isFavorite()"
-            [class.icon-fill]="isFavorite()"
-            [class.text-gray-600]="!isFavorite()"
-          >
+
+        <button type="button" (click)="toggleFavorite()"
+          class="flex h-10 w-10 items-center justify-center rounded-xl border border-gray-200/80 bg-white shadow-2xs transition hover:border-gray-300 hover:bg-gray-50 active:scale-95 cursor-pointer"
+          [attr.aria-label]="isFavorite() ? 'إزالة من المفضلة' : 'إضافة للمفضلة'">
+          <span class="material-symbols-sharp text-[22px] transition-all duration-200"
+            [class.text-red-500]="isFavorite()" [class.icon-fill]="isFavorite()" [class.scale-110]="isFavorite()"
+            [class.text-gray-500]="!isFavorite()">
             {{ isFavorite() ? 'favorite' : 'favorite_border' }}
           </span>
         </button>
@@ -44,261 +52,333 @@
     </div>
   </header>
 
-  <!-- =========================
-       Main Content
-  ========================== -->
-  <main class="mx-auto max-w-4xl px-4 md:px-8">
-    
-    <!-- Product Details Card -->
-    <div class="mt-4 flex flex-col overflow-hidden rounded-3xl bg-white shadow-xs md:flex-row">
-      
-    
 
-      <!-- Info Area -->
-      <div class="flex w-full flex-col justify-between p-5 md:p-6 lg:p-8">
-        
-        <!-- Top: Tags Row -->
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="rounded-full bg-orange-50 px-3 py-1 text-[11px] font-bold text-orange-600">
-            {{ $any(currentItem).clientName || 'مطعم غير معروف' }}
-          </span>
-          <div class="flex items-center gap-1 text-[11px] font-bold text-gray-500">
-            <span class="material-symbols-sharp icon-fill text-[14px] text-amber-400">star</span>
-            <span class="text-gray-800">4.9</span>
-            <span class="text-gray-400 font-medium">+1.2k تقييم</span>
-          </div>
-        </div>
+  <main class="mx-auto max-w-5xl px-2 pt-6 sm:px-4">
 
-        <!-- Title -->
-        <h2 class="mt-3 text-xl font-black text-gray-900 md:text-2xl lg:text-3xl">
-          {{ currentItem.productName }}
-        </h2>
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-11 lg:items-start">
 
-        <!-- Description -->
-        <p class="mt-2 text-[13px] leading-relaxed text-gray-500">
-          {{ currentItem.description || 'لا يوجد وصف متاح لهذا المنتج حالياً.' }}
-        </p>
+      <!-- ===================================================================== -->
+      <!-- Details Column: Right side on Desktop (order-2 on mobile, order-1 on lg)-->
+      <!-- ===================================================================== -->
+      <section class="order-2 flex flex-col gap-3 lg:order-1 lg:col-span-7">
 
-        <!-- Bottom: Price Row -->
-        <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
-          
-          <!-- Discount Badge -->
-          @if (currentItem.discountPercentage || currentItem.oldPrice > currentItem.price) {
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1.5 text-[12px] font-bold text-red-500">
-              <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
-              وفر {{ getDiscount(currentItem) }}%
-            </span>
-          }
+        <!-- Card: Basic Information & Price -->
+        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-xs text-start">
 
-          <!-- Price -->
-          <div class="flex items-baseline gap-2 mr-auto">
-            <div class="flex items-baseline gap-1">
-              <span class="text-sm font-bold text-gray-400">ج.م</span>
-              <span class="text-3xl font-black text-gray-900">{{ currentItem.price | number:'1.2-2' }}</span>
-            </div>
-            @if (currentItem.oldPrice > currentItem.price) {
-              <span class="text-sm font-semibold text-gray-300 line-through">
-                {{ currentItem.oldPrice | number:'1.2-2' }} ج.م
+          <!-- Meta Tags (Restaurant & Category) -->
+          <div class="flex flex-wrap items-center gap-2">
+            @if ($any(currentItem).clientName) {
+            <div class="inline-flex gap-1 max-w-full items-center rounded-md bg-primary/8 px-3 py-2 text-primary">
+              <span class="material-symbols-sharp icon-fill select-none text-[16px] leading-none">
+                storefront
               </span>
+
+              <span class="truncate text-sm font-bold leading-5">
+                {{ $any(currentItem).clientName }}
+              </span>
+            </div>
+
+            }
+
+            @if ($any(currentItem).menuCategoryName) {
+            <div class="inline-flex max-w-full items-center gap-1 rounded-md bg-slate-100 px-3 py-2 text-slate-600">
+              <span class="material-symbols-sharp icon-fill select-none text-[16px] leading-none">
+                restaurant_menu
+              </span>
+
+              <span class="truncate text-sm font-bold leading-5">
+                {{ $any(currentItem).menuCategoryName }}
+              </span>
+            </div>
             }
           </div>
-        </div>
 
-      </div>
+          <!-- Product Name -->
+          <h1 class="mt-3 text-2xl font-black text-gray-900 sm:text-3xl">
+            {{ currentItem.productName }}
+          </h1>
 
-        <!-- Image Area -->
-      <div class="relative w-full shrink-0 md:w-5/12">
-        <div class="aspect-4/3 h-full w-full overflow-hidden  md:aspect-auto md:min-h-70">
-          <img
-            [src]="currentItem.photoURL ? apiUrl + currentItem.photoURL : '/images/default-meal.png'"
-            [alt]="currentItem.productName"
-            class="h-full w-full object-cover"
-          />
-        </div>
-      </div>
-    </div>
+          <!-- Description -->
+          <p class="mt-3 text-sm leading-relaxed text-gray-500 sm:text-base">
+            {{ currentItem.description || 'وجبة مميزة مُعدة بأعلى معايير الجودة وبمكونات طازجة لتمنحك مذاقاً استثنائياً
+            وشهياً.' }}
+          </p>
 
-    <!-- Sizes Card -->
-    <div class="mt-6 rounded-3xl bg-white p-5 shadow-xs md:p-6 lg:p-8">
-      <div class="mb-4">
-        <h3 class="text-xl font-black text-gray-900">اختر الحجم</h3>
-        <p class="mt-1 text-xs text-gray-400 font-medium">حدد الحجم المناسب لوجبتك</p>
-      </div>
+          <!-- Pricing Block -->
+          <div
+            class="mt-6 flex flex-wrap items-baseline justify-between gap-4 rounded-2xl bg-slate-50/80 p-4 border border-gray-100">
+            <div class="flex items-baseline gap-2">
+              <div class="flex items-baseline gap-1 text-2xl sm:text-3xl font-black text-orange-600">
+                <span>{{ currentItem.price | number:'1.2-2' }}</span>
+                <span class="text-sm font-bold text-gray-600">ج.م</span>
+              </div>
 
-      <div class="grid grid-cols-3 gap-3 md:gap-4">
-        <!-- Small -->
-        <button 
-          (click)="selectedSize.set('small')"
-          class="flex flex-col items-center justify-center rounded-2xl border-2 p-3 transition-colors"
-          [class.border-orange-500]="selectedSize() === 'small'"
-          [class.bg-orange-50]="selectedSize() === 'small'"
-          [class.border-gray-100]="selectedSize() !== 'small'"
-        >
-          <div class="flex w-full justify-between items-center mb-2">
-            <div 
-              class="h-4 w-4 rounded-full border-2 flex items-center justify-center"
-              [class.border-orange-500]="selectedSize() === 'small'"
-              [class.border-gray-300]="selectedSize() !== 'small'"
-            >
-              @if (selectedSize() === 'small') {
-                <div class="h-2 w-2 rounded-full bg-orange-500"></div>
+              @if (currentItem.oldPrice > currentItem.price) {
+              <span class="text-sm font-semibold text-gray-400 line-through">
+                {{ currentItem.oldPrice | number:'1.2-2' }} ج.م
+              </span>
               }
             </div>
-            <span class="text-sm font-bold" [class.text-gray-900]="selectedSize() === 'small'" [class.text-gray-600]="selectedSize() !== 'small'">صغير</span>
-          </div>
-          <span class="text-xs font-semibold text-gray-400">{{ getSmallPrice(currentItem) | number:'1.2-2' }} ج.م</span>
-        </button>
 
-        <!-- Medium -->
-        <button 
-          (click)="selectedSize.set('medium')"
-          class="flex flex-col items-center justify-center rounded-2xl border-2 p-3 transition-colors"
-          [class.border-orange-500]="selectedSize() === 'medium'"
-          [class.bg-orange-50]="selectedSize() === 'medium'"
-          [class.border-gray-100]="selectedSize() !== 'medium'"
-        >
-          <div class="flex w-full justify-between items-center mb-2">
-            <div 
-              class="h-4 w-4 rounded-full border-2 flex items-center justify-center"
-              [class.border-orange-500]="selectedSize() === 'medium'"
-              [class.border-gray-300]="selectedSize() !== 'medium'"
-            >
-              @if (selectedSize() === 'medium') {
-                <div class="h-2 w-2 rounded-full bg-orange-500"></div>
-              }
+            @if (getSavings(currentItem) > 0) {
+            <div
+              class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+              <span class="material-symbols-sharp text-[15px]">savings</span>
+              <span>توفير {{ getSavings(currentItem) | number:'1.2-2' }} ج.م</span>
             </div>
-            <span class="text-sm font-bold" [class.text-gray-900]="selectedSize() === 'medium'" [class.text-gray-600]="selectedSize() !== 'medium'">وسط</span>
+            }
           </div>
-          <span class="text-xs font-semibold text-gray-400">{{ currentItem.price | number:'1.2-2' }} ج.م</span>
-        </button>
 
-        <!-- Large -->
-        <button 
-          (click)="selectedSize.set('large')"
-          class="flex flex-col items-center justify-center rounded-2xl border-2 p-3 transition-colors"
-          [class.border-orange-500]="selectedSize() === 'large'"
-          [class.bg-orange-50]="selectedSize() === 'large'"
-          [class.border-gray-100]="selectedSize() !== 'large'"
-        >
-          <div class="flex w-full justify-between items-center mb-2">
-            <div 
-              class="h-4 w-4 rounded-full border-2 flex items-center justify-center"
-              [class.border-orange-500]="selectedSize() === 'large'"
-              [class.border-gray-300]="selectedSize() !== 'large'"
-            >
-              @if (selectedSize() === 'large') {
-                <div class="h-2 w-2 rounded-full bg-orange-500"></div>
-              }
-            </div>
-            <span class="text-sm font-bold" [class.text-gray-900]="selectedSize() === 'large'" [class.text-gray-600]="selectedSize() !== 'large'">كبير (دبل)</span>
-          </div>
-          <span class="text-xs font-semibold text-gray-400">{{ getLargePrice(currentItem) | number:'1.2-2' }} ج.م</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Addons Card -->
-    <div class="mt-6 rounded-3xl bg-white p-5 shadow-xs md:p-6 lg:p-8">
-      <div class="mb-4 flex items-start justify-between">
-        <div>
-          <h3 class="text-xl font-black text-gray-900">إضافات ومقليات مقترحة</h3>
-          <p class="mt-1 text-xs text-gray-400 font-medium">اختر وجباتك بلمسات مميزة</p>
         </div>
-        <span class="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold text-gray-500">
-          اختياري
-        </span>
-      </div>
 
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:gap-4">
-        @for (addon of addons(); track addon.id) {
-          <label 
-            class="flex cursor-pointer items-center justify-between rounded-2xl border border-gray-100 p-3 transition-colors hover:bg-gray-50"
-            [class.border-orange-200]="addon.selected"
-            [class.bg-orange-50]="addon.selected"
-          >
-            <div class="flex items-center gap-3">
-              <input 
-                type="checkbox" 
-                class="h-5 w-5 rounded border-gray-300 text-orange-500 focus:ring-orange-500"
-                [checked]="addon.selected"
-                (change)="toggleAddon(addon.id)"
-              />
-              <div>
-                <span class="block text-sm font-bold text-gray-900">{{ addon.name }}</span>
-                <span class="block text-xs font-bold text-orange-500 mt-1">+ {{ addon.price | number:'1.2-2' }} ج.م</span>
+        <!-- Card: Sizes Selector -->
+        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-xs text-start">
+          <div class="mb-4 flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-gray-900 sm:text-lg">اختر الحجم</h2>
+              <p class="text-xs text-gray-400 font-medium">حدد الحجم المفضل لوجبتك</p>
+            </div>
+            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-bold text-gray-600">
+              إلزامي
+            </span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-3">
+
+            <!-- Small Option -->
+            <button type="button" (click)="selectedSize.set('small')" class="size-card"
+              [class.is-selected]="selectedSize() === 'small'">
+              <div class="size-radio">
+                @if (selectedSize() === 'small') {
+                <span class="size-radio-inner"></span>
+                }
+              </div>
+              <span class="size-name">صغير</span>
+              <span class="size-price">
+                {{ getSmallPrice(currentItem) | number:'1.2-2' }} ج.م
+              </span>
+            </button>
+
+            <!-- Medium Option (Default) -->
+            <button type="button" (click)="selectedSize.set('medium')" class="size-card"
+              [class.is-selected]="selectedSize() === 'medium'">
+              <span
+                class="absolute -top-2.5 rounded-full bg-orange-500 px-2 py-0.5 text-[9px] font-black text-white shadow-xs">
+                المعتاد
+              </span>
+              <div class="size-radio">
+                @if (selectedSize() === 'medium') {
+                <span class="size-radio-inner"></span>
+                }
+              </div>
+              <span class="size-name">وسط</span>
+              <span class="size-price">
+                {{ currentItem.price | number:'1.2-2' }} ج.م
+              </span>
+            </button>
+
+            <!-- Large Option -->
+            <button type="button" (click)="selectedSize.set('large')" class="size-card"
+              [class.is-selected]="selectedSize() === 'large'">
+              <div class="size-radio">
+                @if (selectedSize() === 'large') {
+                <span class="size-radio-inner"></span>
+                }
+              </div>
+              <span class="size-name">كبير (دبل)</span>
+              <span class="size-price">
+                {{ getLargePrice(currentItem) | number:'1.2-2' }} ج.م
+              </span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Card: Addons & Extras -->
+        <!-- <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-xs text-start">
+          <div class="mb-4 flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-bold text-gray-900 sm:text-lg">إضافات مقترحة</h2>
+              <p class="text-xs text-gray-400 font-medium">أضف مشروبات ومقبلات لذيذة لتكتمل وجبتك</p>
+            </div>
+            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-bold text-gray-600">
+              اختياري
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            @for (addon of addons(); track addon.id) {
+            <div (click)="toggleAddon(addon.id)" class="addon-card" [class.is-selected]="addon.selected">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="addon-checkbox">
+                  @if (addon.selected) {
+                  <span class="material-symbols-sharp text-[16px] text-white">check</span>
+                  }
+                </div>
+
+                <div class="truncate">
+                  <span class="block truncate text-sm font-bold text-gray-900">{{ addon.name }}</span>
+                  <span class="block text-xs font-extrabold text-orange-600 mt-0.5">
+                    +{{ addon.price | number:'1.2-2' }} ج.م
+                  </span>
+                </div>
+              </div>
+
+              <div class="h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-gray-100 border border-gray-100">
+                <img [src]="addon.image" [alt]="addon.name" class="h-full w-full object-cover transition-transform"
+                  onerror="this.src='/images/default-meal.png'" />
               </div>
             </div>
-            <div class="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-gray-100">
-              <img [src]="addon.image" [alt]="addon.name" class="h-full w-full object-cover" onerror="this.src='/images/default-meal.png'" />
+            }
+          </div>
+        </div> -->
+
+        <!-- Card: Special Instructions Notes -->
+        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-xs text-start">
+          <div class="mb-3">
+            <h2 class="text-base font-bold text-gray-900 sm:text-lg">ملاحظات خاصة</h2>
+            <p class="text-xs text-gray-400 font-medium">أي تعليمات أو تفضيلات لتحضير طلبك؟ (اختياري)</p>
+          </div>
+
+          <div class="relative">
+            <textarea [ngModel]="specialNotes()" (ngModelChange)="specialNotes.set($event)" rows="3"
+              placeholder="مثال: بدون بصل، زيادة صوص، خبز محمص..."
+              class="w-full resize-none rounded-2xl border border-gray-200 bg-gray-50/50 p-3.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20"></textarea>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- Visual Hero Column: Left side on Desktop (order-1 on mobile, order-2 on lg)-->
+      <!-- ===================================================================== -->
+      <section class="contents lg:flex lg:flex-col lg:col-span-4 lg:order-2 lg:gap-4">
+
+        <!-- Image Card (order-1: Top on mobile, 1st in column on desktop) -->
+        <div
+          class="order-1 group relative overflow-hidden bg-transparent lg:rounded-xl lg:border lg:border-gray-100 lg:bg-white lg:p-3 lg:shadow-xs">
+
+          <!-- Image Container (Mobile: small & centered with no bg | Desktop: full aspect card) -->
+          <div
+            class="relative mx-auto flex h-36 w-36 sm:h-44 sm:w-44 lg:h-auto lg:w-full lg:aspect-square items-center justify-center bg-transparent lg:rounded-2xl lg:bg-gray-50">
+            <img [src]="currentItem.photoURL ? apiUrl + currentItem.photoURL : '/images/default-meal.png'"
+              [alt]="currentItem.productName"
+              class="max-h-full max-w-full object-contain p-1 drop-shadow-md lg:p-2 lg:drop-shadow-none"
+              onerror="this.src='/images/default-meal.png'" />
+
+            <!-- Discount Badge (in start corner: right in RTL) -->
+            @if (currentItem.discountPercentage || currentItem.oldPrice > currentItem.price) {
+            <div
+              class="absolute top-0 inset-s-0 lg:top-3 lg:inset-s-3 flex items-center gap-1 rounded-full bg-orange-500 px-2.5 py-0.5 lg:px-3 lg:py-1 text-[11px] lg:text-xs font-black text-white shadow-md">
+              <span class="material-symbols-sharp text-[13px] lg:text-[14px]">local_offer</span>
+              <span>خصم {{ getDiscount(currentItem) }}%</span>
             </div>
-          </label>
-        }
-      </div>
+            }
+
+            <!-- Floating Rating Tag (in end corner: left in RTL) -->
+            <div
+              class="absolute bottom-0 inset-e-0 lg:bottom-3 lg:inset-e-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-0.5 lg:px-3 lg:py-1 text-[11px] lg:text-xs font-bold text-gray-800 shadow-sm backdrop-blur-md">
+              <span class="material-symbols-sharp icon-fill text-[13px] lg:text-[15px] text-amber-400">star</span>
+              <span>4.9</span>
+              <span class="text-gray-400 font-normal">(+1.2k)</span>
+            </div>
+          </div>
+
+          <!-- Quick Highlights Row (Desktop only) -->
+          <div class="mt-3 hidden lg:grid grid-cols-3 gap-2 border-t border-gray-100 pt-3 text-center">
+            <div class="rounded-xl bg-gray-50/80 p-2">
+              <span class="material-symbols-sharp text-[18px] text-orange-500">schedule</span>
+              <p class="text-[11px] font-bold text-gray-500">20-30 دقيقة</p>
+            </div>
+            <div class="rounded-xl bg-gray-50/80 p-2">
+              <span class="material-symbols-sharp text-[18px] text-green-600">verified</span>
+              <p class="text-[11px] font-bold text-gray-500">طازج يومياً</p>
+            </div>
+            <div class="rounded-xl bg-gray-50/80 p-2">
+              <span class="material-symbols-sharp text-[18px] text-blue-500">local_fire_department</span>
+              <p class="text-[11px] font-bold text-gray-500">الأكثر طلباً</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Card: Action Bar (Checkout / Add to Cart) - Bottom of Page on Mobile (order-3), Bottom of Image on Desktop -->
+        <div class="order-3 rounded-xl border border-gray-100 bg-white p-4 sm:p-5 shadow-xs">
+          <div class="flex flex-col gap-4">
+
+            <!-- Row: Quantity & Total Price -->
+            <div class="flex items-center justify-between gap-3">
+              <!-- 1. عداد الكمية (+ ثم الرقم ثم -) -->
+              <div class="flex items-center gap-1.5 rounded-2xl border border-gray-200 bg-gray-50/80 p-1">
+                <button type="button" (click)="incrementQuantity()"
+                  class="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-gray-700 shadow-2xs transition hover:bg-orange-50 hover:text-orange-600 active:scale-95 cursor-pointer"
+                  aria-label="زيادة الكمية">
+                  <span class="material-symbols-sharp text-[18px]">add</span>
+                </button>
+
+                <span class="w-9 text-center text-base font-black text-gray-900 select-none">
+                  {{ quantity() }}
+                </span>
+
+                <button type="button" (click)="decrementQuantity()" [disabled]="quantity() <= 1"
+                  class="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-gray-700 shadow-2xs transition hover:bg-gray-100 disabled:opacity-40 disabled:hover:bg-white active:scale-95 cursor-pointer"
+                  aria-label="تقليل الكمية">
+                  <span class="material-symbols-sharp text-[18px]">remove</span>
+                </button>
+              </div>
+
+              <!-- 2. الإجمالي النهائي -->
+              <div class="text-start">
+                <span class="block text-[11px] font-semibold text-gray-400">الإجمالي النهائي</span>
+                <div class="flex items-baseline gap-1 text-xl sm:text-2xl font-black text-gray-900">
+                  <span>{{ getTotalPrice() | number:'1.2-2' }}</span>
+                  <span class="text-xs font-bold text-orange-600">ج.م</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. زر الإضافة إلى السلة -->
+            <button type="button" (click)="addToCart()" [disabled]="isAddingToCart()"
+              class="group flex h-12 w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-6 font-bold text-white shadow-lg shadow-orange-500/25 transition-all hover:bg-orange-600 active:scale-[0.98] disabled:cursor-wait cursor-pointer">
+              @if (isAddingToCart()) {
+              <span class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+              <span>جاري الإضافة...</span>
+              } @else if (isAddedToCart()) {
+              <span class="material-symbols-sharp text-[22px] animate-scale-check">check_circle</span>
+              <span>تمت الإضافة بنجاح!</span>
+              } @else {
+              <span
+                class="material-symbols-sharp text-[20px] transition-transform group-hover:-translate-y-0.5">shopping_bag</span>
+              <span>إضافة للسلة</span>
+              }
+            </button>
+
+          </div>
+        </div>
+
+      </section>
+
     </div>
 
   </main>
 
-  <!-- =========================
-       Bottom Action Bar
-  ========================== -->
-  <div class="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-200 bg-white px-4 py-4 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] md:px-8">
-    <div class="mx-auto flex max-w-4xl items-center justify-between gap-4">
-      
-      <!-- Quantity -->
-      <div class="flex h-12 w-28 shrink-0 items-center justify-between rounded-full bg-gray-100 px-2">
-        <button 
-          (click)="incrementQuantity()"
-          class="flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-gray-700 shadow-sm transition hover:bg-gray-50"
-        >
-          +
-        </button>
-        <span class="text-sm font-black text-gray-900">{{ quantity() }}</span>
-        <button 
-          (click)="decrementQuantity()"
-          class="flex h-8 w-8 items-center justify-center rounded-full bg-white font-bold text-gray-700 shadow-sm transition hover:bg-gray-50"
-          [disabled]="quantity() <= 1"
-          [class.opacity-50]="quantity() <= 1"
-        >
-          -
-        </button>
-      </div>
-
-      <!-- Info & Submit -->
-      <div class="flex flex-1 items-center justify-between">
-        <div class="hidden flex-col md:flex">
-          <span class="text-[11px] font-bold text-gray-400">الإجمالي للصنف</span>
-          <div class="flex items-baseline gap-1 text-xl font-black text-orange-600">
-            <span>{{ getTotalPrice() | number:'1.2-2' }}</span>
-            <span class="text-sm text-gray-600">ج.م</span>
-          </div>
-        </div>
-
-        <button 
-          (click)="addToCart()"
-          [disabled]="isAddingToCart()"
-          class="flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-black px-6 font-bold text-white transition-all hover:bg-gray-900 disabled:cursor-wait md:flex-none md:min-w-[200px]"
-        >
-          @if (isAddingToCart()) {
-            <span class="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
-            <span>جاري الإضافة...</span>
-          } @else if (isAddedToCart()) {
-            <span class="material-symbols-sharp text-[20px]">check</span>
-            <span>تمت الإضافة</span>
-          } @else {
-            <span class="material-symbols-sharp text-[20px]">local_mall</span>
-            <span>إضافة إلى السلة</span>
-          }
-        </button>
-      </div>
-
-    </div>
-  </div>
-
 </div>
 } @else {
-  <div class="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-gray-500 bg-slate-50">
-    <span class="material-symbols-sharp text-6xl text-gray-300">restaurant_menu</span>
-    <p class="font-bold">لم يتم العثور على تفاصيل المنتج.</p>
-    <button onclick="history.back()" class="mt-2 text-sm font-bold text-orange-500 hover:underline">العودة للصفحة السابقة</button>
+<!-- ========================================================================= -->
+<!-- Not Found / Empty State                                                   -->
+<!-- ========================================================================= -->
+<div class="flex min-h-screen flex-col items-center justify-center bg-slate-50/60 px-4 text-center">
+  <div class="flex h-24 w-24 items-center justify-center rounded-xl bg-orange-50 text-orange-500 shadow-sm">
+    <span class="material-symbols-sharp text-5xl">restaurant_menu</span>
   </div>
+  <h2 class="mt-6 text-xl font-black text-gray-900 sm:text-2xl">لم يتم العثور على الوجبة</h2>
+  <p class="mt-2 max-w-sm text-sm text-gray-500">
+    قد يكون هذا المنتج غير متاح حالياً أو تعذر تحميل بياناته. يمكنك العودة واستكشاف باقي القائمة.
+  </p>
+  <button type="button" (click)="goBack()"
+    class="mt-6 inline-flex items-center gap-2 rounded-2xl bg-orange-500 px-6 py-3 font-bold text-white shadow-md shadow-orange-500/20 transition hover:bg-orange-600 active:scale-95 cursor-pointer">
+    <span class="material-symbols-sharp text-[20px]">arrow_forward</span>
+    <span>الرجوع للصفحة السابقة</span>
+  </button>
+</div>
 }

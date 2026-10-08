@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RestaurantMenuProduct } from '../../../restaurants/models/restaurant-menu-product';
 import { environment } from '../../../../core/environments/environment';
 import { MenuItem } from '../../models/menu-item';
@@ -8,7 +9,7 @@ import { MenuItem } from '../../models/menu-item';
 @Component({
   selector: 'app-menu-item-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './menu-item-details.component.html',
   styleUrl: './menu-item-details.component.css',
 })
@@ -18,6 +19,41 @@ export class MenuItemDetailsComponent implements OnInit {
   
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
+  readonly specialNotes = signal('');
+  readonly copiedShare = signal(false);
+
+  goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/home']);
+    }
+  }
+
+  async shareItem(): Promise<void> {
+    const currentItem = this.item();
+    if (!currentItem) return;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: currentItem.productName,
+          text: `اطلب الآن: ${currentItem.productName}`,
+          url: window.location.href,
+        });
+        return;
+      } catch {
+        // User cancelled or share dismissed
+      }
+    }
+
+    if (navigator.clipboard) {
+      await navigator.clipboard.writeText(window.location.href);
+      this.copiedShare.set(true);
+      setTimeout(() => this.copiedShare.set(false), 2000);
+    }
+  }
 
   ngOnInit() {
     // Get state from navigation
@@ -113,5 +149,12 @@ export class MenuItemDetailsComponent implements OnInit {
 
   getLargePrice(item: any): number {
     return (item?.price || 0) + 25;
+  }
+
+  getSavings(item: any): number {
+    if (item?.oldPrice && item.oldPrice > item.price) {
+      return item.oldPrice - item.price;
+    }
+    return 0;
   }
 }

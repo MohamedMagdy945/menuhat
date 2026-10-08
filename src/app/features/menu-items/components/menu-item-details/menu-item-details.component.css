@@ -1,1 +1,149 @@
-/* Empty */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleCheck {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-check {
+  animation: scaleCheck 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ========================================================================= */
+/* Size Option Cards                                                         */
+/* ========================================================================= */
+.size-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 0.5rem;
+  border-radius: 1rem;
+  border: 2px solid #f3f4f6; /* gray-100 */
+  background-color: #ffffff;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.size-card:hover:not(.is-selected) {
+  border-color: #e5e7eb; /* gray-200 */
+  background-color: #fafafa;
+}
+
+.size-card.is-selected {
+  border-color: #f97316; /* primary orange */
+  background-color: #fff7ed; /* orange-50 */
+  box-shadow: 0 1px 3px 0 rgba(249, 115, 22, 0.1);
+}
+
+.size-radio {
+  margin-bottom: 0.5rem;
+  display: flex;
+  height: 1.25rem;
+  width: 1.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 2px solid #d1d5db; /* gray-300 */
+  background-color: #ffffff;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.size-card.is-selected .size-radio {
+  border-color: #f97316;
+}
+
+.size-radio-inner {
+  height: 0.625rem;
+  width: 0.625rem;
+  border-radius: 9999px;
+  background-color: #f97316;
+}
+
+.size-name {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #1f2937; /* gray-800 */
+  transition: color 0.2s ease;
+}
+
+.size-card.is-selected .size-name {
+  color: #ea580c; /* orange-600 */
+}
+
+.size-price {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280; /* gray-500 */
+}
+
+/* ========================================================================= */
+/* Addon Option Cards                                                        */
+/* ========================================================================= */
+.addon-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 1rem;
+  border: 1px solid #f3f4f6; /* gray-100 */
+  background-color: #ffffff;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.addon-card:hover:not(.is-selected) {
+  border-color: #e5e7eb;
+  background-color: #fafafa;
+}
+
+.addon-card.is-selected {
+  border-color: #f97316;
+  background-color: #fff7ed; /* orange-50 */
+  box-shadow: 0 1px 3px 0 rgba(249, 115, 22, 0.1);
+}
+
+.addon-checkbox {
+  display: flex;
+  height: 1.5rem;
+  width: 1.5rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  border: 2px solid #d1d5db; /* gray-300 */
+  background-color: #ffffff;
+  transition: all 0.2s ease-in-out;
+}
+
+.addon-card.is-selected .addon-checkbox {
+  border-color: #f97316;
+  background-color: #f97316;
+}

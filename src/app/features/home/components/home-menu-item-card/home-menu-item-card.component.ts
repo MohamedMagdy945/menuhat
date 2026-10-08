@@ -14,7 +14,7 @@ export class HomeMenuItemCardComponent {
   readonly menuItem = input.required<MenuItem>();
   readonly apiUrl = environment.filesUrl;
   readonly isFavorite = signal(false);
-  Math: any;
+  readonly Math = Math;
 
 
 

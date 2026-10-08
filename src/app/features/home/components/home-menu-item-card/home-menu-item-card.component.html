@@ -4,6 +4,7 @@
     <!-- رابط تفاصيل الوجبة -->
     <a
       [routerLink]="['/menu-items', menuItem().menuId]"
+      [state]="{ item: menuItem() }"
       class="block h-full w-full"
       [attr.aria-label]="'عرض تفاصيل ' + menuItem().productName"
     >
@@ -48,7 +49,13 @@
   <div class="px-3 py-2 text-right">
     <!-- اسم الوجبة -->
     <h3 class="truncate text-base font-semibold text-gray-900">
-      {{ menuItem().productName }}
+      <a
+        [routerLink]="['/menu-items', menuItem().menuId]"
+        [state]="{ item: menuItem() }"
+        class="hover:text-orange-500 transition-colors"
+      >
+        {{ menuItem().productName }}
+      </a>
     </h3>
 
     <!-- اسم المطعم -->
