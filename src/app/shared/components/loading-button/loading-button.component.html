@@ -1,10 +1,19 @@
-<button type="button" [disabled]="loading() || disabled()" (click)="clicked.emit()"
-  class="flex h-12 min-w-[160px] items-center justify-center gap-2 rounded-xl  bg-primarypx-6  font-medium text-white  transition-all duration-200  hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-80">
+<button
+  [type]="type()"
+  [disabled]="loading() || disabled()"
+  (click)="onClick()"
+  [class.w-full]="fullWidth()"
+  class="submit-btn"
+>
   @if (loading()) {
-  <span class="h-5 w-5 animate-spin rounded-full border-2 border-white/5 border-t-white"></span>
-
-  <span dir="rtl">جاري التنفيذ...</span>
+    <span class="btn-spinner"></span>
+    <span>{{ loadingText() }}</span>
   } @else {
-  <span>{{ text() }}</span>
+    <span>{{ text() }}</span>
+    @if (showArrow()) {
+      <span class="material-symbols-sharp btn-arrow select-none leading-none text-[20px]">
+        arrow_back
+      </span>
+    }
   }
 </button>

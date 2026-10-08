@@ -1,33 +1,150 @@
+/* ==========================================================================
+   Menuhat - Premium Centered Login Page Styles
+   ========================================================================== */
+
 :host {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: block;
   min-height: 100vh;
-  background-color: #f8f9fa;
-  font-family: system-ui, -apple-system, sans-serif;
+  width: 100%;
+  font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1e293b;
+  background-color: #f8fafc;
 }
 
-.login-container {
+/* Page Wrapper with Ambient Background */
+.auth-page-wrapper {
+  position: relative;
+  min-height: 100vh;
   width: 100%;
-  max-width: 380px;
-  padding: 30px 24px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(249, 115, 22, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(251, 146, 60, 0.09) 0%, transparent 50%),
+    #f8fafc;
+  box-sizing: border-box;
+}
+
+/* Ambient Glow Orbs */
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+.glow-top {
+  top: -60px;
+  right: -60px;
+  width: 320px;
+  height: 320px;
+  background: rgba(249, 115, 22, 0.2);
+}
+
+.glow-bottom {
+  bottom: -80px;
+  left: -60px;
+  width: 340px;
+  height: 340px;
+  background: rgba(251, 191, 36, 0.18);
+}
+
+/* Centered Login Card */
+.auth-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  background: #ffffff;
+  border-radius: 24px;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow:
+    0 20px 45px -15px rgba(15, 23, 42, 0.08),
+    0 0 25px rgba(249, 115, 22, 0.03);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Brand Header */
+.brand-header {
+  margin-bottom: 26px;
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* Logo */
-.logo-wrapper {
-  margin-bottom: 32px;
-  text-align: center;
+.logo-link {
+  display: inline-block;
+  margin-bottom: 18px;
+  transition: transform 0.25s ease;
 }
 
-.logo {
-  max-width: 220px;
-  height: auto;
+.logo-link:hover {
+  transform: translateY(-2px);
+}
+
+.brand-logo {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+}
+
+.welcome-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: #fff7ed;
+  border: 1px solid rgba(254, 215, 170, 0.7);
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ea580c;
+  margin-bottom: 12px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #f97316;
+  animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+}
+
+.auth-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.02em;
+}
+
+.auth-subtitle {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #64748b;
+  margin: 0;
+  max-width: 320px;
 }
 
 /* Form Styles */
@@ -35,182 +152,123 @@
   width: 100%;
 }
 
-.form-group {
-  margin-bottom: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.form-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 8px;
-}
-
-.form-input {
-    width: 100%;
-    height: 45px;
-    padding: 0px 10px;
-    border: 1px solid #e5e7eb;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.form-input:focus {
-  border-color: #ff6600;
-}
-
-/* Password Field Wrapper */
-.password-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.toggle-password {
-  position: absolute;
-  left: 14px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-}
-
-/* Forgot Password */
-.forgot-password-container {
-  text-align: right;
-  margin-bottom: 24px;
-}
-
-.forgot-password-link {
-  color: #ff6600;
+.forgot-link {
   font-size: 13px;
+  font-weight: 600;
+  color: #ea580c;
   text-decoration: none;
-  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-/* Submit Button */
-.submit-btn {
-  width: 100%;
-  height: 50px;
-  background-color: #ff5500;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.submit-btn:hover {
-  background-color: #e04b00;
-}
-
-.submit-btn:disabled {
-  background-color: #fdba74;
-  cursor: not-allowed;
+.forgot-link:hover {
+  color: #c2410c;
+  text-decoration: underline;
 }
 
 /* Divider */
 .divider {
-  width: 100%;
-  text-align: center;
-  border-bottom: 1px solid #e5e7eb;
-  line-height: 0.1em;
-  margin: 32px 0 24px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 22px 0 18px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #e2e8f0;
 }
 
 .divider span {
-  background: #fff;
   padding: 0 12px;
-  color: #6b7280;
-  font-size: 13px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: #ffffff;
 }
 
-/* Social Login */
-.social-login {
-  margin-bottom: 32px;
-}
-
+/* Google Sign-in Button */
 .google-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: none;
-  background-color: #f3f4f6;
+  width: 100%;
+  height: 48px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+  transition: all 0.2s ease;
 }
 
 .google-btn:hover {
-  background-color: #e5e7eb;
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+  transform: translateY(-1px);
 }
 
-/* Footer Signup Text */
-.signup-footer {
+.google-icon {
+  flex-shrink: 0;
+}
+
+/* Signup Prompt */
+.signup-prompt {
+  margin-top: 22px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 24px;
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
 }
 
-.signup-title {
-  font-size: 0.95rem;
-  color: #6c757d;
-  font-weight: 500;
+.prompt-text {
+  color: #64748b;
 }
 
-.signup-actions {
-  display: flex;
-  gap: 12px;
-  width: 100%;
-  max-width: 420px;
+.create-account-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  color: #ea580c;
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-.signup-link {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 11px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #333333;
-    background-color: #f8f9fa;
-    border: 1.5px solid #e9ecef;
-    white-space: nowrap;
+.create-account-link:hover {
+  color: #c2410c;
+  text-decoration: underline;
 }
 
-.signup-link:hover {
-  background-color: #e9ecef;
-  transform: translateY(-2px);
+.create-account-link svg {
+  transition: transform 0.2s ease;
 }
 
-/* تمييز حساب صاحب المطعم برونق خاص */
-.signup-link.highlight {
-  color: #ffffff;
-  background: #ff5500;
-  border: none;
-  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+.create-account-link:hover svg {
+  transform: translateX(-3px);
 }
 
-.signup-link.highlight:hover {
-  background: linear-gradient(135deg, #ff5252, #ff7b39);
-  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
-  transform: translateY(-2px);
-} 
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 30px 20px;
+    border-radius: 20px;
+  }
+
+  .auth-title {
+    font-size: 22px;
+  }
+
+  .brand-logo {
+    height: 44px;
+  }
+}

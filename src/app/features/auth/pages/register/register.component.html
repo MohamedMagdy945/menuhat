@@ -1,104 +1,138 @@
-<div class="min-h-screen flex items-center ">
-  <div class=" w-full bg-[#f5f6f7]  text-[#20242a] p-3" dir="rtl">
-    <div
-      class=" rounded-2xl   mx-auto min-h-160 grid  w-full max-w-[1180px] grid-cols-1 overflow-hidden  bg-white min-[851px]:grid-cols-[1fr_380px]  max-[700px]:rounded-none ">
+<div class="auth-page-wrapper" dir="rtl">
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-top"></div>
+  <div class="ambient-glow glow-bottom"></div>
 
-      <!-- ================= RIGHT SIDE: FORM & TABS ================= -->
-      <section class="flex justify-center bg-white  ]">
-        <div class="w-full px-3 md:px-7">
+  <!-- Role Selection Card -->
+  <div class="auth-card selection-card">
+    <!-- Brand Header -->
+    <div class="brand-header">
+      <a routerLink="/" class="logo-link" aria-label="Menuhat Home">
+        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="brand-logo" />
+      </a>
+      
+      <div class="welcome-chip">
+        <span class="pulse-dot"></span>
+        <span>انضم إلى عائلة مِنيوهات</span>
+      </div>
 
-          <!-- ================= TABS NAVIGATION ================= -->
-          <div class="my-5 flex w-full border-b border-[#f0f0f0]">
+      <h1 class="auth-title">اختر نوع حسابك للبدء</h1>
+      <p class="auth-subtitle">
+        حدد الطريقة التي ترغب من خلالها في الاستفادة من منصة مِنيوهات
+      </p>
 
-            <!-- Tab 1: المطعم -->
-            <button type="button" (click)="setTab('restaurant')" [ngClass]="activeTab === 'restaurant'
-              ? 'text-[#ff6900] after:absolute after:bottom-[-1px] after:right-0 after:h-[2px] after:w-full after:bg-[#ff6900]'
-              : 'text-[#8c939b]'"
-              class="relative flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 border-0 bg-transparent text-14 font-semibold transition-colors">
-
-              <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
-                <path
-                  d="M19 6h-2c0-2.21-1.79-4-4-4S9 3.79 9 6H7c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 15H7V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v11z" />
-              </svg>
-
-              تسجيل مطعم
-            </button>
-
-
-            <!-- Tab 2: العميل -->
-            <button type="button" (click)="setTab('customer')" [ngClass]="activeTab === 'customer'
-              ? 'text-[#ff6900] after:absolute after:bottom-[-1px] after:right-0 after:h-[2px] after:w-full after:bg-[#ff6900]'
-              : 'text-[#8c939b]'"
-              class="relative flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 border-0 bg-transparent text-14 font-semibold transition-colors">
-
-              <svg class="h-4 w-4 fill-current" viewBox="0 0 24 24">
-                <path
-                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-              </svg>
-
-              تسجيل عميل
-            </button>
-
-          </div>
-
-
-          <!-- ================= TAB CONTENT 1: RESTAURANT ================= -->
-          <ng-container *ngIf="activeTab === 'restaurant'">
-
-            <app-register-owner></app-register-owner>
-
-          </ng-container>
-
-
-          <!-- ================= TAB CONTENT 2: CUSTOMER ================= -->
-          <ng-container *ngIf="activeTab === 'customer'">
-            <app-register-customer></app-register-customer>
-          </ng-container>
-
-
-          <!-- ================= LOGIN LINK ================= -->
-          <div class="mt-[5px] text-center text-[14px] text-[#969ca2]">
-
-            لديك حساب بالفعل؟
-
-            <a routerLink="/login" class="mr-1 font-bold text-[#ff6900] no-underline hover:underline">
-              تسجيل الدخول
-            </a>
-
-          </div>
-
+      @if (email) {
+        <div class="verified-email-chip">
+          <span class="material-symbols-sharp select-none leading-none text-[16px] text-emerald-500">
+            verified
+          </span>
+          <span>البريد الإلكتروني الموثق: <strong>{{ email }}</strong></span>
         </div>
-      </section>
+      }
+    </div>
 
-
-      <!-- ================= LEFT SIDE: COVER & IMAGE ================= -->
-      <section
-        class="relative flex flex-col justify-between overflow-hidden bg-gradient-to-br from-[#ba850f6e]  to-[#ed7b23a1] p-[42px] max-[850px]:p-[30px] max-[700px]:hidden">
-
-        <div class="relative z-20 flex flex-col items-start gap-6">
-          <!-- Logo -->
-          <div class="flex items-center" dir="ltr">
-            <img src="/icons/logo.png" alt="Menuhat" class="h-30 w-auto object-contain" />
+    <!-- Cards Grid -->
+    <div class="roles-grid">
+      <!-- Role 1: Restaurant Owner -->
+      <div class="role-card owner-card" (click)="goToRole('owner')">
+        <div class="role-card-header">
+          <div class="role-icon-box owner-icon-box">
+            <span class="material-symbols-sharp select-none leading-none text-[28px]">
+              storefront
+            </span>
           </div>
-
-          <!-- Cover Text -->
-          <div class="text-right max-w-md bg-white/40 p-5 rounded-2xl backdrop-blur-sm border border-white/50">
-            <h1 class="mb-2 text-[28px] font-extrabold text-[#2B1B17]">
-              انضم إلينا الآن
-            </h1>
-            <p class="m-0 text-[14px] leading-[1.8] text-[#523B33] font-medium">
-              كن جزءًا من أكبر منصة للمطاعم والطعام وابدأ رحلتك معنا
-            </p>
-          </div>
+          <span class="role-tag">للشركاء والمطاعم</span>
         </div>
 
-        <!-- Image -->
-        <div class="absolute inset-0 z-10 flex items-end justify-center pointer-events-none">
-          <img src="/images/men.png" alt="" class="h-[80%] w-auto object-contain object-bottom drop-shadow-lg" />
+        <h2 class="role-name">أنا صاحب مطعم</h2>
+        <p class="role-desc">
+          أرغب في إضافة مطعمي وقوائم الطعام، واستقبال الطلبات، والوصول إلى آلاف الزبائن الجدد يومياً.
+        </p>
+
+        <ul class="perks-list">
+          <li>
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+              check_circle
+            </span>
+            <span>لوحة تحكم ذكية لإدارة القوائم والوجبات</span>
+          </li>
+          <li>
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+              check_circle
+            </span>
+            <span>الظهور في نتائج البحث المتقدمة وقوائم المطاعم</span>
+          </li>
+          <li>
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+              check_circle
+            </span>
+            <span>تقارير مبيعات وإحصائيات مباشرة لمطعمك</span>
+          </li>
+        </ul>
+
+        <button type="button" class="role-btn owner-btn">
+          <span>المتابعة كصاحب مطعم</span>
+          <span class="material-symbols-sharp select-none leading-none text-[18px]">
+            arrow_back
+          </span>
+        </button>
+      </div>
+
+      <!-- Role 2: Customer -->
+      <div class="role-card customer-card" (click)="goToRole('customer')">
+        <div class="role-card-header">
+          <div class="role-icon-box customer-icon-box">
+            <span class="material-symbols-sharp select-none leading-none text-[28px]">
+              restaurant
+            </span>
+          </div>
+          <span class="role-tag">لعشاق الطعام</span>
         </div>
 
-      </section>
+        <h2 class="role-name">أنا عميل / زبون</h2>
+        <p class="role-desc">
+          أرغب في استكشاف أفضل المطاعم القريبة مني، تصفح المنيو والعروض، وحفظ وجباتي المفضلة.
+        </p>
 
+        <ul class="perks-list">
+          <li>
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500">
+              check_circle
+            </span>
+            <span>تصفح دقيق ومحدث لقوائم وأسعار المطاعم</span>
+          </li>
+          <li>
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500">
+              check_circle
+            </span>
+            <span>عروض وتخفيضات وكوبونات حصرية</span>
+          </li>
+          <li>
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500">
+              check_circle
+            </span>
+            <span>حفظ المفضلة وسجل طلبات سريع ومباشر</span>
+          </li>
+        </ul>
+
+        <button type="button" class="role-btn customer-btn">
+          <span>المتابعة كعميل</span>
+          <span class="material-symbols-sharp select-none leading-none text-[18px]">
+            arrow_back
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Login Link Footer -->
+    <div class="signup-prompt">
+      <span class="prompt-text">لديك حساب بالفعل؟</span>
+      <a routerLink="/login" class="create-account-link">
+        <span>تسجيل الدخول</span>
+        <span class="material-symbols-sharp select-none leading-none text-[16px]">
+          arrow_back
+        </span>
+      </a>
     </div>
   </div>
 </div>

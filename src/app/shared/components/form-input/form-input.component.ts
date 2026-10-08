@@ -1,14 +1,12 @@
 import {
   Component,
-  forwardRef,
   input,
-  Injector,
   inject,
   OnInit,
+  ChangeDetectorRef,
 } from '@angular/core';
 import {
   ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
   NgControl,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -19,30 +17,33 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './form-input.component.html',
   styleUrl: './form-input.component.css',
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => FormInputComponent),
-      multi: true,
-    },
-  ],
 })
 export class FormInputComponent implements ControlValueAccessor, OnInit {
-  readonly label = input('');
-  readonly placeholder = input('');
-  readonly type = input('text');
-  readonly autocomplete = input('off');
+  readonly label = input<string>('');
+  readonly placeholder = input<string>('');
+  readonly type = input<string>('text');
+  readonly autocomplete = input<string>('off');
+  readonly errorMessage = input<string>('');
+  readonly customErrors = input<Record<string, string>>({});
+  readonly id = input<string>('');
 
-  value: any = null;
+  value: any = '';
   disabled = false;
-  touched = false;
   showPassword = false;
 
-  control: NgControl | null = null;
-  private injector = inject(Injector);
+  public readonly ngControl = inject(NgControl, { optional: true, self: true });
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  private onChange: (value: string) => void = () => {};
+  private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
+
+  constructor() {
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
+  }
+
+  ngOnInit(): void {}
 
   get isPasswordType(): boolean {
     return this.type() === 'password';
@@ -51,35 +52,80 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
-  
-  ngOnInit(): void {
-    // الحصول على NgControl المربوط بالمكون (مثل formControlName="username")
-    this.control = this.injector.get(NgControl, null);
+
+  get control() {
+    return this.ngControl?.control;
   }
 
-  // خاصية للتحقق مما إذا كان هناك أخطاء والحقل تم لمسه أو تعديله
   get isInvalid(): boolean {
-    return !!(
-      this.control &&
-      this.control.invalid &&
-      (this.control.touched || this.control.dirty)
-    );
+    const c = this.control;
+    return !!(c && c.invalid && (c.touched || c.dirty));
   }
 
-  // خاصية للتحقق مما إذا كان المدخل صحيحاً
   get isValid(): boolean {
-    return !!(
-      this.control &&
-      this.control.valid &&
-      (this.control.touched || this.control.dirty)
-    );
+    const c = this.control;
+    return !!(c && c.valid && (c.touched || c.dirty));
   }
 
-  writeValue(value: string | null): void {
-    this.value = value ?? '';
+  /**
+   * استخراج رسالة الخطأ الواحدة النشطة حالياً للحقل
+   */
+  get resolvedError(): string | null {
+    const c = this.control;
+    if (!c || !c.errors || !this.isInvalid) {
+      return null;
+    }
+
+    // إذا تم تمرير رسالة ثابتة
+    if (this.errorMessage()) {
+      return this.errorMessage();
+    }
+
+    const errors = c.errors;
+    const custom = this.customErrors();
+
+    // فحص الخطأ النشط وإرجاع رسالته المحددة فقط
+    for (const key of Object.keys(errors)) {
+      if (custom[key]) {
+        return custom[key];
+      }
+
+      switch (key) {
+        case 'required':
+          return 'هذا الحقل مطلوب';
+        case 'email':
+          return 'يرجى إدخال بريد إلكتروني صحيح';
+        case 'minlength': {
+          const reqLen = errors['minlength']?.requiredLength ?? 6;
+          return `يجب إدخال ${reqLen} أحرف على الأقل`;
+        }
+        case 'maxlength': {
+          const maxLen = errors['maxlength']?.requiredLength;
+          return `الحد الأقصى هو ${maxLen} أحرف`;
+        }
+        case 'pattern':
+          return 'صيغة الإدخال غير صحيحة';
+        case 'missmatch':
+          return 'كلمة المرور غير متطابقة';
+        default:
+          if (typeof errors[key] === 'string') {
+            return errors[key];
+          } else if (errors[key]?.message) {
+            return errors[key].message;
+          }
+          return 'البيانات المدخلة غير صحيحة';
+      }
+    }
+
+    return null;
   }
 
-  registerOnChange(fn: (value: string) => void): void {
+  writeValue(val: any): void {
+    this.value = val ?? '';
+    this.cdr.markForCheck();
+  }
+
+  registerOnChange(fn: (value: any) => void): void {
     this.onChange = fn;
   }
 
@@ -89,16 +135,16 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+    this.cdr.markForCheck();
   }
 
   handleInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    this.value = input.value;
+    const target = event.target as HTMLInputElement;
+    this.value = target.value;
     this.onChange(this.value);
   }
 
   handleBlur(): void {
-    this.touched = true;
     this.onTouched();
   }
 }

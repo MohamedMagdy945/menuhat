@@ -50,6 +50,32 @@ export const routes: Routes = [
                 .then(m => m.RegisterComponent)
     },
 
+    {
+        path: 'register/owner',
+        loadComponent: () =>
+            import('./features/auth/pages/register-owner/register-owner.component')
+                .then(m => m.RegisterOwnerPageComponent)
+    },
+
+    {
+        path: 'register-owner',
+        redirectTo: 'register/owner',
+        pathMatch: 'full'
+    },
+
+    {
+        path: 'register/customer',
+        loadComponent: () =>
+            import('./features/auth/pages/register-customer/register-customer.component')
+                .then(m => m.RegisterCustomerPageComponent)
+    },
+
+    {
+        path: 'register-customer',
+        redirectTo: 'register/customer',
+        pathMatch: 'full'
+    },
+
 
     // =====================================================
     // Main Application

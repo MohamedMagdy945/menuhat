@@ -1,0 +1,242 @@
+<div class="auth-page-wrapper" dir="rtl">
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-top"></div>
+  <div class="ambient-glow glow-bottom"></div>
+
+  <!-- Main Register Container -->
+  <div class="auth-card register-card">
+
+    <!-- Brand Header -->
+    <div class="brand-header">
+      <a routerLink="/" class="logo-link" aria-label="Menuhat Home">
+        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="brand-logo" />
+      </a>
+
+      <!-- Customer Badge -->
+      <div class="role-badge customer-badge">
+        <span class="material-symbols-sharp select-none leading-none text-[18px]">
+          restaurant
+        </span>
+        <span>تسجيل حساب عميل</span>
+      </div>
+
+      <h1 class="auth-title">أهلاً بك في عالم مِنيوهات الشهي!</h1>
+      <p class="auth-subtitle">
+        أنشئ حسابك واكتشف قوائم أفضل المطاعم، العروض الحصرية، واطلب طعامك المفضل بكل سهولة
+      </p>
+
+      <!-- Verified Email Tag if available -->
+      @if (emailFromQuery) {
+        <div class="verified-email-chip">
+          <span class="material-symbols-sharp select-none leading-none text-[16px] text-emerald-500">
+            verified
+          </span>
+          <span>البريد الإلكتروني الموثق: <strong>{{ emailFromQuery }}</strong></span>
+        </div>
+      }
+    </div>
+
+    <!-- Quick Role Switcher Banner -->
+    <div class="role-switch-banner">
+      <div class="banner-text">
+        <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+          storefront
+        </span>
+        <span>هل تمتلك مطعماً وترغب بعرض وجباتك وزيادة مبيعاتك؟</span>
+      </div>
+      <a [routerLink]="['/register/owner']" [queryParams]="{ email: emailFromQuery }" class="switch-link">
+        <span>سجّل كشريك مطعم</span>
+        <span class="material-symbols-sharp select-none leading-none text-[15px]">
+          arrow_back
+        </span>
+      </a>
+    </div>
+
+    <!-- Register Form -->
+    <form [formGroup]="form" (ngSubmit)="submit()" class="register-form">
+
+      <!-- Avatar Upload Section -->
+      <div class="avatar-upload-section">
+        <div class="avatar-wrapper">
+          <img [src]="photoPreviewUrl" alt="صورة الملف الشخصي" class="avatar-image" />
+          
+          <label for="customer-photo-input" class="avatar-edit-btn" title="تغيير الصورة">
+            <span class="material-symbols-sharp select-none leading-none text-[18px]">
+              photo_camera
+            </span>
+          </label>
+
+          @if (photoPreviewUrl !== defaultAvatar) {
+            <button 
+              type="button" 
+              (click)="removePhoto(photoFileInput)" 
+              class="avatar-remove-btn" 
+              title="إزالة الصورة">
+              <span class="material-symbols-sharp select-none leading-none text-[16px]">
+                close
+              </span>
+            </button>
+          }
+        </div>
+
+        <input 
+          #photoFileInput 
+          id="customer-photo-input" 
+          type="file" 
+          accept="image/*" 
+          (change)="onFileSelected($event)" 
+          class="hidden" 
+        />
+
+        <div class="avatar-hint">
+          <span class="avatar-hint-title">الصورة الشخصية (Avatar)</span>
+          <span class="avatar-hint-desc">اختياري - ميز حسابك بين مجتمع عشاق الطعام</span>
+        </div>
+      </div>
+
+      <!-- Section 1: Account Information -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+            person
+          </span>
+          <span>البيانات الشخصية والحساب</span>
+        </div>
+
+        <div class="form-grid">
+          <!-- Full Name -->
+          <div class="grid-col">
+            <app-form-input
+              formControlName="fullName"
+              label="الاسم بالكامل *"
+              placeholder="مثال: سارة محمد"
+              autocomplete="name"
+              [customErrors]="validationMessages.fullName">
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
+                badge
+              </span>
+            </app-form-input>
+          </div>
+
+          <!-- Username -->
+          <div class="grid-col">
+            <app-form-input
+              formControlName="username"
+              label="اسم المستخدم *"
+              placeholder="مثال: sara_foodie"
+              autocomplete="username"
+              [customErrors]="validationMessages.username">
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
+                alternate_email
+              </span>
+            </app-form-input>
+          </div>
+
+          <!-- Password -->
+          <div class="grid-col">
+            <app-form-input
+              formControlName="password"
+              label="كلمة المرور *"
+              type="password"
+              placeholder="8 أحرف على الأقل"
+              autocomplete="new-password"
+              [customErrors]="validationMessages.password">
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
+                lock
+              </span>
+            </app-form-input>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="grid-col">
+            <app-form-input
+              formControlName="confirmPassword"
+              label="تأكيد كلمة المرور *"
+              type="password"
+              placeholder="أعد إدخال كلمة المرور"
+              autocomplete="new-password"
+              [customErrors]="validationMessages.confirmPassword">
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
+                lock_reset
+              </span>
+            </app-form-input>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Preferred Delivery Location -->
+      <div class="form-section">
+        <div class="section-title">
+          <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+            home_pin
+          </span>
+          <span>عنوان التوصيل المفضل</span>
+        </div>
+
+        <div class="form-grid">
+          <!-- Governorate -->
+          <div class="grid-col">
+            <app-form-select
+              formControlName="governmentId"
+              label="المحافظة *"
+              [placeholder]="isLoadingGovernorates ? 'جاري تحميل المحافظات...' : 'اختر المحافظة'"
+              [disabled]="isLoadingGovernorates"
+              [options]="governorates"
+              (change)="onGovernorateChange($event)">
+            </app-form-select>
+          </div>
+
+          <!-- City -->
+          <div class="grid-col">
+            <app-form-select
+              formControlName="cityId"
+              label="المدينة *"
+              [placeholder]="isLoadingCities ? 'جاري تحميل المدن...' : 'اختر المدينة'"
+              [disabled]="isLoadingCities || !form.get('governmentId')?.value"
+              [options]="cities">
+            </app-form-select>
+          </div>
+
+          <!-- Address -->
+          <div class="grid-col-full">
+            <app-form-input
+              formControlName="address"
+              label="العنوان بالتفصيل *"
+              placeholder="الشارع، العمارة، رقم الشقة أو تفاصيل التوصيل"
+              autocomplete="street-address"
+              [customErrors]="validationMessages.address">
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
+                pin_drop
+              </span>
+            </app-form-input>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="submit-container">
+        <app-loading-button
+          type="submit"
+          text="إنشاء الحساب والبدء"
+          loadingText="جاري إنشاء الحساب..."
+          [loading]="isLoading"
+          [disabled]="isLoading"
+          [fullWidth]="true"
+        />
+      </div>
+
+    </form>
+
+    <!-- Footer Links -->
+    <div class="signup-prompt">
+      <span class="prompt-text">لديك حساب بالفعل؟</span>
+      <a routerLink="/login" class="create-account-link">
+        <span>تسجيل الدخول</span>
+        <span class="material-symbols-sharp select-none leading-none text-[16px]">
+          arrow_back
+        </span>
+      </a>
+    </div>
+
+  </div>
+</div>

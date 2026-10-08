@@ -1,0 +1,362 @@
+/* ==========================================================================
+   Menuhat - Register Onboarding & Role Selection Page Styles
+   ========================================================================== */
+
+:host {
+  display: block;
+  min-height: 100vh;
+  width: 100%;
+  font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1e293b;
+  background-color: #f8fafc;
+}
+
+.auth-page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(249, 115, 22, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(251, 146, 60, 0.09) 0%, transparent 50%),
+    #f8fafc;
+  box-sizing: border-box;
+}
+
+.ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(95px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.65;
+}
+
+.glow-top {
+  top: -80px;
+  right: -80px;
+  width: 400px;
+  height: 400px;
+  background: rgba(249, 115, 22, 0.22);
+}
+
+.glow-bottom {
+  bottom: -100px;
+  left: -80px;
+  width: 420px;
+  height: 420px;
+  background: rgba(251, 191, 36, 0.2);
+}
+
+/* Card Container */
+.auth-card {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 28px;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow:
+    0 25px 50px -12px rgba(15, 23, 42, 0.09),
+    0 0 25px rgba(249, 115, 22, 0.04);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.selection-card {
+  max-width: 860px;
+  padding: 48px 40px;
+}
+
+/* Brand Header */
+.brand-header {
+  margin-bottom: 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  transition: transform 0.25s ease;
+}
+
+.logo-link:hover {
+  transform: translateY(-2px);
+}
+
+.brand-logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+}
+
+.welcome-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: #fff7ed;
+  border: 1px solid rgba(254, 215, 170, 0.7);
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ea580c;
+  margin-bottom: 12px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #f97316;
+  animation: pulseDot 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.auth-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.auth-subtitle {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #64748b;
+  margin: 0;
+  max-width: 500px;
+}
+
+.verified-email-chip {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #166534;
+}
+
+/* Roles Grid */
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.role-card {
+  border-radius: 20px;
+  padding: 30px 26px;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.role-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.1);
+}
+
+.owner-card:hover {
+  border-color: #f97316;
+}
+
+.customer-card:hover {
+  border-color: #fb923c;
+}
+
+.role-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.role-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease;
+}
+
+.role-card:hover .role-icon-box {
+  transform: scale(1.08);
+}
+
+.owner-icon-box {
+  background: #ffedd5;
+  color: #ea580c;
+}
+
+.customer-icon-box {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.role-tag {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.role-name {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+}
+
+.role-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #64748b;
+  margin: 0 0 20px 0;
+  min-height: 44px;
+}
+
+.perks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 26px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.perks-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.role-btn {
+  width: 100%;
+  height: 48px;
+  border-radius: 14px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.owner-btn {
+  background: #f97316;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.25);
+}
+
+.owner-card:hover .owner-btn {
+  background: #ea580c;
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.35);
+}
+
+.customer-btn {
+  background: #0f172a;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
+}
+
+.customer-card:hover .customer-btn {
+  background: #1e293b;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.28);
+}
+
+.role-btn span:last-child {
+  transition: transform 0.2s ease;
+}
+
+.role-card:hover .role-btn span:last-child {
+  transform: translateX(-4px);
+}
+
+/* Footer Prompt */
+.signup-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.prompt-text {
+  color: #64748b;
+}
+
+.create-account-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  color: #ea580c;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.create-account-link:hover {
+  color: #c2410c;
+  text-decoration: underline;
+}
+
+.create-account-link span:last-child {
+  transition: transform 0.2s ease;
+}
+
+.create-account-link:hover span:last-child {
+  transform: translateX(-3px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .selection-card {
+    padding: 32px 20px;
+    border-radius: 20px;
+  }
+
+  .roles-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .auth-title {
+    font-size: 22px;
+  }
+}

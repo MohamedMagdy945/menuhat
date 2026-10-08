@@ -1,97 +1,81 @@
-<div class="login-container" dir="rtl">
-  <!-- Logo Section -->
-  <div class="logo-wrapper">
-    <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="logo" />
-  </div>
+<div class="auth-page-wrapper" dir="rtl">
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-top"></div>
+  <div class="ambient-glow glow-bottom"></div>
 
-  <!-- Login Form -->
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-    <!-- Email Field -->
-    <div class="form-group">
-      <label for="email" class="form-label">البريد الإلكتروني</label>
-      <input
-        type="email"
-        id="email"
-        formControlName="mobile"
-        placeholder="أدخل بريدك الإلكتروني"
-        class="form-input"
-      />
-    </div>
-
-    <!-- Password Field -->
-    <div class="form-group">
-      <label for="password" class="form-label">كلمة المرور</label>
-      <div class="password-input-wrapper">
-        <input
-          [type]="showPassword ? 'text' : 'password'"
-          id="password"
-          formControlName="password"
-          placeholder="أدخل كلمة المرور"
-          class="form-input"
-        />
-        <button
-          type="button"
-          class="toggle-password"
-          (click)="togglePasswordVisibility()"
-          aria-label="Toggle password visibility"
-        >
-          <!-- Eye icon / eye-slash icon placeholder -->
-          <svg
-            *ngIf="!showPassword"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#aaa"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-            <circle cx="12" cy="12" r="3"></circle>
-          </svg>
-          <svg
-            *ngIf="showPassword"
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#aaa"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-            <line x1="1" y1="1" x2="23" y2="23"></line>
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Forgot Password Link -->
-    <div class="forgot-password-container">
-      <a routerLink="/forgot-password" class="forgot-password-link">
-        نسيت كلمة المرور؟
+  <!-- Centered Login Card -->
+  <div class="auth-card">
+    <!-- Brand Header with Centered Logo -->
+    <div class="brand-header">
+      <a routerLink="/" class="logo-link" aria-label="Menuhat Home">
+        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="brand-logo" />
       </a>
+      <div class="welcome-chip">
+        <span class="pulse-dot"></span>
+        <span>مرحباً بك مجدداً 👋</span>
+      </div>
+      <h1 class="auth-title">تسجيل الدخول</h1>
+      <p class="auth-subtitle">
+        سجّل دخولك لمتابعة طلباتك واكتشاف أشهى الوجبات
+      </p>
     </div>
 
-    <!-- Submit Button -->
-    <button type="submit" class="submit-btn" [disabled]="loginForm.invalid">
-      تسجيل الدخول
-    </button>
-  </form>
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email / Mobile Field -->
+      <app-form-input
+        formControlName="mobile"
+        label="البريد الإلكتروني أو رقم الهاتف"
+        placeholder="example@email.com أو 01xxxxxxxxx"
+        autocomplete="username"
+        [customErrors]="validationMessages.mobile"
+      >
+        <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
+          mail
+        </span>
+      </app-form-input>
 
-  <!-- Divider -->
-  <div class="divider">
-    <span>أو التسجيل بواسطة</span>
-  </div>
+      <!-- Password Field -->
+      <app-form-input
+        formControlName="password"
+        label="كلمة المرور"
+        type="password"
+        placeholder="••••••••"
+        autocomplete="current-password"
+        [customErrors]="validationMessages.password"
+      >
+        <a label-extra routerLink="/sendEmail" class="forgot-link">
+          نسيت كلمة المرور؟
+        </a>
+        <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
+          lock
+        </span>
+      </app-form-input>
 
-  <!-- Social Login -->
-  <div class="social-login">
-    <button type="button" class="google-btn" (click)="loginWithGoogle()">
-      <svg width="24" height="24" viewBox="0 0 24 24">
+      <!-- Submit Button -->
+      <app-loading-button
+        type="submit"
+        text="تسجيل الدخول"
+        loadingText="جاري تسجيل الدخول..."
+        [loading]="isLoading"
+        [disabled]="loginForm.invalid || isLoading"
+        [fullWidth]="true"
+      />
+    </form>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span>أو المتابعة بواسطة</span>
+    </div>
+
+    <!-- Social Login: Google -->
+    <button
+      type="button"
+      class="google-btn"
+      (click)="loginWithGoogle()"
+      aria-label="تسجيل الدخول بواسطة Google"
+    >
+      <svg class="google-icon" width="20" height="20" viewBox="0 0 24 24">
         <path
           fill="#4285F4"
           d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
@@ -109,14 +93,18 @@
           d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.39 0 3.35 2.68 1.37 6.58l3.96 3.15c.94-2.83 3.57-4.98 6.67-4.98z"
         />
       </svg>
+      <span class="google-btn-text">المتابعة باستخدام Google</span>
     </button>
-  </div>
 
-<div class="flex items-center justify-center gap-2 text-sm whitespace-nowrap">
-  <span class="text-gray-600">ليس لديك حساب؟</span>
-  <a routerLink="/sendEmail" class="inline-flex items-center gap-1.5 font-bold text-[#ff6900] hover:underline">
-    <i class="fas fa-store text-xs"></i>
-    <span>إنشاء حساب</span>
-  </a>
-</div>
+    <!-- Signup Prompt -->
+    <div class="signup-prompt">
+      <span class="prompt-text">ليس لديك حساب؟</span>
+      <a routerLink="/sendEmail" class="create-account-link">
+        <span>إنشاء حساب جديد</span>
+        <span class="material-symbols-sharp select-none leading-none text-[16px]">
+          arrow_back
+        </span>
+      </a>
+    </div>
+  </div>
 </div>
