@@ -1,0 +1,182 @@
+<div class="space-y-6" dir="rtl">
+  <!-- Top Restaurant Banner (Image 1 Style) -->
+  <div
+    class="relative overflow-hidden rounded-3xl bg-gradient-to-l from-amber-400 via-orange-400 to-amber-500 p-6 sm:p-8 text-white shadow-lg shadow-orange-500/15"
+  >
+    <!-- Background Decorative Elements -->
+    <div class="absolute -right-10 -bottom-10 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
+    <div class="absolute left-10 top-0 w-48 h-48 rounded-full bg-orange-600/20 blur-xl pointer-events-none"></div>
+
+    <!-- Banner Content Flex -->
+    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <!-- Right Side: Details & Title -->
+      <div class="space-y-3">
+        <!-- Action Row (Open Switch & Notification) -->
+        <div class="flex items-center gap-3">
+          <!-- Toggle Open / Closed Status -->
+          <button
+            type="button"
+            (click)="toggleStatus()"
+            class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/25 backdrop-blur-md border border-white/20 text-xs font-bold text-white hover:bg-black/35 transition-all cursor-pointer"
+          >
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>{{ isRestaurantOpen() ? 'مفتوح الآن' : 'مغلق مؤقتاً' }}</span>
+          </button>
+
+          <!-- Notification Bell -->
+          <button
+            type="button"
+            class="relative w-8 h-8 rounded-full bg-black/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-black/30 transition-colors"
+          >
+            <span class="material-symbols-sharp text-base">notifications</span>
+            <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-orange-300 rounded-full"></span>
+          </button>
+        </div>
+
+        <!-- Restaurant Name & Rating -->
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-xs">
+            {{ restaurant.name }}
+          </h1>
+          <div class="flex flex-wrap items-center gap-2.5 mt-2 text-white/90 text-sm font-medium">
+            <div class="flex items-center gap-1">
+              <span class="material-symbols-sharp text-base">location_on</span>
+              <span>{{ restaurant.branch }}</span>
+            </div>
+            <span class="text-white/60">•</span>
+            <div class="flex items-center gap-1 bg-white/20 backdrop-blur-xs px-2 py-0.5 rounded-md">
+              <span class="material-symbols-sharp text-amber-200 text-sm icon-fill">star</span>
+              <span class="font-bold">{{ restaurant.rating }}</span>
+              <span class="text-xs text-white/80">({{ restaurant.reviewsCount }})</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left Side: Cloche / 3D Icon Graphic -->
+      <div class="hidden sm:flex items-center justify-center shrink-0">
+        <div
+          class="w-24 h-24 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center shadow-inner"
+        >
+          <span class="material-symbols-sharp text-6xl text-white drop-shadow-md">
+            restaurant
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat Summary Cards Row (4 Cards matching Image 1) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (stat of stats; track stat.id) {
+      <div
+        class="bg-white rounded-2xl p-5 border border-slate-100 shadow-xs hover:shadow-md transition-shadow duration-200 flex flex-col justify-between"
+      >
+        <!-- Top: Badge + Icon -->
+        <div class="flex items-center justify-between">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center {{ stat.iconBg }}">
+            <span class="material-symbols-sharp text-[22px]">{{ stat.icon }}</span>
+          </div>
+
+          @if (stat.badge) {
+            <span
+              class="px-2 py-0.5 rounded-full text-xs font-bold"
+              [class.bg-emerald-50]="stat.badgeVariant === 'success'"
+              [class.text-emerald-600]="stat.badgeVariant === 'success'"
+              [class.border]="stat.badgeVariant === 'success'"
+              [class.border-emerald-200]="stat.badgeVariant === 'success'"
+              [class.bg-orange-50]="stat.badgeVariant === 'warning'"
+              [class.text-orange-600]="stat.badgeVariant === 'warning'"
+              [class.border-orange-200]="stat.badgeVariant === 'warning'"
+            >
+              {{ stat.badge }}
+            </span>
+          }
+        </div>
+
+        <!-- Bottom: Title + Count -->
+        <div class="mt-4">
+          <p class="text-xs font-medium text-slate-500">{{ stat.title }}</p>
+          <p class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1">
+            {{ stat.value }}
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Current Orders Section (الطلبات الحالية) -->
+  <div class="space-y-4">
+    <!-- Section Header -->
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-bold text-slate-800">
+        الطلبات الحالية
+      </h2>
+      <a
+        routerLink="/dashboard/orders"
+        class="text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline flex items-center gap-1 transition-colors"
+      >
+        <span>عرض الكل</span>
+        <span class="material-symbols-sharp text-sm">arrow_back</span>
+      </a>
+    </div>
+
+    <!-- Orders Cards List -->
+    <div class="space-y-2.5">
+      @for (order of orders; track order.id) {
+        <div
+          class="bg-white rounded-2xl p-4 sm:px-6 border border-slate-100 shadow-2xs hover:shadow-xs transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+        >
+          <!-- Right: Customer Info & Order Number -->
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-slate-100 group-hover:bg-orange-50 text-slate-600 group-hover:text-orange-600 flex items-center justify-center font-bold text-sm shrink-0 transition-colors"
+            >
+              {{ order.customerName.charAt(0) }}
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-slate-800">
+                  {{ order.customerName }}
+                </span>
+                <span class="text-xs font-medium text-slate-400">
+                  {{ order.orderNumber }}
+                </span>
+              </div>
+              <div class="flex items-center gap-1 text-xs text-slate-400 mt-0.5">
+                <span class="material-symbols-sharp text-xs">schedule</span>
+                <span>{{ order.time }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center: Status Badge -->
+          <div class="sm:self-center">
+            <span
+              class="px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 {{ order.statusColor }}"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+              {{ order.statusLabel }}
+            </span>
+          </div>
+
+          <!-- Left: Price & Details Action -->
+          <div class="flex items-center justify-between sm:justify-end gap-4">
+            <span class="text-base font-extrabold text-orange-600">
+              {{ order.price }} ج.م
+            </span>
+
+            <button
+              type="button"
+              matRipple
+              matTooltip="عرض تفاصيل الطلب"
+              class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-orange-50 text-slate-400 hover:text-orange-600 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              <span class="material-symbols-sharp text-lg">chevron_left</span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

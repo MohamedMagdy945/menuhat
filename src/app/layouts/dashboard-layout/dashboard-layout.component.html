@@ -1,0 +1,19 @@
+<div class="min-h-screen bg-[#F8F9FA] text-slate-800 antialiased font-sans relative" dir="rtl">
+  <!-- Apex / Menuhat Sidebar Component -->
+  <app-dashboard-sidebar />
+
+  <!-- Main Content Area with Dynamic RTL Margin based on Sidebar State -->
+  <div
+    class="flex flex-col min-h-screen transition-all duration-300 ease-in-out"
+    [class.lg:mr-72]="!isCollapsed()"
+    [class.lg:mr-20]="isCollapsed()"
+  >
+    <!-- Top Header -->
+    <app-dashboard-header />
+
+    <!-- Main Dynamic Content (Router Outlet) -->
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+      <router-outlet />
+    </main>
+  </div>
+</div>

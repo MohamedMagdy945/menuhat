@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { Offers } from './features/offers/pages/offers/offers';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
+import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
 import { HomeComponent } from './features/home/home.component';
 import { CartComponent } from './features/cart/cart.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
@@ -230,6 +231,108 @@ export const routes: Routes = [
 
 
     // =====================================================
+    // Admin / Restaurant Dashboard Layout
+    // =====================================================
+
+    {
+        path: 'dashboard',
+        component: DashboardLayoutComponent,
+        children: [
+            {
+                path: '',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'orders',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'analytics',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'live-monitor',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'menu',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'most-ordered',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'offers',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'reports',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'delivery',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'invoices',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'reviews',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'support',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'complaints',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            },
+            {
+                path: 'settings',
+                loadComponent: () =>
+                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
+                        .then(m => m.DashboardHomeComponent)
+            }
+        ]
+    },
+
+    {
+        path: 'admin',
+        redirectTo: 'dashboard',
+        pathMatch: 'full'
+    },
+
+
+    // =====================================================
     // Unknown Routes
     // =====================================================
 
@@ -237,4 +340,4 @@ export const routes: Routes = [
         path: '**',
         redirectTo: ''
     }
-];
+];

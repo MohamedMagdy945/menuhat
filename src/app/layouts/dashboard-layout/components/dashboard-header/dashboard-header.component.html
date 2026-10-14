@@ -1,0 +1,101 @@
+<header
+  class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 transition-all duration-300"
+  dir="rtl"
+>
+  <!-- Right Section (Search & Mobile Toggle) -->
+  <div class="flex items-center gap-3 flex-1 max-w-xl">
+    <!-- Mobile Hamburger Toggle -->
+    <button
+      type="button"
+      (click)="toggleMobileSidebar()"
+      class="lg:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer"
+      aria-label="فتح القائمة"
+    >
+      <span class="material-symbols-sharp text-2xl">menu</span>
+    </button>
+
+    <!-- Global Dashboard Search -->
+    <div class="relative w-full max-w-md hidden sm:block">
+      <input
+        type="text"
+        placeholder="بحث في الطلبات، الوجبات، العملاء..."
+        class="w-full py-2.5 pr-10 pl-4 bg-slate-100/80 hover:bg-slate-100 focus:bg-white text-slate-800 placeholder-slate-400 text-sm rounded-xl border border-transparent focus:border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-400/20 transition-all"
+      />
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+        <span class="material-symbols-sharp text-[20px]">search</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left Section (Quick Status & Actions) -->
+  <div class="flex items-center gap-3">
+    <!-- Live Operational Status Switch (matching Image 1) -->
+    <button
+      type="button"
+      (click)="toggleRestaurantStatus()"
+      [matTooltip]="isRestaurantOpen() ? 'المطعم يستقبل طلبات الآن' : 'المطعم مغلق حالياً'"
+      matTooltipPosition="below"
+      class="flex items-center gap-2.5 py-1.5 px-3 rounded-full border transition-all cursor-pointer"
+      [class.bg-emerald-50]="isRestaurantOpen()"
+      [class.border-emerald-200]="isRestaurantOpen()"
+      [class.text-emerald-700]="isRestaurantOpen()"
+      [class.bg-slate-100]="!isRestaurantOpen()"
+      [class.border-slate-300]="!isRestaurantOpen()"
+      [class.text-slate-600]="!isRestaurantOpen()"
+    >
+      <!-- Indicator Dot / Switch -->
+      <span
+        class="relative flex h-2.5 w-2.5"
+      >
+        @if (isRestaurantOpen()) {
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        }
+        <span
+          class="relative inline-flex rounded-full h-2.5 w-2.5"
+          [class.bg-emerald-500]="isRestaurantOpen()"
+          [class.bg-slate-400]="!isRestaurantOpen()"
+        ></span>
+      </span>
+
+      <span class="text-xs font-bold whitespace-nowrap">
+        {{ isRestaurantOpen() ? 'مفتوح الآن' : 'مغلق مؤقتاً' }}
+      </span>
+    </button>
+
+    <!-- Public Store Preview Button -->
+    <a
+      routerLink="/"
+      matRipple
+      matTooltip="زيارة المتجر كعميل"
+      matTooltipPosition="below"
+      class="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl text-slate-600 hover:text-orange-600 hover:bg-orange-50/70 border border-slate-200 text-xs font-bold transition-all cursor-pointer"
+    >
+      <span class="material-symbols-sharp text-[18px]">storefront</span>
+      <span>عرض المتجر</span>
+    </a>
+
+    <!-- Notifications Bell -->
+    <button
+      type="button"
+      matRipple
+      matTooltip="التنبيهات الجديدة (3)"
+      matTooltipPosition="below"
+      class="relative w-10 h-10 rounded-xl bg-slate-100/80 hover:bg-slate-200/60 flex items-center justify-center text-slate-600 transition-colors cursor-pointer"
+      aria-label="التنبيهات"
+    >
+      <span class="material-symbols-sharp text-[22px]">notifications</span>
+      <span class="absolute top-2 left-2 w-2.5 h-2.5 bg-orange-500 rounded-full ring-2 ring-white"></span>
+    </button>
+
+    <!-- Language Toggle -->
+    <button
+      type="button"
+      matRipple
+      matTooltip="تغيير اللغة"
+      matTooltipPosition="below"
+      class="w-10 h-10 rounded-xl bg-slate-100/80 hover:bg-slate-200/60 flex items-center justify-center text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+    >
+      EN
+    </button>
+  </div>
+</header>
