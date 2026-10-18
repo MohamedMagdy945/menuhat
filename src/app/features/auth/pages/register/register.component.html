@@ -1,28 +1,19 @@
-<div class="auth-page-wrapper" dir="rtl">
-  <!-- Ambient background glow elements -->
-  <div class="ambient-glow glow-top"></div>
-  <div class="ambient-glow glow-bottom"></div>
-
+<div class="relative flex min-h-screen w-full items-center justify-center p-4 py-8" dir="rtl">
   <!-- Role Selection Card -->
-  <div class="auth-card selection-card">
+  <div class="relative z-10 mx-auto flex w-full max-w-215 flex-col rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-10 md:p-12 shadow-sm">
     <!-- Brand Header -->
-    <div class="brand-header">
-      <a routerLink="/" class="logo-link" aria-label="Menuhat Home">
-        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="brand-logo" />
+    <div class="mb-8 flex flex-col items-center text-center">
+      <a routerLink="/" class="mb-3 inline-block transition-transform duration-200 hover:scale-105" aria-label="Menuhat Home">
+        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-16 w-auto object-contain" />
       </a>
-      
-      <div class="welcome-chip">
-        <span class="pulse-dot"></span>
-        <span>انضم إلى عائلة مِنيوهات</span>
-      </div>
 
-      <h1 class="auth-title">اختر نوع حسابك للبدء</h1>
-      <p class="auth-subtitle">
+      <h1 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">اختر نوع حسابك للبدء</h1>
+      <p class="mt-1.5 max-w-lg text-sm sm:text-base text-slate-500 font-medium">
         حدد الطريقة التي ترغب من خلالها في الاستفادة من منصة مِنيوهات
       </p>
 
       @if (email) {
-        <div class="verified-email-chip">
+        <div class="mt-3.5 inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs sm:text-sm text-emerald-800">
           <span class="material-symbols-sharp select-none leading-none text-[16px] text-emerald-500">
             verified
           </span>
@@ -32,92 +23,108 @@
     </div>
 
     <!-- Cards Grid -->
-    <div class="roles-grid">
+    <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
       <!-- Role 1: Restaurant Owner -->
-      <div class="role-card owner-card" (click)="goToRole('owner')">
-        <div class="role-card-header">
-          <div class="role-icon-box owner-icon-box">
+      <div
+        class="group flex cursor-pointer flex-col rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-7.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-500 hover:shadow-xl hover:shadow-slate-200/50"
+        (click)="goToRole('owner')"
+      >
+        <div class="mb-4.5 flex items-center justify-between">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 transition-transform duration-300 group-hover:scale-105">
             <span class="material-symbols-sharp select-none leading-none text-[28px]">
               storefront
             </span>
           </div>
-          <span class="role-tag">للشركاء والمطاعم</span>
+          <span class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-500">
+            للشركاء والمطاعم
+          </span>
         </div>
 
-        <h2 class="role-name">أنا صاحب مطعم</h2>
-        <p class="role-desc">
+        <h2 class="m-0 mb-2 text-xl font-extrabold text-slate-900">أنا صاحب مطعم</h2>
+        <p class="m-0 mb-5 min-h-[44px] text-[13.5px] leading-relaxed text-slate-500">
           أرغب في إضافة مطعمي وقوائم الطعام، واستقبال الطلبات، والوصول إلى آلاف الزبائن الجدد يومياً.
         </p>
 
-        <ul class="perks-list">
-          <li>
-            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+        <ul class="m-0 mb-6 flex flex-1 flex-col gap-3 p-0 list-none">
+          <li class="flex items-center gap-2.5 text-[13px] font-medium text-slate-700">
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500 shrink-0">
               check_circle
             </span>
             <span>لوحة تحكم ذكية لإدارة القوائم والوجبات</span>
           </li>
-          <li>
-            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+          <li class="flex items-center gap-2.5 text-[13px] font-medium text-slate-700">
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500 shrink-0">
               check_circle
             </span>
             <span>الظهور في نتائج البحث المتقدمة وقوائم المطاعم</span>
           </li>
-          <li>
-            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500">
+          <li class="flex items-center gap-2.5 text-[13px] font-medium text-slate-700">
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-orange-500 shrink-0">
               check_circle
             </span>
             <span>تقارير مبيعات وإحصائيات مباشرة لمطعمك</span>
           </li>
         </ul>
 
-        <button type="button" class="role-btn owner-btn">
+        <button
+          type="button"
+          class="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none bg-orange-500 text-sm font-bold text-white shadow-md shadow-orange-500/20 transition-all duration-200 group-hover:bg-orange-600 group-hover:shadow-lg group-hover:shadow-orange-500/30"
+        >
           <span>المتابعة كصاحب مطعم</span>
-          <span class="material-symbols-sharp select-none leading-none text-[18px]">
+          <span class="material-symbols-sharp select-none leading-none text-[18px] transition-transform duration-200 group-hover:-translate-x-1">
             arrow_back
           </span>
         </button>
       </div>
 
       <!-- Role 2: Customer -->
-      <div class="role-card customer-card" (click)="goToRole('customer')">
-        <div class="role-card-header">
-          <div class="role-icon-box customer-icon-box">
+      <div
+        class="group flex cursor-pointer flex-col rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-7.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-500 hover:shadow-xl hover:shadow-slate-200/50"
+        (click)="goToRole('customer')"
+      >
+        <div class="mb-4.5 flex items-center justify-between">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 transition-transform duration-300 group-hover:scale-105">
             <span class="material-symbols-sharp select-none leading-none text-[28px]">
               restaurant
             </span>
           </div>
-          <span class="role-tag">لعشاق الطعام</span>
+          <span class="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-500">
+            لعشاق الطعام
+          </span>
         </div>
 
-        <h2 class="role-name">أنا عميل / زبون</h2>
-        <p class="role-desc">
+        <h2 class="m-0 mb-2 text-xl font-extrabold text-slate-900">أنا عميل / زبون</h2>
+        <p class="m-0 mb-5 min-h-[44px] text-[13.5px] leading-relaxed text-slate-500">
           أرغب في استكشاف أفضل المطاعم القريبة مني، تصفح المنيو والعروض، وحفظ وجباتي المفضلة.
         </p>
 
-        <ul class="perks-list">
-          <li>
-            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500">
+        <ul class="m-0 mb-6 flex flex-1 flex-col gap-3 p-0 list-none">
+          <li class="flex items-center gap-2.5 text-[13px] font-medium text-slate-700">
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500 shrink-0">
               check_circle
             </span>
             <span>تصفح دقيق ومحدث لقوائم وأسعار المطاعم</span>
           </li>
-          <li>
-            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500">
+          <li class="flex items-center gap-2.5 text-[13px] font-medium text-slate-700">
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500 shrink-0">
               check_circle
             </span>
             <span>عروض وتخفيضات وكوبونات حصرية</span>
           </li>
-          <li>
-            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500">
+          <li class="flex items-center gap-2.5 text-[13px] font-medium text-slate-700">
+            <span class="material-symbols-sharp select-none leading-none text-[18px] text-amber-500 shrink-0">
               check_circle
             </span>
             <span>حفظ المفضلة وسجل طلبات سريع ومباشر</span>
           </li>
         </ul>
 
-        <button type="button" class="role-btn customer-btn">
+        <button
+          type="button"
+          class="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none bg-slate-900 text-sm font-bold text-white shadow-md shadow-slate-900/20 transition-all duration-200 group-hover:bg-slate-800 group-hover:shadow-lg group-hover:shadow-slate-900/30"
+        >
           <span>المتابعة كعميل</span>
-          <span class="material-symbols-sharp select-none leading-none text-[18px]">
+          <span class="material-symbols-sharp select-none leading-none text-[18px] transition-transform duration-200 group-hover:-translate-x-1">
             arrow_back
           </span>
         </button>
@@ -125,11 +132,14 @@
     </div>
 
     <!-- Login Link Footer -->
-    <div class="signup-prompt">
-      <span class="prompt-text">لديك حساب بالفعل؟</span>
-      <a routerLink="/login" class="create-account-link">
+    <div class="flex items-center justify-center gap-1.5 text-sm">
+      <span class="text-slate-500">لديك حساب بالفعل؟</span>
+      <a
+        routerLink="/login"
+        class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline"
+      >
         <span>تسجيل الدخول</span>
-        <span class="material-symbols-sharp select-none leading-none text-[16px]">
+        <span class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1">
           arrow_back
         </span>
       </a>

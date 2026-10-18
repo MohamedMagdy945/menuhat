@@ -1,5 +1,7 @@
 import {
   ApplicationConfig,
+  inject,
+  provideAppInitializer,
   provideBrowserGlobalErrorListeners
 } from '@angular/core';
 
@@ -13,10 +15,15 @@ import {
 
 import { authInterceptor } from './core/interceptors/auth-interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+import { UserDataService } from './core/services/userData.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+
+    provideAppInitializer(() => {
+      inject(UserDataService).loadUserData();
+    }),
 
     provideRouter(routes),
 
