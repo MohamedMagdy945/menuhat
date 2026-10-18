@@ -3,15 +3,15 @@
   [disabled]="loading() || disabled()"
   (click)="onClick()"
   [class.w-full]="fullWidth()"
-  class="submit-btn"
+  class="group relative flex h-12 cursor-pointer items-center justify-center gap-2.5 overflow-hidden rounded-[35px] border-none bg-linear-to-r from-orange-500 to-orange-600 px-6 text-[15px] font-bold text-white shadow-[0_10px_22px_-5px_rgba(249,115,22,0.4)] transition-all duration-250 ease-out hover:not(:disabled):-translate-y-0.5 hover:not(:disabled):from-orange-600 hover:not(:disabled):to-orange-700 hover:not(:disabled):shadow-[0_14px_26px_-5px_rgba(249,115,22,0.5)] active:not(:disabled):translate-y-0 disabled:cursor-not-allowed disabled:bg-none disabled:bg-orange-300 disabled:from-orange-300 disabled:to-orange-300 disabled:opacity-75 disabled:shadow-none"
 >
   @if (loading()) {
-    <span class="btn-spinner"></span>
+    <span class="h-[18px] w-[18px] shrink-0 animate-spin rounded-full border-[2.5px] border-white/40 border-t-white"></span>
     <span>{{ loadingText() }}</span>
   } @else {
     <span>{{ text() }}</span>
     @if (showArrow()) {
-      <span class="material-symbols-sharp btn-arrow select-none leading-none text-[20px]">
+      <span class="material-symbols-sharp select-none leading-none text-[20px] transition-transform duration-200 group-hover:not(:disabled):-translate-x-1">
         arrow_back
       </span>
     }

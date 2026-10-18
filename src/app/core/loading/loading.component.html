@@ -1,42 +1,40 @@
-<!-- GLOBAL LOADING OVERLAY WITH MODAL CARD -->
+<!-- GLOBAL LOADING OVERLAY -->
 @if (loadingService.isLoading()) {
 <div class="fixed inset-0 z-9999 flex items-center justify-center bg-black/10 backdrop-blur-[2px] transition-all duration-300"
     dir="rtl">
 
-    <!-- White Popup Card -->
-    <div
-        class="relative flex w-[50%] max-w-50 flex-col items-center  justify-center text-center ">
+    <!-- Card Container -->
+    <div class="relative flex flex-col items-center justify-center text-center">
 
-        <!-- Circular Spinner Container -->
-        <div class="relative mb-5 flex h-20 w-20 items-center justify-center p-3">
-            <!-- Background Soft Ring -->
-            <div class="absolute inset-0 rounded-full border-[3.5px] border-[#ff6900]/15"></div>
+        <!-- 8-Segment Thin Arc Loader Container -->
+        <div class="thin-segmented-loader mb-5">
 
-            <!-- Rotating Orange Ring -->
-            <div
-                class="absolute inset-0 rounded-full border-[3.5px] border-transparent border-t-[#ff6900] border-r-[#ff6900] animate-spin">
-            </div>
+            <!-- SVG with 8 Arc Line Segments (4px gap) -->
+            <svg class="loader-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g class="arcs-container">
+                    <!-- 8 Curved Segments separated by ~4px gap -->
+                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
+                        transform="rotate(22.5 100 100)" />
+                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
+                        transform="rotate(67.5 100 100)" />
+                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
+                        transform="rotate(112.5 100 100)" />
+                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
+                        transform="rotate(157.5 100 100)" />
+                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
+                        transform="rotate(202.5 100 100)" />
+                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
+                        transform="rotate(247.5 100 100)" />
+                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
+                        transform="rotate(292.5 100 100)" />
+                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
+                        transform="rotate(337.5 100 100)" />
+                </g>
+            </svg>
 
-            <!-- Center Logo/Icon -->
-            <img src="/icons/small-logo.png" alt="">
+            <!-- Center Logo inside the circular ring -->
+            <img src="/icons/small-logo.png" alt="Menuhat Logo" class="center-logo">
         </div>
-
-        <!-- Main Title -->
-        <!-- <h3 class="mb-1 text-[15px] font-bold text-[#20242a]">
-            جاري تحميل البيانات...
-        </h3> -->
-
-        <!-- Subtitle -->
-        <!-- <p class="mb-4 text-[11px] font-medium text-[#8c939b]">
-            يرجى الانتظار لحظة بسيطة
-        </p> -->
-
-        <!-- Animated 3 Dots -->
-        <!-- <div class="flex items-center gap-1.5">
-            <span class="h-2 w-2 rounded-full bg-[#ff6900] animate-bounce [animation-delay:-0.3s]"></span>
-            <span class="h-2 w-2 rounded-full bg-[#ff6900] animate-bounce [animation-delay:-0.15s]"></span>
-            <span class="h-2 w-2 rounded-full bg-[#ff6900] animate-bounce"></span>
-        </div> -->
 
     </div>
 

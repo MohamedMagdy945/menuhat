@@ -1,27 +1,21 @@
-<div class="auth-page-wrapper" dir="rtl">
-  <!-- Ambient background glow elements -->
-  <div class="ambient-glow glow-top"></div>
-  <div class="ambient-glow glow-bottom"></div>
+<div class="relative flex min-h-screen w-full items-center justify-center overflow-hidden px-4 ">
 
   <!-- Centered Login Card -->
-  <div class="auth-card">
+  <div class="relative z-10 mx-auto flex w-full max-w-110 flex-col rounded-[20px] border border-slate-200/85 bg-white p-5 sm:rounded-xl sm:px-8 sm:py-10">
     <!-- Brand Header with Centered Logo -->
-    <div class="brand-header">
-      <a routerLink="/" class="logo-link" aria-label="Menuhat Home">
-        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="brand-logo" />
+    <div class="mb-6.5 flex flex-col items-center text-center">
+      <a routerLink="/" class="mb-4.5 inline-block transition-transform duration-250 ease-out hover:-translate-y-0.5" aria-label="Menuhat Home">
+        <img src="/images/login.png" alt="Menuhat Logo" class="h-50 w-auto object-contain" />
       </a>
-      <div class="welcome-chip">
-        <span class="pulse-dot"></span>
-        <span>مرحباً بك مجدداً 👋</span>
-      </div>
-      <h1 class="auth-title">تسجيل الدخول</h1>
-      <p class="auth-subtitle">
+
+      <h1 class="m-0 mb-1.5 text-[22px] sm:text-2xl font-extrabold tracking-tight text-slate-900">تسجيل الدخول</h1>
+      <p class="m-0 max-w-[320px] text-[13.5px] leading-relaxed text-slate-500">
         سجّل دخولك لمتابعة طلباتك واكتشاف أشهى الوجبات
       </p>
     </div>
 
     <!-- Login Form -->
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="w-full">
       <!-- Email / Mobile Field -->
       <app-form-input
         formControlName="mobile"
@@ -44,7 +38,7 @@
         autocomplete="current-password"
         [customErrors]="validationMessages.password"
       >
-        <a label-extra routerLink="/sendEmail" class="forgot-link">
+        <a label-extra routerLink="/sendEmail" class="text-[13px] font-semibold text-orange-600 no-underline transition-colors duration-200 hover:text-orange-700 hover:underline">
           نسيت كلمة المرور؟
         </a>
         <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
@@ -64,44 +58,29 @@
     </form>
 
     <!-- Divider -->
-    <div class="divider">
-      <span>أو المتابعة بواسطة</span>
+    <div class="relative my-4.5 mt-5.5 flex items-center justify-center before:h-px before:flex-1 before:bg-slate-200 after:h-px after:flex-1 after:bg-slate-200">
+      <span class="bg-white px-3 text-[12.5px] font-medium text-slate-400">أو المتابعة بواسطة</span>
     </div>
 
     <!-- Social Login: Google -->
     <button
       type="button"
-      class="google-btn"
+      class="flex h-12 w-full cursor-pointer items-center justify-center gap-3 rounded-[14px] border border-slate-200 bg-white text-sm font-semibold text-slate-700 transition-all duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:bg-slate-50 hover:shadow-[0_4px_12px_rgba(15,23,42,0.05)]"
       (click)="loginWithGoogle()"
       aria-label="تسجيل الدخول بواسطة Google"
     >
-      <svg class="google-icon" width="20" height="20" viewBox="0 0 24 24">
-        <path
-          fill="#4285F4"
-          d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
-        />
-        <path
-          fill="#34A853"
-          d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.1 0-5.73-2.1-6.67-4.93H1.37v3.15C3.35 21.32 7.39 24 12 24z"
-        />
-        <path
-          fill="#FBBC05"
-          d="M5.33 14.27c-.24-.72-.38-1.49-.38-2.27s.14-1.55.38-2.27V6.58H1.37A11.95 11.95 0 0 0 0 12c0 1.92.46 3.74 1.37 5.42l3.96-3.15z"
-        />
-        <path
-          fill="#EA4335"
-          d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.39 0 3.35 2.68 1.37 6.58l3.96 3.15c.94-2.83 3.57-4.98 6.67-4.98z"
-        />
-      </svg>
-      <span class="google-btn-text">المتابعة باستخدام Google</span>
+      <span class="material-symbols-sharp select-none leading-none text-[20px]">
+        login
+      </span>
+      <span>المتابعة باستخدام Google</span>
     </button>
 
     <!-- Signup Prompt -->
-    <div class="signup-prompt">
-      <span class="prompt-text">ليس لديك حساب؟</span>
-      <a routerLink="/sendEmail" class="create-account-link">
+    <div class="mt-5.5 flex items-center justify-center gap-2 text-sm">
+      <span class="text-slate-500">ليس لديك حساب؟</span>
+      <a routerLink="/sendEmail" class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline">
         <span>إنشاء حساب جديد</span>
-        <span class="material-symbols-sharp select-none leading-none text-[16px]">
+        <span class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1">
           arrow_back
         </span>
       </a>

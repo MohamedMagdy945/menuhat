@@ -1,242 +1,174 @@
-<!-- Backdrop for Mobile -->
+<!-- Backdrop for Mobile below Header -->
 @if (isMobileOpen()) {
   <div
-    class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+    class="fixed top-20 inset-x-0 bottom-0 z-30 bg-slate-900/50 backdrop-blur-xs lg:hidden transition-opacity"
     (click)="closeMobile()"
     aria-hidden="true"
   ></div>
 }
 
-<!-- Sidebar Container -->
+<!-- Full Dashboard Sidebar Container (Positioned directly under the header at top-20) -->
 <aside
-  class="fixed top-0 bottom-0 right-0 z-50 flex flex-col bg-white border-l border-slate-200/80 shadow-sm transition-all duration-300 ease-in-out select-none"
-  [class.w-72]="!isCollapsed()"
-  [class.w-20]="isCollapsed()"
-  [class.translate-x-0]="isMobileOpen() || true"
+  class="fixed top-20 bottom-0 right-0 z-40 flex flex-col w-68 bg-white border-l border-slate-200/80 shadow-sm select-none transition-transform duration-300 max-lg:shadow-xl"
   [class.max-lg:translate-x-full]="!isMobileOpen()"
-  [class.max-lg:w-72]="true"
-  dir="rtl"
->
-  <!-- Floating Collapse/Expand Button (Apex Style `<` button on the edge) -->
-  <button
-    type="button"
-    matRipple
-    (click)="toggleSidebar()"
-    [matTooltip]="isCollapsed() ? 'توسيع القائمة' : 'تصغير القائمة'"
-    matTooltipPosition="left"
-    class="hidden lg:flex absolute top-6 -left-3.5 z-50 w-7 h-7 rounded-full bg-white border border-slate-300 shadow-md items-center justify-center text-slate-600 hover:text-orange-500 hover:border-orange-500 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
-    [attr.aria-label]="isCollapsed() ? 'توسيع القائمة الجانبية' : 'طي القائمة الجانبية'"
-  >
-    <span
-      class="material-symbols-sharp text-[18px] transition-transform duration-300"
-      [class.rotate-180]="isCollapsed()"
-    >
-      chevron_right
-    </span>
-  </button>
+  dir="rtl" aria-label="Main Navigation">
 
-  <!-- Mobile Close Button -->
-  <button
-    type="button"
-    (click)="closeMobile()"
-    class="lg:hidden absolute top-4 left-4 p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors"
-    aria-label="إغلاق القائمة"
-  >
-    <span class="material-symbols-sharp text-xl">close</span>
-  </button>
+  <!-- =========================================================================
+       Scrollable Navigation (Continuous List with Identical Item Styles)
+       ========================================================================= -->
+  <nav class="flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scroll" aria-label="Dashboard Menu">
+    <ul class="flex flex-col gap-1 p-0 m-0 list-none" role="list">
 
-  <!-- Sidebar Header / Brand -->
-  <div class="h-20 flex items-center px-4 border-b border-slate-100 shrink-0 overflow-hidden">
-    <a
-      routerLink="/dashboard"
-      class="flex items-center gap-3 w-full group overflow-hidden"
-      [class.justify-center]="isCollapsed()"
-    >
-      <!-- Logo Icon Box -->
-      <div
-        class="w-11 h-11 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-sm shadow-orange-500/30 group-hover:shadow-md transition-shadow"
-      >
-        <span class="material-symbols-sharp text-2xl icon-fill">restaurant</span>
-      </div>
-
-      <!-- Brand Details (Hidden when collapsed) -->
-      @if (!isCollapsed()) {
-        <div class="flex flex-col min-w-0 transition-opacity duration-200">
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-lg text-slate-800 tracking-tight font-heading truncate">
-              مِنيوهات
-            </span>
-            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-orange-100 text-orange-700 tracking-wider">
-              لوحة الإدارة
-            </span>
-          </div>
-          <span class="text-xs text-slate-600 font-medium truncate">
-            {{ userProfile.restaurant }}
-          </span>
-        </div>
-      }
-    </a>
-  </div>
-
-  <!-- Navigation Scrollable Area -->
-  <div class="flex-1 overflow-y-auto overflow-x-hidden py-4 px-3 space-y-6 scrollbar-thin">
-    @for (group of navGroups; track group.id) {
-      <div class="space-y-1.5">
-        <!-- Group Header (Apex style with optional collapse) -->
-        @if (!isCollapsed()) {
-          <div
-            (click)="toggleGroup(group.id)"
-            class="flex items-center justify-between px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-slate-700 cursor-pointer rounded-md transition-colors"
-          >
-            <span>{{ group.title }}</span>
-            @if (group.isCollapsible) {
-              <span
-                class="material-symbols-sharp text-sm text-slate-600 transition-transform duration-200"
-                [class.rotate-180]="!isGroupExpanded(group.id)"
-              >
-                expand_more
-              </span>
-            }
-          </div>
-        } @else {
-          <!-- Subtle separator in collapsed mode -->
-          <div class="my-2 border-t border-slate-100 mx-2"></div>
-        }
-
-        <!-- Group Items -->
-        @if (isCollapsed() || isGroupExpanded(group.id)) {
-          <div class="space-y-1">
-            @for (item of group.items; track item.id) {
-              <a
-                [routerLink]="item.route"
-                routerLinkActive="active"
-                [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
-                matRipple
-                [matTooltip]="isCollapsed() ? item.label : ''"
-                matTooltipPosition="left"
-                class="sidebar-nav-item flex items-center gap-3.5 px-3 py-2.5 rounded-xl text-slate-600 hover:text-orange-600 hover:bg-orange-50/60 font-medium transition-all duration-200 relative group"
-                [class.justify-center]="isCollapsed()"
-                [class.px-0]="isCollapsed()"
-              >
-                <!-- Nav Icon -->
-                <span
-                  class="material-symbols-sharp text-[22px] shrink-0 transition-colors text-slate-500 group-hover:text-orange-500 nav-icon"
-                >
-                  {{ item.icon }}
-                </span>
-
-                <!-- Nav Label -->
-                @if (!isCollapsed()) {
-                  <span class="text-sm truncate flex-1 font-medium">
-                    {{ item.label }}
-                  </span>
-
-                  <!-- Nav Badge -->
-                  @if (item.badge) {
-                    <span
-                      class="px-2 py-0.5 text-xs font-bold rounded-full shrink-0 tracking-tight transition-transform"
-                      [class.bg-orange-500]="item.badge.variant === 'primary'"
-                      [class.text-white]="item.badge.variant === 'primary'"
-                      [class.bg-emerald-500]="item.badge.variant === 'success'"
-                      [class.text-white]="item.badge.variant === 'success'"
-                      [class.bg-sky-500]="item.badge.variant === 'info'"
-                      [class.text-white]="item.badge.variant === 'info'"
-                    >
-                      {{ item.badge.text }}
-                    </span>
-                  }
-                } @else {
-                  <!-- Collapsed indicator dot for items with badges -->
-                  @if (item.badge) {
-                    <span
-                      class="absolute top-2 left-3 w-2 h-2 rounded-full bg-orange-500 ring-2 ring-white"
-                    ></span>
-                  }
-                }
-              </a>
-            }
-          </div>
-        }
-      </div>
-    }
-  </div>
-
-  <!-- User Profile & Footer (Apex style + Image 1 profile) -->
-  <div class="p-3 border-t border-slate-100 bg-slate-50/70 shrink-0">
-    @if (!isCollapsed()) {
-      <div class="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200/70 shadow-2xs">
-        <!-- User Avatar with Online Indicator -->
-        <div class="relative shrink-0">
-          <div
-            class="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-400 to-amber-500 text-white font-bold text-sm flex items-center justify-center shadow-xs"
-          >
-            AM
-          </div>
-          <span
-            class="absolute bottom-0 left-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"
-          ></span>
-        </div>
-
-        <!-- Info -->
-        <div class="flex flex-col min-w-0 flex-1">
-          <span class="text-sm font-bold text-slate-800 truncate">
-            {{ userProfile.name }}
-          </span>
-          <span class="text-xs text-slate-500 truncate">
-            {{ userProfile.email }}
-          </span>
-        </div>
-
-        <!-- Logout Action Button -->
-        <a
-          routerLink="/login"
-          matRipple
-          matTooltip="تسجيل الخروج"
-          matTooltipPosition="above"
-          class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
-          aria-label="تسجيل الخروج"
-        >
-          <span class="material-symbols-sharp text-[20px]">logout</span>
+      <!-- 1. Home Dashboard -->
+      <li>
+        <a href="/dashboard" routerLink="/dashboard" routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">space_dashboard</span>
+          <span class="main-nav-label">الرئيسية</span>
         </a>
-      </div>
+      </li>
 
-      <!-- Big Logout Button matching Image 1 -->
-      <a
-        routerLink="/login"
-        matRipple
-        class="mt-2.5 flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl bg-red-50 text-red-600 hover:bg-red-100/80 font-bold text-xs transition-colors cursor-pointer"
-      >
-        <span class="material-symbols-sharp text-base">logout</span>
-        <span>تسجيل الخروج</span>
-      </a>
-    } @else {
-      <!-- Collapsed Compact User & Logout Actions -->
-      <div class="flex flex-col items-center gap-3 py-1">
+      <!-- 2. Analytics -->
+      <li>
+        <a href="/dashboard/analytics" routerLink="/dashboard/analytics" routerLinkActive="is-active"
+          class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">monitoring</span>
+          <span class="main-nav-label">الإحصائيات والتحليلات</span>
+        </a>
+      </li>
+
+      <!-- 3. Live Dining Hall Monitor -->
+      <li>
+        <a href="/dashboard/live-monitor" routerLink="/dashboard/live-monitor" routerLinkActive="is-active"
+          class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">table_restaurant</span>
+          <span class="main-nav-label">مراقبة الصالة الحية</span>
+          <span class="live-indicator" title="Live status"></span>
+        </a>
+      </li>
+
+      <!-- 4. Current Orders -->
+      <li>
+        <a href="/dashboard/orders" routerLink="/dashboard/orders" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">receipt_long</span>
+          <span class="main-nav-label">الطلبات الحالية</span>
+          <span class="main-nav-badge">18</span>
+        </a>
+      </li>
+
+      <!-- 5. Restaurant Menu -->
+      <li>
+        <a href="/dashboard/menu" routerLink="/dashboard/menu" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">restaurant_menu</span>
+          <span class="main-nav-label">قائمة الطعام (المنيو)</span>
+        </a>
+      </li>
+
+      <!-- 6. Most Ordered -->
+      <li>
+        <a href="/dashboard/most-ordered" routerLink="/dashboard/most-ordered" routerLinkActive="is-active"
+          class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">stars</span>
+          <span class="main-nav-label">الأكثر طلباً</span>
+        </a>
+      </li>
+
+      <!-- 7. Offers & Discounts -->
+      <li>
+        <a href="/dashboard/offers" routerLink="/dashboard/offers" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">local_offer</span>
+          <span class="main-nav-label">العروض والخصومات</span>
+          <span class="main-nav-badge badge-success">جديد</span>
+        </a>
+      </li>
+
+      <!-- 8. Daily & Monthly Reports -->
+      <li>
+        <a href="/dashboard/reports" routerLink="/dashboard/reports" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">bar_chart</span>
+          <span class="main-nav-label">التقارير اليومية والشهرية</span>
+        </a>
+      </li>
+
+      <!-- 9. Delivery Riders -->
+      <li>
+        <a href="/dashboard/delivery" routerLink="/dashboard/delivery" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">two_wheeler</span>
+          <span class="main-nav-label">مناديب التوصيل</span>
+          <span class="main-nav-badge badge-info">4</span>
+        </a>
+      </li>
+
+      <!-- 10. Invoices & Finance -->
+      <li>
+        <a href="/dashboard/invoices" routerLink="/dashboard/invoices" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">account_balance_wallet</span>
+          <span class="main-nav-label">الفواتير والمالية</span>
+        </a>
+      </li>
+
+      <!-- 11. Customer Reviews -->
+      <li>
+        <a href="/dashboard/reviews" routerLink="/dashboard/reviews" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">reviews</span>
+          <span class="main-nav-label">تقييمات العملاء</span>
+        </a>
+      </li>
+
+      <!-- 12. Technical Support -->
+      <li>
+        <a href="/dashboard/support" routerLink="/dashboard/support" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">support_agent</span>
+          <span class="main-nav-label">الدعم الفني</span>
+        </a>
+      </li>
+
+      <!-- 13. Complaints & Feedback -->
+      <li>
+        <a href="/dashboard/complaints" routerLink="/dashboard/complaints" routerLinkActive="is-active"
+          class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">report_problem</span>
+          <span class="main-nav-label">الشكاوى والملاحظات</span>
+          <span class="main-nav-badge badge-warning">تنبيه</span>
+        </a>
+      </li>
+
+      <!-- 14. Restaurant Settings -->
+      <li>
+        <a href="/dashboard/settings" routerLink="/dashboard/settings" routerLinkActive="is-active" class="main-nav-item">
+          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">tune</span>
+          <span class="main-nav-label">إعدادات المطعم</span>
+        </a>
+      </li>
+
+    </ul>
+  </nav>
+
+  <!-- =========================================================================
+       User Profile & Logout Footer
+       ========================================================================= -->
+  <footer class="p-3 border-t border-slate-100 bg-slate-50/70 shrink-0">
+    <div class="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200/70 shadow-xs">
+      <!-- User Avatar -->
+      <div class="relative shrink-0">
         <div
-          class="relative cursor-pointer"
-          [matTooltip]="userProfile.name + ' (' + userProfile.role + ')'"
-          matTooltipPosition="left"
-        >
-          <div
-            class="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-400 to-amber-500 text-white font-bold text-sm flex items-center justify-center shadow-xs"
-          >
-            AM
-          </div>
-          <span
-            class="absolute bottom-0 left-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"
-          ></span>
+          class="w-10 h-10 rounded-full bg-linear-to-tr from-orange-400 to-amber-500 text-white font-bold text-sm flex items-center justify-center shadow-xs">
+          AM
         </div>
-
-        <a
-          routerLink="/login"
-          matRipple
-          matTooltip="تسجيل الخروج"
-          matTooltipPosition="left"
-          class="w-9 h-9 rounded-xl flex items-center justify-center text-red-500 bg-red-50 hover:bg-red-100 transition-colors cursor-pointer"
-        >
-          <span class="material-symbols-sharp text-xl">logout</span>
-        </a>
+        <span class="absolute bottom-0 left-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
       </div>
-    }
-  </div>
+      <!-- User Text Details -->
+      <div class="flex flex-col min-w-0 flex-1">
+        <span class="text-sm font-bold text-slate-800 truncate">أحمد المحمد</span>
+        <span class="text-xs text-slate-500 truncate">ahmed.m@beitmandi.com</span>
+      </div>
+      <!-- Quick Logout Button -->
+      <a href="/login" routerLink="/login"
+        class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+        aria-label="تسجيل الخروج">
+        <span class="material-symbols-sharp text-[20px]">logout</span>
+      </a>
+    </div>
+  </footer>
+
 </aside>

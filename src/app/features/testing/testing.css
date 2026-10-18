@@ -1,0 +1,60 @@
+/* ==========================================================================
+   Thin 8-Segmented Circular Arc Loader (Clockwise Relay Animation)
+   0.7s delay per segment (5.6s full cycle) & 1px crisp gap
+   ========================================================================== */
+
+.thin-segmented-loader {
+  position: relative;
+  width: 7.5rem;
+  height: 7.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SVG Container */
+.thin-segmented-loader .loader-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Individual Arc Segment Line */
+.thin-segmented-loader .arc-segment {
+  fill: none;
+  stroke: #ff6900;
+  stroke-width: 7.8;
+  stroke-linecap: butt; /* Clean flat ends for a crisp 1px gap */
+  opacity: 0.18;        /* Resting state */
+  animation: arc-chase 5.6s linear infinite;
+}
+
+/* Clockwise Sequence: Exactly 0.7s step per segment */
+.thin-segmented-loader .arc-segment:nth-child(1) { animation-delay: -4.9s; }
+.thin-segmented-loader .arc-segment:nth-child(2) { animation-delay: -4.2s; }
+.thin-segmented-loader .arc-segment:nth-child(3) { animation-delay: -3.5s; }
+.thin-segmented-loader .arc-segment:nth-child(4) { animation-delay: -2.8s; }
+.thin-segmented-loader .arc-segment:nth-child(5) { animation-delay: -2.1s; }
+.thin-segmented-loader .arc-segment:nth-child(6) { animation-delay: -1.4s; }
+.thin-segmented-loader .arc-segment:nth-child(7) { animation-delay: -0.7s; }
+.thin-segmented-loader .arc-segment:nth-child(8) { animation-delay: 0s; }
+
+/* Crisp Relay: 12.5% of 5.6s = exactly 0.7s lit per segment */
+@keyframes arc-chase {
+  0%, 12.5% {
+    opacity: 1;
+  }
+  13.5%, 100% {
+    opacity: 0.18;
+  }
+}
+
+/* Center Logo */
+.thin-segmented-loader .center-logo {
+  position: absolute;
+  width: 3.9rem;
+  height: 3.9rem;
+  object-fit: contain;
+  z-index: 10;
+  pointer-events: none;
+}

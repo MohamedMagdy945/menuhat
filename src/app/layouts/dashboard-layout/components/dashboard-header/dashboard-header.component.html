@@ -1,9 +1,9 @@
 <header
-  class="h-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 transition-all duration-300"
+  class="h-20 w-full bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 flex items-center justify-between transition-all duration-300"
   dir="rtl"
 >
-  <!-- Right Section (Search & Mobile Toggle) -->
-  <div class="flex items-center gap-3 flex-1 max-w-xl">
+  <!-- Right Section: Brand Logo (Aligned above Sidebar) + Search -->
+  <div class="flex items-center gap-4 flex-1 max-w-2xl">
     <!-- Mobile Hamburger Toggle -->
     <button
       type="button"
@@ -13,6 +13,27 @@
     >
       <span class="material-symbols-sharp text-2xl">menu</span>
     </button>
+
+    <!-- Brand Header details (positioned at the top right above sidebar) -->
+    <a routerLink="/dashboard" class="flex items-center gap-3 shrink-0 group">
+      <!-- Logo Box -->
+      <div
+        class="w-10 h-10 rounded-xl bg-linear-to-tr from-orange-500 to-amber-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform"
+      >
+        <span class="material-symbols-sharp text-2xl icon-fill" aria-hidden="true">restaurant</span>
+      </div>
+      <!-- Brand Details -->
+      <div class="hidden sm:flex flex-col min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-base text-slate-800 tracking-tight">مِنيوهات</span>
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-orange-100 text-orange-700">لوحة الإدارة</span>
+        </div>
+        <span class="text-xs text-slate-500 font-medium truncate">مطعم بيت المندي</span>
+      </div>
+    </a>
+
+    <!-- Divider -->
+    <div class="hidden md:block h-6 w-px bg-slate-200 mx-1"></div>
 
     <!-- Global Dashboard Search -->
     <div class="relative w-full max-w-md hidden sm:block">
@@ -29,12 +50,10 @@
 
   <!-- Left Section (Quick Status & Actions) -->
   <div class="flex items-center gap-3">
-    <!-- Live Operational Status Switch (matching Image 1) -->
+    <!-- Live Operational Status Switch -->
     <button
       type="button"
       (click)="toggleRestaurantStatus()"
-      [matTooltip]="isRestaurantOpen() ? 'المطعم يستقبل طلبات الآن' : 'المطعم مغلق حالياً'"
-      matTooltipPosition="below"
       class="flex items-center gap-2.5 py-1.5 px-3 rounded-full border transition-all cursor-pointer"
       [class.bg-emerald-50]="isRestaurantOpen()"
       [class.border-emerald-200]="isRestaurantOpen()"
@@ -44,9 +63,7 @@
       [class.text-slate-600]="!isRestaurantOpen()"
     >
       <!-- Indicator Dot / Switch -->
-      <span
-        class="relative flex h-2.5 w-2.5"
-      >
+      <span class="relative flex h-2.5 w-2.5">
         @if (isRestaurantOpen()) {
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
         }
@@ -65,9 +82,6 @@
     <!-- Public Store Preview Button -->
     <a
       routerLink="/"
-      matRipple
-      matTooltip="زيارة المتجر كعميل"
-      matTooltipPosition="below"
       class="hidden md:flex items-center gap-1.5 px-3 py-2 rounded-xl text-slate-600 hover:text-orange-600 hover:bg-orange-50/70 border border-slate-200 text-xs font-bold transition-all cursor-pointer"
     >
       <span class="material-symbols-sharp text-[18px]">storefront</span>
@@ -77,9 +91,6 @@
     <!-- Notifications Bell -->
     <button
       type="button"
-      matRipple
-      matTooltip="التنبيهات الجديدة (3)"
-      matTooltipPosition="below"
       class="relative w-10 h-10 rounded-xl bg-slate-100/80 hover:bg-slate-200/60 flex items-center justify-center text-slate-600 transition-colors cursor-pointer"
       aria-label="التنبيهات"
     >
@@ -90,9 +101,6 @@
     <!-- Language Toggle -->
     <button
       type="button"
-      matRipple
-      matTooltip="تغيير اللغة"
-      matTooltipPosition="below"
       class="w-10 h-10 rounded-xl bg-slate-100/80 hover:bg-slate-200/60 flex items-center justify-center text-xs font-bold text-slate-700 transition-colors cursor-pointer"
     >
       EN

@@ -2,22 +2,22 @@
 <nav class="hidden md:block w-full" dir="rtl">
   <!-- Top Row -->
   <div class="bg-[#e9ec2ef]">
-    <div class="flex items-center justify-between gap-3 px-8 pt-1 pb-">
+    <div class="flex items-center justify-between gap-3 px-8 py-1">
       <!-- Logo (right side in RTL) -->
       <a routerLink="/" class="inline-flex items-center decoration-0 focus:outline-none shrink-0">
         <!-- SVG Logo from Assets -->
-        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-12 w-auto object-contain" />
+        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-13 w-auto object-contain" />
       </a>
 
       <!-- Location -->
       <app-location-selector></app-location-selector>
 
       <!-- Search Bar -->
-      <div class="relative w-full max-w-md" dir="rtl">
+      <div class="relative w-full max-w-md">
         <input
           type="text"
           placeholder="بحث"
-          class="w-full py-3 pr-12 pl-5 bg-white text-gray-800 placeholder-gray-400 rounded-full shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none transition-shadow duration-200 text-sm font-normal"
+          class="w-full py-3 pr-12 pl-5 border border-gray-100 bg-white text-gray-800 placeholder-gray-400 rounded-full shadow-md   focus:outline-none transition-shadow duration-200 text-sm font-normal"
         />
 
         <div

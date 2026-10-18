@@ -1,13 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { MatRippleModule } from '@angular/material/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { DashboardService } from '../../../../core/services/dashboard.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-header',
   standalone: true,
-  imports: [RouterLink, MatRippleModule, MatTooltipModule],
+  imports: [RouterLink],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.css',
 })

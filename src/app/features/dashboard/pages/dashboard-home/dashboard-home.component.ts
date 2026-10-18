@@ -1,7 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MatRippleModule } from '@angular/material/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { DashboardService } from '../../../../core/services/dashboard.service';
 
 export interface OrderItem {
@@ -18,7 +16,7 @@ export interface OrderItem {
 @Component({
   selector: 'app-dashboard-home',
   standalone: true,
-  imports: [RouterLink, MatRippleModule, MatTooltipModule],
+  imports: [RouterLink],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.css',
 })
