@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { finalize } from 'rxjs';
 import { LoginService } from '../../services/login.service';
 import { LoginRequest, LoginResponse } from '../../models';
-import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { FormInputComponent } from '../../../../shared/components/form-input/form-input.component';
 import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
@@ -22,15 +22,17 @@ import { LoadingButtonComponent } from '../../../../shared/components/loading-bu
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class Login {
+export class Login implements OnInit {
 
+  private readonly _fb = inject(FormBuilder);
   private readonly _AuthServices = inject(LoginService);
   private readonly _Router = inject(Router);
-  private readonly _SweetAlertService = inject(SweetAlertService);
   private readonly _userDataService = inject(UserDataService);
+  private readonly _cdr = inject(ChangeDetectorRef);
 
   loginForm!: FormGroup;
-  isLoading = false;
+  isLoading = signal<boolean>(false);
+  errorMessage = signal<string>('');
   appId = 2;
 
   readonly validationMessages = {
@@ -44,12 +46,17 @@ export class Login {
     }
   };
 
-  constructor(private fb: FormBuilder) { }
-
   ngOnInit(): void {
-    this.loginForm = this.fb.group({
+    this.loginForm = this._fb.group({
       mobile: ['', [Validators.required]],
       password: ['', [Validators.required]]
+    });
+
+    this.loginForm.valueChanges.subscribe(() => {
+      if (this.errorMessage()) {
+        this.errorMessage.set('');
+        this._cdr.detectChanges();
+      }
     });
   }
 
@@ -67,7 +74,8 @@ export class Login {
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
+    this.errorMessage.set('');
 
     const loginData: LoginRequest = {
       appId: this.appId,
@@ -75,23 +83,33 @@ export class Login {
       password: this.loginForm.value.password
     };
 
-    this._AuthServices.login(loginData).subscribe({
-      next: (res: LoginResponse) => {
-        this.isLoading = false;
-        if (res && res.data) {
-          this._userDataService.setUserData(res.data, res.data.token);
-          this._SweetAlertService.showToast(res.message || 'تم تسجيل الدخول بنجاح', 'success');
-          this._Router.navigate(['/home']);
+    this._AuthServices.login(loginData)
+      .pipe(
+        finalize(() => {
+          this.isLoading.set(false);
+          this._cdr.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (res: LoginResponse) => {
+          if (res && res.data) {
+            this._userDataService.setUserData(res.data, res.data.token);
+            this._Router.navigate(['/home']);
+          } else {
+            this.errorMessage.set(res?.message || 'تعذر تسجيل الدخول، يرجى التحقق من صحة البيانات والمحاولة مجدداً');
+            this._cdr.detectChanges();
+          }
+        },
+        error: (err: HttpErrorResponse) => {
+          const message =
+            err?.error?.message ||
+            (typeof err?.error === 'string' ? err.error : null) ||
+            (err?.status === 401 ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : null) ||
+            'تعذر تسجيل الدخول، يرجى التحقق من صحة البيانات والمحاولة مجدداً';
+          this.errorMessage.set(message);
+          this._cdr.detectChanges();
         }
-      },
-      error: (err: HttpErrorResponse) => {
-        this.isLoading = false;
-        this._SweetAlertService.showToast(
-          err?.error?.message || 'تعذر تسجيل الدخول، يرجى التحقق من صحة البيانات والمحاولة مجدداً',
-          'error'
-        );
-      }
-    });
+      });
   }
 
   loginWithGoogle(): void {

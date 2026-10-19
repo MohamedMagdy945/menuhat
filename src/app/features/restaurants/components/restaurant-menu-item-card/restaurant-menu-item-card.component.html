@@ -1,5 +1,5 @@
 <!-- Main Product Card Article -->
-<article dir="rtl" class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2">
+<article dir="rtl" class="overflow-hidden rounded-2xl border border-gray-200 bg-white">
   <!-- Main Container: Stacks all card sections vertically with a vertical gap (gap-3) -->
   <div class="flex flex-col gap-1">
     <!-- Section 1: Product Image & Floating Badges (Favorite & Discount) -->
@@ -17,6 +17,8 @@
           class="h-full w-full object-contain"
         />
       </a>
+
+      <!-- content -->
 
       <!-- Favorite Button (Toggle product favorite status) -->
       <button
@@ -45,7 +47,7 @@
     </div>
 
     <!-- Section 2: Product Content (Title, Price & Add-to-Cart Button) -->
-    <div class="px-2 mt-1 text-right">
+    <div class=" mt-1 text-right p-3">
       <!-- Product Title -->
       <h3 class="truncate  text-sm font-semibold text-gray-900">
         {{ item().productName }}

@@ -1,34 +1,32 @@
 <!-- GLOBAL LOADING OVERLAY -->
 @if (loadingService.isLoading()) {
-<div class="fixed inset-0 z-9999 flex items-center justify-center bg-black/10 backdrop-blur-[2px] transition-all duration-300"
-    dir="rtl">
+<div class="fixed inset-0 z-9999 flex items-center justify-center backdrop-blur-[2px] transition-all duration-300"
+ >
 
     <!-- Card Container -->
-    <div class="relative flex flex-col items-center justify-center text-center">
+    <div class="relative flex flex-col items-center justify-center text-center p-3 rounded-2xl">
 
-        <!-- 8-Segment Thin Arc Loader Container -->
+        <!-- 7-Segment Thin Arc Loader Container -->
         <div class="thin-segmented-loader mb-5">
 
-            <!-- SVG with 8 Arc Line Segments (4px gap) -->
+            <!-- SVG with 7 Arc Line Segments (3px gap) -->
             <svg class="loader-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <g class="arcs-container">
-                    <!-- 8 Curved Segments separated by ~4px gap -->
-                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
-                        transform="rotate(22.5 100 100)" />
-                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
-                        transform="rotate(67.5 100 100)" />
-                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
-                        transform="rotate(112.5 100 100)" />
-                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
-                        transform="rotate(157.5 100 100)" />
-                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
-                        transform="rotate(202.5 100 100)" />
-                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
-                        transform="rotate(247.5 100 100)" />
-                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
-                        transform="rotate(292.5 100 100)" />
-                    <path class="arc-segment" d="M 73.88 28.63 A 76 76 0 0 1 126.12 28.63"
-                        transform="rotate(337.5 100 100)" />
+                    <!-- 7 Curved Segments separated by 3px gap -->
+                    <path class="arc-segment" d="M 68.38 30.89 A 76 76 0 0 1 131.62 30.89"
+                        transform="rotate(0 100 100)" />
+                    <path class="arc-segment" d="M 68.38 30.89 A 76 76 0 0 1 131.62 30.89"
+                        transform="rotate(51.43 100 100)" />
+                    <path class="arc-segment" d="M 68.38 30.89 A 76 76 0 0 1 131.62 30.89"
+                        transform="rotate(102.86 100 100)" />
+                    <path class="arc-segment" d="M 68.38 30.89 A 76 76 0 0 1 131.62 30.89"
+                        transform="rotate(154.29 100 100)" />
+                    <path class="arc-segment" d="M 68.38 30.89 A 76 76 0 0 1 131.62 30.89"
+                        transform="rotate(205.71 100 100)" />
+                    <path class="arc-segment" d="M 68.38 30.89 A 76 76 0 0 1 131.62 30.89"
+                        transform="rotate(257.14 100 100)" />
+                    <path class="arc-segment" d="M 68.38 30.89 A 76 76 0 0 1 131.62 30.89"
+                        transform="rotate(308.57 100 100)" />
                 </g>
             </svg>
 

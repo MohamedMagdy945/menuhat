@@ -1,0 +1,47 @@
+<div class="max-w-4xl mx-auto px-4 py-6 space-y-5" dir="rtl">
+  <!-- عنوان الصفحة -->
+  <div class="flex items-center justify-between">
+    <h1 class="text-xl sm:text-2xl font-bold text-slate-800">طلباتي</h1>
+    <span class="text-xs text-slate-500 font-medium">{{ filteredOrders.length }} طلبات</span>
+  </div>
+
+  <!-- شريط الفلترة والأزرار (بدون أي hover) -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+    @for (tab of filterTabs; track tab.value) {
+      <button 
+        type="button"
+        (click)="setStatusFilter(tab.value)"
+        [class]="activeStatus === tab.value 
+          ? 'bg-orange-500 text-white font-bold' 
+          : 'bg-slate-100 text-slate-600 font-medium'"
+        class="py-2 px-4 rounded-xl text-xs sm:text-sm whitespace-nowrap cursor-pointer"
+      >
+        {{ tab.label }}
+      </button>
+    }
+  </div>
+
+  <!-- قائمة الطلبات (تصميم بسيط ومسطح بدون hover) -->
+  @if (isLoading()) {
+    <div class="text-center py-16 bg-white rounded-2xl border border-slate-100">
+      <span class="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent inline-block mb-2"></span>
+      <p class="text-sm font-semibold text-slate-600">جاري تحميل طلباتك...</p>
+    </div>
+  } @else {
+    <div class="space-y-3">
+      @for (order of filteredOrders; track order.menuOrdersId) {
+        <app-cart-item 
+          [order]="order" 
+          (cancelOrder)="onCancelOrder($event)" 
+          (viewDetails)="onViewDetails($event)"
+        />
+      } @empty {
+        <div class="text-center py-16 bg-white rounded-2xl border border-slate-100">
+          <span class="material-symbols-sharp text-4xl text-slate-300 mb-2 block select-none">receipt_long</span>
+          <p class="text-sm font-semibold text-slate-600">لا توجد طلبات</p>
+          <p class="text-xs text-slate-400 mt-1">لا توجد طلبات متطابقة مع هذا الفلتر حالياً</p>
+        </div>
+      }
+    </div>
+  }
+</div>

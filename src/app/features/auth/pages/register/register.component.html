@@ -1,9 +1,9 @@
 <div class="relative flex min-h-screen w-full items-center justify-center p-4 py-8" dir="rtl">
   <!-- Role Selection Card -->
-  <div class="relative z-10 mx-auto flex w-full max-w-215 flex-col rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-10 md:p-12 shadow-sm">
+  <div class="relative z-10 mx-auto flex w-full max-w-215 flex-col rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-10 md:p-12 ">
     <!-- Brand Header -->
     <div class="mb-8 flex flex-col items-center text-center">
-      <a routerLink="/" class="mb-3 inline-block transition-transform duration-200 hover:scale-105" aria-label="Menuhat Home">
+      <a routerLink="/" class="mb-3 inline-block" aria-label="Menuhat Home">
         <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-16 w-auto object-contain" />
       </a>
 
@@ -26,11 +26,11 @@
     <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
       <!-- Role 1: Restaurant Owner -->
       <div
-        class="group flex cursor-pointer flex-col rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-7.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-orange-500 hover:shadow-xl hover:shadow-slate-200/50"
+        class="group flex cursor-pointer flex-col rounded-2xl border-1 border-slate-200 bg-white p-6 sm:p-7.5 "
         (click)="goToRole('owner')"
       >
         <div class="mb-4.5 flex items-center justify-between">
-          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 transition-transform duration-300 group-hover:scale-105">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 transition-transform duration-300 ">
             <span class="material-symbols-sharp select-none leading-none text-[28px]">
               storefront
             </span>
@@ -41,7 +41,7 @@
         </div>
 
         <h2 class="m-0 mb-2 text-xl font-extrabold text-slate-900">أنا صاحب مطعم</h2>
-        <p class="m-0 mb-5 min-h-[44px] text-[13.5px] leading-relaxed text-slate-500">
+        <p class="m-0 mb-5 min-h-11 text-[13.5px] leading-relaxed text-slate-500">
           أرغب في إضافة مطعمي وقوائم الطعام، واستقبال الطلبات، والوصول إلى آلاف الزبائن الجدد يومياً.
         </p>
 
@@ -68,7 +68,7 @@
 
         <button
           type="button"
-          class="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none bg-orange-500 text-sm font-bold text-white shadow-md shadow-orange-500/20 transition-all duration-200 group-hover:bg-orange-600 group-hover:shadow-lg group-hover:shadow-orange-500/30"
+          class="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none bg-orange-500 text-sm font-bold text-white  duration-200 group-hover:bg-orange-600 "
         >
           <span>المتابعة كصاحب مطعم</span>
           <span class="material-symbols-sharp select-none leading-none text-[18px] transition-transform duration-200 group-hover:-translate-x-1">
@@ -79,11 +79,11 @@
 
       <!-- Role 2: Customer -->
       <div
-        class="group flex cursor-pointer flex-col rounded-2xl border-2 border-slate-200 bg-white p-6 sm:p-7.5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-500 hover:shadow-xl hover:shadow-slate-200/50"
+        class="group flex cursor-pointer flex-col rounded-2xl border-1 border-slate-200 bg-white p-6 sm:p-7.5 "
         (click)="goToRole('customer')"
       >
         <div class="mb-4.5 flex items-center justify-between">
-          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 transition-transform duration-300 group-hover:scale-105">
+          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-600">
             <span class="material-symbols-sharp select-none leading-none text-[28px]">
               restaurant
             </span>
@@ -94,7 +94,7 @@
         </div>
 
         <h2 class="m-0 mb-2 text-xl font-extrabold text-slate-900">أنا عميل / زبون</h2>
-        <p class="m-0 mb-5 min-h-[44px] text-[13.5px] leading-relaxed text-slate-500">
+        <p class="m-0 mb-5 min-h-11 text-[13.5px] leading-relaxed text-slate-500">
           أرغب في استكشاف أفضل المطاعم القريبة مني، تصفح المنيو والعروض، وحفظ وجباتي المفضلة.
         </p>
 
@@ -121,7 +121,7 @@
 
         <button
           type="button"
-          class="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none bg-slate-900 text-sm font-bold text-white shadow-md shadow-slate-900/20 transition-all duration-200 group-hover:bg-slate-800 group-hover:shadow-lg group-hover:shadow-slate-900/30"
+          class="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-none bg-slate-800 text-sm font-bold text-white group-hover:bg-slate-900 "
         >
           <span>المتابعة كعميل</span>
           <span class="material-symbols-sharp select-none leading-none text-[18px] transition-transform duration-200 group-hover:-translate-x-1">

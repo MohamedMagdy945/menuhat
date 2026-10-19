@@ -34,9 +34,21 @@
         </span>
       </app-form-input>
 
+      <!-- Error Message Banner (Under Password Field) -->
+      @if (errorMessage()) {
+      <div
+        class="login-error-alert -mt-1 mb-4 flex items-center gap-2.5 rounded-2xl border border-red-200 bg-red-50/90 px-3.5 py-3 text-sm text-red-700"
+        role="alert">
+        <span class="material-symbols-sharp shrink-0 select-none text-[20px] text-red-500">
+          error
+        </span>
+        <span class="flex-1 text-xs sm:text-sm font-medium leading-relaxed">{{ errorMessage() }}</span>
+      </div>
+      }
+
       <!-- Submit Button -->
-      <app-loading-button type="submit" text="تسجيل الدخول" loadingText="جاري تسجيل الدخول..." [loading]="isLoading"
-        [disabled]="loginForm.invalid || isLoading" [fullWidth]="true" />
+      <app-loading-button type="submit" text="تسجيل الدخول" loadingText="جاري تسجيل الدخول..." [loading]="isLoading()"
+        [disabled]="loginForm.invalid || isLoading()" [fullWidth]="true" />
     </form>
 
     <!-- Divider -->

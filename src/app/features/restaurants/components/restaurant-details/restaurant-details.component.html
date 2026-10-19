@@ -5,225 +5,184 @@
   {{ errorMessage() }}
 </p>
 } @else if (restaurantData(); as data) {
-<div class="mx-auto px-4 pt-4 md:px-8" dir="rtl">
+<div class="mx-auto px-3 sm:px-4 pt-4 md:px-8 max-w-350">
   <!-- =========================
-         Restaurant Banner
+         Restaurant Hero Card
     ========================== -->
-  <div class="relative z-10 h-45 overflow-hidden rounded-2xl md:h-55 lg:h-65">
-    <img src="/images/default.png" [alt]="data.main.clientName"
-      class="absolute inset-0 z-0 h-full w-full object-cover object-center" />
 
-    <!-- Overlay -->
-    <div class="absolute inset-0 z-10 bg-linear-to-t from-black/50 via-transparent to-transparent"></div>
+  <div class="relative overflow-hidden rounded-2xl border border-gray-200 bg-white">
 
-    <!-- Rating -->
-    <div
-      class="absolute bottom-4 left-4 z-20 flex items-center gap-1.5 rounded-lg bg-black/60 px-5 py-2 text-xs text-white backdrop-blur-md">
-      <i class="fa-solid fa-star text-yellow-400"></i>
+    <!-- Top Restaurant Banner -->
+    <div class="relative h-44 w-full overflow-hidden md:h-65">
 
-      <span class="font-bold">
-        {{ data.main.rate ?? 'لا يوجد تقييم' }}
-      </span>
-    </div>
-  </div>
 
-  <!-- =========================
-         Restaurant Header
-    ========================== -->
-  <div class="relative z-20 flex flex-col items-center md:flex-row md:items-start gap-4 px-2">
-    <!-- Logo -->
-    <div
-      class="-mt-13 flex h-26 w-26 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-orange-500 text-3xl font-black text-white shadow-md md:h-30 md:w-30">
-      @if (data.main.logoURL) {
-      <img [src]="apiUrl + data.main.logoURL" [alt]="data.main.clientName" class="h-full w-full object-cover" />
-      } @else {
-      {{ data.main.clientName.charAt(0) }}
-      }
-    </div>
-
-    <!-- Restaurant Info -->
-    <div class="min-w-0 flex-1 pt-0 md:pt-3 flex flex-col items-center md:items-start w-full">
-      <!-- Name -->
-      <div class="flex items-center gap-1 md:gap-4 text-center md:text-start">
-        <h1 class="text-xl font-extrabold text-gray-900 md:text-3xl">
-          {{ data.main.clientName }}
-        </h1>
+      <!-- Left Image ( on the left with object-cover) -->
+      <div class=" inset-y-0 left-30 flex h-full  items-center justify-start overflow-hidden">
+        <img src="/images/default.png" alt="" class="h-full w-full object-cover object-center" />
       </div>
 
-      <!-- Category + Status -->
-      <div class="flex w-full items-center justify-center md:justify-start gap-3 mt-2">
-        <!-- Category -->
-        <div class="inline-flex min-w-0 max-w-[70%] items-center gap-1 rounded-md bg-primary/10 px-2 py-1 text-primary">
-          <span class="material-symbols-sharp icon-fill select-none text-base leading-none">
-            restaurant
+    </div>
+
+    <!-- Content Under Image Banner -->
+    <div class="relative px-3 pb-4 sm:px-6">
+
+      <!-- Restaurant Identity -->
+      <div class="relative z-10 flex flex-col items-center gap-4 text-center
+             sm:flex-row sm:items-start sm:justify-between sm:gap-6 sm:text-start">
+
+        <!-- Right Side (in RTL): Logo + Restaurant Info -->
+        <div class="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-6">
+          <!-- Restaurant Logo -->
+          <div class="relative h-22 w-22 shrink-0 overflow-hidden rounded-2xl
+                 border-3 border-white bg-white shadow-md sm:-mt-16 sm:h-28 sm:w-28 md:h-30 md:w-30">
+            @if (data.main.logoURL) {
+            <img [src]="apiUrl + data.main.logoURL" [alt]="data.main.clientName"
+              class="h-full w-full rounded-full object-cover" />
+            } @else {
+            <div class="flex h-full w-full items-center justify-center rounded-full
+                     bg-linear-to-tr from-orange-500 to-amber-500
+                     text-2xl font-extrabold text-white sm:text-3xl">
+              {{ data.main.clientName.charAt(0) }}
+            </div>
+            }
+          </div>
+
+          <!-- Restaurant Details (Name, Category, Description) -->
+          <div class="flex min-w-0 flex-col items-center gap-1.5 pt-2 sm:items-start sm:pt-3">
+            <!-- Restaurant Name -->
+            <h1 class="text-xl font-black tracking-tight text-gray-900 sm:text-2xl md:text-3xl">
+              {{ data.main.clientName }}
+            </h1>
+
+            <!-- Category Directly Under Restaurant Name -->
+            @if (data.main.field_Ar) {
+            <div class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-orange-600">
+              <span class="material-symbols-sharp select-none text-[18px] leading-none text-orange-500">restaurant</span>
+              <span>{{ data.main.field_Ar }}</span>
+            </div>
+            }
+
+            <!-- Description -->
+            <p class="line-clamp-1 max-w-2xl text-xs font-medium text-gray-600 sm:text-sm">
+              {{ data.main.notes || ('تجربة أصيلة لـ ' + data.main.clientName + ' بنكهات مميزة وجودة عالية') }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Left Side (in RTL): All Other Details (Badges) -->
+        <div class="flex flex-wrap items-center justify-center gap-2 sm:justify-end sm:pt-4">
+          <!-- Open / Closed -->
+          <span class="inline-flex items-center gap-2 rounded-full border border-gray-200
+                 bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
+            <span>{{ data.main.isOpen ? 'مفتوح الآن' : 'مغلق الآن' }}</span>
+            <span class="h-2 w-2 rounded-full" [class]="data.main.isOpen ? 'bg-emerald-500' : 'bg-rose-500'"></span>
           </span>
 
-          <span class="truncate font-semibold leading-5">
-            {{ data.main.field_Ar }}
+          <!-- Visits -->
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-gray-200
+                 bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
+            <span>{{ data.main.visitsCount | number }} زيارة</span>
+            <span class="material-symbols-sharp text-sm text-gray-600">visibility</span>
+          </span>
+
+          <!-- Rating -->
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-gray-200
+                 bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
+            <span class="text-[11px] text-gray-500">(تقييم)</span>
+            <span class="font-bold text-gray-900">{{ data.main.rate ?? '4.8' }}</span>
+            <span class="text-sm text-amber-500">★</span>
           </span>
         </div>
 
-        @if (data.main.isOpen) {
-        <span class="inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-bold text-emerald-600">
-          <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-          مفتوح الآن
-        </span>
-        } @else {
-        <span class="inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2 py-2 text-xs font-bold text-red-500">
-          <span class="h-2 w-2 rounded-full bg-red-500"></span>
-          مغلق الآن
-        </span>
-        }
+      </div>
+
+      <!-- Quick Information -->
+      <div class="pt-5 sm:pt-6">
+        <div class="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:grid-cols-3 xl:grid-cols-6">
+
+          <!-- Visits -->
+          <div class="flex min-w-0 items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+            <span class="material-symbols-sharp shrink-0 text-2xl text-orange-500">groups</span>
+            <div class="min-w-0 flex-1 font-semibold">
+              <span class="mb-1 block text-sm text-gray-500">عدد الزيارات</span>
+              <span class="block truncate text-sm text-gray-800">
+                {{ data.main.visitsCount | number }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Working Hours -->
+          <div class="flex min-w-0 items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+            <span class="material-symbols-sharp shrink-0 text-2xl text-orange-500">schedule</span>
+            <div class="min-w-0 flex-1 font-semibold">
+              <span class="mb-1 block text-sm text-gray-500">ساعات العمل</span>
+              <span class="block truncate text-sm text-gray-800">
+                {{ data.main.fromTime }} - {{ data.main.toTime }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Straight Distance -->
+          <div class="flex min-w-0 items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+            <span class="material-symbols-sharp shrink-0 text-2xl text-orange-500">near_me</span>
+            <div class="min-w-0 flex-1 font-semibold">
+              <span class="mb-1 block text-sm text-gray-500">المسافة المباشرة</span>
+              <span class="block truncate text-sm text-gray-800">
+                @if (data.main.straightDistance != null) {
+                {{ data.main.straightDistance | number: '1.0-1' }} كم
+                } @else {
+                غير متاح
+                }
+              </span>
+            </div>
+          </div>
+
+          <!-- Driving Distance -->
+          <div class="flex min-w-0 items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+            <span class="material-symbols-sharp shrink-0 text-2xl text-orange-500">route</span>
+            <div class="min-w-0 flex-1 font-semibold">
+              <span class="mb-1 block text-sm text-gray-500">مسافة القيادة</span>
+              <span class="block truncate text-sm text-gray-800">
+                @if (data.main.drivingDistance != null) {
+                {{ data.main.drivingDistance | number: '1.0-1' }} كم
+                } @else {
+                غير متاح
+                }
+              </span>
+            </div>
+          </div>
+
+          <!-- Location -->
+          <div class="flex min-w-0 items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+            <span class="material-symbols-sharp shrink-0 text-2xl text-orange-500">location_on</span>
+            <div class="min-w-0 flex-1 font-semibold">
+              <span class="mb-1 block text-sm text-gray-500">الموقع</span>
+              <span class="block truncate text-sm text-gray-800">
+                {{ data.main.city_Ar }}، {{ data.main.government_Ar }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Order Conditions -->
+          <div class="flex min-w-0 items-center gap-3 rounded-xl border border-gray-100 bg-white p-3">
+            <span class="material-symbols-sharp shrink-0 text-2xl text-orange-500">bolt</span>
+            <div class="min-w-0 flex-1 font-semibold">
+              <span class="mb-1 block text-sm text-gray-500">شروط الطلب</span>
+              <span class="block truncate text-sm text-gray-800">
+                {{ data.main.orderConditions_Ar || 'متاح' }}
+              </span>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
-  </div>
-
-  <!-- =========================
-         Restaurant Information
-    ========================== -->
-  <div class="mt-6 rounded-lg border border-gray-100 bg-white p-4">
-    <!-- Description -->
-    <div
-      class="mb-5 flex items-center justify-center gap-1 text-center text-sm font-bold text-gray-700 md:justify-start">
-      <span class="h-2 w-2 shrink-0 rounded-full bg-orange-500"></span>
-
-      <span> أفضل المكونات الطازجة لتجربة برجر لا تُنسى. </span>
-    </div>
-
-    <!-- =========================
-           Information Cards
-      ========================== -->
-   <div class="grid grid-cols-[3fr_7fr] gap-2 md:flex md:flex-wrap md:gap-5">
-
-  <!-- عدد الزيارات -->
-  <div
-    class="flex h-10  flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
-  >
-    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-      groups
-    </span>
-
-    <div class="min-w-0">
-      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
-        عدد الزيارات
-      </p>
-
-      <p class="truncate text-sm font-semibold text-gray-800">
-        {{ data.main.visitsCount }}
-      </p>
-    </div>
-  </div>
-
-  <!-- ساعات العمل -->
-  <div
-    class="flex h-10  flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
-  >
-    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-      schedule
-    </span>
-
-    <div class="min-w-0">
-      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
-        ساعات العمل
-      </p>
-
-      <p class="truncate text-sm font-semibold text-gray-800">
-        {{ data.main.fromTime }} - {{ data.main.toTime }}
-      </p>
-    </div>
-  </div>
-
-  <!-- المسافة -->
-  <div
-    class="flex h-10  flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
-  >
-    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-      near_me
-    </span>
-
-    <div class="min-w-0">
-      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
-        المسافة
-      </p>
-
-      <p class="truncate text-sm font-semibold text-gray-800">
-        @if (data.main.straightDistance != null) {
-          {{ data.main.straightDistance | number: '1.0-1' }} كم
-        } @else {
-          غير متاح
-        }
-      </p>
-    </div>
-  </div>
-
-  <!-- الموقع -->
-  <div
-    class="flex h-10  flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
-  >
-    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-      location_on
-    </span>
-
-    <div class="min-w-0">
-      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
-        الموقع
-      </p>
-
-      <p class="truncate text-sm font-semibold text-gray-800">
-        {{ data.main.city_Ar }}، {{ data.main.government_Ar }}
-      </p>
-    </div>
-  </div>
-
-  <!-- مسافة القيادة -->
-  <div
-    class="flex h-10 flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
-  >
-    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-      route
-    </span>
-
-    <div class="min-w-0">
-      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
-        مسافة القيادة
-      </p>
-
-      <p class="truncate text-sm font-semibold text-gray-800">
-        @if (data.main.drivingDistance != null) {
-          {{ data.main.drivingDistance | number: '1.0-1' }} كم
-        } @else {
-          غير متاح
-        }
-      </p>
-    </div>
-  </div>
-
-  <!-- شروط الطلب -->
-  <div
-    class="flex h-10 flex-1 items-center gap-2 rounded-2xl bg-white px-4 md:h-15 md:border md:border-gray-100"
-  >
-    <span class="material-symbols-sharp icon-fill shrink-0 text-3xl text-orange-500">
-      bolt
-    </span>
-
-    <div class="min-w-0">
-      <p class="hidden text-sm font-semibold leading-4 text-gray-400 md:block">
-        شروط الطلب
-      </p>
-
-      <p class="truncate text-sm font-semibold text-gray-800">
-        {{ data.main.orderConditions_Ar }}
-      </p>
-    </div>
-  </div>
-
-</div>
   </div>
 
   <!-- =========================
          Menu Section
     ========================== -->
-  <div class="mt-4 rounded-lg border border-gray-100 bg-white p-3">
+  <div class="mt-4 rounded-lg p-3 ">
     <!-- =========================
            Tabs Navigation
       ========================== -->
@@ -273,20 +232,29 @@
         (categorySelected)="selectCategory($event)">
       </app-restaurant-categories>
 
+      <!-- Selected Category Description / Details -->
+      @if (selectedCategoryData(); as selectedCat) {
+        @if (selectedCat.description) {
+        <div class="mb-4 rounded-xl border border-orange-100 bg-orange-50/60 px-4 py-3 text-xs sm:text-sm text-gray-700">
+          <p class="font-medium">{{ selectedCat.description }}</p>
+        </div>
+        }
+      }
+
       <!-- =========================
                Sub Categories
           ========================== -->
       @if (currentSubCategories().length > 0) {
-        <app-restaurant-categories [categories]="currentSubCategories()" [selectedCategory]="selectedSubCategory()"
-          (categorySelected)="selectSubCategory($event)">
-        </app-restaurant-categories>
+      <app-restaurant-categories [categories]="currentSubCategories()" [selectedCategory]="selectedSubCategory()"
+        (categorySelected)="selectSubCategory($event)">
+      </app-restaurant-categories>
       }
 
       <!-- =========================
                Products
           ========================== -->
       @if (menuItems().length > 0) {
-      <div class="grid grid-cols-2 gap-2 pb-8 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-8">
+      <div class="grid grid-cols-2 gap-2 pb-8 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-7">
         @for (item of menuItems(); track item.product.id) {
         <app-restaurant-menu-item-card [item]="item.product"> </app-restaurant-menu-item-card>
         }

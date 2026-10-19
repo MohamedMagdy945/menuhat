@@ -5,6 +5,7 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
 import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
 import { HomeComponent } from './features/home/home.component';
 import { CartComponent } from './features/cart/cart.component';
+import { MyOrdersComponent } from './features/cart/pages/my-orders/my-orders.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
 import { TestLoadingComponent } from './features/testing/testing';
 
@@ -214,7 +215,7 @@ export const routes: Routes = [
 
             {
                 path: 'my-orders',
-                component: CartComponent
+                component: MyOrdersComponent
             },
 
 

@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from '../../../../core/environments/environment';
 import { ResuaurantProfileService } from '../../services/resuaurant-profile.service';
 import { RestaurantMenuItemCardComponent } from '../restaurant-menu-item-card/restaurant-menu-item-card.component';
@@ -7,6 +7,7 @@ import { RestaurantCategoriesComponent } from '../restaurant-categories/restaura
 import { RestaurantRatingsComponent } from '../restaurant-ratings/restaurant-ratings.component';
 import { DecimalPipe } from '@angular/common';
 import { RestaurantDetails } from '../../models/restaurant-details';
+import { RestaurantMenuCategory } from '../../models/restaurant-menu-category';
 import { RestaurantMenuProduct } from '../../models/restaurant-menu-product';
 import { RestaurantMenuSubCategory } from '../../models/restaurant-menu-sub-category';
 
@@ -32,9 +33,9 @@ interface DisplayMenuItem {
   styleUrl: './restaurant-details.component.css',
 })
 export class RestaurantDetailsComponent {
-isAddedToCart() {
-throw new Error('Method not implemented.');
-}
+  isAddedToCart() {
+    throw new Error('Method not implemented.');
+  }
   readonly apiUrl = environment.filesUrl;
   readonly selectedCategory = signal<number | null>(null);
   readonly selectedSubCategory = signal<number | null>(null);
@@ -47,13 +48,22 @@ throw new Error('Method not implemented.');
   readonly currentSubCategories = computed<RestaurantMenuSubCategory[]>(() => {
     const selectedCategory = this.selectedCategory();
     const details = this.restaurantData()?.details ?? [];
-    
+
     if (selectedCategory === null) {
       return [];
     }
 
     const category = details.find(c => c.id === selectedCategory);
     return category?.subCategories ?? [];
+  });
+
+  readonly selectedCategoryData = computed<RestaurantMenuCategory | null>(() => {
+    const selectedCategory = this.selectedCategory();
+    if (selectedCategory === null) {
+      return null;
+    }
+    const details = this.restaurantData()?.details ?? [];
+    return details.find(c => c.id === selectedCategory) ?? null;
   });
 
   private readonly restaurantProfileService = inject(ResuaurantProfileService);
@@ -97,12 +107,12 @@ throw new Error('Method not implemented.');
   readonly menuItems = computed<DisplayMenuItem[]>(() => {
     const selectedCategory = this.selectedCategory();
     const selectedSubCategory = this.selectedSubCategory();
-    
+
     let categoriesToProcess = this.restaurantData()?.details ?? [];
     if (selectedCategory !== null) {
       categoriesToProcess = categoriesToProcess.filter(c => c.id === selectedCategory);
     }
-    
+
     return categoriesToProcess
       .flatMap((category) =>
         category.subCategories
