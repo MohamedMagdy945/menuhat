@@ -29,3 +29,16 @@ export interface CartMenuResponse {
   totalCount: number;
   totalPrice: number;
 }
+
+export interface AddCartItem {
+  productId: number;
+  productPriceId: number | null;
+  quantity: number;
+  serial: string;
+}
+
+export interface AddCartResponse {
+  status: string;
+  hiddenProducts: any[];
+  hiddenProductsPrice: any[];
+}

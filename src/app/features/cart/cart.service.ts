@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, switchMap, tap } from 'rxjs';
 import { environment } from '../../core/environments/environment';
-import { CartMenuItem, CartMenuResponse } from './models/cart-item';
+import { AddCartItem, AddCartResponse, CartMenuItem, CartMenuResponse } from './models/cart-item';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +23,7 @@ export class CartService {
     ).pipe(
       tap({
         next: (res) => {
+          console.log('res', res);
           this.cartData.set(res);
           this.cartItems.set(res?.result || []);
           this.cartCount.set(res?.totalCount || 0);
@@ -33,6 +34,18 @@ export class CartService {
           this.isLoading.set(false);
         }
       })
+    );
+  }
+
+
+  AddItemsToCart(items: AddCartItem[]): Observable<AddCartResponse> {
+    return this._HttpClient
+      .post<AddCartResponse>(`${environment.apiUrl}/CartMenus/AddItemsToCart`, items);
+  }
+
+  AddItemsAndRefreshCart(items: AddCartItem[]): Observable<CartMenuResponse> {
+    return this.AddItemsToCart(items).pipe(
+      switchMap(() => this.GetCartsByUserId())
     );
   }
 

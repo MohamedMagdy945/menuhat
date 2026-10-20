@@ -2,7 +2,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from './cart.service';
-import { CartMenuItem } from './models/cart-item';
+import { AddCartItem, CartMenuItem } from './models/cart-item';
 import { environment } from '../../core/environments/environment';
 import { UserDataService } from '../../core/services/userData.service';
 
@@ -27,7 +27,6 @@ export class CartComponent implements OnInit {
   readonly filesUrl = environment.filesUrl;
   readonly isLoading = signal<boolean>(true);
   readonly cartItems = signal<CartMenuItem[]>([]);
-  readonly selectedItemIds = signal<Set<number>>(new Set());
 
   // Fixed service fee and tax rate (14%)
   readonly serviceFeeAmount = 25;
@@ -58,34 +57,20 @@ export class CartComponent implements OnInit {
     return groups;
   });
 
-  // Selected items calculation
-  readonly selectedItems = computed<CartMenuItem[]>(() => {
-    const selected = this.selectedItemIds();
-    return this.cartItems().filter((item) => selected.has(item.id));
-  });
+  // Invoice calculations — based on all cart items
+  readonly subtotal = computed<number>(() =>
+    this.cartItems().reduce((acc, item) => acc + item.total, 0)
+  );
 
-  readonly isAllSelected = computed<boolean>(() => {
-    const items = this.cartItems();
-    if (items.length === 0) return false;
-    return items.every((item) => this.selectedItemIds().has(item.id));
-  });
+  readonly serviceFee = computed<number>(() =>
+    this.cartItems().length > 0 ? this.serviceFeeAmount : 0
+  );
 
-  // Invoice calculations
-  readonly subtotal = computed<number>(() => {
-    return this.selectedItems().reduce((acc, item) => acc + item.total, 0);
-  });
+  readonly vat = computed<number>(() => this.subtotal() * this.taxRate);
 
-  readonly serviceFee = computed<number>(() => {
-    return this.selectedItems().length > 0 ? this.serviceFeeAmount : 0;
-  });
-
-  readonly vat = computed<number>(() => {
-    return this.subtotal() * this.taxRate;
-  });
-
-  readonly grandTotal = computed<number>(() => {
-    return this.subtotal() + this.serviceFee() + this.vat();
-  });
+  readonly grandTotal = computed<number>(
+    () => this.subtotal() + this.serviceFee() + this.vat()
+  );
 
   ngOnInit(): void {
     if (!this.isLoggedIn()) {
@@ -103,63 +88,47 @@ export class CartComponent implements OnInit {
     this.isLoading.set(true);
     this._cartService.GetCartsByUserId().subscribe({
       next: (res) => {
-        const items = res?.result || [];
-        this.cartItems.set(items);
-        // Initially select all items
-        const allIds = new Set<number>(items.map((i) => i.id));
-        this.selectedItemIds.set(allIds);
+        this.cartItems.set(res?.result || []);
         this.isLoading.set(false);
       },
-      error: () => {
-        this.isLoading.set(false);
-      },
+      error: () => this.isLoading.set(false),
     });
   }
 
-  toggleSelectAll(): void {
-    if (this.isAllSelected()) {
-      this.selectedItemIds.set(new Set());
-    } else {
-      const allIds = new Set<number>(this.cartItems().map((i) => i.id));
-      this.selectedItemIds.set(allIds);
-    }
-  }
+  // Single unified method — qty 0 = delete, qty > 0 = update
+  // Always sends the FULL cart array so the API doesn't wipe other items
+  updateCartItem(item: CartMenuItem, newQty: number): void {
+    const allItems = this.cartItems();
 
-  toggleSelectItem(itemId: number): void {
-    const current = new Set(this.selectedItemIds());
-    if (current.has(itemId)) {
-      current.delete(itemId);
-    } else {
-      current.add(itemId);
-    }
-    this.selectedItemIds.set(current);
+    const payload: AddCartItem[] = allItems
+      .filter((it) => it.id !== item.id || newQty > 0) // exclude if deleting
+      .map((it) => ({
+        productId: it.productId,
+        productPriceId: it.productPriceId,
+        quantity: it.id === item.id ? newQty : it.quantity, // update target qty
+        serial: it.serial,
+      }));
+
+    this.isLoading.set(true);
+    this._cartService.AddItemsAndRefreshCart(payload).subscribe({
+      next: (res) => {
+        this.cartItems.set(res?.result || []);
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false),
+    });
   }
 
   changeQuantity(item: CartMenuItem, delta: number): void {
     const newQty = item.quantity + delta;
-    if (newQty < 1) {
-      return;
-    }
-
-    const updated = this.cartItems().map((it) => {
-      if (it.id === item.id) {
-        const quantity = newQty;
-        const total = quantity * it.price;
-        return { ...it, quantity, total };
-      }
-      return it;
-    });
-
-    this.cartItems.set(updated);
+    if (newQty < 1) return;
+    this.updateCartItem(item, newQty);
   }
 
   deleteItem(itemId: number): void {
-    const updated = this.cartItems().filter((it) => it.id !== itemId);
-    this.cartItems.set(updated);
-
-    const selected = new Set(this.selectedItemIds());
-    selected.delete(itemId);
-    this.selectedItemIds.set(selected);
+    const item = this.cartItems().find((it) => it.id === itemId);
+    if (!item) return;
+    this.updateCartItem(item, 0);
   }
 
   getItemImageUrl(photoURL: string | null): string {
@@ -173,7 +142,19 @@ export class CartComponent implements OnInit {
     return `${this.filesUrl}${clean}`;
   }
 
+  addToCart(items: AddCartItem[]): void {
+    this.isLoading.set(true);
+    this._cartService.AddItemsAndRefreshCart(items).subscribe({
+      next: (res) => {
+        const freshItems = res?.result || [];
+        this.cartItems.set(freshItems);
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false),
+    });
+  }
+
   checkout(): void {
-    console.log('Proceed to checkout with selected items:', this.selectedItems());
+    console.log('Proceed to checkout with selected items:', this.cartItems());
   }
 }
