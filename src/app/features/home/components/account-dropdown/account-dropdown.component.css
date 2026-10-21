@@ -1,0 +1,60 @@
+/* Triangle pointer above dropdown */
+.dropdown-arrow {
+  position: absolute;
+  left: 18px;
+  top: calc(100% + 1px);
+  /* sits just below the button, above the panel */
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 9px solid #e5e7eb;
+  /* gray-200 — border color */
+  z-index: 51;
+  animation: dropdownIn 0.18s ease-out forwards;
+}
+
+.dropdown-arrow::after {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 2px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid rgba(241, 241, 241, 0.89);
+  /* white fill */
+}
+
+/* Dropdown animation */
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-dropdown {
+  animation: dropdownIn 0.18s ease-out forwards;
+  transform-origin: top left;
+}
+
+/* Item hover polish */
+.dropdown-item {
+  cursor: pointer;
+}
+
+.dropdown-item:active {
+  transform: scale(0.98);
+}
+
+/* Chevron rotation */
+.rotate-180 {
+  transform: rotate(180deg);
+}

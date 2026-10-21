@@ -35,27 +35,12 @@ export class RestaurantMenuItemCardComponent {
     this.isAddingToCart.set(true);
 
     const newItem = this.item();
-    const existingItems = this._cartService.cartItems();
-
-    // Build full payload: existing items + new item (increment qty if already in cart)
-    const alreadyInCart = existingItems.some((it) => it.productId === newItem.id);
-
-    const payload = [
-      ...existingItems.map((it) => ({
-        productId: it.productId,
-        productPriceId: it.productPriceId,
-        quantity: it.productId === newItem.id ? it.quantity + 1 : it.quantity,
-        serial: it.serial,
-      })),
-      ...(!alreadyInCart ? [{
-        productId: newItem.id,
-        productPriceId: null,
-        quantity: 1,
-        serial: newItem.serial,
-      }] : []),
-    ];
-
-    this._cartService.AddItemsAndRefreshCart(payload).subscribe({
+    this._cartService.addItem({
+      productId: newItem.id,
+      productPriceId: null,
+      quantity: 1,
+      serial: newItem.serial,
+    }).subscribe({
       next: () => {
         this.isAddingToCart.set(false);
         this._addedManually.set(true);

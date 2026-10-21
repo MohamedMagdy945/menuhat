@@ -1,5 +1,5 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from './cart.service';
 import { AddCartItem, CartMenuItem } from './models/cart-item';
@@ -25,8 +25,8 @@ export class CartComponent implements OnInit {
   private readonly _router = inject(Router);
 
   readonly filesUrl = environment.filesUrl;
-  readonly isLoading = signal<boolean>(true);
-  readonly cartItems = signal<CartMenuItem[]>([]);
+  readonly isLoading = this._cartService.isLoading;
+  readonly cartItems = this._cartService.cartItems;
 
   // Fixed service fee and tax rate (14%)
   readonly serviceFeeAmount = 25;
@@ -85,13 +85,8 @@ export class CartComponent implements OnInit {
   }
 
   loadCart(): void {
-    this.isLoading.set(true);
     this._cartService.GetCartsByUserId().subscribe({
-      next: (res) => {
-        this.cartItems.set(res?.result || []);
-        this.isLoading.set(false);
-      },
-      error: () => this.isLoading.set(false),
+      error: () => {},
     });
   }
 
@@ -100,33 +95,41 @@ export class CartComponent implements OnInit {
   updateCartItem(item: CartMenuItem, newQty: number): void {
     const allItems = this.cartItems();
 
+    const isMatch = (it: CartMenuItem): boolean =>
+      it === item ||
+      (!!it.id && !!item.id && it.id === item.id) ||
+      (it.productId === item.productId && it.productPriceId === item.productPriceId);
+
     const payload: AddCartItem[] = allItems
-      .filter((it) => it.id !== item.id || newQty > 0) // exclude if deleting
+      .filter((it) => newQty > 0 || !isMatch(it)) // exclude if deleting
       .map((it) => ({
         productId: it.productId,
-        productPriceId: it.productPriceId,
-        quantity: it.id === item.id ? newQty : it.quantity, // update target qty
-        serial: it.serial,
+        productPriceId: it.productPriceId ?? null,
+        quantity: isMatch(it) ? newQty : it.quantity, // update target qty
+        serial: it.serial ?? '',
       }));
 
-    this.isLoading.set(true);
     this._cartService.AddItemsAndRefreshCart(payload).subscribe({
-      next: (res) => {
-        this.cartItems.set(res?.result || []);
-        this.isLoading.set(false);
+      error: (err) => {
+        console.error('Error updating/deleting cart item:', err);
       },
-      error: () => this.isLoading.set(false),
     });
   }
 
   changeQuantity(item: CartMenuItem, delta: number): void {
     const newQty = item.quantity + delta;
-    if (newQty < 1) return;
+    if (newQty <= 0) {
+      this.deleteItem(item);
+      return;
+    }
     this.updateCartItem(item, newQty);
   }
 
-  deleteItem(itemId: number): void {
-    const item = this.cartItems().find((it) => it.id === itemId);
+  deleteItem(itemOrId: CartMenuItem | number): void {
+    const item = typeof itemOrId === 'number'
+      ? this.cartItems().find((it) => it.id === itemOrId || it.productId === itemOrId)
+      : itemOrId;
+
     if (!item) return;
     this.updateCartItem(item, 0);
   }
@@ -143,14 +146,8 @@ export class CartComponent implements OnInit {
   }
 
   addToCart(items: AddCartItem[]): void {
-    this.isLoading.set(true);
     this._cartService.AddItemsAndRefreshCart(items).subscribe({
-      next: (res) => {
-        const freshItems = res?.result || [];
-        this.cartItems.set(freshItems);
-        this.isLoading.set(false);
-      },
-      error: () => this.isLoading.set(false),
+      error: () => {},
     });
   }
 

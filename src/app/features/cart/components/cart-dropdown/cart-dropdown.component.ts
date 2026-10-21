@@ -37,7 +37,7 @@ export class CartDropdownComponent implements OnInit {
   readonly isLoading = this._cartService.isLoading;
 
   ngOnInit(): void {
-    if (this.isUserLoggedIn()) {
+    if (this.isUserLoggedIn() && !this._cartService.cartData()) {
       this.fetchCartData();
     }
   }
@@ -60,7 +60,7 @@ export class CartDropdownComponent implements OnInit {
     const nextState = !this.isOpen();
     this.isOpen.set(nextState);
 
-    if (nextState) {
+    if (nextState && !this._cartService.cartData()) {
       this.fetchCartData();
     }
   }

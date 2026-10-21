@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LocationSelectorComponent } from '../../../../shared/components/location-selector/location-selector.component';
 import { CartDropdownComponent } from '../../../../features/cart/components/cart-dropdown/cart-dropdown.component';
+import { AccountDropdownComponent } from '../../../../features/home/components/account-dropdown/account-dropdown.component';
 
 @Component({
-  imports: [RouterLink, RouterLinkActive, LocationSelectorComponent, CartDropdownComponent],
+  imports: [RouterLink, RouterLinkActive, LocationSelectorComponent, CartDropdownComponent, AccountDropdownComponent],
   selector: 'app-desktop-navbar',
   styleUrl: './desktop-navbar.component.css',
   templateUrl: './desktop-navbar.component.html',

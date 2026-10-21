@@ -55,7 +55,7 @@ export const routes: Routes = [
     {
         path: 'register/owner',
         loadComponent: () =>
-            import('./features/auth/pages/register-owner/register-owner.component')
+            import('./features/auth/components/register-owner/register-owner.component')
                 .then(m => m.RegisterOwnerPageComponent)
     },
 
@@ -68,7 +68,7 @@ export const routes: Routes = [
     {
         path: 'register/customer',
         loadComponent: () =>
-            import('./features/auth/pages/register-customer/register-customer.component')
+            import('./features/auth/components/register-customer/register-customer.component')
                 .then(m => m.RegisterCustomerPageComponent)
     },
 
@@ -341,4 +341,4 @@ export const routes: Routes = [
         path: '**',
         redirectTo: ''
     }
-];
+];

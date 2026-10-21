@@ -1,10 +1,12 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RestaurantMenuProduct } from '../../../restaurants/models/restaurant-menu-product';
 import { environment } from '../../../../core/environments/environment';
 import { MenuItem } from '../../models/menu-item';
+import { CartService } from '../../../cart/cart.service';
+import { AddCartItem } from '../../../cart/models/cart-item';
 
 @Component({
   selector: 'app-menu-item-details',
@@ -20,6 +22,7 @@ export class MenuItemDetailsComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private location = inject(Location);
+  private readonly _cartService = inject(CartService);
   readonly specialNotes = signal('');
   readonly copiedShare = signal(false);
 
@@ -56,6 +59,10 @@ export class MenuItemDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (!this._cartService.cartData()) {
+      this._cartService.GetCartsByUserId().subscribe({ error: () => {} });
+    }
+
     // Get state from navigation
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state && navigation.extras.state['item']) {
@@ -71,6 +78,20 @@ export class MenuItemDetailsComponent implements OnInit {
         console.warn('No item data found in navigation state');
       }
     }
+  }
+
+  getProductId(): number | null {
+    const current = this.item();
+    if (!current) return null;
+    const anyItem = current as any;
+    return anyItem.id ?? anyItem.productId ?? anyItem.mostrequestesId ?? anyItem.menuId ?? null;
+  }
+
+  getProductSerial(): string {
+    const current = this.item();
+    if (!current) return '';
+    const anyItem = current as any;
+    return anyItem.serial ?? '';
   }
 
   readonly isFavorite = signal(false);
@@ -121,18 +142,42 @@ export class MenuItemDetailsComponent implements OnInit {
   }
 
   readonly isAddingToCart = signal(false);
-  readonly isAddedToCart = signal(false);
+  readonly _addedManually = signal(false);
+
+  // true if already in cart (on load) OR just added
+  readonly isAddedToCart = computed(() => {
+    const prodId = this.getProductId();
+    if (!prodId) return false;
+    return (
+      this._addedManually() ||
+      this._cartService.cartItems().some((it) => it.productId === prodId)
+    );
+  });
 
   addToCart(): void {
-    if (this.isAddingToCart()) {
-      return;
-    }
+    const currentItem = this.item();
+    const productId = this.getProductId();
+    if (this.isAddingToCart() || !currentItem || !productId) return;
 
     this.isAddingToCart.set(true);
-    setTimeout(() => {
-      this.isAddingToCart.set(false);
-      this.isAddedToCart.set(true);
-    }, 800);
+
+    const serial = this.getProductSerial();
+
+    this._cartService.addItem({
+      productId,
+      productPriceId: null,
+      quantity: this.quantity(),
+      serial,
+    }).subscribe({
+      next: () => {
+        this.isAddingToCart.set(false);
+        this._addedManually.set(true);
+      },
+      error: (err) => {
+        console.error('Error adding item to cart:', err);
+        this.isAddingToCart.set(false);
+      },
+    });
   }
 
   getDiscount(item: any): string | number {
