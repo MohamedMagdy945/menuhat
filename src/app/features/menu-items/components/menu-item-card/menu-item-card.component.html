@@ -32,14 +32,14 @@
     </button>
 
     <!-- شارة الخصم -->
-    @if (menuItem().oldPrice > menuItem().price) {
+    @if ((menuItem().oldPrice ?? 0) > (menuItem().price ?? 0)) {
       <span
         class="absolute top-2.5 right-2.5 z-10 rounded-full bg-orange-500 px-3 py-1 text-xs font-bold text-white"
       >
         خصم
         {{
           menuItem().discountPercentage ||
-            Math.round(((menuItem().oldPrice - menuItem().price) / menuItem().oldPrice) * 100)
+            Math.round((((menuItem().oldPrice ?? 0) - (menuItem().price ?? 0)) / (menuItem().oldPrice || 1)) * 100)
         }}%
       </span>
     }

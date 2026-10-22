@@ -1,8 +1,7 @@
 import { Component, input, signal } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
-import { MenuItem } from '../../../menu-items/models/menu-item';
-import { LucideHeart } from '@lucide/angular';
 import { RouterLink } from '@angular/router';
+import { MenuItem } from '../../models';
 
 @Component({
   imports: [RouterLink],

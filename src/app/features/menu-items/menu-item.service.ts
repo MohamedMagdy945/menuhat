@@ -1,49 +1,44 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { finalize } from 'rxjs';
-import { MostRequestedQuery } from './models/most-requested-query';
-import { MenuItem } from './models/menu-item';
 import { environment } from '../../core/environments/environment';
 import { USE_GLOBAL_LOADING } from '../../core/loading/loading-context';
+import { MenuItem, MenuItemsResponse } from './models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MenuItemService {
   private readonly http = inject(HttpClient);
-
   private readonly apiUrl = environment.apiUrl;
 
   readonly mostRequested = signal<MenuItem[]>([]);
-  readonly mostRequestedPage = signal(1);
-  readonly mostRequestedHasNext = signal(true);
+  readonly items = this.mostRequested;
+
   readonly isLoadingMostRequested = signal(false);
+  readonly isLoading = this.isLoadingMostRequested;
+
+  readonly error = signal<string | null>(null);
 
   loadMostRequested({
     globalLoading = true,
-    extraParams = {},
   }: {
     globalLoading?: boolean;
-    extraParams?: Partial<MostRequestedQuery>;
-  }): void {
-    if (!this.mostRequestedHasNext() || this.isLoadingMostRequested()) {
+  } = {}): void {
+    if (this.isLoadingMostRequested()) {
       return;
     }
 
     this.isLoadingMostRequested.set(true);
-
-    const params = {
-      SortField: 'rowNo',
-      PageNumber: this.mostRequestedPage(),
-      PageSize: 10,
-      ...extraParams,
-    };
+    this.error.set(null);
 
     const context = new HttpContext().set(USE_GLOBAL_LOADING, globalLoading);
 
     this.http
-      .get<{ items?: MenuItem[] }>(`${this.apiUrl}/EMHome/Mostrequested`, {
-        params: params as any,
+      .get<MenuItemsResponse>(`${this.apiUrl}/EMHome/Mostrequested`, {
+        params: {
+          SortField: 'RowNo',
+        },
         context,
       })
       .pipe(
@@ -53,24 +48,12 @@ export class MenuItemService {
       )
       .subscribe({
         next: (response) => {
-          const items = Array.isArray(response.items) ? response.items : [];
-
-          if (!items.length) {
-            this.mostRequestedHasNext.set(false);
-            return;
-          }
-
-          this.mostRequested.update((current) => [...current, ...items]);
-
-          this.mostRequestedPage.update((page) => page + 1);
-
-          if (items.length < 10) {
-            this.mostRequestedHasNext.set(false);
-          }
+          const items = Array.isArray(response?.items) ? response.items : [];
+          this.mostRequested.set(items);
         },
-
-        error: (error) => {
-          console.error('Failed to load most requested meals:', error);
+        error: (err) => {
+          console.error('Failed to load most requested menu items:', err);
+          this.error.set(err?.message || 'Failed to load items');
         },
       });
   }

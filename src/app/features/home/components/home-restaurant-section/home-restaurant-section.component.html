@@ -1,4 +1,4 @@
-<section dir="rtl" class="relative w-full">
+<section class="relative w-full">
   <!-- Section Header -->
   <div class=" flex items-center justify-between px-1">
     <!-- Title -->
@@ -21,7 +21,7 @@
     [hasMore]="hasMoreData()"
     [isLoading]="isLoadingMore()"
   >
-    <div class="flex w-max items-stretch gap-2 md:gap-4">
+    <div class="flex w-max items-stretch gap-2 md:gap-6">
       @for (restaurant of restaurants(); track restaurant.id) {
         <div class="w-55 shrink-0 md:w-59">
           <app-home-restaurant-card class="block w-full" [restaurant]="restaurant" />

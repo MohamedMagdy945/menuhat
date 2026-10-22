@@ -2,11 +2,9 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RestaurantMenuProduct } from '../../../restaurants/models/restaurant-menu-product';
 import { environment } from '../../../../core/environments/environment';
-import { MenuItem } from '../../models/menu-item';
 import { CartService } from '../../../cart/cart.service';
-import { AddCartItem } from '../../../cart/models/cart-item';
+import { MenuItem } from '../../models';
 
 @Component({
   selector: 'app-menu-item-details',
@@ -17,7 +15,7 @@ import { AddCartItem } from '../../../cart/models/cart-item';
 })
 export class MenuItemDetailsComponent implements OnInit {
   readonly apiUrl = environment.filesUrl;
-  readonly item = signal<RestaurantMenuProduct | MenuItem | null>(null);
+  readonly item = signal<  MenuItem | null>(null);
   
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -126,20 +124,20 @@ export class MenuItemDetailsComponent implements OnInit {
     );
   }
 
-  getTotalPrice(): number {
-    const currentItem = this.item();
-    if (!currentItem) return 0;
+  // getTotalPrice(): number {
+  //   const currentItem = this.item();
+  //   if (!currentItem) return 0;
     
-    let basePrice = currentItem.price;
-    // Add size differences (mock)
-    if (this.selectedSize() === 'small') basePrice -= 20;
-    if (this.selectedSize() === 'large') basePrice += 25;
+  //   let basePrice = currentItem.price;
+  //   // Add size differences (mock)
+  //   if (this.selectedSize() === 'small') basePrice -= 20;
+  //   if (this.selectedSize() === 'large') basePrice += 25;
 
-    // Add selected addons
-    const addonsTotal = this.addons().filter(a => a.selected).reduce((sum, addon) => sum + addon.price, 0);
+  //   // Add selected addons
+  //   const addonsTotal = this.addons().filter(a => a.selected).reduce((sum, addon) => sum + addon.price, 0);
 
-    return (basePrice + addonsTotal) * this.quantity();
-  }
+  //   return (basePrice + addonsTotal) * this.quantity();
+  // }
 
   readonly isAddingToCart = signal(false);
   readonly _addedManually = signal(false);

@@ -1,7 +1,7 @@
 import { Component, input, signal } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
-import { MenuItem } from '../../models/menu-item';
 import { RouterLink } from '@angular/router';
+import { MenuItem } from '../../models';
 
 @Component({
   imports: [RouterLink],
@@ -13,7 +13,7 @@ export class MenuItemCard {
   readonly menuItem = input.required<MenuItem>();
   readonly apiUrl = environment.filesUrl;
   readonly isFavorite = signal(false);
-  Math: any;
+  readonly Math = Math;
 
   toggleFavorite(): void {
     this.isFavorite.update((v) => !v);

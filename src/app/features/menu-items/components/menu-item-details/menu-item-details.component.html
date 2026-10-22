@@ -113,11 +113,11 @@
                 <span class="text-sm font-bold text-gray-600">ج.م</span>
               </div>
 
-              @if (currentItem.oldPrice > currentItem.price) {
+              <!-- @if (currentItem.oldPrice > currentItem.price) {
               <span class="text-sm font-semibold text-gray-400 line-through">
                 {{ currentItem.oldPrice | number:'1.2-2' }} ج.م
               </span>
-              }
+              } -->
             </div>
 
             @if (getSavings(currentItem) > 0) {
@@ -267,13 +267,13 @@
               onerror="this.src='/images/default-meal.png'" />
 
             <!-- Discount Badge (in start corner: right in RTL) -->
-            @if (currentItem.discountPercentage || currentItem.oldPrice > currentItem.price) {
+            <!-- @if (currentItem.discountPercentage || currentItem.oldPrice > currentItem.price) {
             <div
               class="absolute top-0 inset-s-0 lg:top-3 lg:inset-s-3 flex items-center gap-1 rounded-full bg-orange-500 px-2.5 py-0.5 lg:px-3 lg:py-1 text-[11px] lg:text-xs font-black text-white shadow-md">
               <span class="material-symbols-sharp text-[13px] lg:text-[14px]">local_offer</span>
               <span>خصم {{ getDiscount(currentItem) }}%</span>
             </div>
-            }
+            } -->
 
             <!-- Floating Rating Tag (in end corner: left in RTL) -->
             <div
@@ -331,7 +331,7 @@
               <div class="text-start">
                 <span class="block text-[11px] font-semibold text-gray-400">الإجمالي النهائي</span>
                 <div class="flex items-baseline gap-1 text-xl sm:text-2xl font-black text-gray-900">
-                  <span>{{ getTotalPrice() | number:'1.2-2' }}</span>
+                  <!-- <span>{{ getTotalPrice() | number:'1.2-2' }}</span> -->
                   <span class="text-xs font-bold text-orange-600">ج.م</span>
                 </div>
               </div>

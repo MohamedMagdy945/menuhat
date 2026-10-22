@@ -1,32 +1,37 @@
 <div class="w-full">
-  <div
-    #scrollContainer
-    class="scrollbar-hide flex w-full overflow-x-auto px-1 py-2"
-    style="overflow-anchor: none"
-    (scroll)="onScroll()"
-  >
+  <div #scrollContainer class="scrollbar-hide flex w-full overflow-x-auto" style="overflow-anchor: none"
+    (scroll)="onScroll()">
     <ng-content />
   </div>
 
-  <div dir="ltr" class="mt-1 flex w-full items-center justify-start gap-5 px-1">
-    <button
-      type="button"
-      aria-label="Scroll left"
-      [disabled]="leftDisabled()"
-      (click)="scrollLeft()"
-      class="flex h-8 w-8 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-primary  transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
-    >
-      <svg lucideChevronLeft class="h-5 w-5" [strokeWidth]="2.2"></svg>
+  <!-- Centered Navigation Buttons (<< < > >>) -->
+  <div class="mt-1 flex w-full items-center justify-center gap-4">
+
+    <!-- >> (To Start) -->
+    <button type="button" aria-label="Scroll to start" [disabled]="rightDisabled()" (click)="scrollToStart()"
+      class="flex cursor-pointer items-center justify-center p-1 text-primary disabled:pointer-events-none disabled:opacity-25">
+      <svg lucideChevronsRight class="h-5 w-5" [strokeWidth]="2.5"></svg>
+    </button>
+    <!-- > (Step Right) -->
+    <button type="button" aria-label="Scroll right" [disabled]="rightDisabled()" (click)="scrollRight()"
+      class="flex cursor-pointer items-center justify-center p-1 text-primary disabled:pointer-events-none disabled:opacity-25">
+      <svg lucideChevronRight class="h-5 w-5" [strokeWidth]="2.5"></svg>
     </button>
 
-    <button
-      type="button"
-      aria-label="Scroll right"
-      [disabled]="rightDisabled()"
-      (click)="scrollRight()"
-      class="flex h-8 w-8 items-center cursor-pointer justify-center rounded-full border border-slate-200 bg-white text-primary transition-all duration-200 hover:border-primary/40 hover:bg-primary/5 active:scale-95 disabled:pointer-events-none disabled:opacity-30"
-    >
-      <svg lucideChevronRight class="h-5 w-5" [strokeWidth]="2.2"></svg>
+
+    <!-- < (Step Left) -->
+    <button type="button" aria-label="Scroll left" [disabled]="leftDisabled()" (click)="scrollLeft()"
+      class="flex cursor-pointer items-center justify-center p-1 text-primary disabled:pointer-events-none disabled:opacity-25">
+      <svg lucideChevronLeft class="h-5 w-5" [strokeWidth]="2.5"></svg>
     </button>
+
+
+    <!-- << (To End) -->
+    <button type="button" aria-label="Scroll to end" [disabled]="leftDisabled()" (click)="scrollToEnd()"
+      class="flex cursor-pointer items-center justify-center p-1 text-primary disabled:pointer-events-none disabled:opacity-25">
+      <svg lucideChevronsLeft class="h-5 w-5" [strokeWidth]="2.5"></svg>
+    </button>
+
+
   </div>
 </div>
