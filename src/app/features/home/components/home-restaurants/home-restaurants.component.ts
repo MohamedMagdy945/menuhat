@@ -10,18 +10,16 @@ import { Restaurant } from '../../../restaurants/models/restaurant';
 import { HomeRestaurantCardComponent } from '../home-restaurant-card/home-restaurant-card.component';
 
 @Component({
-  selector: 'app-home-restaurant-section',
+  selector: 'app-home-restaurants',
   imports: [
     HomeRestaurantCardComponent,
     HorizontalScrollComponent,
     HorizontalCardSkeletonComponent,
   ],
-  templateUrl: './home-restaurant-section.component.html',
-  styleUrl: './home-restaurant-section.component.css',
+  templateUrl: './home-restaurants.component.html',
+  styleUrl: './home-restaurants.component.css',
 })
-export class HomeRestaurantSectionComponent {
-
-
+export class HomeRestaurantsComponent {
 
 
   // Section title

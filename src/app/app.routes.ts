@@ -194,10 +194,11 @@ export const routes: Routes = [
 
                 children: [
 
-                    // /menu-items
+                    // /menu-items -> redirect to /most-ordered
                     {
                         path: '',
-                        component: MealsComponent
+                        redirectTo: '/most-ordered',
+                        pathMatch: 'full'
                     },
 
                     // /menu-items/:id

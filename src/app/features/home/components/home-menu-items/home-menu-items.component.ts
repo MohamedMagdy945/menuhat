@@ -1,4 +1,5 @@
 import { Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { MenuItemService } from '../../../menu-items/menu-item.service';
 import { MenuItem } from '../../../menu-items/models/menu-item';
 import { HomeMenuItemCardComponent } from '../home-menu-item-card/home-menu-item-card.component';
@@ -7,6 +8,7 @@ import { HorizontalScrollComponent } from '../../../../shared/components/horizon
 @Component({
   selector: 'app-home-menu-items',
   imports: [
+    RouterLink,
     HomeMenuItemCardComponent,
     HorizontalScrollComponent,
   ],

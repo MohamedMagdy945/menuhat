@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { MenuItemService } from './menu-item.service';
 import { MenuItemCard } from './components/menu-item-card/menu-item-card.component';
 import { MenuItemSkeletonComponent } from '../../shared/skeleton/menu-item-skeleton/menu-item-skeleton.component';
+import { MenuItemService } from './menu-item.service';
 
 @Component({
   imports: [MenuItemCard, MenuItemSkeletonComponent],
@@ -11,15 +11,11 @@ import { MenuItemSkeletonComponent } from '../../shared/skeleton/menu-item-skele
 })
 export class MealsComponent implements OnInit {
   protected readonly menuItemService = inject(MenuItemService);
-  protected readonly skeletonCards = [1, 2, 3, 4, 5, 6];
+  protected readonly skeletonCards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   ngOnInit(): void {
     if (this.menuItemService.mostRequested().length === 0) {
       this.menuItemService.loadMostRequested({ globalLoading: false });
     }
-  }
-
-  loadMoreMostRequested(): void {
-    this.menuItemService.loadMostRequested({ globalLoading: false });
   }
 }

@@ -1,7 +1,7 @@
 import { Component, input, signal } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
 import { RouterLink } from '@angular/router';
-import { MenuItem } from '../../models';
+import { MenuItem } from '../../../menu-items/models';
 
 @Component({
   imports: [RouterLink],

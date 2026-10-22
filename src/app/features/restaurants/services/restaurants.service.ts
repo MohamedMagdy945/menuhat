@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, WritableSignal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
 import { finalize } from 'rxjs';
 
@@ -8,239 +8,235 @@ import { Restaurant } from '../models/restaurant';
 import { RestaurantQueryParams } from '../models/restaurant-query-params';
 import { RestaurantResponse } from '../models/restaurant-response';
 
+export interface LoadRestaurantsParams {
+  pageNumber?: number;
+  pageSize?: number;
+  PageNumber?: number;
+  PageSize?: number;
+  globalLoading?: boolean;
+  extraParams?: Partial<RestaurantQueryParams>;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class RestaurantsService {
   private readonly http = inject(HttpClient);
-
   private readonly apiUrl = environment.apiUrl;
 
   // ============================================
   // Top Visits
   // ============================================
-
   readonly topVisits = signal<Restaurant[]>([]);
-  readonly topVisitsPage = signal(1);
   readonly topVisitsHasNext = signal(true);
   readonly isLoadingTopVisits = signal(false);
 
-  loadTopVisits({
-    globalLoading = true,
-    extraParams = {},
-  }: {
-    globalLoading?: boolean;
-    extraParams?: Partial<RestaurantQueryParams>;
-  } = {}): void {
-    // Don't request if there are no more pages
-    // or if another request is already running.
-    if (!this.topVisitsHasNext() || this.isLoadingTopVisits()) {
-      return;
-    }
+  loadTopVisits(
+    pageNumber: number,
+    pageSize: number,
+    options?: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> },
+  ): void;
+  loadTopVisits(params?: LoadRestaurantsParams): void;
+  loadTopVisits(
+    pageOrParams: number | LoadRestaurantsParams = 1,
+    pageSizeArg: number = 10,
+    optionsArg: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> } = {},
+  ): void {
+    const { pageNumber, pageSize, globalLoading, extraParams } = this.resolveParams(
+      pageOrParams,
+      pageSizeArg,
+      optionsArg,
+    );
 
-    this.isLoadingTopVisits.set(true);
-
-    const params: Record<string, string | number | boolean> = {
-      SortField: 'rowNo',
-      PageNumber: this.topVisitsPage(),
-      PageSize: 10,
-
-      ...(extraParams as Record<string, string | number | boolean>),
-    };
-
-    const context = new HttpContext().set(USE_GLOBAL_LOADING, globalLoading);
-
-    this.http
-      .get<RestaurantResponse>(`${this.apiUrl}/EMHomeApp/GetTopVisits`, {
-        params,
-        context,
-      })
-      .pipe(
-        finalize(() => {
-          this.isLoadingTopVisits.set(false);
-        }),
-      )
-      .subscribe({
-        next: (response) => {
-          const items = Array.isArray(response.result) ? response.result : [];
-
-          // No more data
-          if (!items.length) {
-            this.topVisitsHasNext.set(false);
-            return;
-          }
-
-          // Append new restaurants
-          this.topVisits.update((current) => [...current, ...items]);
-
-          // Move to next page
-          this.topVisitsPage.update((page) => page + 1);
-
-          // If API returned less than page size,
-          // there is probably no next page.
-          if (items.length < 10) {
-            this.topVisitsHasNext.set(false);
-          }
-
-          // You can also use totalPages if you prefer
-          // instead of checking items.length.
-        },
-
-        error: (error) => {
-          console.error('Failed to load top visits restaurants:', error);
-        },
-      });
+    this.fetchRestaurants({
+      endpoint: '/EMHomeApp/GetTopVisits',
+      pageNumber,
+      pageSize,
+      globalLoading,
+      extraParams,
+      itemsSignal: this.topVisits,
+      hasNextSignal: this.topVisitsHasNext,
+      isLoadingSignal: this.isLoadingTopVisits,
+    });
   }
+
   // ============================================
   // Nearest Restaurants
   // ============================================
-
   readonly nearestRestaurants = signal<Restaurant[]>([]);
-  readonly nearestRestaurantsPage = signal(1);
   readonly nearestRestaurantsHasNext = signal(true);
   readonly isLoadingNearestRestaurants = signal(false);
 
-  loadNearestRestaurants({
-    globalLoading = true,
-    extraParams = {},
+  loadNearestRestaurants(
+    pageNumber: number,
+    pageSize: number,
+    options?: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> },
+  ): void;
+  loadNearestRestaurants(params?: LoadRestaurantsParams): void;
+  loadNearestRestaurants(
+    pageOrParams: number | LoadRestaurantsParams = 1,
+    pageSizeArg: number = 10,
+    optionsArg: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> } = {},
+  ): void {
+    const { pageNumber, pageSize, globalLoading, extraParams } = this.resolveParams(
+      pageOrParams,
+      pageSizeArg,
+      optionsArg,
+    );
+
+    this.fetchRestaurants({
+      endpoint: '/EMHomeApp/GetNearest',
+      pageNumber,
+      pageSize,
+      globalLoading,
+      extraParams,
+      itemsSignal: this.nearestRestaurants,
+      hasNextSignal: this.nearestRestaurantsHasNext,
+      isLoadingSignal: this.isLoadingNearestRestaurants,
+    });
+  }
+
+  // ============================================
+  // Top Rates
+  // ============================================
+  readonly topRates = signal<Restaurant[]>([]);
+  readonly topRatesHasNext = signal(true);
+  readonly isLoadingTopRates = signal(false);
+
+  loadTopRates(
+    pageNumber: number,
+    pageSize: number,
+    options?: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> },
+  ): void;
+  loadTopRates(params?: LoadRestaurantsParams): void;
+  loadTopRates(
+    pageOrParams: number | LoadRestaurantsParams = 1,
+    pageSizeArg: number = 10,
+    optionsArg: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> } = {},
+  ): void {
+    const { pageNumber, pageSize, globalLoading, extraParams } = this.resolveParams(
+      pageOrParams,
+      pageSizeArg,
+      optionsArg,
+    );
+
+    this.fetchRestaurants({
+      endpoint: '/EMHomeApp/GetTopRates',
+      pageNumber,
+      pageSize,
+      globalLoading,
+      extraParams,
+      itemsSignal: this.topRates,
+      hasNextSignal: this.topRatesHasNext,
+      isLoadingSignal: this.isLoadingTopRates,
+    });
+  }
+
+  // ============================================
+  // Helper Methods
+  // ============================================
+  private resolveParams(
+    pageOrParams: number | LoadRestaurantsParams,
+    pageSizeArg: number,
+    optionsArg: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> },
+  ): {
+    pageNumber: number;
+    pageSize: number;
+    globalLoading: boolean;
+    extraParams: Partial<RestaurantQueryParams>;
+  } {
+    if (typeof pageOrParams === 'number') {
+      return {
+        pageNumber: pageOrParams,
+        pageSize: pageSizeArg ?? 10,
+        globalLoading: optionsArg.globalLoading ?? true,
+        extraParams: optionsArg.extraParams ?? {},
+      };
+    }
+
+    const pageNumber =
+      pageOrParams?.pageNumber ??
+      pageOrParams?.PageNumber ??
+      1;
+
+    const pageSize =
+      pageOrParams?.pageSize ??
+      pageOrParams?.PageSize ??
+      pageSizeArg ??
+      10;
+
+    return {
+      pageNumber,
+      pageSize,
+      globalLoading: pageOrParams?.globalLoading ?? true,
+      extraParams: pageOrParams?.extraParams ?? {},
+    };
+  }
+
+  private fetchRestaurants({
+    endpoint,
+    pageNumber,
+    pageSize,
+    globalLoading,
+    extraParams,
+    itemsSignal,
+    hasNextSignal,
+    isLoadingSignal,
   }: {
-    globalLoading?: boolean;
-    extraParams?: Partial<RestaurantQueryParams>;
-  } = {}): void {
-    if (!this.nearestRestaurantsHasNext() || this.isLoadingNearestRestaurants()) {
+    endpoint: string;
+    pageNumber: number;
+    pageSize: number;
+    globalLoading: boolean;
+    extraParams: Partial<RestaurantQueryParams>;
+    itemsSignal: WritableSignal<Restaurant[]>;
+    hasNextSignal: WritableSignal<boolean>;
+    isLoadingSignal: WritableSignal<boolean>;
+  }): void {
+    if (isLoadingSignal()) {
       return;
     }
 
-    this.isLoadingNearestRestaurants.set(true);
+    isLoadingSignal.set(true);
 
     const params: Record<string, string | number | boolean> = {
       SortField: 'rowNo',
-      PageNumber: this.nearestRestaurantsPage(),
-      PageSize: 10,
-
       ...(extraParams as Record<string, string | number | boolean>),
+      PageNumber: pageNumber,
+      PageSize: pageSize,
     };
+
+    console.log(`[RestaurantsService] GET ${endpoint} - Query Params:`, params);
 
     const context = new HttpContext().set(USE_GLOBAL_LOADING, globalLoading);
 
     this.http
-      .get<RestaurantResponse>(`${this.apiUrl}/EMHomeApp/GetNearest`, {
+      .get<RestaurantResponse>(`${this.apiUrl}${endpoint}`, {
         params,
         context,
       })
       .pipe(
         finalize(() => {
-          this.isLoadingNearestRestaurants.set(false);
+          isLoadingSignal.set(false);
         }),
       )
       .subscribe({
         next: (response) => {
           const items = Array.isArray(response.result) ? response.result : [];
 
-          if (!items.length) {
-            this.nearestRestaurantsHasNext.set(false);
-            return;
+          if (pageNumber === 1) {
+            itemsSignal.set(items);
+          } else {
+            itemsSignal.update((current) => [...current, ...items]);
           }
 
-          this.nearestRestaurants.update((current) => [...current, ...items]);
-
-          this.nearestRestaurantsPage.update((page) => page + 1);
-
-          if (items.length < 10) {
-            this.nearestRestaurantsHasNext.set(false);
-          }
+          hasNextSignal.set(items.length >= pageSize);
         },
-
         error: (error) => {
-          console.error('Failed to load nearest restaurants:', error);
+          console.error(`Failed to load restaurants from ${endpoint}:`, error);
+          if (pageNumber === 1) {
+            hasNextSignal.set(false);
+          }
         },
       });
   }
-  // ============================================
-// Top Rates
-// ============================================
-
-readonly topRates = signal<Restaurant[]>([]);
-readonly topRatesPage = signal(1);
-readonly topRatesHasNext = signal(true);
-readonly isLoadingTopRates = signal(false);
-
-loadTopRates({
-  globalLoading = true,
-  extraParams = {},
-}: {
-  globalLoading?: boolean;
-  extraParams?: Partial<RestaurantQueryParams>;
-} = {}): void {
-  // Don't request if there are no more pages
-  // or if another request is already running.
-  if (!this.topRatesHasNext() || this.isLoadingTopRates()) {
-    return;
-  }
-
-  this.isLoadingTopRates.set(true);
-
-  const params: Record<string, string | number | boolean> = {
-    SortField: 'rowNo',
-    PageNumber: this.topRatesPage(),
-    PageSize: 10,
-
-    ...(extraParams as Record<string, string | number | boolean>),
-  };
-
-  const context = new HttpContext().set(
-    USE_GLOBAL_LOADING,
-    globalLoading,
-  );
-
-  this.http
-    .get<RestaurantResponse>(
-      `${this.apiUrl}/EMHomeApp/GetTopRates`,
-      {
-        params,
-        context,
-      },
-    )
-    .pipe(
-      finalize(() => {
-        this.isLoadingTopRates.set(false);
-      }),
-    )
-    .subscribe({
-      next: (response) => {
-        const items = Array.isArray(response.result)
-          ? response.result
-          : [];
-
-        // No more data
-        if (!items.length) {
-          this.topRatesHasNext.set(false);
-          return;
-        }
-
-        // Append new restaurants
-        this.topRates.update((current) => [
-          ...current,
-          ...items,
-        ]);
-
-        // Move to next page
-        this.topRatesPage.update((page) => page + 1);
-
-        // If API returned less than page size,
-        // there is probably no next page.
-        if (items.length < 10) {
-          this.topRatesHasNext.set(false);
-        }
-      },
-
-      error: (error) => {
-        console.error(
-          'Failed to load top rates restaurants:',
-          error,
-        );
-      },
-    });
 }
-}
-

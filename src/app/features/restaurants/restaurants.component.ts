@@ -37,25 +37,28 @@ export class RestaurantsComponent implements OnInit {
       : this.restaurantsService.isLoadingTopVisits(),
   );
 
+  private page = 1;
+
   ngOnInit(): void {
     if (this.filter === 'top-rated') {
       if (this.restaurantsService.topRates().length === 0) {
-        this.restaurantsService.loadTopRates({ globalLoading: false });
+        this.restaurantsService.loadTopRates({ pageNumber: 1, pageSize: 10, globalLoading: false });
       }
       return;
     }
 
     if (this.restaurantsService.topVisits().length === 0) {
-      this.restaurantsService.loadTopVisits({ globalLoading: false });
+      this.restaurantsService.loadTopVisits({ pageNumber: 1, pageSize: 10, globalLoading: false });
     }
   }
 
   loadMore(): void {
+    this.page++;
     if (this.filter === 'top-rated') {
-      this.restaurantsService.loadTopRates({ globalLoading: false });
+      this.restaurantsService.loadTopRates({ pageNumber: this.page, pageSize: 10, globalLoading: false });
       return;
     }
 
-    this.restaurantsService.loadTopVisits({ globalLoading: false });
+    this.restaurantsService.loadTopVisits({ pageNumber: this.page, pageSize: 10, globalLoading: false });
   }
 }

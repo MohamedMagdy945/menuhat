@@ -1,25 +1,28 @@
-<section class="relative w-full">
+<section class="relative w-full ">
   <!-- Section Header -->
-  <div class="flex items-center justify-between pb-1">
+  <div class="flex items-center justify-between">
     <!-- Title -->
     <h2 class="text-xl font-bold tracking-tight text-gray-900">
       {{ title() }}
     </h2>
 
-    <!-- View All Button -->
-    <button type="button" class="font-semibold text-orange-500 transition-colors duration-200 hover:text-orange-600">
+    <!-- View All Link -->
+    <a
+      routerLink="/most-ordered"
+      class="cursor-pointer font-semibold text-orange-500 transition-colors duration-200 hover:text-orange-600"
+    >
       عرض الكل
-    </button>
+    </a>
   </div>
 
   <!-- Shared Horizontal Scroll -->
   <app-horizontal-scroll>
-    <div class="flex w-max items-stretch gap-2.5 md:gap-4 py-1">
+    <div class="flex mt-1 w-max items-stretch gap-2 md:gap-4 py-2">
       <!-- Menu Items -->
       @for (item of items(); track item.mostrequestesId) {
-      <div class="w-46 shrink-0 md:w-50">
-        <app-home-menu-item-card class="block w-full" [menuItem]="item" />
-      </div>
+        <div class="w-46 shrink-0 md:w-52">
+          <app-home-menu-item-card class="block w-full" [menuItem]="item" />
+        </div>
       }
     </div>
   </app-horizontal-scroll>

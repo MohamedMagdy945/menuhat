@@ -21,9 +21,9 @@
     [hasMore]="hasMoreData()"
     [isLoading]="isLoadingMore()"
   >
-    <div class="flex w-max items-stretch gap-2 md:gap-6">
+    <div class="flex mt-3 w-max items-stretch gap-2 md:gap-5">
       @for (restaurant of restaurants(); track restaurant.id) {
-        <div class="w-55 shrink-0 md:w-59">
+        <div class="w-55 shrink-0 md:w-60">
           <app-home-restaurant-card class="block w-full" [restaurant]="restaurant" />
         </div>
       }

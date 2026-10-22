@@ -10,7 +10,7 @@ import { LocationService } from '../../core/services/location.service';
 
 import { RestaurantsService } from '../restaurants/services/restaurants.service';
 
-import { HomeRestaurantSectionComponent } from './components/home-restaurant-section/home-restaurant-section.component';
+import { HomeRestaurantsComponent } from './components/home-restaurants/home-restaurants.component';
 import { HomeMenuItemsComponent } from './components/home-menu-items/home-menu-items.component';
 import { MenuItemService } from '../menu-items/menu-item.service';
 
@@ -18,7 +18,7 @@ import { MenuItemService } from '../menu-items/menu-item.service';
   selector: 'app-home',
   imports: [
     HomeMenuItemsComponent,
-    HomeRestaurantSectionComponent,
+    HomeRestaurantsComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './home.component.html',
@@ -52,6 +52,8 @@ export class HomeComponent implements OnInit {
     // Load only if there is no data already
     if (this.restaurantsService.topVisits().length === 0) {
       this.restaurantsService.loadTopVisits({
+        pageNumber: 1,
+        pageSize: 10,
         globalLoading: true,
       });
     }
@@ -63,6 +65,8 @@ export class HomeComponent implements OnInit {
     // Load only if there is no data already
     if (this.restaurantsService.topRates().length === 0) {
       this.restaurantsService.loadTopRates({
+        pageNumber: 1,
+        pageSize: 10,
         globalLoading: true,
       });
     }
@@ -94,6 +98,8 @@ export class HomeComponent implements OnInit {
         }
 
         this.restaurantsService.loadNearestRestaurants({
+          pageNumber: 1,
+          pageSize: 10,
           globalLoading: false,
           extraParams: {
             lat: location.lat,
@@ -123,8 +129,13 @@ export class HomeComponent implements OnInit {
   // Top Visits
   // ============================================
 
+  private topVisitsPage = 1;
+
   loadMoreTopVisits(): void {
+    this.topVisitsPage++;
     this.restaurantsService.loadTopVisits({
+      pageNumber: this.topVisitsPage,
+      pageSize: 10,
       globalLoading: false,
     });
   }
@@ -133,8 +144,13 @@ export class HomeComponent implements OnInit {
   // Top Rates
   // ============================================
 
+  private topRatesPage = 1;
+
   loadMoreTopRates(): void {
+    this.topRatesPage++;
     this.restaurantsService.loadTopRates({
+      pageNumber: this.topRatesPage,
+      pageSize: 10,
       globalLoading: false,
     });
   }
@@ -143,8 +159,13 @@ export class HomeComponent implements OnInit {
   // Nearest Restaurants
   // ============================================
 
+  private nearestRestaurantsPage = 1;
+
   loadMoreNearestRestaurants(): void {
+    this.nearestRestaurantsPage++;
     this.restaurantsService.loadNearestRestaurants({
+      pageNumber: this.nearestRestaurantsPage,
+      pageSize: 10,
       globalLoading: false,
     });
   }
