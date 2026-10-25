@@ -1,0 +1,84 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-track {
+  display: flex;
+  width: max-content;
+  align-items: stretch;
+  gap: var(--carousel-gap, 12px);
+  --carousel-items: 2;
+  --carousel-gap: 12px;
+}
+
+/* Base (Mobile) */
+:host ::ng-deep .carousel-track > * {
+  display: block;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  height: auto;
+  min-width: 0;
+  width: calc((100cqw - (var(--carousel-items, 2) - 1) * var(--carousel-gap, 12px)) / var(--carousel-items, 2));
+}
+
+/* sm (>= 640px) */
+@media (min-width: 640px) {
+  .carousel-track {
+    gap: var(--carousel-gap-sm, var(--carousel-gap, 12px));
+  }
+  :host ::ng-deep .carousel-track > * {
+    width: calc(
+      (100cqw - (var(--carousel-items-sm, var(--carousel-items, 3)) - 1) * var(--carousel-gap-sm, var(--carousel-gap, 12px))) /
+      var(--carousel-items-sm, var(--carousel-items, 3))
+    );
+  }
+}
+
+/* md (>= 768px) */
+@media (min-width: 768px) {
+  .carousel-track {
+    gap: var(--carousel-gap-md, var(--carousel-gap-sm, var(--carousel-gap, 12px)));
+  }
+  :host ::ng-deep .carousel-track > * {
+    width: calc(
+      (100cqw - (var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 4))) - 1) * var(--carousel-gap-md, var(--carousel-gap-sm, var(--carousel-gap, 12px)))) /
+      var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 4)))
+    );
+  }
+}
+
+/* lg (>= 1024px) */
+@media (min-width: 1024px) {
+  .carousel-track {
+    gap: var(--carousel-gap-lg, 16px);
+  }
+  :host ::ng-deep .carousel-track > * {
+    width: calc(
+      (100cqw - (var(--carousel-items-lg, var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 5)))) - 1) * var(--carousel-gap-lg, 16px)) /
+      var(--carousel-items-lg, var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 5))))
+    );
+  }
+}
+
+/* xl (>= 1280px) */
+@media (min-width: 1280px) {
+  .carousel-track {
+    gap: var(--carousel-gap-xl, var(--carousel-gap-lg, 16px));
+  }
+  :host ::ng-deep .carousel-track > * {
+    width: calc(
+      (100cqw - (var(--carousel-items-xl, var(--carousel-items-lg, var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 6))))) - 1) * var(--carousel-gap-xl, 16px)) /
+      var(--carousel-items-xl, var(--carousel-items-lg, var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 6)))))
+    );
+  }
+}

@@ -42,7 +42,7 @@ body {
     Global Elements
 ========================= */
 .material-symbols-sharp {
-  font-size: inherit;
+    font-size: inherit;
 }
 
 
@@ -56,5 +56,42 @@ a {
 }
 
 .icon-fill {
-  font-variation-settings: 'FILL' 1;
+    font-variation-settings: 'FILL' 1;
+}
+
+
+.custom-container {
+    width: 100%;
+    max-width: var(--layout-max-width);
+    margin-inline: auto;
+}
+
+@media (min-width: 640px) {
+    .custom-container {
+        max-width: 640px;
+    }
+}
+
+@media (min-width: 768px) {
+    .custom-container {
+        max-width: 768px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .custom-container {
+        max-width: 1024px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .custom-container {
+        max-width: 1280px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .custom-container {
+        max-width: 1750px;
+    }
 }

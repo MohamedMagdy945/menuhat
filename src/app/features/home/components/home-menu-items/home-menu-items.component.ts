@@ -2,15 +2,15 @@ import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MenuItemService } from '../../../menu-items/menu-item.service';
 import { MenuItem } from '../../../menu-items/models/menu-item';
+import { CarouselComponent, ResponsiveItems } from '../../../../shared/components/carousel/carousel.component';
 import { HomeMenuItemCardComponent } from '../home-menu-item-card/home-menu-item-card.component';
-import { HorizontalScrollComponent } from '../../../../shared/components/horizontal-scroll/horizontal-scroll.component';
 
 @Component({
   selector: 'app-home-menu-items',
   imports: [
     RouterLink,
     HomeMenuItemCardComponent,
-    HorizontalScrollComponent,
+    CarouselComponent,
   ],
   templateUrl: './home-menu-items.component.html',
   styleUrl: './home-menu-items.component.css',
@@ -20,6 +20,9 @@ export class HomeMenuItemsComponent {
 
   readonly title = input<string>('الأكثر طلبًا في منطقتك');
   readonly menuItems = input<MenuItem[] | null>(null);
+
+  // Easily control how many items are visible side-by-side (e.g. 7 or '2 sm:3 md:4 lg:6')
+  readonly itemsCount = input<string | number | ResponsiveItems>('2 sm:3 md:4 lg:6');
 
   readonly items = computed(() => {
     const customItems = this.menuItems();

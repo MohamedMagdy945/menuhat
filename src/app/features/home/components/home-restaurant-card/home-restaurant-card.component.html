@@ -10,7 +10,8 @@
       </div>
 
       @if (restaurant().isSponser) {
-      <span class="absolute right-2 top-2 z-10 rounded-md  px-2 py-1 text-[11px] font-bold leading-none text-white">
+      <span class="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[11px] font-bold leading-none text-white shadow-xs">
+        <span class="material-symbols-sharp select-none text-[13px] leading-none icon-fill">verified</span>
         مميز
       </span>
       }
@@ -38,11 +39,11 @@
       </div>
       <!-- Category -->
       <div>
-        <div class="inline-flex gap-1 max-w-full items-center rounded-md  py-1 text-primary">
+        <div class="inline-flex gap-1 max-w-full items-center rounded-md font-semibold text-gray-600">
           <span class="material-symbols-sharp select-none text-[16px] leading-none icon-fill">
             style
           </span>
-          <span class="truncate text-sm font-semibold leading-5 ">
+          <span class="min-w-0 truncate text-sm font-semibold leading-5 ">
             {{ restaurant().field_Ar }}
           </span>
         </div>
@@ -88,11 +89,11 @@
   </a>
 
   <!-- Favorite - OUTSIDE LINK -->
-  <button type="button"
-    class="absolute left-2 top-2 z-20 flex h-7 w-7 items-center justify-center rounded-full shadow-sm"
-    aria-label="إضافة للمفضلة" (click)="toggleFavorite()">
-    <span class="material-symbols-sharp select-none text-[18px] leading-none text-slate-500">
-      favorite_border
+  <button type="button" aria-label="Favorite" (click)="toggleFavorite()"
+    class="absolute top-2.5 left-2.5 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/20 text-xl text-white shadow-sm transition">
+    <span class="material-symbols-sharp transition-colors duration-200" [class.text-red-500]="isFavorite()"
+      [class.icon-fill]="isFavorite()">
+      {{ isFavorite() ? 'favorite' : 'favorite_border' }}
     </span>
   </button>
 </article>

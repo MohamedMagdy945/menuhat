@@ -1,4 +1,4 @@
-<section class="relative w-full ">
+<section class="relative w-full">
   <!-- Section Header -->
   <div class="flex items-center justify-between">
     <!-- Title -->
@@ -15,15 +15,10 @@
     </a>
   </div>
 
-  <!-- Shared Horizontal Scroll -->
-  <app-horizontal-scroll>
-    <div class="flex mt-1 w-max items-stretch gap-2 md:gap-4 py-2">
-      <!-- Menu Items -->
-      @for (item of items(); track item.mostrequestesId) {
-        <div class="w-46 shrink-0 md:w-52">
-          <app-home-menu-item-card class="block w-full" [menuItem]="item" />
-        </div>
-      }
-    </div>
-  </app-horizontal-scroll>
+  <!-- Horizontal Scroll (Always Side-by-Side) -->
+  <app-carousel class="mt-2 block" [items]="itemsCount()">
+    @for (item of items(); track item.mostrequestesId) {
+      <app-home-menu-item-card [menuItem]="item" />
+    }
+  </app-carousel>
 </section>
