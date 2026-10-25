@@ -11,6 +11,7 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
+
 export type ResponsiveItems = {
   base?: number;
   sm?: number;
@@ -37,11 +38,18 @@ function parseItems(value: string | number | ResponsiveItems | null | undefined)
       return { base: num };
     }
     const result: ResponsiveItems = {};
-    const tokens = trimmed.split(/\s+/);
+    // Normalize any "grid-cols-", "grid-", "cols-" prefixes
+    const normalized = trimmed
+      .replace(/grid-cols-/gi, '')
+      .replace(/grid-/gi, '')
+      .replace(/cols-/gi, '')
+      .replace(/grid\s+/gi, '');
+
+    const tokens = normalized.split(/\s+/);
     for (const token of tokens) {
       if (token.includes(':')) {
         const [bp, countStr] = token.split(':');
-        const count = Number(countStr);
+        const count = Number(countStr.replace(/\D/g, ''));
         if (!isNaN(count) && count > 0) {
           if (bp === 'sm') result.sm = count;
           else if (bp === 'md') result.md = count;
@@ -49,7 +57,7 @@ function parseItems(value: string | number | ResponsiveItems | null | undefined)
           else if (bp === 'xl') result.xl = count;
         }
       } else {
-        const count = Number(token);
+        const count = Number(token.replace(/\D/g, ''));
         if (!isNaN(count) && count > 0) {
           result.base = count;
         }
@@ -74,6 +82,8 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
   // Inputs / Outputs
   readonly items = input<string | number | ResponsiveItems | null>(null);
   readonly cols = input<string | number | ResponsiveItems | null>(null);
+  readonly grid = input<string | number | ResponsiveItems | null>(null);
+  readonly gap = input<string | number | null>(null);
   readonly isLoading = input(false);
   readonly hasMore = input(false);
   readonly showArrows = input(true);
@@ -81,7 +91,7 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
   readonly loadMore = output<void>();
 
   private readonly effectiveItems = computed(
-    () => this.items() ?? this.cols() ?? '2 sm:3 md:4 lg:5 xl:6',
+    () => this.grid() ?? this.items() ?? this.cols() ?? '2 sm:3 md:4 lg:5 xl:6',
   );
 
   readonly parsedItems = computed(() => parseItems(this.effectiveItems()));
@@ -94,6 +104,10 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     if (c.md !== undefined) styles.push(`--carousel-items-md: ${c.md}`);
     if (c.lg !== undefined) styles.push(`--carousel-items-lg: ${c.lg}`);
     if (c.xl !== undefined) styles.push(`--carousel-items-xl: ${c.xl}`);
+    if (this.gap() !== null && this.gap() !== undefined) {
+      const g = typeof this.gap() === 'number' ? `${this.gap()}px` : this.gap();
+      styles.push(`--carousel-gap: ${g}`);
+    }
     return styles.join('; ');
   });
 
@@ -113,19 +127,15 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
   // Boundary disabled states
   readonly leftDisabled = computed(() => {
     if (this.isRtl()) {
-      // In RTL, left arrow advances forward to the next page
       return this.currentPage() >= this.totalPages() - 1 && !this.moreComing();
     }
-    // In LTR, left arrow retreats backward to the previous page
     return this.currentPage() <= 0;
   });
 
   readonly rightDisabled = computed(() => {
     if (this.isRtl()) {
-      // In RTL, right arrow retreats backward to the previous page (start)
       return this.currentPage() <= 0;
     }
-    // In LTR, right arrow advances forward to the next page
     return this.currentPage() >= this.totalPages() - 1 && !this.moreComing();
   });
 
@@ -203,43 +213,30 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  /**
-   * Action when clicking the Left Arrow button (<)
-   */
   onLeftArrowClick(): void {
     if (this.leftDisabled()) {
       return;
     }
 
     if (this.isRtl()) {
-      // Advance to next page
       this.nextPage();
     } else {
-      // Retreat to previous page
       this.prevPage();
     }
   }
 
-  /**
-   * Action when clicking the Right Arrow button (>)
-   */
   onRightArrowClick(): void {
     if (this.rightDisabled()) {
       return;
     }
 
     if (this.isRtl()) {
-      // Retreat to previous page
       this.prevPage();
     } else {
-      // Advance to next page
       this.nextPage();
     }
   }
 
-  /**
-   * Advance one full page
-   */
   nextPage(): void {
     const current = this.currentPage();
     const total = this.totalPages();
@@ -251,9 +248,6 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  /**
-   * Retreat one full page
-   */
   prevPage(): void {
     const current = this.currentPage();
     if (current > 0) {
@@ -261,9 +255,6 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  /**
-   * Navigate directly to a specific page index
-   */
   goToPage(pageIndex: number): void {
     const container = this.scrollContainer?.nativeElement;
     if (!container) return;

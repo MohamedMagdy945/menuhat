@@ -4,7 +4,7 @@ import {
   output,
 } from '@angular/core';
 
-import { CarouselComponent, ResponsiveItems } from '../../../../shared/components/carousel/carousel.component';
+import { CarouselComponent } from '../../../../shared/components/carousel/carousel.component';
 import { Restaurant } from '../../../restaurants/models/restaurant';
 import { HomeRestaurantCardComponent } from '../home-restaurant-card/home-restaurant-card.component';
 
@@ -23,9 +23,6 @@ export class HomeRestaurantsComponent {
 
   // Restaurants displayed inside the section
   readonly restaurants = input.required<Restaurant[]>();
-
-  // Easily control how many items are visible side-by-side (e.g. 5, 6, 7 or '2 sm:3 md:4 lg:5')
-  readonly itemsCount = input<string | number | ResponsiveItems>('2 sm:3 md:4 lg:5');
 
   // Pagination state (defaults to false for single-batch carousel display)
   readonly hasMoreData = input(false);

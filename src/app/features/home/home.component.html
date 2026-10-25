@@ -4,7 +4,7 @@
     <!-- Banner 1 -->
     <swiper-slide>
       <section
-        class="relative rounded-3xl overflow-hidden bg-linear-to-r from-[#3d2212] to-[#9b6029] shadow-2xl md:h-72">
+        class="relative rounded-3xl overflow-hidden bg-linear-to-r from-[#3d2212] to-[#9b6029] shadow-2xl md:h-74">
         <div
           class="relative z-10 mx-auto flex h-full w-full max-w-screen-2xl items-center px-4 py-8 sm:px-8 md:px-12 lg:px-16">
           <!-- Content -->
@@ -45,7 +45,7 @@
 
     <!-- Banner 2 -->
     <swiper-slide>
-      <section class="relative rounded-3xl w-full overflow-hidden shadow-2xl md:h-72
+      <section class="relative rounded-3xl w-full overflow-hidden shadow-2xl md:h-74
       ">
         <!-- Background Gradient -->
         <div class="absolute inset-0 bg-linear-to-r from-[#FFCB55] via-[#FFA52F] to-[#F47716]"></div>
@@ -88,23 +88,23 @@
 
 <!-- product section -->
 <div class="mt-2">
-  <app-home-menu-items itemsCount="2 sm:3 md:4 lg:8" />
+  <app-home-menu-items />
 </div>
 
 <!-- restaurants section -->
 <div class="">
-  <app-home-restaurants itemsCount="2 sm:3 md:4 lg:7" title="الأكثر زيارة"
+  <app-home-restaurants title="الأكثر زيارة"
     [restaurants]="restaurantsService.topVisits()" />
 </div>
 
 <!-- Nearest Restaurants -->
 <div class="">
-  <app-home-restaurants itemsCount="2 sm:3 md:4 lg:7" title="الأقرب إلى منطقتك"
+  <app-home-restaurants title="الأقرب إلى منطقتك"
     [restaurants]="restaurantsService.nearestRestaurants()" />
 </div>
 
 <!-- Top Rated Restaurants -->
 <div class="">
-  <app-home-restaurants itemsCount="2 sm:3 md:4 lg:7" title="الأعلى تقييماً"
+  <app-home-restaurants title="الأعلى تقييماً"
     [restaurants]="restaurantsService.topRates()" />
 </div>

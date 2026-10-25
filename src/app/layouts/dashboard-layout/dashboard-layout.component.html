@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-background text-slate-800 antialiased flex flex-col relative" dir="rtl">
+<div class="min-h-screen bg-background text-slate-800 antialiased flex flex-col relative">
   <!-- 1. Full-Width Top Header (Spans edge-to-edge across the entire screen) -->
   <app-dashboard-header class="sticky top-0 z-50 w-full" />
 
@@ -9,11 +9,14 @@
 
     <!-- Main Dynamic Content (Router Outlet) with margin for sidebar -->
     <main
-      class="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto transition-all duration-300"
+      class="flex-1 p-4 sm:p-6 lg:p-8 w-full transition-all duration-300 flex flex-col items-center"
       [class.lg:mr-68]="!isCollapsed()"
       [class.lg:mr-20]="isCollapsed()"
     >
-      <router-outlet />
+      <div class="w-full max-w-7xl mx-auto">
+        <router-outlet />
+      </div>
     </main>
+
   </div>
 </div>

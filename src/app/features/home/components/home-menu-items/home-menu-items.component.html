@@ -15,10 +15,10 @@
     </a>
   </div>
 
-  <!-- Horizontal Scroll (Always Side-by-Side) -->
-  <app-carousel class="mt-2 block" [items]="itemsCount()">
+  <!-- Horizontal Scroll (Configured internally for optimal menu card sizes) -->
+  <app-carousel class="mt-2 block w-full" items="2 sm:3 md:4 lg:6 xl:8">
     @for (item of items(); track item.mostrequestesId) {
-      <app-home-menu-item-card [menuItem]="item" />
+      <app-home-menu-item-card [menuItem]="item" class="w-full" />
     }
   </app-carousel>
 </section>

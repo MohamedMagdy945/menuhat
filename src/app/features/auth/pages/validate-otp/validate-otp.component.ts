@@ -5,6 +5,8 @@ import { timer, Subscription } from 'rxjs';
 import { RegisterService } from '../../services/register.service';
 import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
 
+import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
+
 export interface ValidateOtpPayload {
   email: string;
   otp: string;
@@ -14,18 +16,23 @@ export interface ValidateOtpPayload {
 @Component({
   selector: 'app-validate-otp',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, LoadingButtonComponent],
   templateUrl: './validate-otp.component.html',
   styleUrls: ['./validate-otp.component.css']
 })
-export class ValidateOtp implements OnInit, OnDestroy {
+export class ValidateOtpComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly registerService = inject(RegisterService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly swal = inject(SweetAlertService);
 
+  get isVerifyDisabled(): boolean {
+    return this.otpDigits.join('').length < 6 || this.isLoading;
+  }
+
   email: string = '';
+  role: 'owner' | 'customer' = 'customer';
   otpDigits: string[] = ['', '', '', '', '', ''];
   timeLeft: number = 55;
   private timerSubscription?: Subscription;
@@ -36,6 +43,7 @@ export class ValidateOtp implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       this.email = params['email'] || '';
+      this.role = params['role'] === 'owner' ? 'owner' : 'customer';
     });
 
     this.startTimer();
@@ -137,8 +145,16 @@ export class ValidateOtp implements OnInit, OnDestroy {
     this.registerService.ValidateOtp(payload).subscribe({
       next: (response) => {
         this.swal.showToast('تم التحقق بنجاح, يرجي تسجيل بياناتك الأن', 'success');
-        this.router.navigate(['/register'], { queryParams: { email: this.email } });
+        const userTypeId = this.role === 'owner' ? 1 : 3;
+        this.router.navigate(['/register'], {
+          queryParams: {
+            email: this.email,
+            userTypeId: userTypeId,
+            role: this.role
+          }
+        });
       },
+
       error: (err) => {
         this.swal.showAlert(err.error?.message, 'error');
         this.isLoading = false;
@@ -172,10 +188,12 @@ export class ValidateOtp implements OnInit, OnDestroy {
   }
 
   changeEmail(): void {
-    this.router.navigate(['/sendEmail']);
+    this.router.navigate(['/send-email'], { queryParams: { role: this.role } });
   }
 
   ngOnDestroy(): void {
     this.timerSubscription?.unsubscribe();
   }
 }
+
+export { ValidateOtpComponent as ValidateOtp };

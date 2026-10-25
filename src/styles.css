@@ -59,6 +59,22 @@ a {
     font-variation-settings: 'FILL' 1;
 }
 
+/* =========================
+   Selection & Autofill Fixes
+========================= */
+::selection {
+    background-color: #fed7aa; /* soft orange-200 */
+    color: #9a3412; /* orange-800 */
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--color-text) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 
 .custom-container {
     width: 100%;

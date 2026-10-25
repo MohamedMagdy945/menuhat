@@ -6,7 +6,7 @@
   >
     <!-- Avatar Icon -->
     <div
-      class="w-8 h-8 rounded-full  border border-gray-100 bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm"
+      class="w-7 h-7 rounded-full  border border-gray-100 bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -27,7 +27,7 @@
 
     <!-- Chevron -->
     <svg
-      class="w-3.5 h-3.5 text-slate-400 transition-transform duration-200 mr-0.5"
+      class="w-3 h-3 text-slate-400 transition-transform duration-200 mr-0.5"
       [class.rotate-180]="isOpen()"
       fill="none"
       stroke="currentColor"
@@ -49,7 +49,7 @@
       <!-- Header (shown when logged in) -->
       @if (isAuthenticated()) {
         <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-gray-50">
-          <div class="w-9 h-9 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm text-sm font-bold">
+          <div class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm text-sm font-bold">
             {{ userName.charAt(0) }}
           </div>
           <div class="flex flex-col min-w-0">
@@ -60,14 +60,14 @@
       }
 
       <!-- Menu Items -->
-      <ul class="py-1.5">
+      <ul class="py-1">
 
         @if (isAuthenticated()) {
           <!-- My Profile -->
           <li>
             <button
               (click)="navigateToProfile($event)"
-              class="dropdown-item w-full flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-150 text-right"
+              class="dropdown-item w-full flex items-center gap-2 px-4 py-1 text-sm text-slate-700 hover:bg-orange-50  transition-colors duration-150 text-right"
             >
               <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,15 +80,15 @@
           </li>
 
           <!-- Divider -->
-          <li class="mx-3 my-1 border-t border-gray-100"></li>
+          <li class="mx-3  border-t border-gray-100"></li>
 
           <!-- Logout -->
           <li>
             <button
               (click)="logout($event)"
-              class="dropdown-item w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors duration-150 text-right"
+              class="dropdown-item w-full flex items-center gap-3 px-4 py-1 text-sm text-red-500 hover:bg-red-50 transition-colors duration-150 text-right"
             >
-              <span class="w-8 h-8 rounded-full bg-red-50 flex items-center justify-center shrink-0">
+              <span class="w-7 h-7 rounded-full bg-red-50 flex items-center justify-center shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -103,9 +103,9 @@
           <li>
             <button
               (click)="navigateToLogin($event)"
-              class="dropdown-item w-full flex items-center gap-3 px-4 py-2.5 text-sm text-orange-600 hover:bg-orange-50 transition-colors duration-150 text-right"
+              class="dropdown-item w-full flex items-center gap-3 px-3  text-sm text-orange-600 hover:bg-orange-50 transition-colors duration-150 text-right"
             >
-              <span class="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+              <span class="w-7 h-7 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />

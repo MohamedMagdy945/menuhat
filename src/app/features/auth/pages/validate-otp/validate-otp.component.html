@@ -1,51 +1,74 @@
-
-<div class="otp-container">
-  <!-- الشعار أعلى الصفحة -->
-  <div class="logo-container">
-    <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo">
-  </div>
-
-  <div class="card">
-    <h1 class="title">تأكيد رمز التحقق</h1>
-
-   <div class="otp-inputs">
-  <input 
-    *ngFor="let digit of otpDigits; let i = index; trackBy: trackByIndex" 
-    type="text" 
-    inputmode="numeric"
-    maxLength="6"
-    class="otp-field"
-    [id]="'otp-input-' + i"
-    [value]="otpDigits[i]"
-    (input)="onOtpInput($event, i)"
-    (keydown)="onOtpKeyDown($event, i)"
-    (focus)="$any($event.target).select()"
-  >
-</div>
-
-    <p class="subtitle">تم إرسال رمز التحقق إلى بريدك الإلكتروني</p>
-
-    <button type="button" class="btn-primary" [disabled]="isLoading" (click)="onVerifyCode()">
-      <span *ngIf="!isLoading">تأكيد الرمز</span>
-      <span *ngIf="isLoading">جاري التحقق...</span>
-    </button>
-
-    <p *ngIf="errorMessage" class="error-text">{{ errorMessage }}</p>
-
-    <div class="resend-section">
-      <p *ngIf="timeLeft > 0" class="timer-text">
-  إعادة إرسال الرمز خلال 
-  <span class="timer-count">
-    00:{{ timeLeft < 10 ? '0' + timeLeft : timeLeft }}
-  </span>
-</p>
-
-<button *ngIf="timeLeft === 0" type="button" class="resend-btn" (click)="resendCode()">
-  إعادة إرسال الرمز
-</button>
-      <p class="change-email">
-        أدخلت بريداً خاطئاً؟ <a (click)="changeEmail()">تغيير البريد</a>
+<div class="w-full flex items-center justify-center py-2 sm:py-4">
+  <!-- Centered Card -->
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-110 flex-col rounded-3xl border border-gray-100 bg-white p-6 sm:p-8 ">
+    <!-- Brand Header -->
+    <div class="flex flex-col items-center text-center">
+      <a routerLink="/" class="inline-block transition-transform duration-200" aria-label="Menuhat Home">
+        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-16 w-auto object-contain" />
+      </a>
+      <h1 class="mt-4 text-xl font-bold tracking-tight text-slate-900">تأكيد رمز التحقق</h1>
+      <p class="mt-1 font-semibold text-xs sm:text-sm text-gray-400">
+        تم إرسال رمز التحقق المكون من 6 أرقام إلى
+        <span class="block mt-0.5 font-bold text-slate-700" >{{ email }}</span>
       </p>
+    </div>
+
+    <!-- OTP Input Boxes -->
+    <div class="my-6 flex items-center justify-center gap-2 sm:gap-2.5" dir="ltr">
+      @for (digit of otpDigits; track $index) {
+      <input type="text" inputmode="numeric" maxLength="6" [id]="'otp-input-' + $index" [value]="otpDigits[$index]"
+        (input)="onOtpInput($event, $index)" (keydown)="onOtpKeyDown($event, $index)"
+        (focus)="$any($event.target).select()"
+        class="h-13 w-11 sm:h-14 sm:w-13 text-center text-xl sm:text-2xl font-black text-slate-900 bg-slate-50 border-[1.5px] border-slate-200 rounded-2xl outline-none transition-all duration-200 hover:border-slate-300 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/0 " />
+      }
+    </div>
+
+    <!-- Error Alert -->
+    @if (errorMessage) {
+    <div
+      class="otp-error-alert -mt-2 mb-4 flex items-center gap-2.5 rounded-2xl border border-red-200 bg-red-50/90 px-3.5 py-3 text-sm text-red-700"
+      role="alert">
+      <span class="material-symbols-sharp shrink-0 select-none text-[20px] text-red-500">
+        error
+      </span>
+      <span class="flex-1 text-xs sm:text-sm font-medium leading-relaxed">{{ errorMessage }}</span>
+    </div>
+    }
+
+    <!-- Submit Button -->
+    <app-loading-button type="button" text="تأكيد الرمز" loadingText="جاري التحقق..." [loading]="isLoading"
+      [disabled]="isVerifyDisabled" [fullWidth]="true" (clicked)="onVerifyCode()" />
+
+    <!-- Resend & Change Email Section -->
+    <div class="mt-6 flex flex-col items-center justify-center gap-3 text-center text-sm">
+      @if (timeLeft > 0) {
+      <p class="text-xs sm:text-sm font-medium text-slate-500">
+        إعادة إرسال الرمز خلال
+        <span class="font-bold text-orange-600 tracking-wider">
+          00:{{ timeLeft < 10 ? '0' + timeLeft : timeLeft }} </span>
+      </p>
+      } @else {
+      <button type="button" (click)="resendCode()"
+        class="inline-flex cursor-pointer items-center gap-1.5 font-bold text-orange-600 transition-colors duration-200 hover:text-orange-700 hover:underline bg-transparent border-none">
+        <span class="material-symbols-sharp select-none text-[18px]">refresh</span>
+        <span>إعادة إرسال الرمز</span>
+      </button>
+      }
+
+      <!-- Change Email Link -->
+      <div
+        class="flex items-center justify-center gap-1.5 text-xs sm:text-sm text-slate-500 pt-3 border-t border-slate-100 w-full">
+        <span>أدخلت بريداً خاطئاً؟</span>
+        <button type="button" (click)="changeEmail()"
+          class="group inline-flex cursor-pointer items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline bg-transparent border-none p-0">
+          <span>تغيير البريد</span>
+          <span
+            class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1">
+            arrow_back
+          </span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

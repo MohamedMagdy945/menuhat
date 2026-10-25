@@ -8,7 +8,7 @@
   "include": [
     "src/**/*.ts",
     "src/app/features/restaurants/restaurants.component.ts",
-    "src/app/features/auth/pages/register/components/register/.component.ts"
+    "src/app/features/auth/register/components/register/.component.ts"
   ],
   "exclude": [
     "src/**/*.spec.ts"

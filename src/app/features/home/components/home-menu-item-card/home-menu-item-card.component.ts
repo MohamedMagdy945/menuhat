@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
 import { RouterLink } from '@angular/router';
 import { MenuItem } from '../../../menu-items/models';
@@ -15,7 +15,10 @@ export class HomeMenuItemCardComponent {
   readonly isFavorite = signal(false);
   readonly Math = Math;
 
-
+  readonly itemId = computed(() => {
+    const item = this.menuItem() as any;
+    return item.mostrequestesId ?? item.id ?? item.productId ?? item.menuId;
+  });
 
   toggleFavorite(): void {
     this.isFavorite.update((v) => !v);

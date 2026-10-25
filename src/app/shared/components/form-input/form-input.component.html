@@ -1,62 +1,49 @@
-<div class="mb-4.5 w-full text-right" dir="rtl">
+<div class="mb-4.5 w-full text-right">
   @if (label()) {
-    <div class="mb-2.5 mr-3 flex items-center justify-between">
-      <label [for]="id() || null" class="m-0 block text-[13.5px] font-semibold text-slate-700">
-        {{ label() }}
-      </label>
-      <ng-content select="[label-extra]" />
-    </div>
+  <div class=" mb-2.5 mr-3 flex items-center justify-between">
+    <label [for]="id() || null" class="m-0 block text-[13.5px] font-semibold text-slate-700">
+      {{ label() }}
+    </label>
+    <ng-content select="[label-extra]" />
+  </div>
   }
 
-  <div
-    class="group relative flex w-full items-center rounded-[25px] border-[1.5px] transition-all duration-200 ease-out"
+  <div class="group relative flex w-full items-center rounded-3xl border-[1.5px] transition-all duration-200 ease-out"
     [ngClass]="
       isInvalid
-        ? 'border-red-500 bg-red-50 focus-within:border-red-500 focus-within:ring-4 focus-within:ring-red-500/12'
+        ? 'border-red-500 bg-red-50  '
         : 'border-slate-200 bg-slate-50 hover:border-slate-300 focus-within:border-orange-500 focus-within:bg-white'
-    "
-  >
+    ">
     <span
       class="pointer-events-none absolute right-3.5 z-1 flex items-center justify-center transition-colors duration-200"
-      [ngClass]="isInvalid ? 'text-red-500' : 'text-slate-400 group-focus-within:text-orange-500'"
-    >
+      [ngClass]="isInvalid ? 'text-red-500' : 'text-slate-400 group-focus-within:text-orange-500'">
       <ng-content select="[input-icon]" />
     </span>
 
-    <input
-      [id]="id() || null"
-      [type]="isPasswordType ? (showPassword ? 'text' : 'password') : type()"
-      [value]="value"
-      [disabled]="disabled"
-      [placeholder]="placeholder()"
-      [attr.autocomplete]="autocomplete()"
-      (input)="handleInput($event)"
-      (blur)="handleBlur()"
+    <input [id]="id() || null" [type]="isPasswordType ? (showPassword ? 'text' : 'password') : type()" [value]="value"
+      [disabled]="disabled" [placeholder]="placeholder()" [attr.autocomplete]="autocomplete()"
+      (input)="handleInput($event)" (blur)="handleBlur()"
       class="h-12 w-full border-none bg-transparent text-sm text-slate-900 outline-none placeholder:text-[13px] placeholder:text-slate-400"
-      [ngClass]="isPasswordType ? 'px-11' : 'pr-11 pl-4'"
-    />
+      [ngClass]="isPasswordType ? 'px-11' : 'pr-11 pl-4'" />
 
     @if (isPasswordType) {
-      <button
-        type="button"
-        (click)="togglePassword()"
-        class="absolute left-2.5 z-1 flex cursor-pointer items-center justify-center rounded-lg border-none bg-transparent p-1.5 text-slate-400 transition-all duration-200 hover:bg-slate-200 hover:text-slate-700"
-        [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-      >
-        <span class="material-symbols-sharp select-none leading-none text-[20px]">
-          {{ showPassword ? 'visibility_off' : 'visibility' }}
-        </span>
-      </button>
+    <button type="button" (click)="togglePassword()"
+      class="absolute left-2.5 z-1 flex cursor-pointer items-center justify-center rounded-lg border-none bg-transparent p-1.5 text-slate-400 transition-all duration-200 hover:bg-slate-200 hover:text-slate-700"
+      [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
+      <span class="material-symbols-sharp select-none leading-none text-[20px]">
+        {{ showPassword ? 'visibility_off' : 'visibility' }}
+      </span>
+    </button>
     }
   </div>
 
   <!-- Single Validation Error Message -->
   @if (isInvalid && resolvedError) {
-    <div class="mt-1.5 flex items-center gap-1.5 text-right text-xs font-medium text-red-500">
-      <span class="material-symbols-sharp select-none leading-none text-[16px] text-red-500 shrink-0">
-        error
-      </span>
-      <span>{{ resolvedError }}</span>
-    </div>
+  <div class="mt-1.5 flex items-center gap-1.5 text-right text-xs font-medium text-red-500">
+    <span class="material-symbols-sharp select-none leading-none text-[16px] text-red-500 shrink-0">
+      error
+    </span>
+    <span>{{ resolvedError }}</span>
+  </div>
   }
 </div>

@@ -1,26 +1,45 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { RegisterService } from '../../services/register.service';
 import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
+import { FormInputComponent } from '../../../../shared/components/form-input/form-input.component';
+import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
 
 @Component({
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   selector: 'app-send-email',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    FormInputComponent,
+    LoadingButtonComponent,
+  ],
   styleUrl: './send-email.component.css',
   templateUrl: './send-email.component.html',
 })
-export class SendEmail implements OnInit, OnDestroy {
+export class SendEmailComponent implements OnInit, OnDestroy {
   private readonly _fb = inject(FormBuilder);
   private readonly _registerService = inject(RegisterService);
   private readonly _Route = inject(Router);
+  private readonly _route = inject(ActivatedRoute);
   private readonly _SweetAlertService = inject(SweetAlertService);
+
+  role: 'owner' | 'customer' = 'customer';
 
   signupForm!: FormGroup;
   isCodeSent: boolean = false;
-  isLoading: boolean = false;
-  errorMessage: string = '';
+  isLoading = signal<boolean>(false);
+  errorMessage = signal<string>('');
+
+  readonly validationMessages = {
+    email: {
+      required: 'البريد الإلكتروني مطلوب',
+      email: 'يرجى إدخال بريد إلكتروني صحيح'
+    }
+  };
 
   otpDigits: string[] = ['', '', '', '', '', ''];
   timer: number = 55;
@@ -29,6 +48,16 @@ export class SendEmail implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.signupForm = this._fb.group({
       email: ['', [Validators.required, Validators.email]]
+    });
+
+    this.signupForm.valueChanges.subscribe(() => {
+      if (this.errorMessage()) {
+        this.errorMessage.set('');
+      }
+    });
+
+    this._route.queryParams.subscribe(params => {
+      this.role = params['role'] === 'owner' ? 'owner' : 'customer';
     });
   }
 
@@ -42,8 +71,8 @@ export class SendEmail implements OnInit, OnDestroy {
       return;
     }
 
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
 
     const payload = {
       email: this.signupForm.value.email,
@@ -53,17 +82,22 @@ export class SendEmail implements OnInit, OnDestroy {
 
     this._registerService.sendemail(payload).subscribe({
       next: (res) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.isCodeSent = true;
         this.startTimer();
 
-        this._Route.navigate(['/ValidateOtp'], {
-          queryParams: { email: this.signupForm.value.email }
+        this._Route.navigate(['/validate-otp'], {
+          queryParams: {
+            email: this.signupForm.value.email,
+            role: this.role
+          }
         });
       },
       error: (err) => {
-        this.isLoading = false;
-        this._SweetAlertService.showAlert(err?.error?.message, 'error');
+        this.isLoading.set(false);
+        const msg = err?.error?.message || 'حدث خطأ أثناء إرسال الرمز، يرجى المحاولة مرة أخرى';
+        this.errorMessage.set(msg);
+        this._SweetAlertService.showAlert(msg, 'error');
       }
     });
   }
@@ -116,3 +150,5 @@ export class SendEmail implements OnInit, OnDestroy {
     if (this.intervalId) clearInterval(this.intervalId);
   }
 }
+
+export { SendEmailComponent as SendEmail };

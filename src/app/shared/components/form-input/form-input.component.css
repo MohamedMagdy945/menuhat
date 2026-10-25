@@ -2,3 +2,19 @@
   display: block;
   width: 100%;
 }
+
+/* Fix browser autofill (Saved Menu / Autocomplete) default blue background and sharp edges */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #f8fafc inset !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #0f172a;
+  transition: background-color 5000s ease-in-out 0s;
+  border-radius: 25px !important;
+}
+
+.group:focus-within input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+}

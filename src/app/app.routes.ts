@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { Offers } from './features/offers/pages/offers/offers';
+import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
 import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
 import { HomeComponent } from './features/home/home.component';
@@ -21,62 +22,107 @@ import { MenuItemDetailsComponent } from './features/menu-items/components/menu-
 export const routes: Routes = [
 
     // =====================================================
-    // Authentication
+    // Authentication Layout & Routes
     // =====================================================
 
     {
         path: 'login',
-        loadComponent: () =>
-            import('./features/auth/pages/login/login.component')
-                .then(m => m.Login)
+        component: AuthLayoutComponent,
+        children: [
+            {
+                path: '',
+                loadComponent: () =>
+                    import('./features/auth/pages/login/login.component')
+                        .then(m => m.LoginComponent ?? m.Login)
+            }
+        ]
     },
 
+    {
+        path: 'send-email',
+        component: AuthLayoutComponent,
+        children: [
+            {
+                path: '',
+                loadComponent: () =>
+                    import('./features/auth/pages/send-email/send-email.component')
+                        .then(m => m.SendEmailComponent ?? m.SendEmail)
+            }
+        ]
+    },
     {
         path: 'sendEmail',
-        loadComponent: () =>
-            import('./features/auth/pages/send-email/send-email.component')
-                .then(m => m.SendEmail)
+        redirectTo: 'send-email',
+        pathMatch: 'full'
     },
 
     {
+        path: 'validate-otp',
+        component: AuthLayoutComponent,
+        children: [
+            {
+                path: '',
+                loadComponent: () =>
+                    import('./features/auth/pages/validate-otp/validate-otp.component')
+                        .then(m => m.ValidateOtpComponent ?? m.ValidateOtp)
+            }
+        ]
+    },
+    {
         path: 'ValidateOtp',
-        loadComponent: () =>
-            import('./features/auth/pages/validate-otp/validate-otp.component')
-                .then(m => m.ValidateOtp)
+        redirectTo: 'validate-otp',
+        pathMatch: 'full'
+    },
+    {
+        path: 'verify-otp',
+        redirectTo: 'validate-otp',
+        pathMatch: 'full'
     },
 
     {
         path: 'register',
-        loadComponent: () =>
-            import('./features/auth/pages/register/register.component')
-                .then(m => m.RegisterComponent)
+        component: AuthLayoutComponent,
+        children: [
+            {
+                path: '',
+                loadComponent: () =>
+                    import('./features/auth/pages/register/register.component')
+                        .then(m => m.RegisterComponent)
+            }
+        ]
     },
 
     {
         path: 'register/owner',
-        loadComponent: () =>
-            import('./features/auth/components/register-owner/register-owner.component')
-                .then(m => m.RegisterOwnerPageComponent)
-    },
-
-    {
-        path: 'register-owner',
-        redirectTo: 'register/owner',
+        redirectTo: 'register',
         pathMatch: 'full'
     },
 
     {
         path: 'register/customer',
-        loadComponent: () =>
-            import('./features/auth/components/register-customer/register-customer.component')
-                .then(m => m.RegisterCustomerPageComponent)
+        redirectTo: 'register',
+        pathMatch: 'full'
+    },
+
+    {
+        path: 'register-owner',
+        redirectTo: 'register',
+        pathMatch: 'full'
     },
 
     {
         path: 'register-customer',
-        redirectTo: 'register/customer',
+        redirectTo: 'register',
         pathMatch: 'full'
     },
+
+
+    {
+        path: 'auth',
+        redirectTo: 'login',
+        pathMatch: 'full'
+    },
+
 
 
     // =====================================================

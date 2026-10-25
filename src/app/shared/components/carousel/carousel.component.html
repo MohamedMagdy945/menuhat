@@ -3,25 +3,17 @@
   <div class="flex items-center w-full gap-2">
     <!-- Right Arrow Button (>) -->
     @if (showArrows() && (totalPages() > 1 || moreComing())) {
-      <button
-        type="button"
-        [attr.aria-label]="isRtl() ? 'الصفحة السابقة' : 'الصفحة التالية'"
-        [disabled]="rightDisabled()"
-        (click)="onRightArrowClick()"
-        class="shrink-0 flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-900 transition-colors disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none"
-      >
-        <span class="material-symbols-sharp select-none text-[20px] leading-none">chevron_right</span>
-      </button>
+    <button type="button" [attr.aria-label]="isRtl() ? 'الصفحة السابقة' : 'الصفحة التالية'" [disabled]="rightDisabled()"
+      (click)="onRightArrowClick()"
+      class="shrink-0 flex h-8 w-8 md:h-8 md:w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-900 transition-colors disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none">
+      <span class="material-symbols-sharp select-none text-[26px] leading-none">chevron_right</span>
+    </button>
     }
 
     <!-- Scrollable Content Container -->
-    <div
-      #scrollContainer
+    <div #scrollContainer
       class="@container scrollbar-hide flex-1 min-w-0 flex overflow-x-auto scroll-smooth snap-x snap-mandatory py-2"
-      style="overflow-anchor: none; container-type: inline-size"
-      [dir]="isRtl() ? 'rtl' : 'ltr'"
-      (scroll)="onScroll()"
-    >
+      style="overflow-anchor: none; container-type: inline-size" [dir]="isRtl() ? 'rtl' : 'ltr'" (scroll)="onScroll()">
       <div class="carousel-track" [style]="trackStyle()">
         <ng-content />
       </div>
@@ -29,34 +21,24 @@
 
     <!-- Left Arrow Button (<) -->
     @if (showArrows() && (totalPages() > 1 || moreComing())) {
-      <button
-        type="button"
-        [attr.aria-label]="isRtl() ? 'الصفحة التالية' : 'الصفحة السابقة'"
-        [disabled]="leftDisabled()"
-        (click)="onLeftArrowClick()"
-        class="shrink-0 flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-gray-900 transition-colors disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none"
-      >
-        <span class="material-symbols-sharp select-none text-[20px] leading-none">chevron_left</span>
-      </button>
+    <button type="button" [attr.aria-label]="isRtl() ? 'الصفحة التالية' : 'الصفحة السابقة'" [disabled]="leftDisabled()"
+      (click)="onLeftArrowClick()"
+      class="shrink-0 flex h-8 w-8 md:h-8 md:w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-900 transition-colors disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none">
+      <span class="material-symbols-sharp select-none text-[26px] leading-none">chevron_left</span>
+    </button>
     }
   </div>
 
   <!-- Bottom-Center Pagination Indicators (Dots) -->
   @if (showDots() && totalPages() > 1) {
-    <div class="mt-1 flex w-full items-center justify-center gap-1.5 py-1">
-      @for (page of pages(); track page) {
-        <button
-          type="button"
-          [attr.aria-label]="'صفحة ' + (page + 1)"
-          (click)="goToPage(page)"
-          class="h-1 rounded-full transition-all duration-200 cursor-pointer focus:outline-none"
-          [class.w-4]="currentPage() === page"
-          [class.bg-gray-500]="currentPage() === page"
-          [class.w-2]="currentPage() !== page"
-          [class.bg-gray-300]="currentPage() !== page"
-          [class.hover:bg-gray-300]="currentPage() !== page"
-        ></button>
-      }
-    </div>
+  <div class=" flex w-full items-center justify-center gap-1.5 py-1">
+    @for (page of pages(); track page) {
+    <button type="button" [attr.aria-label]="'صفحة ' + (page + 1)" (click)="goToPage(page)"
+      class="h-1 rounded-full transition-all duration-200 cursor-pointer focus:outline-none"
+      [class.w-2]="currentPage() === page" [class.bg-gray-400]="currentPage() === page"
+      [class.w-1]="currentPage() !== page" [class.bg-gray-200]="currentPage() !== page"
+      [class.hover:bg-gray-200]="currentPage() !== page"></button>
+    }
+  </div>
   }
 </div>

@@ -1,11 +1,11 @@
-<div class="relative flex min-h-screen w-full items-center justify-center p-4">
+<div class="w-full flex items-center justify-center py-2 sm:py-4">
   <!-- Centered Login Card -->
   <div
-    class="relative z-10 mx-auto flex w-full max-w-110 flex-col rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8">
+    class="relative z-10 mx-auto flex w-full max-w-110 flex-col rounded-3xl border border-gray-100 bg-white p-6 sm:p-8 ">
     <!-- Brand Header -->
     <div class="flex flex-col items-center text-center">
       <a routerLink="/" class="inline-block transition-transform duration-200 " aria-label="Menuhat Home">
-        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-18 w-auto object-contain" />
+        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-16 w-auto object-contain" />
       </a>
       <h1 class="mt-4 text-2xl font-bold tracking-tight text-slate-900">تسجيل الدخول</h1>
       <p class="mt-1 font-semibold text-xs sm:text-sm text-gray-400">أهلاً بك، سجّل دخولك لمتابعة طلباتك</p>
@@ -25,7 +25,7 @@
       <!-- Password Field -->
       <app-form-input formControlName="password" label="كلمة المرور" type="password" placeholder="••••••••"
         autocomplete="current-password" [customErrors]="validationMessages.password">
-        <a label-extra routerLink="/sendEmail"
+        <a label-extra routerLink="/send-email"
           class="text-[13px] font-semibold text-orange-600 no-underline transition-colors duration-200 hover:text-orange-700 hover:underline">
           نسيت كلمة المرور؟
         </a>
@@ -37,7 +37,7 @@
       <!-- Error Message Banner (Under Password Field) -->
       @if (errorMessage()) {
       <div
-        class="login-error-alert -mt-1 mb-4 flex items-center gap-2.5 rounded-2xl border border-red-200 bg-red-50/90 px-3.5 py-3 text-sm text-red-700"
+        class="login-error-alert -mt-1 mb-4 flex items-center gap-2.5 rounded-2xl border border-red-200 bg-red-50/90 px-3.5 py-3  text-red-700"
         role="alert">
         <span class="material-symbols-sharp shrink-0 select-none text-[20px] text-red-500">
           error
@@ -75,16 +75,28 @@
     </button>
 
     <!-- Signup Prompt -->
-    <div class="mt-6 flex items-center justify-center gap-1.5 text-sm">
-      <span class="text-slate-500">ليس لديك حساب؟</span>
-      <a routerLink="/sendEmail"
-        class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline">
-        <span>إنشاء حساب جديد</span>
-        <span
-          class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1">
-          arrow_back
-        </span>
-      </a>
+    <div class="mt-6 flex flex-col items-center justify-center  gap-2.5 pt-4 border-t border-slate-100 text-sm">
+      <div class="flex items-center justify-center gap-1.5 text-slate-500">
+        <span>ليس لديك حساب؟</span>
+        <a [routerLink]="['/send-email']" [queryParams]="{ role: 'customer' }"
+          class="group inline-flex items-center gap-1 font-bold text-orange-600 ">
+          <span>سجل كعميل</span>
+          <span class="material-symbols-sharp select-none leading-none text-[16px] ">
+            arrow_back
+          </span>
+        </a>
+      </div>
+
+      <div class="flex items-center justify-center gap-1.5 text-sm text-slate-400">
+        <span>أو</span>
+        <a [routerLink]="['/send-email']" [queryParams]="{ role: 'owner' }"
+          class="group inline-flex items-center gap-1 font-bold text-orange-600">
+          <span>سجل كصاحب مطعم</span>
+          <span class="material-symbols-sharp select-none leading-none text-[14px] ">
+            arrow_back
+          </span>
+        </a>
+      </div>
     </div>
   </div>
 </div>

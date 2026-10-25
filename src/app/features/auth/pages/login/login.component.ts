@@ -12,6 +12,7 @@ import { LoadingButtonComponent } from '../../../../shared/components/loading-bu
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -22,7 +23,8 @@ import { LoadingButtonComponent } from '../../../../shared/components/loading-bu
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class Login implements OnInit {
+export class LoginComponent implements OnInit {
+
 
   private readonly _fb = inject(FormBuilder);
   private readonly _AuthServices = inject(LoginService);
@@ -116,3 +118,6 @@ export class Login implements OnInit {
     console.log('Logging in with Google...');
   }
 }
+
+export { LoginComponent as Login };
+

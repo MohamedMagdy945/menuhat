@@ -1,13 +1,13 @@
-<article class="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+<article class="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
 
   <!-- Image & Badges -->
   <div class="relative w-full overflow-hidden">
 
     <!-- Meal Details Link -->
-    <a [routerLink]="['/menu-items', menuItem().menuId]" [state]="{ item: menuItem() }" class="block h-full w-full"
+    <a [routerLink]="['/menu-items', itemId()]" [state]="{ item: menuItem() }" class="block h-full w-full"
       [attr.aria-label]="'عرض تفاصيل ' + menuItem().productName">
-      <div class="bg-slate-100 h-29">
-        <div class="relative h-22 md:h-25 w-full ">
+      <div class="bg-slate-100 h-26">
+        <div class="relative h-21 md:h-23 w-full ">
           <img [src]="menuItem().photoURL ? apiUrl + menuItem().photoURL : '/images/default-meal.png'"
             [alt]="menuItem().productName" class="h-full w-full object-contain p-1" loading="lazy" decoding="async"
             (error)="$any($event.target).src='/images/default-meal.png'" />
