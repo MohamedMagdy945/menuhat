@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { timer, Subscription } from 'rxjs';
 import { RegisterService } from '../../services/register.service';
-import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
+import { ToastService } from '../../../../core/services/toast.service';
 
 import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
 
@@ -25,7 +25,7 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly registerService = inject(RegisterService);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly swal = inject(SweetAlertService);
+  private readonly toast = inject(ToastService);
 
   get isVerifyDisabled(): boolean {
     return this.otpDigits.join('').length < 6 || this.isLoading;
@@ -38,7 +38,6 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
   private timerSubscription?: Subscription;
 
   isLoading: boolean = false;
-  errorMessage: string = '';
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -124,17 +123,16 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
     const otpCode = this.otpDigits.join('');
 
     if (otpCode.length < 6) {
-      this.swal.showToast('يرجى إدخال رمز التحقق كاملاً (6 أرقام)', 'warning');
+      this.toast.warning('يرجى إدخال رمز التحقق كاملاً (6 أرقام)');
       return;
     }
 
     if (!this.email) {
-      this.swal.showAlert('البريد الإلكتروني غير متاح، يرجى إعادة محاولة الإرسال', 'error');
+      this.toast.error('البريد الإلكتروني غير متاح، يرجى إعادة محاولة الإرسال');
       return;
     }
 
     this.isLoading = true;
-    this.errorMessage = '';
 
     const payload: ValidateOtpPayload = {
       email: this.email,
@@ -144,7 +142,7 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
 
     this.registerService.ValidateOtp(payload).subscribe({
       next: (response) => {
-        this.swal.showToast('تم التحقق بنجاح, يرجي تسجيل بياناتك الأن', 'success');
+        this.toast.success('تم التحقق بنجاح, يرجي تسجيل بياناتك الأن');
         const userTypeId = this.role === 'owner' ? 1 : 3;
         this.router.navigate(['/register'], {
           queryParams: {
@@ -156,7 +154,7 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
       },
 
       error: (err) => {
-        this.swal.showAlert(err.error?.message, 'error');
+        this.toast.error(err.error?.message || 'رمز التحقق غير صحيح');
         this.isLoading = false;
       }
     });
@@ -177,18 +175,18 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
       next: () => {
         this.isLoading = false;
         this.startTimer();
-        this.swal.showToast('تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني', 'info');
+        this.toast.info('تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني');
       },
       error: (err) => {
         this.isLoading = false;
         const msg = 'حدث خطأ أثناء إعادة إرسال الرمز';
-        this.swal.showAlert(msg, 'error');
+        this.toast.error(msg);
       }
     });
   }
 
   changeEmail(): void {
-    this.router.navigate(['/send-email'], { queryParams: { role: this.role } });
+    this.router.navigate(['/send-otp'], { queryParams: { role: this.role } });
   }
 
   ngOnDestroy(): void {

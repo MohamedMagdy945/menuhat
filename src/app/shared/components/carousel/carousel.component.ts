@@ -84,6 +84,7 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
   readonly cols = input<string | number | ResponsiveItems | null>(null);
   readonly grid = input<string | number | ResponsiveItems | null>(null);
   readonly gap = input<string | number | null>(null);
+  readonly itemWidth = input<string | number | null>(null);
   readonly isLoading = input(false);
   readonly hasMore = input(false);
   readonly showArrows = input(true);
@@ -104,9 +105,15 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     if (c.md !== undefined) styles.push(`--carousel-items-md: ${c.md}`);
     if (c.lg !== undefined) styles.push(`--carousel-items-lg: ${c.lg}`);
     if (c.xl !== undefined) styles.push(`--carousel-items-xl: ${c.xl}`);
-    if (this.gap() !== null && this.gap() !== undefined) {
-      const g = typeof this.gap() === 'number' ? `${this.gap()}px` : this.gap();
+    if (this.gap() !== null && this.gap() !== undefined && this.gap() !== '') {
+      const rawGap = String(this.gap()).trim();
+      const g = /^\d+$/.test(rawGap) ? `${rawGap}px` : rawGap;
       styles.push(`--carousel-gap: ${g}`);
+    }
+    if (this.itemWidth() !== null && this.itemWidth() !== undefined && this.itemWidth() !== '') {
+      const rawWidth = String(this.itemWidth()).trim();
+      const w = /^\d+$/.test(rawWidth) ? `${rawWidth}px` : rawWidth;
+      styles.push(`--carousel-item-width: ${w}`);
     }
     return styles.join('; ');
   });

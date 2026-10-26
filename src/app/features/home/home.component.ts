@@ -46,6 +46,17 @@ export class HomeComponent implements OnInit {
     }
 
     // ============================================
+    // Trending Restaurants (رائج الآن)
+    // ============================================
+    if (this.restaurantsService.trends().length === 0) {
+      this.restaurantsService.loadTrends({
+        pageNumber: 1,
+        pageSize: 10,
+        globalLoading: true,
+      });
+    }
+
+    // ============================================
     // Most Visited Restaurants
     // ============================================
 

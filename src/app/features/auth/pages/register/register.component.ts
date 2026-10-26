@@ -9,7 +9,7 @@ import { FormSelectComponent } from '../../../../shared/components/form-select/f
 import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
 import { CommonDateService } from '../../../../core/common-data/common-date';
 import { RegisterService } from '../../services/register.service';
-import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { RegisterRequest } from '../../models';
 
 @Component({
@@ -33,9 +33,9 @@ export class RegisterComponent implements OnInit {
   private readonly _route = inject(ActivatedRoute);
   private readonly _router = inject(Router);
   private readonly _registerService = inject(RegisterService);
-  private readonly _swal = inject(SweetAlertService);
+  private readonly _toast = inject(ToastService);
 
-  readonly defaultAvatar = 'assets/images/default-avatar.png';
+  readonly defaultAvatar = '/images/default-avatar.svg';
   photoPreviewUrl = this.defaultAvatar;
   emailFromQuery = '';
 
@@ -148,6 +148,17 @@ export class RegisterComponent implements OnInit {
     this._cdr.detectChanges();
   }
 
+  onOwnerToggle(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.userTypeId = input.checked ? 1 : 3;
+    this._cdr.detectChanges();
+  }
+
+  onAvatarError(): void {
+    this.photoPreviewUrl = this.defaultAvatar;
+    this._cdr.detectChanges();
+  }
+
   private loadGovernorates(): void {
     this.isLoadingGovernorates = true;
     this._commonDataService.getGovernments().subscribe({
@@ -204,7 +215,7 @@ export class RegisterComponent implements OnInit {
 
     const file = input.files[0];
     if (!file.type.startsWith('image/')) {
-      this._swal.showToast('يرجى اختيار ملف صورة صالح', 'warning');
+      this._toast.warning('يرجى اختيار ملف صورة صالح');
       return;
     }
 
@@ -224,7 +235,7 @@ export class RegisterComponent implements OnInit {
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this._swal.showToast('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'warning');
+      this._toast.warning('يرجى ملء جميع الحقول المطلوبة بشكل صحيح');
       return;
     }
 
@@ -257,13 +268,13 @@ export class RegisterComponent implements OnInit {
           const message = this.isOwner
             ? 'تم إنشاء حساب صاحب المطعم بنجاح! مرحباً بك شريكاً لنا'
             : 'تم إنشاء حساب العميل بنجاح! استمتع بأشهى الوجبات والعروض';
-          this._swal.showToast(message, 'success');
+          this._toast.success(message);
           this._router.navigate([this.isOwner ? '/dashboard' : '/home']);
         }
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
-        this._swal.showToast(err?.error?.message || 'تعذر إنشاء الحساب، يرجى المحاولة لاحقاً', 'error');
+        this._toast.error(err?.error?.message || 'تعذر إنشاء الحساب، يرجى المحاولة لاحقاً');
       }
     });
   }

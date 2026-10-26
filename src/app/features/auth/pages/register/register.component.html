@@ -1,100 +1,84 @@
-<div class="w-full flex items-center justify-center py-4 sm:py-6" >
+<div class="w-full flex items-center justify-center py-1 sm:py-6">
   <!-- Main Register Container -->
-  <div class="relative z-10 mx-auto flex w-full max-w-215 flex-col rounded-3xl border border-gray-100 bg-white p-6 sm:p-10">
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-215 flex-col rounded-3xl border border-gray-100 bg-white p-6 sm:p-10">
 
     <!-- Brand Header -->
-    <div class="  -6 flex flex-col items-center text-center">
+    <div class="mb-2 flex flex-col items-center text-center">
       <a routerLink="/" class="mb-3 inline-block transition-transform duration-200" aria-label="Menuhat Home">
         <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-16 w-auto object-contain" />
       </a>
 
+      <div class="flex items-center justify-center gap-2">
+        <h1 class="text-xl font-bold tracking-tight text-slate-900">
+          إنشاء حساب جديد
+        </h1>
 
-
-      <h1 class="mt-2 text-xl font-extrabold tracking-tight text-slate-900">
-        {{ isOwner ? 'انضم كشريك نجاح في مِنيوهات' : 'أهلاً بك في عالم مِنيوهات الشهي!' }}
-      </h1>
-      <p class="mt-1.5 max-w-lg text-sm text-slate-500 font-medium">
-        {{ isOwner ? 'أطلق العنان لمطعمك، أدر قوائم الطعام، واستقبل آلاف الطلبات والزبائن بسهولة' : 'أنشئ حسابك واكتشف قوائم أفضل المطاعم، العروض الحصرية، واطلب طعامك المفضل  ' }}
-      </p>
-
-      <!-- Verified Email Tag if available -->
-      @if (emailFromQuery) {
-        <div class="mt-1 inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-1.5 text-xs sm:text-sm text-emerald-800">
-          <span class="material-symbols-sharp select-none leading-none text-[16px] text-emerald-500">
+        <!-- Verified Email Badge -->
+        @if (emailFromQuery) {
+        <span class="inline-flex items-center gap-1 rounded-md px-2.5 py-1">
+          <span class="material-symbols-sharp select-none leading-none text-[14px] text-emerald-500">
             verified
           </span>
-          <span>البريد الإلكتروني الموثق: <strong>{{ emailFromQuery }}</strong></span>
-        </div>
-      }
-    </div>
+          <span class="text-emerald-500 font-medium" dir="ltr">{{ emailFromQuery }}</span>
+        </span>
+        }
+      </div>
 
-    <!-- Quick Role Switcher Tabs -->
-    <div class="mt-2 flex items-center justify-center p-1 bg-slate-100 rounded-2xl max-w-md mx-auto w-full">
-      <button
-        type="button"
-        (click)="setUserType(3)"
-        [class]="userTypeId === 3 ? 'flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white shadow-xs font-bold text-orange-600 text-sm transition-all duration-200 border-none cursor-pointer' : 'flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-slate-500 hover:text-slate-800 text-sm font-semibold transition-all duration-200 bg-transparent border-none cursor-pointer'">
-        <span class="material-symbols-sharp select-none leading-none text-[18px]">restaurant</span>
-        <span>حساب عميل</span>
-      </button>
+      <p class="mt-1 text-sm text-slate-500 font-medium">
+        أدخل بياناتك لإكمال إنشاء الحساب
+      </p>
 
-      <button
-        type="button"
-        (click)="setUserType(1)"
-        [class]="userTypeId === 1 ? 'flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-white shadow-xs font-bold text-orange-600 text-sm transition-all duration-200 border-none cursor-pointer' : 'flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-slate-500 hover:text-slate-800 text-sm font-semibold transition-all duration-200 bg-transparent border-none cursor-pointer'">
-        <span class="material-symbols-sharp select-none leading-none text-[18px]">storefront</span>
-        <span>صاحب مطعم</span>
-      </button>
+      <!-- Row: Plain Checkbox -->
+      <div class="mt-3 w-full flex items-center justify-start">
+        <label class="inline-flex items-center gap-2 cursor-pointer text-sm font-semibold text-slate-700">
+          <input type="checkbox" [checked]="isOwner" (change)="onOwnerToggle($event)"
+            class="h-4 w-4 rounded border-gray-300 cursor-pointer" />
+          <span>التسجيل كـ صاحب مطعم</span>
+        </label>
+      </div>
     </div>
 
     <!-- Register Form -->
-    <form [formGroup]="form" (ngSubmit)="submit()" class="w-full flex flex-col gap-6 mt-2">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="w-full flex flex-col mt-3">
 
-      <!-- Avatar Upload Section -->
-      <div class="flex flex-col sm:flex-row items-center gap-4.5 px-4 py-2 rounded-2xl bg-slate-50 border border-slate-100">
-        <div class="relative h-19 w-19 shrink-0">
-          <img [src]="photoPreviewUrl" alt="صورة الملف الشخصي" class="h-full w-full rounded-full object-cover border-2 border-white shadow-sm" />
+      <!-- Avatar Upload Section (Simple Border) -->
+      <div class="flex items-center gap-3.5 p-3 rounded-2xl border border-gray-200">
+        <div class="relative h-13 w-13 shrink-0">
+          <div
+            class="h-full w-full rounded-full border border-gray-200 overflow-hidden bg-gray-100 flex items-center justify-center">
+            <img [src]="photoPreviewUrl" (error)="onAvatarError()" alt="الصورة الشخصية"
+              class="h-full w-full object-cover" />
+          </div>
 
           <label for="register-photo-input"
-            class="absolute bottom-0 right-0 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-orange-500 text-white shadow-md transition-transform duration-200 hover:scale-110 hover:bg-orange-600"
-            title="تغيير الصورة">
-            <span class="material-symbols-sharp select-none leading-none text-[16px]">
+            class="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-gray-600 text-white shadow-xs hover:bg-gray-800 transition"
+            title="اختيار صورة">
+            <span class="material-symbols-sharp select-none leading-none text-[12px]">
               photo_camera
             </span>
           </label>
-
-          @if (photoPreviewUrl !== defaultAvatar) {
-            <button
-              type="button"
-              (click)="removePhoto(photoFileInput)"
-              class="absolute -top-1 -left-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-red-500 text-white border border-white shadow-sm transition-transform duration-200 hover:scale-110"
-              title="إزالة الصورة">
-              <span class="material-symbols-sharp select-none leading-none text-[14px]">
-                close
-              </span>
-            </button>
-          }
         </div>
 
-        <input
-          #photoFileInput
-          id="register-photo-input"
-          type="file"
-          accept="image/*"
-          (change)="onFileSelected($event)"
-          class="hidden"
-        />
-
-        <div class="flex flex-col text-center sm:text-right">
-          <span class="font-bold text-slate-800 text-sm">
-            {{ isOwner ? 'شعار أو صورة المطعم' : 'الصورة الشخصية' }}
-          </span>
-          <span class="text-xs text-slate-400 mt-0.5">اختياري - يمكنك تعيينها الآن أو تعديلها لاحقاً من حسابك</span>
+        <div class="flex flex-col min-w-0">
+          <span class="font-bold text-gray-800 text-sm">الصورة الشخصية</span>
+          <span class="text-xs text-gray-400">اختياري - انقر على الكاميرا للرفع</span>
         </div>
+
+        @if (photoPreviewUrl !== defaultAvatar) {
+        <button type="button" (click)="removePhoto(photoFileInput)"
+          class="mr-auto text-xs font-semibold text-red-500 hover:text-red-700 bg-transparent border-none cursor-pointer"
+          title="إزالة الصورة">
+          حذف الصورة
+        </button>
+        }
+
+        <input #photoFileInput id="register-photo-input" type="file" accept="image/*" (change)="onFileSelected($event)"
+          class="hidden" />
       </div>
 
       <!-- Section 1: Account Information -->
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col mt-3">
         <div class="flex items-center gap-2 pb-2  font-bold text-slate-800 text-base">
           <span class="material-symbols-sharp select-none leading-none text-[20px] text-orange-500">
             person
@@ -102,14 +86,12 @@
           <span>البيانات الشخصية والحساب</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 ">
           <!-- Full Name -->
           <div>
-            <app-form-input
-              formControlName="fullName"
+            <app-form-input formControlName="fullName"
               [label]="isOwner ? 'الاسم بالكامل (صاحب المطعم / المدير) *' : 'الاسم بالكامل *'"
-              [placeholder]="isOwner ? 'مثال: أحمد محمود' : 'مثال: سارة محمد'"
-              autocomplete="name"
+              [placeholder]="isOwner ? 'مثال: أحمد محمود' : 'مثال: سارة محمد'" autocomplete="name"
               [customErrors]="validationMessages.fullName">
               <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
                 badge
@@ -119,12 +101,8 @@
 
           <!-- Username -->
           <div>
-            <app-form-input
-              formControlName="username"
-              label="اسم المستخدم *"
-              placeholder="مثال: ahmed_owner"
-              autocomplete="username"
-              [customErrors]="validationMessages.username">
+            <app-form-input formControlName="username" label="اسم المستخدم *" placeholder="مثال: ahmed_owner"
+              autocomplete="username" [customErrors]="validationMessages.username">
               <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
                 alternate_email
               </span>
@@ -133,12 +111,8 @@
 
           <!-- Mobile Phone -->
           <div>
-            <app-form-input
-              formControlName="mobile"
-              label="رقم الهاتف الأساسي *"
-              placeholder="مثال: 01xxxxxxxxx"
-              autocomplete="tel"
-              [customErrors]="validationMessages.mobile">
+            <app-form-input formControlName="mobile" label="رقم الهاتف الأساسي *" placeholder="مثال: 01xxxxxxxxx"
+              autocomplete="tel" [customErrors]="validationMessages.mobile">
               <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
                 call
               </span>
@@ -147,12 +121,8 @@
 
           <!-- Mobile Phone 2 (Optional) -->
           <div>
-            <app-form-input
-              formControlName="mobile2"
-              label="رقم هاتف إضافي (اختياري)"
-              placeholder="مثال: 01xxxxxxxxx"
-              autocomplete="tel"
-              [customErrors]="validationMessages.mobile2">
+            <app-form-input formControlName="mobile2" label="رقم هاتف إضافي (اختياري)" placeholder="مثال: 01xxxxxxxxx"
+              autocomplete="tel" [customErrors]="validationMessages.mobile2">
               <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
                 phone_iphone
               </span>
@@ -161,13 +131,8 @@
 
           <!-- Password -->
           <div>
-            <app-form-input
-              formControlName="password"
-              label="كلمة المرور *"
-              type="password"
-              placeholder="8 أحرف على الأقل"
-              autocomplete="new-password"
-              [customErrors]="validationMessages.password">
+            <app-form-input formControlName="password" label="كلمة المرور *" type="password"
+              placeholder="8 أحرف على الأقل" autocomplete="new-password" [customErrors]="validationMessages.password">
               <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
                 lock
               </span>
@@ -176,12 +141,8 @@
 
           <!-- Confirm Password -->
           <div>
-            <app-form-input
-              formControlName="confirmPassword"
-              label="تأكيد كلمة المرور *"
-              type="password"
-              placeholder="أعد إدخال كلمة المرور"
-              autocomplete="new-password"
+            <app-form-input formControlName="confirmPassword" label="تأكيد كلمة المرور *" type="password"
+              placeholder="أعد إدخال كلمة المرور" autocomplete="new-password"
               [customErrors]="validationMessages.confirmPassword">
               <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
                 lock_reset
@@ -192,7 +153,7 @@
       </div>
 
       <!-- Section 2: Location Information -->
-      <div class="flex flex-col gap-3">
+      <div class="flex flex-col ">
         <div class="flex items-center gap-2 pb-2  font-bold text-slate-800 text-base">
           <span class="material-symbols-sharp select-none leading-none text-[20px] text-orange-500">
             location_on
@@ -203,35 +164,26 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Governorate -->
           <div>
-            <app-form-select
-              formControlName="governmentId"
-              label="المحافظة *"
+            <app-form-select formControlName="governmentId" label="المحافظة *"
               [placeholder]="isLoadingGovernorates ? 'جاري تحميل المحافظات...' : 'اختر المحافظة'"
-              [disabled]="isLoadingGovernorates"
-              [options]="governorates"
-              (change)="onGovernorateChange($event)">
+              [disabled]="isLoadingGovernorates" [options]="governorates" (change)="onGovernorateChange($event)">
             </app-form-select>
           </div>
 
           <!-- City -->
           <div>
-            <app-form-select
-              formControlName="cityId"
-              label="المدينة *"
+            <app-form-select formControlName="cityId" label="المدينة *"
               [placeholder]="isLoadingCities ? 'جاري تحميل المدن...' : 'اختر المدينة'"
-              [disabled]="isLoadingCities || !form.get('governmentId')?.value"
-              [options]="cities">
+              [disabled]="isLoadingCities || !form.get('governmentId')?.value" [options]="cities">
             </app-form-select>
           </div>
 
           <!-- Address (Full width) -->
           <div class="md:col-span-2">
-            <app-form-input
-              formControlName="address"
+            <app-form-input formControlName="address"
               [label]="isOwner ? 'عنوان المطعم بالتفصيل *' : 'العنوان بالتفصيل *'"
               [placeholder]="isOwner ? 'اسم الشارع، رقم المبنى، أقرب علامة مميزة' : 'الشارع، العمارة، رقم الشقة أو تفاصيل التوصيل'"
-              autocomplete="street-address"
-              [customErrors]="validationMessages.address">
+              autocomplete="street-address" [customErrors]="validationMessages.address">
               <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
                 pin_drop
               </span>
@@ -242,26 +194,20 @@
 
       <!-- Submit Button -->
       <div class="mt-2">
-        <app-loading-button
-          type="submit"
-          [text]="isOwner ? 'إنشاء حساب صاحب المطعم' : 'إنشاء حساب العميل'"
-          loadingText="جاري إنشاء الحساب..."
-          [loading]="isLoading"
-          [disabled]="form.invalid || isLoading"
-          [fullWidth]="true"
-        />
+        <app-loading-button type="submit" [text]="isOwner ? 'إنشاء حساب صاحب المطعم' : 'إنشاء حساب العميل'"
+          loadingText="جاري إنشاء الحساب..." [loading]="isLoading" [disabled]="form.invalid || isLoading"
+          [fullWidth]="true" />
       </div>
     </form>
 
     <!-- Login Link Footer -->
     <div class="mt-6 flex items-center justify-center gap-1.5 text-sm">
       <span class="text-slate-500">لديك حساب بالفعل؟</span>
-      <a
-        routerLink="/login"
-        class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline"
-      >
+      <a routerLink="/login"
+        class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline">
         <span>تسجيل الدخول</span>
-        <span class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1">
+        <span
+          class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1">
           arrow_back
         </span>
       </a>

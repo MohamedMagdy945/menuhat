@@ -91,6 +91,12 @@
   <app-home-menu-items />
 </div>
 
+<!-- Trending Restaurants -->
+<div class="">
+  <app-home-restaurants title="رائج الآن"
+    [restaurants]="restaurantsService.trends()" />
+</div>
+
 <!-- restaurants section -->
 <div class="">
   <app-home-restaurants title="الأكثر زيارة"

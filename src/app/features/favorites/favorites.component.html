@@ -1,1 +1,71 @@
-<p>favorites works!</p>
+<section class="mx-auto min-h-full px-4 py-6 md:px-8" dir="rtl">
+
+  <!-- Page Header -->
+  <header class="mb-6 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">الوجبات المفضلة</h1>
+      <p class="mt-1 text-sm text-gray-500">الوجبات والأصناف التي قمت بحفظها في قائمتك المفضلة</p>
+    </div>
+
+    @if (userDataService.getToken() && favoritesService.favorites().length > 0) {
+      <span class="inline-flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600 border border-orange-100">
+        <span>{{ favoritesService.favorites().length }}</span>
+        <span>وجبات</span>
+      </span>
+    }
+  </header>
+
+  <!-- Check Authentication -->
+  @if (!userDataService.getToken()) {
+    <!-- Not Logged In State -->
+    <div class="py-16 text-center bg-white rounded-2xl border border-slate-200">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
+        <span class="material-symbols-sharp text-3xl select-none">favorite</span>
+      </div>
+      <h2 class="text-base font-bold text-slate-800">قم بتسجيل الدخول لعرض المفضلة</h2>
+      <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+        سجّل دخولك لحفظ وجباتك المفضلة والوصول إليها بسهولة
+      </p>
+      <a
+        routerLink="/login"
+        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-xs transition hover:bg-orange-600 active:scale-95"
+      >
+        <span class="material-symbols-sharp text-[18px]">login</span>
+        <span>تسجيل الدخول</span>
+      </a>
+    </div>
+  } @else if (favoritesService.isLoading()) {
+    <!-- Loading Skeletons -->
+    <div class="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7" aria-hidden="true">
+      @for (skeleton of skeletonCards; track skeleton) {
+        <app-menu-item-skeleton></app-menu-item-skeleton>
+      }
+    </div>
+  } @else if (favoritesService.favorites().length > 0) {
+    <!-- Favorites Grid -->
+    <div class="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7">
+      @for (item of favoritesService.favorites(); track item.id) {
+        <app-favorite-item-card [item]="item" />
+      }
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <div class="py-16 text-center bg-white rounded-2xl border border-slate-200">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
+        <span class="material-symbols-sharp text-3xl select-none">favorite_border</span>
+      </div>
+      <h2 class="text-base font-bold text-slate-800">لا توجد وجبات في المفضلة</h2>
+      <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+        لم تقم بإضافة أي وجبات أو أطباق إلى قائمتك المفضلة حتى الآن
+      </p>
+      <a
+        routerLink="/most-ordered"
+        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-xs transition hover:bg-orange-600 active:scale-95"
+      >
+        <span class="material-symbols-sharp text-[18px]">restaurant_menu</span>
+        <span>تصفح الوجبات الأكثر طلبًا</span>
+      </a>
+    </div>
+  }
+
+</section>

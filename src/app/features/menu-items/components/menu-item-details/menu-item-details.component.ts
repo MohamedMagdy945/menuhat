@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../core/environments/environment';
 import { CartService } from '../../../cart/cart.service';
 import { MenuItem } from '../../models';
+import { FavoritesService } from '../../../favorites/favorites.service';
 
 @Component({
   selector: 'app-menu-item-details',
@@ -15,12 +16,13 @@ import { MenuItem } from '../../models';
 })
 export class MenuItemDetailsComponent implements OnInit {
   readonly apiUrl = environment.filesUrl;
-  readonly item = signal<  MenuItem | null>(null);
-  
+  readonly item = signal<MenuItem | null>(null);
+
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private location = inject(Location);
   private readonly _cartService = inject(CartService);
+  private readonly favoritesService = inject(FavoritesService);
   readonly specialNotes = signal('');
   readonly copiedShare = signal(false);
 
@@ -58,7 +60,7 @@ export class MenuItemDetailsComponent implements OnInit {
 
   ngOnInit() {
     if (!this._cartService.cartData()) {
-      this._cartService.GetCartsByUserId().subscribe({ error: () => {} });
+      this._cartService.GetCartsByUserId().subscribe({ error: () => { } });
     }
 
     // Get state from navigation
@@ -92,7 +94,10 @@ export class MenuItemDetailsComponent implements OnInit {
     return anyItem.serial ?? '';
   }
 
-  readonly isFavorite = signal(false);
+  readonly isFavorite = computed(() => {
+    const id = this.getProductId();
+    return id ? this.favoritesService.isFavorite(id) : false;
+  });
   readonly quantity = signal(1);
   readonly selectedSize = signal('medium'); // 'small', 'medium', 'large'
 
@@ -105,7 +110,10 @@ export class MenuItemDetailsComponent implements OnInit {
   ]);
 
   toggleFavorite(): void {
-    this.isFavorite.update((v) => !v);
+    const id = this.getProductId();
+    if (id) {
+      this.favoritesService.toggleFavorite(id, this.item());
+    }
   }
 
   incrementQuantity(): void {
@@ -119,7 +127,7 @@ export class MenuItemDetailsComponent implements OnInit {
   }
 
   toggleAddon(id: number): void {
-    this.addons.update(addons => 
+    this.addons.update(addons =>
       addons.map(addon => addon.id === id ? { ...addon, selected: !addon.selected } : addon)
     );
   }
@@ -127,7 +135,7 @@ export class MenuItemDetailsComponent implements OnInit {
   // getTotalPrice(): number {
   //   const currentItem = this.item();
   //   if (!currentItem) return 0;
-    
+
   //   let basePrice = currentItem.price;
   //   // Add size differences (mock)
   //   if (this.selectedSize() === 'small') basePrice -= 20;

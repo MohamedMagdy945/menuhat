@@ -1,7 +1,8 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
 import { RouterLink } from '@angular/router';
 import { MenuItem } from '../../../menu-items/models';
+import { FavoritesService } from '../../../favorites/favorites.service';
 
 @Component({
   imports: [RouterLink],
@@ -10,17 +11,22 @@ import { MenuItem } from '../../../menu-items/models';
   templateUrl: './home-menu-item-card.component.html',
 })
 export class HomeMenuItemCardComponent {
+  private readonly favoritesService = inject(FavoritesService);
+
   readonly menuItem = input.required<MenuItem>();
   readonly apiUrl = environment.filesUrl;
-  readonly isFavorite = signal(false);
   readonly Math = Math;
 
   readonly itemId = computed(() => {
     const item = this.menuItem() as any;
-    return item.mostrequestesId ?? item.id ?? item.productId ?? item.menuId;
+    return item.id ?? item.menuProductId ?? item.mostrequestesId ?? item.productId ?? item.menuId;
+  });
+
+  readonly isFavorite = computed(() => {
+    return this.favoritesService.isFavorite(this.itemId());
   });
 
   toggleFavorite(): void {
-    this.isFavorite.update((v) => !v);
+    this.favoritesService.toggleFavorite(this.itemId(), this.menuItem());
   }
 }

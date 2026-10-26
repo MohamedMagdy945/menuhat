@@ -24,18 +24,6 @@
       }
     </div>
 
-    <!-- Error Alert -->
-    @if (errorMessage) {
-    <div
-      class="otp-error-alert -mt-2 mb-4 flex items-center gap-2.5 rounded-2xl border border-red-200 bg-red-50/90 px-3.5 py-3 text-sm text-red-700"
-      role="alert">
-      <span class="material-symbols-sharp shrink-0 select-none text-[20px] text-red-500">
-        error
-      </span>
-      <span class="flex-1 text-xs sm:text-sm font-medium leading-relaxed">{{ errorMessage }}</span>
-    </div>
-    }
-
     <!-- Submit Button -->
     <app-loading-button type="button" text="تأكيد الرمز" loadingText="جاري التحقق..." [loading]="isLoading"
       [disabled]="isVerifyDisabled" [fullWidth]="true" (clicked)="onVerifyCode()" />

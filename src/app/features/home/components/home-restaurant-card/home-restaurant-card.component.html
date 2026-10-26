@@ -1,4 +1,4 @@
-<article class="relative w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
+<article class="relative w-full overflow-hidden rounded-2xl border border-slate-100  shadow-sm bg-white">
   <!-- ONE LINK -->
   <a [routerLink]="['/restaurants', restaurant().serial]" class="block">
     <!-- ================= IMAGE ================= -->
@@ -13,8 +13,8 @@
 
       @if (restaurant().isSponser) {
       <span
-        class="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded-full bg-primary px-2.5 py-1.5 text-[11px] font-semibold leading-none text-white">
-        <span class="material-symbols-sharp select-none text-[13px] leading-none icon-fill">verified</span>
+        class="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-2 text-[11px] font-semibold leading-none text-white shadow-xs">
+        <span class="material-symbols-sharp select-none text-[16px] leading-none  text-white">verified</span>
         مميز
       </span>
       }
@@ -43,8 +43,8 @@
       <!-- Category -->
       <div>
         <div class="inline-flex gap-1 max-w-full items-center truncate text-sm font-semibold text-primary">
-          <span class="material-symbols-sharp select-none  leading-none icon-fill">
-            style
+          <span class="material-symbols-sharp select-none  leading-none  icon-fill">
+            bookmarks
           </span>
           <span class="min-w-0 truncate   leading-5 ">
             {{ restaurant().field_Ar }}

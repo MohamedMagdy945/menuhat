@@ -5,13 +5,13 @@
   </header>
 
   @if (menuItemService.isLoadingMostRequested()) {
-    <div class="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-6" aria-hidden="true">
+    <div class="grid grid-cols-2 gap-3sm:grid-cols-3 md:grid-cols-4 lg:grid-cols- 2xl:grid-cols-7" aria-hidden="true">
       @for (skeleton of skeletonCards; track skeleton) {
         <app-menu-item-skeleton></app-menu-item-skeleton>
       }
     </div>
   } @else if (menuItemService.mostRequested().length > 0) {
-    <div class="grid gap-2 sm:gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-8">
+    <div class="grid gap-6  grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7">
       @for (menuItem of menuItemService.mostRequested(); track menuItem.mostrequestesId) {
         <app-menu-item-card [menuItem]="menuItem" />
       }

@@ -1,4 +1,4 @@
-<section dir="rtl" class="mx-auto px-8 pt-4  bg-white">
+<section dir="rtl" class="mx-auto px-8 pt-4 ">
 
     <!-- Header -->
 
@@ -17,12 +17,9 @@
 
     <!-- Restaurants Grid -->
 
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,250px))] gap-3">
-
-        @for (restaurant of restaurants(); track restaurant.id ) {
-
-        <app-restaurant-card [restaurant]="restaurant" />
-
+    <div class="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
+        @for (restaurant of restaurants(); track restaurant.id) {
+            <app-restaurant-card [restaurant]="restaurant" />
         }
     </div>
 
@@ -33,14 +30,22 @@
     }
 
     @if (restaurants().length > 0 && hasMore()) {
-        <div class="mt-6 flex justify-start">
+        <div class="my-10 flex items-center justify-center">
             <button
                 type="button"
-                class="rounded-lg bg-orange-500 px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                class="group inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-8 py-2.5 text-sm font-bold text-gray-800 shadow-xs hover:border-orange-500 hover:bg-orange-50/40 hover:text-orange-600 hover:shadow-sm active:scale-95 transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
                 [disabled]="isLoading()"
                 (click)="loadMore()"
             >
-                {{ isLoading() ? 'جاري التحميل...' : 'عرض المزيد' }}
+                @if (isLoading()) {
+                    <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></span>
+                    <span>جاري التحميل...</span>
+                } @else {
+                    <span>عرض المزيد من المطاعم</span>
+                    <span class="material-symbols-sharp select-none text-[20px] leading-none text-orange-500 transition-transform duration-200 group-hover:translate-y-0.5">
+                        expand_more
+                    </span>
+                }
             </button>
         </div>
     }

@@ -3,6 +3,7 @@ import { environment } from '../../../../core/environments/environment';
 import { RouterLink } from '@angular/router';
 import { RestaurantMenuProduct } from '../../models/restaurant-details';
 import { CartService } from '../../../cart/cart.service';
+import { FavoritesService } from '../../../favorites/favorites.service';
 
 @Component({
   imports: [RouterLink],
@@ -12,12 +13,16 @@ import { CartService } from '../../../cart/cart.service';
 })
 export class RestaurantMenuItemCardComponent {
   private readonly _cartService = inject(CartService);
+  private readonly _favoritesService = inject(FavoritesService);
 
   readonly item = input.required<RestaurantMenuProduct>();
   readonly apiUrl = environment.filesUrl;
-  readonly isFavorite = signal(false);
   readonly isAddingToCart = signal(false);
   readonly _addedManually = signal(false);
+
+  readonly isFavorite = computed(() =>
+    this._favoritesService.isFavorite(this.item().id)
+  );
 
   // true if item is already in cart (from service) OR was just added in this session
   readonly isAddedToCart = computed(() =>
@@ -26,7 +31,7 @@ export class RestaurantMenuItemCardComponent {
   );
 
   toggleFavorite(): void {
-    this.isFavorite.update((v) => !v);
+    this._favoritesService.toggleFavorite(this.item().id, this.item());
   }
 
   addToCart(): void {
@@ -51,4 +56,3 @@ export class RestaurantMenuItemCardComponent {
     });
   }
 }
-

@@ -29,10 +29,10 @@
       >
         <span
           class="material-symbols-sharp transition-colors duration-200"
-          [class.text-red-500]="item().isFavorite"
-          [class.icon-fill]="item().isFavorite"
+          [class.text-red-500]="isFavorite()"
+          [class.icon-fill]="isFavorite()"
         >
-          {{ item().isFavorite ? 'favorite' : 'favorite_border' }}
+          {{ isFavorite() ? 'favorite' : 'favorite_border' }}
         </span>
       </button>
 

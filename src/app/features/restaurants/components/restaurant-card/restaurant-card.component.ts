@@ -1,24 +1,23 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Restaurant } from '../../models/restaurant';
 import { environment } from '../../../../core/environments/environment';
-import { Router } from '@angular/router';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-restaurant-card',
   styleUrl: './restaurant-card.component.css',
   templateUrl: './restaurant-card.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
-
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RestaurantCardComponent {
-    readonly apiUrl = environment.filesUrl;
-    readonly defaultImage = '/images/default-restaurant.png';
-    private readonly router = inject(Router);
+  readonly apiUrl = environment.filesUrl;
+  readonly defaultImage = '/images/default-restaurant.png';
 
-    restaurant = input.required<Restaurant>();
+  readonly restaurant = input.required<Restaurant>();
+  readonly isFavorite = signal(false);
 
-    onCardClick() {
-      this.router.navigate(['/restaurants', this.restaurant().serial]);
+  toggleFavorite(): void {
+    this.isFavorite.update((v) => !v);
   }
 }

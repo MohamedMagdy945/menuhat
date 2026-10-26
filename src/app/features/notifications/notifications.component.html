@@ -1,0 +1,229 @@
+<div class="max-w-7xl mx-auto px-4 py-6 space-y-6" >
+  <!-- Page Header -->
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+    <div class="flex items-start gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs">
+        <span class="material-symbols-sharp text-2xl select-none">notifications_active</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900">مركز الإشعارات</h1>
+          @if (allCount() > 0) {
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+              {{ allCount() }} إشعار
+            </span>
+          }
+          @if (unreadCount() > 0) {
+            <span class="inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-bold text-orange-600 border border-orange-200">
+              {{ unreadCount() }} جديد
+            </span>
+          }
+        </div>
+        <p class="mt-1 text-xs sm:text-sm text-slate-500">
+          تابع كافة تحديثات طلباتك، القوائم المضافة، والعروض المميزة في مكان واحد
+        </p>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="flex items-center gap-2 self-start md:self-auto flex-wrap">
+      <button
+        type="button"
+        (click)="refresh()"
+        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-bold cursor-pointer shadow-2xs"
+        title="تحديث الإشعارات"
+      >
+        <span class="material-symbols-sharp text-[17px]">refresh</span>
+        <span>تحديث</span>
+      </button>
+
+      @if (unreadCount() > 0) {
+        <button
+          type="button"
+          (click)="markAllAsRead()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-500 text-white text-xs font-bold cursor-pointer shadow-xs"
+        >
+          <span class="material-symbols-sharp text-[17px]">done_all</span>
+          <span>تحديد الكل كمقروء</span>
+        </button>
+      }
+
+      @if (allCount() > 0) {
+        <button
+          type="button"
+          (click)="clearAll()"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-500 text-xs font-bold cursor-pointer shadow-2xs"
+        >
+          <span class="material-symbols-sharp text-[17px]">delete_sweep</span>
+          <span>مسح الكل</span>
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- Check Login State -->
+  @if (!userDataService.getToken()) {
+    <div class="py-20 text-center bg-white rounded-2xl border border-slate-200 shadow-2xs">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
+        <span class="material-symbols-sharp text-3xl select-none">notifications_off</span>
+      </div>
+      <h2 class="text-base font-bold text-slate-800">قم بتسجيل الدخول لعرض إشعاراتك</h2>
+      <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+        سجّل دخولك لحسابك لمتابعة حالة طلباتك واستقبال أحدث التنبيهات
+      </p>
+      <a
+        routerLink="/login"
+        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-xs"
+      >
+        <span class="material-symbols-sharp text-[18px]">login</span>
+        <span>تسجيل الدخول</span>
+      </a>
+    </div>
+  } @else {
+    <!-- Controls Bar: Filter Tabs & Search Box -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <!-- Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-hide">
+        <!-- All -->
+        <button
+          type="button"
+          (click)="setTab('all')"
+          class="py-2 px-3.5 rounded-full text-xs font-bold whitespace-nowrap cursor-pointer flex items-center gap-1.5"
+          [class]="activeTab() === 'all'
+            ? 'bg-orange-500 text-white shadow-xs'
+            : 'bg-white border border-slate-100 text-slate-600'"
+        >
+          <span>الكل</span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-[10px]"
+            [class]="activeTab() === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'"
+          >
+            {{ allCount() }}
+          </span>
+        </button>
+
+        <!-- Unread -->
+        @if (unreadCount() > 0) {
+          <button
+            type="button"
+            (click)="setTab('unread')"
+            class="py-2 px-3.5 rounded-full text-xs font-bold whitespace-nowrap cursor-pointer flex items-center gap-1.5"
+            [class]="activeTab() === 'unread'
+              ? 'bg-orange-500 text-white shadow-xs'
+              : 'bg-white border border-slate-100 text-slate-600'"
+          >
+            <span>غير مقروءة</span>
+            <span
+              class="px-1.5 py-0.2 rounded-full text-[10px]"
+              [class]="activeTab() === 'unread' ? 'bg-white/20 text-white' : 'bg-orange-100 text-orange-600 font-bold'"
+            >
+              {{ unreadCount() }}
+            </span>
+          </button>
+        }
+
+        <!-- Orders -->
+        <button
+          type="button"
+          (click)="setTab('orders')"
+          class="py-2 px-3.5 rounded-full text-xs font-bold whitespace-nowrap cursor-pointer flex items-center gap-1.5"
+          [class]="activeTab() === 'orders'
+            ? 'bg-orange-500 text-white shadow-xs'
+            : 'bg-white border border-slate-100  text-slate-600'"
+        >
+          <span>الطلبات</span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-[10px]"
+            [class]="activeTab() === 'orders' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'"
+          >
+            {{ ordersCount() }}
+          </span>
+        </button>
+
+        <!-- Menus & Restaurants -->
+        <button
+          type="button"
+          (click)="setTab('menus')"
+          class="py-2 px-3.5 rounded-full text-xs font-bold whitespace-nowrap cursor-pointer flex items-center gap-1.5"
+          [class]="activeTab() === 'menus'
+            ? 'bg-orange-500 text-white shadow-xs'
+            : 'bg-white  text-slate-600'"
+        >
+          <span>قوائم ومطاعم</span>
+          <span
+            class="px-1.5 py-0.2 rounded-full text-[10px]"
+            [class]="activeTab() === 'menus' ? 'bg-white/20 text-white' : 'bg-slate-100 border border-slate-100 text-slate-600'"
+          >
+            {{ menusCount() }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative w-full md:w-64">
+        <input
+          type="text"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+          placeholder="بحث في الإشعارات..."
+          class="w-full py-2 pr-9 pl-8 border border-slate-200 bg-white text-slate-800 placeholder-slate-400 rounded-full text-xs font-normal focus:outline-none shadow-2xs"
+        />
+        <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+          <span class="material-symbols-sharp text-[17px]">search</span>
+        </span>
+        @if (searchQuery()) {
+          <button
+            type="button"
+            (click)="searchQuery.set('')"
+            class="absolute inset-y-0 left-0 flex items-center pl-2.5 text-slate-400 cursor-pointer"
+          >
+            <span class="material-symbols-sharp text-[15px]">close</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Content Area -->
+    @if (isLoading()) {
+      <div class="py-24 text-center bg-white rounded-2xl border border-slate-100 shadow-2xs">
+        <span class="h-8 w-8 animate-spin rounded-full border-2 border-orange-500 border-t-transparent inline-block mb-3"></span>
+        <p class="text-sm font-semibold text-slate-700">جاري تحميل الإشعارات...</p>
+      </div>
+    } @else if (filteredNotifications().length === 0) {
+      <div class="py-20 text-center bg-white rounded-2xl border border-slate-200 shadow-2xs">
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 mb-3">
+          <span class="material-symbols-sharp text-3xl select-none">notifications_off</span>
+        </div>
+        <h3 class="text-base font-bold text-slate-800">لا توجد إشعارات</h3>
+        <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+          @if (searchQuery()) {
+            لم يتم العثور على أي نتائج تطابق كلمة البحث "{{ searchQuery() }}"
+          } @else {
+            لا توجد إشعارات حالياً في هذا القسم
+          }
+        </p>
+        @if (searchQuery() || activeTab() !== 'all') {
+          <button
+            type="button"
+            (click)="searchQuery.set(''); setTab('all')"
+            class="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-orange-50 text-orange-600 text-xs font-bold cursor-pointer"
+          >
+            <span>عرض كل الإشعارات</span>
+          </button>
+        }
+      </div>
+    } @else {
+      <!-- Notifications Cards List -->
+      <div class="space-y-3">
+        @for (item of filteredNotifications(); track item.id) {
+          <app-notification-card
+            [item]="item"
+            (markAsRead)="onMarkAsRead($event)"
+            (deleteNotification)="onDeleteNotification($event)"
+            (viewDetails)="onViewDetails($event)"
+          />
+        }
+      </div>
+    }
+  }
+</div>

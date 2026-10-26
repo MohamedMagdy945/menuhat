@@ -1,107 +1,83 @@
-<article
-  (click)="onCardClick()"
-  (keydown.enter)="onCardClick()"
-  tabindex="0"
-  class="flex h-full w-full flex-col cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white"
->
-  <!-- Image -->
-  <div class="relative h-36 overflow-hidden bg-gray-100">
-    <img
-      [src]="restaurant().logoURL ? apiUrl + restaurant().logoURL : defaultImage"
-      [alt]="restaurant().clientName"
-      class="h-full w-full object-cover"
-    />
-
-    <!-- Rating -->
-    @if (restaurant().rate !== null) {
-      <div
-        class="absolute bottom-2 left-2 flex items-center gap-1 rounded-lg bg-white px-2 py-1 text-xs font-bold text-gray-700 shadow-sm"
-      >
-        <span>{{ restaurant().rate }}</span>
-        <span class="text-yellow-400">★</span>
+<article class="relative flex flex-col h-full w-full overflow-hidden rounded-2xl border border-slate-200  shadow-xs bg-white">
+  <!-- ONE LINK -->
+  <a [routerLink]="['/restaurants', restaurant().serial]" class="flex flex-col flex-1 h-full">
+    <!-- ================= IMAGE ================= -->
+    <div class="relative w-full overflow-hidden bg-slate-50">
+      <div class="h-32">
+        <div class="h-32 w-full overflow-hidden rounded-md">
+          <img [src]="
+            restaurant().logoURL ? apiUrl + restaurant().logoURL : defaultImage
+          " [alt]="restaurant().clientName" class="h-full w-full object-contain" />
+        </div>
       </div>
-    }
-  </div>
 
-  <!-- Content -->
-  <div class="px-2 py-2">
-    <!-- Restaurant Name -->
-    <div class="flex items-center">
-      <h3
-        class="min-w-0 truncate text-base font-bold leading-6 text-gray-600"
-        [title]="restaurant().clientName"
-      >
-        {{ restaurant().clientName }}
-      </h3>
+      @if (restaurant().isSponser) {
+      <span
+        class="absolute top-2.5 right-2.5 z-10 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-2 text-[11px] font-semibold leading-none text-white shadow-xs">
+        <span class="material-symbols-sharp select-none text-[16px] leading-none text-white">verified</span>
+        مميز
+      </span>
+      }
     </div>
 
-    <!-- Info -->
-    <div class="mt-1.5 space-y-1 text-sm text-gray-700">
-      <!-- Restaurant Field -->
-      <div class="flex min-w-0 items-center gap-1">
-        <div class="rounded-lg text-gray-400">
-          <svg
-            class="h-4 w-4 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+    <!-- ================= CONTENT ================= -->
+    <div class="flex flex-col flex-1 justify-between mx-3 py-1">
+      <!-- Top info (Name + Field + Address) -->
+      <div>
+        <!-- Restaurant Name -->
+        <div class="flex items-center">
+          <h3
+            class="min-w-0 truncate text-base font-semibold leading-6 text-gray-900"
+            [title]="restaurant().clientName"
           >
-            <path d="M20 13.5 13.5 20a2 2 0 0 1-2.83 0L4 13.33V4h9.33L20 10.67a2 2 0 0 1 0 2.83Z" />
-            <circle cx="8.5" cy="8.5" r="1.25" />
-          </svg>
+            {{ restaurant().clientName }}
+          </h3>
         </div>
 
-        <span class="truncate">
-          {{ restaurant().field_Ar }}
-        </span>
+        <!-- Info -->
+        <div class="mt-1 space-y-1 text-sm">
+          <!-- Restaurant Field -->
+          <div class="flex min-w-0 items-center gap-1 text-gray-600">
+            <span class="material-symbols-sharp select-none leading-none  text-[16px]">
+              bookmarks
+            </span>
+            <span class="min-w-0 truncate text-sm font-semibold leading-5">
+              {{ restaurant().field_Ar }}
+            </span>
+          </div>
+
+          <!-- Address (Always reserves row space) -->
+          <div class="flex min-w-0 items-center gap-1 text-gray-600">
+            <span class="material-symbols-sharp shrink-0 leading-none text-[16px] text-gray-600">
+              location_on
+            </span>
+
+            @if (restaurant().address) {
+              <span class="min-w-0 truncate text-sm font-semibold leading-5">
+                {{ restaurant().address }}
+              </span>
+            } @else {
+              <span class="min-w-0 truncate text-sm font-medium leading-5 text-gray-400">
+                غير محدد
+              </span>
+            }
+          </div>
+        </div>
       </div>
 
-      <!-- Address -->
-      @if (restaurant().address) {
-        <div class="flex min-w-0 items-center gap-1">
-          <div class="text-gray-400">
-            <svg
-              class="h-4 w-4 shrink-0"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.8"
-            >
-              <path
-                d="M12 21s7-5.75 7-11a7 7 0 1 0-14 0c0 5.25 7 11 7 11Z"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <circle cx="12" cy="10" r="2.75" />
-            </svg>
-          </div>
-
-          <span class="truncate">
-            {{ restaurant().address }}
-          </span>
-        </div>
-      }
-
-      <!-- Working Hours + Status -->
-      <div class="flex items-center justify-between gap-4">
-        <div class="flex min-w-0 items-center gap-1">
+      <!-- Working Hours + Status (Anchored at bottom) -->
+      <div class="flex items-center justify-between gap-4 pt-1">
+        <div class="flex min-w-0 items-center gap-1 text-sm text-gray-600 font-medium">
           <!-- Clock -->
-          <div class="text-gray-400">
-            <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-              <path
-                d="M12 2.75a9.25 9.25 0 1 0 9.25 9.25A9.26 9.26 0 0 0 12 2.75Zm0 16.5a7.25 7.25 0 1 1 7.25-7.25A7.26 7.26 0 0 1 12 19.25Zm1-11.25h-2v5.25l4 2.5 1-1.65-3-1.85V8.25Z"
-              />
-            </svg>
-          </div>
+          <span class="material-symbols-sharp select-none text-[16px] leading-none text-gray-600">
+            schedule
+          </span>
 
           <span class="truncate">10:00 ص - 02:00 ص</span>
         </div>
 
         <span
-          class="shrink-0 rounded-full px-1.5 py-1 text-[11px] font-bold"
+          class="shrink-0 rounded-full px-2 py-1 text-[11px] font-bold"
           [class.bg-emerald-50]="restaurant().isOpen"
           [class.text-emerald-500]="restaurant().isOpen"
           [class.bg-red-50]="!restaurant().isOpen"
@@ -111,5 +87,14 @@
         </span>
       </div>
     </div>
-  </div>
+  </a>
+
+  <!-- Favorite - OUTSIDE LINK -->
+  <button type="button" aria-label="Favorite" (click)="toggleFavorite()"
+    class="absolute top-2.5 left-2.5 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/20 text-xl text-white shadow-sm transition">
+    <span class="material-symbols-sharp transition-colors duration-200" [class.text-red-500]="isFavorite()"
+      [class.icon-fill]="isFavorite()">
+      {{ isFavorite() ? 'favorite' : 'favorite_border' }}
+    </span>
+  </button>
 </article>

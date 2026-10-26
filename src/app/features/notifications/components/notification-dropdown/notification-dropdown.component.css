@@ -1,0 +1,29 @@
+:host {
+  display: inline-block;
+}
+
+.notification-dropdown-panel {
+  animation: dropdownFadeIn 0.15s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.notification-items-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.notification-items-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.notification-items-scroll::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 10px;
+}

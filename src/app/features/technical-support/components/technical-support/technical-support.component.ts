@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { UserDataService } from '../../../../core/services/userData.service';
 import { SupportService } from '../../services/support-service';
 import { Router } from '@angular/router';
-import { SweetAlertService } from '../../../../core/services/sweet-alert.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
@@ -18,7 +18,7 @@ export class TechnicalSupportComponent implements OnInit {
   private readonly _FormBuilder = inject(FormBuilder);
   private readonly _SupportService = inject(SupportService);
   private readonly _Router = inject(Router);
-  private readonly _SweetAlertService = inject(SweetAlertService);
+  private readonly _toast = inject(ToastService);
 
   supportForm!: FormGroup;
   selectedFileName: string = '';
@@ -82,17 +82,17 @@ export class TechnicalSupportComponent implements OnInit {
       this._SupportService.sendComplaints(supportDto).subscribe({
         next: (res) => {
           this.isLoading = false;
-          this._SweetAlertService.showToast(res?.message || 'تم إرسال الطلب بنجاح', 'success');
+          this._toast.success(res?.message || 'تم إرسال الطلب بنجاح');
           this._Router.navigate(['/home']);
         },
         error: (err: HttpErrorResponse) => {
           this.isLoading = false;
-          this._SweetAlertService.showToast(err?.error?.message || 'حدث خطأ أثناء الإرسال', 'error');
+          this._toast.error(err?.error?.message || 'حدث خطأ أثناء الإرسال');
         }
       });
     } catch (error) {
       this.isLoading = false;
-      this._SweetAlertService.showToast('حدث خطأ أثناء معالجة الصور', 'error');
+      this._toast.error('حدث خطأ أثناء معالجة الصور');
     }
   }
 }

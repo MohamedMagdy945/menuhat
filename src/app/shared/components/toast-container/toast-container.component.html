@@ -1,0 +1,71 @@
+<div
+  class="pointer-events-none fixed bottom-6 left-1/2 -translate-x-1/2 z-9999 flex flex-col items-center gap-2.5 w-full max-w-sm sm:max-w-md px-4"
+  aria-live="polite"
+  aria-atomic="true"
+>
+  @for (toast of toastService.toasts(); track toast.id) {
+    <div
+      class="toast-slide-up pointer-events-auto relative w-full overflow-hidden rounded-2xl border bg-white p-3.5 shadow-2xl transition-all duration-300"
+      [class.border-emerald-200]="toast.type === 'success'"
+      [class.border-rose-200]="toast.type === 'error'"
+      [class.border-amber-200]="toast.type === 'warning'"
+      [class.border-blue-200]="toast.type === 'info'"
+      role="alert"
+    >
+      <div class="flex items-start gap-3">
+        <!-- Icon -->
+        <div
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl"
+          [class.bg-emerald-50]="toast.type === 'success'"
+          [class.text-emerald-600]="toast.type === 'success'"
+          [class.bg-rose-50]="toast.type === 'error'"
+          [class.text-rose-600]="toast.type === 'error'"
+          [class.bg-amber-50]="toast.type === 'warning'"
+          [class.text-amber-600]="toast.type === 'warning'"
+          [class.bg-blue-50]="toast.type === 'info'"
+          [class.text-blue-600]="toast.type === 'info'"
+        >
+          <span class="material-symbols-sharp select-none text-[20px] leading-none icon-fill">
+            {{ getIcon(toast.type) }}
+          </span>
+        </div>
+
+        <!-- Content -->
+        <div class="min-w-0 flex-1 pt-0.5">
+          @if (toast.title) {
+            <h4 class="text-sm font-bold text-gray-900 leading-tight mb-0.5">
+              {{ toast.title }}
+            </h4>
+          }
+          <p class="text-sm font-semibold text-gray-700 leading-relaxed">
+            {{ toast.message }}
+          </p>
+        </div>
+
+        <!-- Close Button -->
+        <button
+          type="button"
+          (click)="toastService.remove(toast.id)"
+          class="flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition"
+          aria-label="إغلاق التنبيه"
+        >
+          <span class="material-symbols-sharp select-none text-[16px] leading-none">close</span>
+        </button>
+      </div>
+
+      <!-- Progress Bar Countdown -->
+      @if (toast.duration > 0) {
+        <div class="absolute bottom-0 inset-x-0 h-1 bg-gray-100 overflow-hidden">
+          <div
+            class="h-full w-full origin-left animate-shrink"
+            [style.animationDuration]="toast.duration + 'ms'"
+            [class.bg-emerald-500]="toast.type === 'success'"
+            [class.bg-rose-500]="toast.type === 'error'"
+            [class.bg-amber-500]="toast.type === 'warning'"
+            [class.bg-blue-500]="toast.type === 'info'"
+          ></div>
+        </div>
+      }
+    </div>
+  }
+</div>

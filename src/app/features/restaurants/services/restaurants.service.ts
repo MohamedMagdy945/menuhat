@@ -133,6 +133,42 @@ export class RestaurantsService {
   }
 
   // ============================================
+  // Trends (رائج الآن)
+  // ============================================
+  readonly trends = signal<Restaurant[]>([]);
+  readonly trendsHasNext = signal(true);
+  readonly isLoadingTrends = signal(false);
+
+  loadTrends(
+    pageNumber: number,
+    pageSize: number,
+    options?: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> },
+  ): void;
+  loadTrends(params?: LoadRestaurantsParams): void;
+  loadTrends(
+    pageOrParams: number | LoadRestaurantsParams = 1,
+    pageSizeArg: number = 10,
+    optionsArg: { globalLoading?: boolean; extraParams?: Partial<RestaurantQueryParams> } = {},
+  ): void {
+    const { pageNumber, pageSize, globalLoading, extraParams } = this.resolveParams(
+      pageOrParams,
+      pageSizeArg,
+      optionsArg,
+    );
+
+    this.fetchRestaurants({
+      endpoint: '/EMHomeApp/GetTrends',
+      pageNumber,
+      pageSize,
+      globalLoading,
+      extraParams,
+      itemsSignal: this.trends,
+      hasNextSignal: this.trendsHasNext,
+      isLoadingSignal: this.isLoadingTrends,
+    });
+  }
+
+  // ============================================
   // Helper Methods
   // ============================================
   private resolveParams(

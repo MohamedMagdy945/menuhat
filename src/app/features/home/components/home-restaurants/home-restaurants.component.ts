@@ -1,7 +1,6 @@
 import {
   Component,
   input,
-  output,
 } from '@angular/core';
 
 import { CarouselComponent } from '../../../../shared/components/carousel/carousel.component';
@@ -23,19 +22,4 @@ export class HomeRestaurantsComponent {
 
   // Restaurants displayed inside the section
   readonly restaurants = input.required<Restaurant[]>();
-
-  // Pagination state (defaults to false for single-batch carousel display)
-  readonly hasMoreData = input(false);
-  readonly isLoadingMore = input(false);
-
-  // Emit when more products should be loaded
-  readonly loadMore = output<void>();
-
-  onLoadMore(): void {
-    if (!this.hasMoreData() || this.isLoadingMore()) {
-      return;
-    }
-
-    this.loadMore.emit();
-  }
 }

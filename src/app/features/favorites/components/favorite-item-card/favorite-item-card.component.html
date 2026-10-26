@@ -1,0 +1,75 @@
+<article class="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
+
+  <!-- Image & Badges -->
+  <div class="relative w-full overflow-hidden">
+
+    <!-- Meal Details Link -->
+    <a [routerLink]="['/menu-items', item().id]" [state]="{ item: item() }" class="block h-full w-full"
+      [attr.aria-label]="'عرض تفاصيل ' + item().productName">
+      <div class="bg-slate-100 h-26">
+        <div class="relative h-21 md:h-23 w-full ">
+          <img [src]="item().photoURL ? apiUrl + item().photoURL : '/images/default-meal.png'"
+            [alt]="item().productName" class="h-full w-full object-contain p-1" loading="lazy" decoding="async"
+            (error)="$any($event.target).src='/images/default-meal.png'" />
+        </div>
+      </div>
+
+      <!-- Meal Content -->
+      <div class="px-3 py-1 pb-2 bg-white">
+
+        <!-- Meal Name -->
+        <h3 class="truncate text-base font-semibold text-gray-900 transition-colors hover:text-orange-500">
+          {{ item().productName }}
+        </h3>
+
+        <!-- Restaurant Name -->
+        <p class="mt-0.5 truncate text-sm font-semibold text-gray-400">
+          {{ item().clientName }}
+        </p>
+
+        <!-- Rating & Price -->
+        <div class="mt-1.5 flex items-center justify-between ">
+
+          <!-- Rating -->
+          <div class="flex min-w-0 items-center gap-1 text-sm text-gray-400">
+            <span class="font-bold text-gray-700">4.8</span>
+
+            <span class="material-symbols-sharp icon-fill select-none text-[16px] leading-none text-amber-400">
+              star
+            </span>
+
+            <span class="truncate">(1.2k تقييم)</span>
+          </div>
+
+          <!-- Price -->
+          <div class="flex shrink-0 items-baseline gap-1 text-base font-bold text-orange-500">
+            <span>{{ item().price ?? (item().details && item().details.length ? item().details[0].price : 0) }}</span>
+            <span class="text-xs">ج.م</span>
+          </div>
+
+        </div>
+      </div>
+    </a>
+
+    <!-- Favorite Button -->
+    <button type="button" aria-label="Favorite" (click)="toggleFavorite()"
+      class="absolute top-2.5 left-2.5 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/20 text-xl text-white shadow-sm transition">
+      <span class="material-symbols-sharp transition-colors duration-200 text-red-500 icon-fill">
+        favorite
+      </span>
+    </button>
+
+    <!-- Discount Badge -->
+    @if ((item().oldPrice ?? 0) > (item().price ?? 0)) {
+    <span
+      class="absolute top-2.5 right-2.5 z-10 rounded-full bg-orange-500 px-2 py-1 text-xs font-semibold text-white shadow-sm">
+      {{
+      item().discountPercentage ||
+      Math.round((((item().oldPrice ?? 0) - (item().price ?? 0)) / (item().oldPrice || 1)) * 100)
+      }}%
+    </span>
+    }
+
+  </div>
+
+</article>

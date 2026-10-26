@@ -6,7 +6,7 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout.component
 import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
 import { HomeComponent } from './features/home/home.component';
 import { CartComponent } from './features/cart/cart.component';
-import { MyOrdersComponent } from './features/cart/pages/my-orders/my-orders.component';
+import { MyOrdersComponent } from './features/my-orders/my-orders.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
 import { TestLoadingComponent } from './features/testing/testing';
 
@@ -39,20 +39,30 @@ export const routes: Routes = [
     },
 
     {
-        path: 'send-email',
+        path: 'send-otp',
         component: AuthLayoutComponent,
         children: [
             {
                 path: '',
                 loadComponent: () =>
-                    import('./features/auth/pages/send-email/send-email.component')
-                        .then(m => m.SendEmailComponent ?? m.SendEmail)
+                    import('./features/auth/pages/send-otp/send-otp.component')
+                        .then(m => m.SendOtpComponent ?? m.SendOtp)
             }
         ]
     },
     {
+        path: 'sendOtp',
+        redirectTo: 'send-otp',
+        pathMatch: 'full'
+    },
+    {
+        path: 'send-email',
+        redirectTo: 'send-otp',
+        pathMatch: 'full'
+    },
+    {
         path: 'sendEmail',
-        redirectTo: 'send-email',
+        redirectTo: 'send-otp',
         pathMatch: 'full'
     },
 
@@ -267,12 +277,34 @@ export const routes: Routes = [
 
 
             // =================================================
+            // Favorites
+            // =================================================
+
+            {
+                path: 'favorites',
+                component: FavoritesComponent
+            },
+
+
+            // =================================================
             // Support
             // =================================================
 
             {
                 path: 'support',
                 component: TechnicalSupportComponent
+            },
+
+
+            // =================================================
+            // Notifications
+            // =================================================
+
+            {
+                path: 'notifications',
+                loadComponent: () =>
+                    import('./features/notifications/notifications.component')
+                        .then(m => m.NotificationsComponent)
             }
         ]
     },
