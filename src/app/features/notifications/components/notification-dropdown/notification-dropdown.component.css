@@ -3,15 +3,18 @@
 }
 
 .notification-dropdown-panel {
-  animation: dropdownFadeIn 0.15s ease-out;
+  animation: dropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
 }
 
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
+    transform: translateY(-6px) scale(0.98);
   }
   to {
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 

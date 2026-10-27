@@ -8,6 +8,7 @@ import { HomeComponent } from './features/home/home.component';
 import { CartComponent } from './features/cart/cart.component';
 import { MyOrdersComponent } from './features/my-orders/my-orders.component';
 import { FavoritesComponent } from './features/favorites/favorites.component';
+import { ProfileComponent } from './features/profile/profile.component';
 import { TestLoadingComponent } from './features/testing/testing';
 
 import { RestaurantsComponent } from './features/restaurants/restaurants.component';
@@ -172,6 +173,11 @@ export const routes: Routes = [
             {
                 path: 'favorites',
                 component: FavoritesComponent
+            },
+
+            {
+                path: 'profile',
+                component: ProfileComponent
             },
 
             {

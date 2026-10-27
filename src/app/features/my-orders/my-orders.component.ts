@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { CommonModule, DecimalPipe, NgClass } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { IOrder } from '../cart/models/order';
 import { CartService } from '../cart/cart.service';
 import { CommonDateService } from '../../core/common-data/common-date';
@@ -12,7 +12,7 @@ export interface FilterTab {
 
 @Component({
   selector: 'app-my-orders',
-  imports: [CommonModule, DecimalPipe, NgClass, OrderItemCardComponent],
+  imports: [CommonModule, OrderItemCardComponent],
   templateUrl: './my-orders.component.html',
   styleUrl: './my-orders.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

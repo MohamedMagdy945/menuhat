@@ -13,11 +13,13 @@ import { CartService } from '../../cart.service';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { environment } from '../../../../core/environments/environment';
 import { AddCartItem, CartMenuItem } from '../../models/cart-item';
+import { SideDrawerComponent } from '../../../../shared/components/side-drawer/side-drawer.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cart-dropdown',
   standalone: true,
-  imports: [CommonModule, DecimalPipe],
+  imports: [CommonModule, DecimalPipe, RouterModule, SideDrawerComponent],
   templateUrl: './cart-dropdown.component.html',
   styleUrl: './cart-dropdown.component.css'
 })
@@ -32,6 +34,7 @@ export class CartDropdownComponent implements OnInit {
   readonly filesUrl = environment.filesUrl;
 
   readonly isOpen = signal<boolean>(false);
+  readonly isDrawerOpen = signal<boolean>(false);
   readonly cartItems = this._cartService.cartItems;
   readonly cartCount = this._cartService.cartCount;
   readonly totalPrice = this._cartService.cartTotalPrice;
@@ -53,15 +56,15 @@ export class CartDropdownComponent implements OnInit {
     }
 
     if (!this.isUserLoggedIn()) {
-      this.isOpen.set(false);
+      this.isDrawerOpen.set(false);
       this._router.navigate(['/login']);
       return;
     }
 
-    const nextState = !this.isOpen();
-    this.isOpen.set(nextState);
+    const nextState = !this.isDrawerOpen();
+    this.isDrawerOpen.set(nextState);
 
-    if (nextState && !this._cartService.cartData()) {
+    if (nextState) {
       this.fetchCartData();
     }
   }
@@ -82,7 +85,37 @@ export class CartDropdownComponent implements OnInit {
       event.stopPropagation();
     }
     this.isOpen.set(false);
+    this.isDrawerOpen.set(true);
+  }
+
+  goToCheckout(): void {
+    this.isDrawerOpen.set(false);
     this._router.navigate(['/cart']);
+  }
+
+  changeQuantity(item: CartMenuItem, delta: number, event?: Event): void {
+    if (event) event.stopPropagation();
+    const newQty = item.quantity + delta;
+    if (newQty <= 0) {
+      this.removeItem(item, event || new Event('click'));
+      return;
+    }
+    const allItems = this.cartItems();
+    const isMatch = (it: CartMenuItem): boolean =>
+      it === item ||
+      (!!it.id && !!item.id && it.id === item.id) ||
+      (it.productId === item.productId && it.productPriceId === item.productPriceId);
+
+    const payload: AddCartItem[] = allItems.map((it) => ({
+      productId: it.productId,
+      productPriceId: it.productPriceId ?? null,
+      quantity: isMatch(it) ? newQty : it.quantity,
+      serial: it.serial ?? '',
+    }));
+
+    this._cartService.AddItemsAndRefreshCart(payload).subscribe({
+      error: (err) => console.error('Error changing cart quantity:', err),
+    });
   }
 
   getItemImageUrl(photoURL: string | null): string {

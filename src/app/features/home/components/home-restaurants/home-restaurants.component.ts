@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   input,
 } from '@angular/core';
@@ -15,6 +16,7 @@ import { HomeRestaurantCardComponent } from '../home-restaurant-card/home-restau
   ],
   templateUrl: './home-restaurants.component.html',
   styleUrl: './home-restaurants.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeRestaurantsComponent {
   // Section title

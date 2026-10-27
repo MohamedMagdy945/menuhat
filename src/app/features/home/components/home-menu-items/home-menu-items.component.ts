@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MenuItemService } from '../../../menu-items/menu-item.service';
 import { MenuItem } from '../../../menu-items/models/menu-item';
@@ -14,6 +14,7 @@ import { HomeMenuItemCardComponent } from '../home-menu-item-card/home-menu-item
   ],
   templateUrl: './home-menu-items.component.html',
   styleUrl: './home-menu-items.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeMenuItemsComponent {
   protected readonly menuItemService = inject(MenuItemService);

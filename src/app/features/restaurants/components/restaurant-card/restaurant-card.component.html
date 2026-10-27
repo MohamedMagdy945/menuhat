@@ -1,13 +1,16 @@
-<article class="relative flex flex-col h-full w-full pb-2 overflow-hidden rounded-2xl border border-gray-100  shadow-xs bg-white">
+<article class="relative flex flex-col h-full w-full pb-2 overflow-hidden rounded-2xl border border-gray-200  shadow-sm bg-white">
   <!-- ONE LINK -->
   <a [routerLink]="['/restaurants', restaurant().serial]" class="flex flex-col flex-1 h-full">
     <!-- ================= IMAGE ================= -->
     <div class="relative w-full overflow-hidden bg-slate-50">
       <div class="h-32">
         <div class="h-32 w-full overflow-hidden rounded-md">
-          <img [src]="
-            restaurant().logoURL ? apiUrl + restaurant().logoURL : defaultImage
-          " [alt]="restaurant().clientName" class="h-full w-full object-contain" />
+          <img
+            [src]="restaurant().logoURL ? apiUrl + restaurant().logoURL : defaultImage"
+            (error)="$any($event.target).src = defaultImage"
+            [alt]="restaurant().clientName"
+            class="h-full w-full object-contain"
+          />
         </div>
       </div>
 

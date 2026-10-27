@@ -50,10 +50,6 @@
   cursor: pointer;
 }
 
-.dropdown-item:active {
-  transform: scale(0.98);
-}
-
 /* Chevron rotation */
 .rotate-180 {
   transform: rotate(180deg);

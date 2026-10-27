@@ -13,18 +13,24 @@ import { Router } from '@angular/router';
 import { FavoritesService } from '../../favorites.service';
 import { FavoriteProduct } from '../../models';
 import { UserDataService } from '../../../../core/services/userData.service';
+import { CartService } from '../../../cart/cart.service';
+import { ToastService } from '../../../../core/services/toast.service';
 import { environment } from '../../../../core/environments/environment';
+import { SideDrawerComponent } from '../../../../shared/components/side-drawer/side-drawer.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-favorite-dropdown',
   standalone: true,
-  imports: [CommonModule, DecimalPipe],
+  imports: [CommonModule, DecimalPipe, RouterModule, SideDrawerComponent],
   templateUrl: './favorite-dropdown.component.html',
   styleUrl: './favorite-dropdown.component.css',
 })
 export class FavoriteDropdownComponent implements OnInit {
   private readonly _favoritesService = inject(FavoritesService);
   private readonly _userDataService = inject(UserDataService);
+  private readonly _cartService = inject(CartService);
+  private readonly _toastService = inject(ToastService);
   private readonly _router = inject(Router);
   private readonly _cdr = inject(ChangeDetectorRef);
   private readonly _elementRef = inject(ElementRef);
@@ -32,6 +38,7 @@ export class FavoriteDropdownComponent implements OnInit {
   readonly filesUrl = environment.filesUrl;
 
   readonly isOpen = signal<boolean>(false);
+  readonly isDrawerOpen = signal<boolean>(false);
   readonly favorites = this._favoritesService.favorites;
   readonly favoritesCount = computed(() => this.favorites().length);
   readonly isLoading = this._favoritesService.isLoading;
@@ -52,13 +59,13 @@ export class FavoriteDropdownComponent implements OnInit {
     }
 
     if (!this.isUserLoggedIn()) {
-      this.isOpen.set(false);
+      this.isDrawerOpen.set(false);
       this._router.navigate(['/login']);
       return;
     }
 
-    const nextState = !this.isOpen();
-    this.isOpen.set(nextState);
+    const nextState = !this.isDrawerOpen();
+    this.isDrawerOpen.set(nextState);
 
     if (nextState && this.favorites().length === 0) {
       this._favoritesService.loadFavorites(true);
@@ -70,14 +77,31 @@ export class FavoriteDropdownComponent implements OnInit {
       event.stopPropagation();
     }
     this.isOpen.set(false);
-    this._router.navigate(['/favorites']);
+    this.isDrawerOpen.set(true);
+  }
+
+  addToCart(item: FavoriteProduct, event: Event): void {
+    event.stopPropagation();
+    this._cartService.addItem({
+      productId: item.id,
+      productPriceId: null,
+      quantity: 1,
+      serial: '',
+    }).subscribe({
+      next: () => {
+        this._toastService.success('تمت إضافة الوجبة إلى السلة');
+      },
+      error: () => {
+        this._toastService.error('تعذر إضافة الوجبة إلى السلة');
+      },
+    });
   }
 
   goToProduct(productId: number, event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
-    this.isOpen.set(false);
+    this.isDrawerOpen.set(false);
     this._router.navigate(['/menu-items', productId]);
   }
 
@@ -105,6 +129,10 @@ export class FavoriteDropdownComponent implements OnInit {
     }
     const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
     return `${this.filesUrl}${cleanPath}`;
+  }
+
+  getItemPhoto(photoURL: string | null): string {
+    return this.getItemImageUrl(photoURL);
   }
 
   @HostListener('document:click', ['$event'])

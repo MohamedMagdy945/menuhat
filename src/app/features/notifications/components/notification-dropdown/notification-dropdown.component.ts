@@ -12,11 +12,13 @@ import { NotificationsService } from '../../services/notifications.service';
 import { AppNotification } from '../../models/notification.model';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { environment } from '../../../../core/environments/environment';
+import { SideDrawerComponent } from '../../../../shared/components/side-drawer/side-drawer.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-notification-dropdown',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule, SideDrawerComponent],
   templateUrl: './notification-dropdown.component.html',
   styleUrl: './notification-dropdown.component.css',
 })
@@ -29,6 +31,7 @@ export class NotificationDropdownComponent implements OnInit {
   readonly filesUrl = environment.filesUrl;
 
   readonly isOpen = signal<boolean>(false);
+  readonly isDrawerOpen = signal<boolean>(false);
   readonly notifications = this._notificationsService.notifications;
   readonly unreadCount = this._notificationsService.unreadCount;
   readonly totalCount = this._notificationsService.totalCount;
@@ -49,23 +52,29 @@ export class NotificationDropdownComponent implements OnInit {
       event.stopPropagation();
     }
 
-    const nextState = !this.isOpen();
-    this.isOpen.set(nextState);
+    if (!this.isUserLoggedIn()) {
+      this.isDrawerOpen.set(false);
+      this._router.navigate(['/login']);
+      return;
+    }
 
-    if (nextState && this.isUserLoggedIn() && this.notifications().length === 0) {
+    const nextState = !this.isDrawerOpen();
+    this.isDrawerOpen.set(nextState);
+
+    if (nextState && this.notifications().length === 0) {
       this._notificationsService.loadNotifications(true);
     }
   }
 
   closeDropdown(): void {
-    this.isOpen.set(false);
+    this.isDrawerOpen.set(false);
   }
 
   goToNotifications(event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
-    this.isOpen.set(false);
+    this.isDrawerOpen.set(false);
     this._router.navigate(['/notifications']);
   }
 
@@ -104,7 +113,7 @@ export class NotificationDropdownComponent implements OnInit {
 
     // Mark as read immediately
     this._notificationsService.markAsRead(item.id);
-    this.isOpen.set(false);
+    this.isDrawerOpen.set(false);
 
     // Contextual navigation based on screenId or name
     if (item.screenId === 4 || item.orderId || item.orderSerial || item.name === 'MyOrders') {

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LocationSelectorComponent } from '../../../../shared/components/location-selector/location-selector.component';
-import { CartDropdownComponent } from '../../../../features/cart/components/cart-dropdown/cart-dropdown.component';
-import { FavoriteDropdownComponent } from '../../../../features/favorites/components/favorite-dropdown/favorite-dropdown.component';
-import { NotificationDropdownComponent } from '../../../../features/notifications/components/notification-dropdown/notification-dropdown.component';
+import { CartDrawerComponent } from '../../../../features/cart/components/cart-drawer/cart-drawer.component';
+import { FavoriteSideDrawerComponent } from '../../../../features/favorites/components/favorite-side-drawer/favorite-side-drawer.component';
+import { NotificationSideDrawerComponent } from '../../../../features/notifications/components/notification-side-drawer/notification-side-drawer.component';
 import { AccountDropdownComponent } from '../../../../features/home/components/account-dropdown/account-dropdown.component';
 
 @Component({
@@ -11,9 +11,9 @@ import { AccountDropdownComponent } from '../../../../features/home/components/a
     RouterLink,
     RouterLinkActive,
     LocationSelectorComponent,
-    NotificationDropdownComponent,
-    FavoriteDropdownComponent,
-    CartDropdownComponent,
+    NotificationSideDrawerComponent,
+    FavoriteSideDrawerComponent,
+    CartDrawerComponent,
     AccountDropdownComponent,
   ],
   selector: 'app-desktop-navbar',

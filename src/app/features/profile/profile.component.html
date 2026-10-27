@@ -1,0 +1,322 @@
+<div class="mx-auto px-4 py-6 space-y-6 max-w-5xl" dir="rtl">
+  <!-- Page Header -->
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200">
+    <div class="flex items-start gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl select-none">person</span>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">الملف الشخصي</h1>
+        <p class="mt-1 text-xs sm:text-sm text-slate-400">
+          إدارة معلومات حسابك، العناوين المحفوظة، وإعدادات الأمان
+        </p>
+      </div>
+    </div>
+
+    <!-- Header Actions -->
+    @if (userDataService.getToken()) {
+      <div class="flex items-center gap-2 self-start md:self-auto">
+        <button
+          type="button"
+          (click)="logout()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-50 text-red-600 text-xs sm:text-sm font-semibold cursor-pointer"
+          title="تسجيل الخروج"
+        >
+          <span class="material-symbols-sharp text-[17px]">logout</span>
+          <span>تسجيل الخروج</span>
+        </button>
+      </div>
+    }
+  </header>
+
+  <!-- Not Logged In State -->
+  @if (!userDataService.getToken()) {
+    <div class="py-20 text-center bg-white rounded-2xl border border-slate-100 shadow-sm max-w-md mx-auto">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
+        <span class="material-symbols-sharp text-3xl select-none">account_circle</span>
+      </div>
+      <h2 class="text-base font-bold text-slate-800">قم بتسجيل الدخول لعرض ملفك الشخصي</h2>
+      <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
+        سجّل دخولك لإدارة معلوماتك، متابعة طلباتك وتحديث عناوين التوصيل
+      </p>
+      <a
+        routerLink="/login"
+        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm cursor-pointer"
+      >
+        <span class="material-symbols-sharp text-[18px]">login</span>
+        <span>تسجيل الدخول</span>
+      </a>
+    </div>
+  } @else {
+    <!-- Alerts -->
+    @if (successMessage()) {
+      <div class="flex items-center gap-2 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs sm:text-sm font-medium">
+        <span class="material-symbols-sharp text-[20px] text-emerald-600">check_circle</span>
+        <span>{{ successMessage() }}</span>
+      </div>
+    }
+
+    @if (errorMessage()) {
+      <div class="flex items-center gap-2 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm font-medium">
+        <span class="material-symbols-sharp text-[20px] text-red-600">error</span>
+        <span>{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <!-- Profile Overview Card -->
+    <div class="p-5 bg-white rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row items-center gap-4">
+      <!-- Avatar Section -->
+      <div class="relative">
+        <div class="w-20 h-20 rounded-full border-2 border-orange-500 bg-orange-50 text-orange-600 flex items-center justify-center text-2xl font-bold overflow-hidden shadow-xs">
+          @if (profileService.profile()?.photo?.base64String) {
+            <img
+              [src]="profileService.profile()!.photo!.base64String"
+              alt="Avatar"
+              class="w-full h-full object-cover"
+              (error)="$any($event.target).style.display = 'none'"
+            />
+          } @else {
+            <span>{{ userInitial() }}</span>
+          }
+        </div>
+
+        <!-- Change Photo Button -->
+        <label
+          class="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-orange-500 text-white flex items-center justify-center shadow-sm cursor-pointer"
+          title="تغيير الصورة"
+        >
+          <span class="material-symbols-sharp text-[15px]">photo_camera</span>
+          <input type="file" accept="image/*" (change)="onAvatarChange($event)" class="hidden" />
+        </label>
+      </div>
+
+      <!-- Info -->
+      <div class="flex-1 text-center sm:text-right min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 truncate">
+              {{ profileService.profile()?.fullName || userDataService.getUserFullName() || 'المستخدم' }}
+            </h2>
+            <p class="text-xs text-slate-400 mt-0.5" dir="ltr">
+              {{ profileService.profile()?.mobile || userDataService.currentUser()?.username || '' }}
+            </p>
+          </div>
+
+          @if (profileService.profile()?.photo) {
+            <button
+              type="button"
+              (click)="deleteAvatar()"
+              class="self-center sm:self-auto text-xs text-red-500 font-semibold cursor-pointer inline-flex items-center gap-1"
+            >
+              <span class="material-symbols-sharp text-[14px]">delete</span>
+              <span>حذف الصورة</span>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="flex items-center gap-2 border-b border-gray-200 pb-2 overflow-x-auto scrollbar-hide">
+      <button
+        type="button"
+        (click)="setTab('info')"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer"
+        [class]="activeTab() === 'info' ? 'bg-orange-500 text-white' : 'bg-white border border-gray-200 text-slate-700'"
+      >
+        <span class="material-symbols-sharp text-[18px]">badge</span>
+        <span>المعلومات الشخصية</span>
+      </button>
+
+      <button
+        type="button"
+        (click)="setTab('addresses')"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer"
+        [class]="activeTab() === 'addresses' ? 'bg-orange-500 text-white' : 'bg-white border border-gray-200 text-slate-700'"
+      >
+        <span class="material-symbols-sharp text-[18px]">home_pin</span>
+        <span>دفتر العناوين</span>
+      </button>
+
+      <button
+        type="button"
+        (click)="setTab('security')"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer"
+        [class]="activeTab() === 'security' ? 'bg-orange-500 text-white' : 'bg-white border border-gray-200 text-slate-700'"
+      >
+        <span class="material-symbols-sharp text-[18px]">lock</span>
+        <span>الأمان وكلمة المرور</span>
+      </button>
+    </div>
+
+    <!-- Tab 1: Personal Info -->
+    @if (activeTab() === 'info') {
+      <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-4">
+        <h3 class="text-base font-bold text-slate-800">تعديل البيانات الأساسية</h3>
+
+        <form [formGroup]="infoForm" (ngSubmit)="saveProfileInfo()" class="space-y-4 max-w-xl">
+          <div>
+            <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">الاسم الكامل</label>
+            <input
+              type="text"
+              formControlName="fullName"
+              placeholder="أدخل اسمك الكامل"
+              class="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">رقم الهاتف</label>
+              <input
+                type="text"
+                formControlName="mobile"
+                readonly
+                class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-xs sm:text-sm text-slate-500 cursor-not-allowed"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">البريد الإلكتروني</label>
+              <input
+                type="email"
+                formControlName="email"
+                readonly
+                class="w-full rounded-xl border border-gray-200 bg-gray-50 px-3.5 py-2.5 text-xs sm:text-sm text-slate-500 cursor-not-allowed"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">اللغة المفضلة</label>
+            <select
+              formControlName="defaultLang"
+              class="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 focus:border-orange-500 focus:outline-none"
+            >
+              <option value="ar">العربية (Arabic)</option>
+              <option value="en">English (الإنجليزية)</option>
+            </select>
+          </div>
+
+          <div class="pt-2">
+            <button
+              type="submit"
+              [disabled]="isSaving()"
+              class="bg-orange-500 text-white font-bold text-sm px-6 py-2.5 rounded-xl cursor-pointer disabled:opacity-50 inline-flex items-center gap-2"
+            >
+              @if (isSaving()) {
+                <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              }
+              <span>حفظ التعديلات</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+
+    <!-- Tab 2: Addresses -->
+    @if (activeTab() === 'addresses') {
+      <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-bold text-slate-800">العناوين المحفوظة</h3>
+          <span class="text-xs text-slate-400">عناوين توصيل الطلبات</span>
+        </div>
+
+        @if (profileService.addresses().length > 0) {
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            @for (addr of profileService.addresses(); track addr.id) {
+              <div class="p-3.5 rounded-xl border border-gray-100 bg-slate-50/50 flex items-start gap-3">
+                <span class="material-symbols-sharp text-orange-500 text-[20px] mt-0.5">location_on</span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs sm:text-sm font-semibold text-slate-800">
+                    {{ addr.address || 'عنوان مسجل' }}
+                  </p>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="py-10 text-center text-slate-400 text-xs sm:text-sm">
+            لا توجد عناوين توصيل مسجلة حالياً
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Tab 3: Security & Password -->
+    @if (activeTab() === 'security') {
+      <div class="space-y-6">
+        <!-- Change Password Card -->
+        <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-4">
+          <h3 class="text-base font-bold text-slate-800">تغيير كلمة المرور</h3>
+
+          <form [formGroup]="passwordForm" (ngSubmit)="savePassword()" class="space-y-4 max-w-xl">
+            <div>
+              <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">كلمة المرور الحالية</label>
+              <input
+                type="password"
+                formControlName="oldPassword"
+                placeholder="أدخل كلمة المرور الحالية"
+                class="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">كلمة المرور الجديدة</label>
+              <input
+                type="password"
+                formControlName="newPassword"
+                placeholder="8 أحرف أو أكثر"
+                class="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">تأكيد كلمة المرور الجديدة</label>
+              <input
+                type="password"
+                formControlName="confirmPass"
+                placeholder="أعد إدخال كلمة المرور الجديدة"
+                class="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none"
+              />
+              @if (passwordForm.hasError('mismatch') && passwordForm.get('confirmPass')?.touched) {
+                <p class="text-xs text-red-500 mt-1">كلمتا المرور غير متطابقتين</p>
+              }
+            </div>
+
+            <div class="pt-2">
+              <button
+                type="submit"
+                [disabled]="isSaving()"
+                class="bg-orange-500 text-white font-bold text-sm px-6 py-2.5 rounded-xl cursor-pointer disabled:opacity-50 inline-flex items-center gap-2"
+              >
+                @if (isSaving()) {
+                  <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                }
+                <span>تحديث كلمة المرور</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Danger Zone: Delete Account -->
+        <div class="bg-red-50/50 rounded-2xl border border-red-200 p-5 space-y-3">
+          <div class="flex items-center gap-2 text-red-600 font-bold text-base">
+            <span class="material-symbols-sharp text-[22px]">warning</span>
+            <span>منطقة الخطر: حذف الحساب</span>
+          </div>
+          <p class="text-xs text-slate-600">
+            سيؤدي حذف الحساب إلى مسح بياناتك الشخصية والعناوين وسجل الطلبات نهائياً من النظام. هذا الإجراء لا يمكن التراجع عنه.
+          </p>
+          <button
+            type="button"
+            (click)="deleteAccount()"
+            class="bg-red-600 text-white font-bold text-xs sm:text-sm px-4 py-2 rounded-xl cursor-pointer"
+          >
+            حذف الحساب نهائياً
+          </button>
+        </div>
+      </div>
+    }
+  }
+</div>

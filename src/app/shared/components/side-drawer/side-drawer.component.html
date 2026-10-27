@@ -1,0 +1,12 @@
+@if (isOpen()) {
+<!-- Backdrop Overlay -->
+<div class="fixed inset-0 bg-black/40 backdrop-blur-xs z-50 transition-opacity" (click)="close()" aria-hidden="true">
+</div>
+
+<!-- Side Drawer Shell -->
+<aside class="fixed inset-y-0 z-50 max-w-full bg-white shadow-2xl flex flex-col overflow-hidden"
+  [class]="position() === 'right' ? 'right-0 animate-slide-in-right' : 'left-0 animate-slide-in-left'"
+  [ngClass]="widthClass()" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+  <ng-content></ng-content>
+</aside>
+}

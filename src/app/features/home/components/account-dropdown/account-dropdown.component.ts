@@ -42,6 +42,18 @@ export class AccountDropdownComponent {
     this._router.navigate(['/profile']);
   }
 
+  navigateToOrders(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isOpen.set(false);
+    this._router.navigate(['/my-orders']);
+  }
+
+  navigateToFavorites(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isOpen.set(false);
+    this._router.navigate(['/favorites']);
+  }
+
   navigateToLogin(event?: Event): void {
     if (event) event.stopPropagation();
     this.isOpen.set(false);

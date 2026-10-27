@@ -1,12 +1,13 @@
 <div class="relative">
   <!-- Trigger Button -->
   <button
+    type="button"
     (click)="toggleDropdown($event)"
-    class="flex items-center  bg-white gap-2 pl-4 pr-1.5 py-1.5 rounded-full shadow-sm cursor-pointer select-none transition-all duration-200 hover:shadow-md"
+    class="flex items-center bg-white gap-2 pl-4 pr-1.5 py-1.5 rounded-full shadow-sm cursor-pointer select-none"
   >
     <!-- Avatar Icon -->
     <div
-      class="w-7 h-7 rounded-full  border border-gray-100 bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm"
+      class="w-7 h-7 rounded-full border border-gray-100 bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm"
     >
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -27,7 +28,7 @@
 
     <!-- Chevron -->
     <svg
-      class="w-3 h-3 text-slate-400 transition-transform duration-200 mr-0.5"
+      class="w-3 h-3 text-slate-400 mr-0.5"
       [class.rotate-180]="isOpen()"
       fill="none"
       stroke="currentColor"
@@ -43,7 +44,7 @@
     <div class="dropdown-arrow"></div>
 
     <div
-      class="dropdown-panel absolute left-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-dropdown"
+      class="dropdown-panel absolute left-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-dropdown"
     >
 
       <!-- Header (shown when logged in) -->
@@ -60,56 +61,92 @@
       }
 
       <!-- Menu Items -->
-      <ul class="py-1">
+      <ul class="py-1.5 space-y-0.5">
 
         @if (isAuthenticated()) {
           <!-- My Profile -->
           <li>
             <button
+              type="button"
               (click)="navigateToProfile($event)"
-              class="dropdown-item w-full flex items-center gap-2 px-4 py-1 text-sm text-slate-700 hover:bg-orange-50  transition-colors duration-150 text-right"
+              class="dropdown-item w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 text-right cursor-pointer"
             >
-              <span class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+              <span class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                <span class="material-symbols-sharp text-[18px]">person</span>
               </span>
-              <span class="font-medium">ملفي الشخصي</span>
+              <span class="font-semibold">ملفي الشخصي</span>
+            </button>
+          </li>
+
+          <!-- My Orders -->
+          <li>
+            <button
+              type="button"
+              (click)="navigateToOrders($event)"
+              class="dropdown-item w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 text-right cursor-pointer"
+            >
+              <span class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-sharp text-[18px]">receipt_long</span>
+              </span>
+              <span class="font-medium">طلباتي</span>
+            </button>
+          </li>
+
+          <!-- Favorites -->
+          <li>
+            <button
+              type="button"
+              (click)="navigateToFavorites($event)"
+              class="dropdown-item w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 text-right cursor-pointer"
+            >
+              <span class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
+                <span class="material-symbols-sharp text-[18px]">favorite</span>
+              </span>
+              <span class="font-medium">المفضلة</span>
             </button>
           </li>
 
           <!-- Divider -->
-          <li class="mx-3  border-t border-gray-100"></li>
+          <li class="mx-3 my-1 border-t border-gray-100"></li>
 
           <!-- Logout -->
           <li>
             <button
+              type="button"
               (click)="logout($event)"
-              class="dropdown-item w-full flex items-center gap-3 px-4 py-1 text-sm text-red-500 hover:bg-red-50 transition-colors duration-150 text-right"
+              class="dropdown-item w-full flex items-center gap-2.5 px-4 py-2 text-sm text-red-500 text-right cursor-pointer"
             >
-              <span class="w-7 h-7 rounded-full bg-red-50 flex items-center justify-center shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
+              <span class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+                <span class="material-symbols-sharp text-[18px]">logout</span>
               </span>
               <span class="font-semibold">تسجيل الخروج</span>
             </button>
           </li>
 
         } @else {
+          <!-- Profile (view profile state) -->
+          <li>
+            <button
+              type="button"
+              (click)="navigateToProfile($event)"
+              class="dropdown-item w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 text-right cursor-pointer"
+            >
+              <span class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                <span class="material-symbols-sharp text-[18px]">person</span>
+              </span>
+              <span class="font-semibold">الملف الشخصي</span>
+            </button>
+          </li>
+
           <!-- Login -->
           <li>
             <button
+              type="button"
               (click)="navigateToLogin($event)"
-              class="dropdown-item w-full flex items-center gap-3 px-3 py-1.5 text-sm text-orange-600 hover:bg-orange-50 transition-colors duration-150 text-right"
+              class="dropdown-item w-full flex items-center gap-2.5 px-4 py-2 text-sm text-orange-600 text-right cursor-pointer"
             >
-              <span class="w-7 h-7 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-                </svg>
+              <span class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                <span class="material-symbols-sharp text-[18px]">login</span>
               </span>
               <span class="font-semibold">تسجيل الدخول</span>
             </button>

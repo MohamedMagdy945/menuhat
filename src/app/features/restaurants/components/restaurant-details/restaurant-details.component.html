@@ -36,7 +36,7 @@
           <div class="relative h-22 w-22 shrink-0 overflow-hidden rounded-2xl
                  border-3 border-white bg-white shadow-md sm:-mt-16 sm:h-28 sm:w-28 md:h-30 md:w-30">
             @if (data.main.logoURL) {
-            <img [src]="apiUrl + data.main.logoURL" [alt]="data.main.clientName"
+            <img [src]="apiUrl + data.main.logoURL" (error)="$any($event.target).src = '/images/default-restaurant.png'" [alt]="data.main.clientName"
               class="h-full w-full rounded-full object-cover" />
             } @else {
             <div class="flex h-full w-full items-center justify-center rounded-full

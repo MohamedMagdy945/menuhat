@@ -87,30 +87,40 @@
 </div>
 
 <!-- product section -->
+@if (menuItemService.items().length > 0) {
 <div class="mt-2">
   <app-home-menu-items />
 </div>
+}
 
 <!-- Trending Restaurants -->
-<div class="">
+@if (restaurantsService.trends().length > 0) {
+<div>
   <app-home-restaurants title="رائج الآن"
     [restaurants]="restaurantsService.trends()" />
 </div>
+}
 
 <!-- restaurants section -->
-<div class="">
+@if (restaurantsService.topVisits().length > 0) {
+<div>
   <app-home-restaurants title="الأكثر زيارة"
     [restaurants]="restaurantsService.topVisits()" />
 </div>
+}
 
 <!-- Nearest Restaurants -->
-<div class="">
+@if (restaurantsService.nearestRestaurants().length > 0) {
+<div>
   <app-home-restaurants title="الأقرب إلى منطقتك"
     [restaurants]="restaurantsService.nearestRestaurants()" />
 </div>
+}
 
 <!-- Top Rated Restaurants -->
-<div class="">
+@if (restaurantsService.topRates().length > 0) {
+<div>
   <app-home-restaurants title="الأعلى تقييماً"
     [restaurants]="restaurantsService.topRates()" />
 </div>
+}
