@@ -1,114 +1,81 @@
-<article
-  (click)="onCardClick()"
-  class="bg-white rounded-2xl border border-gray-100 p-1 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 cursor-pointer shadow-xs relative"
-  [class.bg-orange-50/10]="isUnread()"
->
-  <!-- Left Info Container -->
-  <div class="flex items-start sm:items-center gap-3.5 sm:gap-4 flex-1 min-w-0">
-    <!-- Thumbnail or Colored Category Icon -->
+<article (click)="onCardClick()"
+  class="bg-white rounded-2xl shadow-xs border border-gray-100 px-4 py-3  flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 cursor-pointer">
+  <!-- Right Part: Icon + Text Info -->
+  <div class="flex items-center gap-3.5 min-w-0 flex-1">
+    <!-- Icon or Photo -->
     @if (photoUrl()) {
-      <div class="w-13 h-13 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-gray-50 shrink-0 border border-gray-100 p-0.5">
-        <img
-          [src]="photoUrl()"
-          [alt]="title()"
-          class="w-full h-full object-cover rounded-lg"
-          (error)="$any($event.target).style.display='none'"
-        />
-      </div>
+    <div class="w-11 h-11 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-gray-100 self-center">
+      <img [src]="photoUrl()" [alt]="title()" class="w-full h-full object-cover"
+        (error)="$any($event.target).style.display='none'" />
+    </div>
     } @else {
-      <div
-        class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0 border shadow-2xs"
-        [ngClass]="statusConfig().bg"
-      >
-        <span
-          class="material-symbols-sharp text-[22px] sm:text-[24px]"
-          [ngClass]="statusConfig().text"
-        >
+    <div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 self-center" [ngClass]="statusConfig().bg">
+      <div class="text-xl flex items-center justify-center leading-none"> 
+        <span class="material-symbols-sharp  leading-none select-none" >
           {{ icon() }}
         </span>
       </div>
+    </div>
     }
 
-    <!-- Content Body (Gray Foundation + Colored Highlights) -->
-    <div class="flex-1 min-w-0 text-right space-y-1.5">
-      <!-- Top Line: Order # + Colored Category Badge + Unread Badge -->
-      <div class="flex flex-wrap items-center gap-2">
+    <!-- Text Info -->
+    <div class="min-w-0 text-right space-y-1 flex-1">
+      <!-- Top Line: Order Number + Status Badge + Unread Dot -->
+      <div class="flex items-center gap-2">
         @if (item().orderSerial) {
-          <span class="text-xs sm:text-sm text-gray-400 font-medium">
-            طلب #{{ item().orderSerial }}
-          </span>
+        <span class=" text-slate-400 font-medium">طلب #{{ item().orderSerial }}</span>
         }
 
-        <!-- Colored Category Badge -->
-        <span
-          class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold"
-          [ngClass]="statusConfig().badgeBg"
-        >
+        <span class="text-sm px-2 py-1 rounded-md font-semibold" [ngClass]="statusConfig().badgeBg">
           {{ statusConfig().label }}
         </span>
 
-        <!-- Unread Badge with Orange Accent -->
         @if (isUnread()) {
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-50 text-orange-600 border border-orange-200">
-            <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-            <span>جديد</span>
-          </span>
+        <span class="w-2 h-2 rounded-full bg-orange-500 shrink-0"></span>
         }
       </div>
 
-      <!-- Title (Deep Gray) -->
-      <h3 class="text-sm sm:text-base font-semibold text-gray-900 truncate">
+      <!-- Title -->
+      <h3 class="font-semibold text-slate-800 truncate">
         {{ title() }}
       </h3>
 
-      <!-- Description (Neutral Medium Gray) -->
+      <!-- Description (Compact 1-line truncate) -->
       @if (description()) {
-        <p class="text-xs text-gray-500 leading-relaxed line-clamp-2 max-w-3xl">
-          {{ description() }}
-        </p>
+      <p class="text-sm font-semibold text-gray-600 truncate leading-relaxed">
+        {{ description() }}
+      </p>
       }
-
-      <!-- Date & Time (Light Gray with icon) -->
-      <div class="flex items-center gap-1.5 text-xs text-gray-400 pt-0.5">
-        <span class="material-symbols-sharp text-[14px]">schedule</span>
-        <span>{{ timeAgo() }}</span>
-        @if (item().date) {
-          <span class="text-gray-300">({{ item().date | date:'short' }})</span>
-        }
-      </div>
     </div>
   </div>
 
-  <!-- Actions (Clean Gray Base Buttons matching order-item-card) -->
-  <div class="flex items-center gap-2.5 shrink-0 self-stretch sm:self-center justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-100">
-    <!-- Main Gray Button -->
-    <button
-      type="button"
-      (click)="onViewClick($event)"
-      class="rounded-xl border border-gray-300 bg-white px-4 py-2 text-xs sm:text-sm font-medium text-gray-600 cursor-pointer"
-    >
-      التفاصيل
-    </button>
+  <!-- Left Part: Action Buttons (Top) + Date / Time (Bottom Left) -->
+  <div
+    class="flex flex-col sm:items-end justify-between gap-2 shrink-0 self-stretch sm:self-auto border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-100">
+    <!-- Buttons -->
+    <div class="flex items-center gap-2 justify-end">
+      <button type="button" (click)="onViewClick($event)" title="عرض التفاصيل"
+        class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center cursor-pointer">
+        <span class="material-symbols-sharp text-[16px]">open_in_new</span>
+      </button>
 
-    <!-- Quick action buttons in gray -->
-    @if (isUnread()) {
-      <button
-        type="button"
-        (click)="onMarkRead($event)"
-        title="تحديد كمقروء"
-        class="p-2 text-gray-400 rounded-xl border border-gray-200 bg-white cursor-pointer"
-      >
+      @if (isUnread()) {
+      <button type="button" (click)="onMarkRead($event)" title="تحديد كمقروء"
+        class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center cursor-pointer">
         <span class="material-symbols-sharp text-[16px]">check</span>
       </button>
-    }
+      }
 
-    <button
-      type="button"
-      (click)="onDelete($event)"
-      title="حذف الإشعار"
-      class="p-2 text-gray-400 rounded-xl border border-gray-200 bg-white cursor-pointer"
-    >
-      <span class="material-symbols-sharp text-[16px]">delete</span>
-    </button>
+      <button type="button" (click)="onDelete($event)" title="حذف الإشعار"
+        class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center cursor-pointer">
+        <span class="material-symbols-sharp text-[16px]">delete</span>
+      </button>
+    </div>
+
+    <!-- Date & Time (Bottom Left) -->
+    <div class="flex items-center gap-1 text-xs text-slate-400 justify-end">
+      <span class="material-symbols-sharp text-[14px]">schedule</span>
+      <span>{{ timeAgo() }}</span>
+    </div>
   </div>
 </article>

@@ -1,22 +1,45 @@
-<section class="mx-auto min-h-full px-4 py-6 md:px-8">
-  <header class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-900">الوجبات الأكثر طلبًا</h1>
-    <p class="mt-1 text-sm text-gray-500">اكتشف الوجبات التي يفضلها الجميع</p>
+<div class=" px-4 py-6 space-y-6">
+  <!-- Page Header -->
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-100">
+    <div class="flex items-start gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl select-none">restaurant_menu</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900">الوجبات الأكثر طلبًا</h1>
+          @if (menuItemService.mostRequested().length > 0) {
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+              {{ menuItemService.mostRequested().length }} وجبة
+            </span>
+          }
+        </div>
+        <p class="mt-1 text-xs sm:text-sm text-slate-400">
+          اكتشف الوجبات والأطباق المميزة التي يفضلها الجميع
+        </p>
+      </div>
+    </div>
   </header>
 
   @if (menuItemService.isLoadingMostRequested()) {
-    <div class="grid grid-cols-2 gap-3sm:grid-cols-3 md:grid-cols-4 lg:grid-cols- 2xl:grid-cols-7" aria-hidden="true">
+    <div class="grid gap-4 sm:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7" aria-hidden="true">
       @for (skeleton of skeletonCards; track skeleton) {
         <app-menu-item-skeleton></app-menu-item-skeleton>
       }
     </div>
   } @else if (menuItemService.mostRequested().length > 0) {
-    <div class="grid gap-6  grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7">
+    <div class="grid gap-4 sm:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
       @for (menuItem of menuItemService.mostRequested(); track menuItem.mostrequestesId) {
         <app-menu-item-card [menuItem]="menuItem" />
       }
     </div>
   } @else {
-    <p class="py-12 text-center text-sm text-gray-500">لا توجد وجبات متاحة حاليًا</p>
+    <div class="py-16 text-center bg-white rounded-2xl border border-slate-100 shadow-sm max-w-md mx-auto">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
+        <span class="material-symbols-sharp text-3xl select-none">restaurant</span>
+      </div>
+      <h3 class="text-base font-bold text-slate-800">لا توجد وجبات متاحة</h3>
+      <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">لم يتم العثور على وجبات أكثر طلباً حالياً</p>
+    </div>
   }
-</section>
+</div>

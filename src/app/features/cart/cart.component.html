@@ -1,14 +1,36 @@
-<div class="max-w-5xl mx-auto px-4 py-6">
+<div class="max-w-6xl mx-auto px-4 py-6 space-y-6" >
+  <!-- Page Header -->
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200">
+    <div class="flex items-start gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl select-none">shopping_cart</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900">سلة المشتريات</h1>
+          @if (cartItems().length > 0) {
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+              {{ cartCount() }} عناصر
+            </span>
+          }
+        </div>
+        <p class="mt-1 text-xs sm:text-sm text-slate-400">
+          راجع وجباتك ومطاعمك المفضلة وأكد طلبك بسهولة
+        </p>
+      </div>
+    </div>
+  </header>
+
   @if (isLoading()) {
-  <div class="py-20 text-center bg-white rounded-2xl border border-slate-200">
+  <div class="py-20 text-center bg-white rounded-2xl border border-slate-100">
     <span
       class="h-7 w-7 animate-spin rounded-full border-2 border-orange-500 border-t-transparent inline-block mb-2"></span>
     <p class="text-sm font-semibold text-slate-600">جاري تحميل سلة المشتريات...</p>
   </div>
   } @else if (cartItems().length === 0) {
-  <div class="py-20 text-center bg-white rounded-2xl border border-slate-200 p-6">
-    <div class="w-16 h-16 rounded-full bg-orange-50 text-orange-400 flex items-center justify-center mx-auto mb-3">
-      <span class="material-symbols-sharp text-4xl">remove_shopping_cart</span>
+  <div class="py-16 text-center bg-white rounded-2xl border border-slate-100  p-6 max-w-md mx-auto">
+    <div class="w-16 h-16 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center mx-auto mb-3.5">
+      <span class="material-symbols-sharp text-3xl select-none">remove_shopping_cart</span>
     </div>
     <h2 class="text-lg font-bold text-slate-800 mb-1">سلة المشتريات فارغة</h2>
     <p class="text-xs text-slate-400 mb-5">لم تقم بإضافة أي وجبات أو منتجات إلى سلتك بعد</p>
@@ -24,67 +46,31 @@
 
     <!-- Items Section (8 cols on lg) -->
     <div class="lg:col-span-8">
-
       <!-- Grouped Cards by Restaurant -->
       <div class="space-y-4">
         @for (group of groupedItems(); track group.clientName) {
-        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-2xs overflow-hidden">
           <!-- Restaurant Header -->
-          <div class="flex  gap-2.5 px-4 py-3 border-b border-orange-100/60 bg-white">
-            <div class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
-              <span class="material-symbols-sharp text-[18px]">restaurant</span>
+          <div class="flex items-center justify-between px-4 py-3 bg-slate-50/80 border-b border-slate-100">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+                <span class="material-symbols-sharp text-[18px] select-none">storefront</span>
+              </div>
+              <span class="font-bold text-slate-800 text-sm sm:text-base">{{ group.clientName }}</span>
             </div>
-            <span class="font-bold text-slate-800 text-sm sm:text-base">{{ group.clientName }}</span>
 
+            <span class="text-xs bg-white text-slate-600 px-2.5 py-1 rounded-lg border border-slate-200 font-semibold">
+              {{ group.items.length }} {{ group.items.length === 1 ? 'وجبة' : 'وجبات' }}
+            </span>
           </div>
 
-          <!-- Restaurant Items -->
-          <div class="divide-y divide-slate-100">
+          <!-- Restaurant Items (Divided cleanly) -->
+          <div class="">
             @for (item of group.items; track item.id) {
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 gap-4">
-              <!-- Right Part: Image + Name + Unit Price -->
-              <div class="flex items-center gap-3 min-w-0">
-
-                <!-- Product Image -->
-                <img [src]="getItemImageUrl(item.photoURL)" (error)="$any($event.target).src = '/images/default.png'"
-                  [alt]="item.productName"
-                  class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-slate-100 shrink-0" />
-
-                <!-- Info -->
-                <div class="min-w-0 text-right">
-                  <h3 class="text-sm sm:text-base font-bold text-slate-800 truncate" [title]="item.productName">
-                    {{ item.productName }}
-                  </h3>
-                  <p class="text-xs text-slate-400 mt-1">
-                    سعر الوحدة: {{ item.price | number:'1.2-2' }} ج.م
-                  </p>
-                </div>
-              </div>
-
-              <!-- Left Part: Total Price + Quantity Control + Delete Button -->
-              <div class="flex items-center justify-between sm:justify-end gap-4 shrink-0">
-                <!-- Item Total Price -->
-                <span class="font-bold text-sm sm:text-base text-orange-500">
-                  {{ item.total | number:'1.2-2' }} ج.م
-                </span>
-
-                <!-- Quantity Pill -->
-                <div class="flex items-center gap-2.5 rounded-full border border-slate-200 px-2.5 py-1 bg-white">
-                  <button type="button" (click)="changeQuantity(item, 1)"
-                    class="w-5 h-5 rounded-full flex items-center justify-center text-slate-600 font-bold text-sm cursor-pointer">+</button>
-                  <span class="text-sm font-bold text-slate-800 min-w-4 text-center">{{ item.quantity }}</span>
-                  <button type="button" (click)="changeQuantity(item, -1)"
-                    class="w-5 h-5 rounded-full flex items-center justify-center text-slate-600 font-bold text-sm cursor-pointer">-</button>
-                </div>
-
-                <!-- Delete Button -->
-                <button type="button" (click)="deleteItem(item)"
-                  class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0"
-                  aria-label="حذف العنصر">
-                  <span class="material-symbols-sharp text-[17px]">delete</span>
-                </button>
-              </div>
-            </div>
+            <app-cart-item-card
+              [item]="item"
+              (changeQuantity)="changeQuantity(item, $event)"
+              (deleteItem)="deleteItem($event)" />
             }
           </div>
         </div>
@@ -94,12 +80,16 @@
 
     <!-- Invoice Summary Section (4 cols on lg) -->
     <div class="lg:col-span-4 sticky top-4">
-      <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
-        <h2 class="text-base font-bold text-slate-800 pb-2 border-b border-slate-100">
-          ملخص الفاتورة
-        </h2>
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-xs p-5 space-y-4">
+        <!-- Header -->
+        <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
+          <span class="material-symbols-sharp text-orange-500 text-[20px] select-none">receipt_long</span>
+          <h2 class="text-base font-bold text-slate-800">
+            ملخص الفاتورة
+          </h2>
+        </div>
 
-        <div class="space-y-2.5 text-xs sm:text-sm">
+        <div class="space-y-3 text-xs sm:text-sm">
           <div class="flex items-center justify-between text-slate-600 font-medium">
             <span>المجموع الفرعي:</span>
             <span class="font-bold text-slate-800">{{ subtotal() | number:'1.2-2' }} ج.م</span>
@@ -118,12 +108,12 @@
           <div
             class="pt-3 border-t border-slate-100 flex items-center justify-between text-sm sm:text-base font-bold text-slate-900">
             <span>الإجمالي:</span>
-            <span class="text-orange-600 font-black">{{ grandTotal() | number:'1.2-2' }} ج.م</span>
+            <span class="text-orange-600 font-extrabold text-base sm:text-lg">{{ grandTotal() | number:'1.2-2' }} ج.م</span>
           </div>
         </div>
 
         <button type="button" (click)="checkout()"
-          class="w-full py-3 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-pointer">
+          class="w-full py-3 px-4 rounded-xl bg-orange-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-xs cursor-pointer">
           <span>إتمام الطلب</span>
           <span class="material-symbols-sharp text-base leading-none">arrow_back</span>
         </button>
@@ -132,4 +122,12 @@
 
   </div>
   }
+
+  <!-- Order Checkout Dialog -->
+  <app-order-checkout
+    [isOpen]="isCheckoutModalOpen()"
+    [grandTotal]="grandTotal()"
+    [itemCount]="cartItems().length"
+    (close)="closeCheckoutModal()"
+    (orderSuccess)="onOrderSuccess()" />
 </div>

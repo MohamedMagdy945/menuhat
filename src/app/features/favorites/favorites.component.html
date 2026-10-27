@@ -1,24 +1,45 @@
-<section class="mx-auto min-h-full px-4 py-6 md:px-8" dir="rtl">
-
+<div class="max-w-6xl mx-auto px-4 py-6 space-y-6" dir="rtl">
   <!-- Page Header -->
-  <header class="mb-6 flex items-center justify-between">
-    <div>
-      <h1 class="text-2xl font-bold text-gray-900">الوجبات المفضلة</h1>
-      <p class="mt-1 text-sm text-gray-500">الوجبات والأصناف التي قمت بحفظها في قائمتك المفضلة</p>
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200">
+    <div class="flex items-start gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl select-none">favorite</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900">الوجبات المفضلة</h1>
+          @if (userDataService.getToken() && favoritesService.favorites().length > 0) {
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+              {{ favoritesService.favorites().length }} وجبة
+            </span>
+          }
+        </div>
+        <p class="mt-1 text-xs sm:text-sm text-slate-400">
+          الوجبات والأصناف التي قمت بحفظها في قائمتك المفضلة للوصول إليها بسرعة
+        </p>
+      </div>
     </div>
 
-    @if (userDataService.getToken() && favoritesService.favorites().length > 0) {
-      <span class="inline-flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600 border border-orange-100">
-        <span>{{ favoritesService.favorites().length }}</span>
-        <span>وجبات</span>
-      </span>
+    <!-- Header Actions -->
+    @if (userDataService.getToken()) {
+      <div class="flex items-center gap-2 self-start md:self-auto flex-wrap">
+        <button
+          type="button"
+          (click)="refresh()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-gray-200 text-slate-700 text-xs sm:text-sm font-semibold cursor-pointer"
+          title="تحديث المفضلة"
+        >
+          <span class="material-symbols-sharp text-[17px]">refresh</span>
+          <span>تحديث</span>
+        </button>
+      </div>
     }
   </header>
 
   <!-- Check Authentication -->
   @if (!userDataService.getToken()) {
     <!-- Not Logged In State -->
-    <div class="py-16 text-center bg-white rounded-2xl border border-slate-200">
+    <div class="py-20 text-center bg-white rounded-2xl border border-slate-100 shadow-sm max-w-md mx-auto">
       <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
         <span class="material-symbols-sharp text-3xl select-none">favorite</span>
       </div>
@@ -28,7 +49,7 @@
       </p>
       <a
         routerLink="/login"
-        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-xs transition hover:bg-orange-600 active:scale-95"
+        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm cursor-pointer"
       >
         <span class="material-symbols-sharp text-[18px]">login</span>
         <span>تسجيل الدخول</span>
@@ -36,21 +57,50 @@
     </div>
   } @else if (favoritesService.isLoading()) {
     <!-- Loading Skeletons -->
-    <div class="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7" aria-hidden="true">
+    <div class="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4" aria-hidden="true">
       @for (skeleton of skeletonCards; track skeleton) {
         <app-menu-item-skeleton></app-menu-item-skeleton>
       }
     </div>
   } @else if (favoritesService.favorites().length > 0) {
+    <!-- Search Bar -->
+    <div class="flex items-center justify-between gap-3">
+      <div class="relative w-full md:w-72">
+        <input
+          type="text"
+          [value]="searchQuery()"
+          (input)="searchQuery.set($any($event.target).value)"
+          placeholder="بحث في المفضلة..."
+          class="w-full rounded-xl border border-gray-200 bg-white py-2 pr-9 pl-4 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none"
+        />
+        <span class="material-symbols-sharp absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">
+          search
+        </span>
+        @if (searchQuery()) {
+          <button
+            type="button"
+            (click)="searchQuery.set('')"
+            class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+          >
+            <span class="material-symbols-sharp text-[16px]">close</span>
+          </button>
+        }
+      </div>
+    </div>
+
     <!-- Favorites Grid -->
-    <div class="grid gap-6 grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 2xl:grid-cols-7">
-      @for (item of favoritesService.favorites(); track item.id) {
+    <div class="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+      @for (item of filteredFavorites(); track item.id) {
         <app-favorite-item-card [item]="item" />
+      } @empty {
+        <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <p class="text-sm font-semibold text-slate-600">لا توجد وجبات تطابق بحثك</p>
+        </div>
       }
     </div>
   } @else {
     <!-- Empty State -->
-    <div class="py-16 text-center bg-white rounded-2xl border border-slate-200">
+    <div class="py-16 text-center bg-white rounded-2xl border border-slate-100 shadow-sm max-w-md mx-auto">
       <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
         <span class="material-symbols-sharp text-3xl select-none">favorite_border</span>
       </div>
@@ -60,12 +110,11 @@
       </p>
       <a
         routerLink="/most-ordered"
-        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-xs transition hover:bg-orange-600 active:scale-95"
+        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm cursor-pointer"
       >
         <span class="material-symbols-sharp text-[18px]">restaurant_menu</span>
         <span>تصفح الوجبات الأكثر طلبًا</span>
       </a>
     </div>
   }
-
-</section>
+</div>

@@ -1,53 +1,66 @@
-<section dir="rtl" class="mx-auto px-8 pt-4 ">
-
-    <!-- Header -->
-
-    <div class="mb-6">
-
-        <h1 class="text-2xl font-bold text-gray-900">
-            {{ title() }}
-        </h1>
-
-        <p class="mt-1 text-sm text-gray-500">
-            اكتشف المطاعم المتاحة
-        </p>
-
-    </div>
-
-
-    <!-- Restaurants Grid -->
-
-    <div class="grid grid-cols-2 gap-x-3 gap-y-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">
-        @for (restaurant of restaurants(); track restaurant.id) {
-            <app-restaurant-card [restaurant]="restaurant" />
-        }
-    </div>
-
-    @if (restaurants().length === 0 && isLoading()) {
-        <p class="py-12 text-center text-sm text-gray-500">جاري تحميل المطاعم...</p>
-    } @else if (restaurants().length === 0) {
-        <p class="py-12 text-center text-sm text-gray-500">لا توجد مطاعم متاحة حاليًا</p>
-    }
-
-    @if (restaurants().length > 0 && hasMore()) {
-        <div class="my-10 flex items-center justify-center">
-            <button
-                type="button"
-                class="group inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-8 py-2.5 text-sm font-bold text-gray-800 shadow-xs hover:border-orange-500 hover:bg-orange-50/40 hover:text-orange-600 hover:shadow-sm active:scale-95 transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 cursor-pointer"
-                [disabled]="isLoading()"
-                (click)="loadMore()"
-            >
-                @if (isLoading()) {
-                    <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></span>
-                    <span>جاري التحميل...</span>
-                } @else {
-                    <span>عرض المزيد من المطاعم</span>
-                    <span class="material-symbols-sharp select-none text-[20px] leading-none text-orange-500 transition-transform duration-200 group-hover:translate-y-0.5">
-                        expand_more
-                    </span>
-                }
-            </button>
+<div class=" mx-auto px-4 py-6 space-y-6" >
+  <!-- Page Header -->
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200">
+    <div class="flex items-start gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl select-none">storefront</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ title() }}</h1>
+          @if (restaurants().length > 0) {
+            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">
+              {{ restaurants().length }} مطعم
+            </span>
+          }
         </div>
-    }
+        <p class="mt-1 text-xs sm:text-sm text-slate-400">
+          اكتشف أفضل المطاعم وقوائم الطعام والعروض المتاحة
+        </p>
+      </div>
+    </div>
+  </header>
 
-</section>
+  <!-- Restaurants Grid -->
+  <div class="grid grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+    @for (restaurant of restaurants(); track restaurant.id) {
+      <app-restaurant-card [restaurant]="restaurant" />
+    }
+  </div>
+
+  @if (restaurants().length === 0 && isLoading()) {
+    <div class="text-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm">
+      <span class="h-7 w-7 animate-spin rounded-full border-2 border-orange-500 border-t-transparent inline-block mb-3"></span>
+      <p class="text-sm font-semibold text-slate-700">جاري تحميل المطاعم...</p>
+    </div>
+  } @else if (restaurants().length === 0) {
+    <div class="text-center py-20 bg-white rounded-2xl border border-slate-100 shadow-sm">
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
+        <span class="material-symbols-sharp text-3xl select-none">storefront</span>
+      </div>
+      <h3 class="text-base font-bold text-slate-800">لا توجد مطاعم متاحة</h3>
+      <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">لم يتم العثور على مطاعم متاحة في هذا القسم حالياً</p>
+    </div>
+  }
+
+  @if (restaurants().length > 0 && hasMore()) {
+    <div class="my-8 flex items-center justify-center">
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-6 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 shadow-xs cursor-pointer disabled:pointer-events-none disabled:opacity-50"
+        [disabled]="isLoading()"
+        (click)="loadMore()"
+      >
+        @if (isLoading()) {
+          <span class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></span>
+          <span>جاري التحميل...</span>
+        } @else {
+          <span>عرض المزيد من المطاعم</span>
+          <span class="material-symbols-sharp select-none text-[18px] leading-none text-orange-500">
+            expand_more
+          </span>
+        }
+      </button>
+    </div>
+  }
+</div>

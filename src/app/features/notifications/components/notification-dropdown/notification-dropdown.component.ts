@@ -167,22 +167,22 @@ export class NotificationDropdownComponent implements OnInit {
     const title = (item.title_Ar || item.title || '').toLowerCase();
     const name = item.name?.toLowerCase() || '';
 
-    if (title.includes('رفض') || title.includes('could not')) {
-      return { bg: 'bg-rose-50 border-rose-100', text: 'text-rose-600' };
+    if (title.includes('رفض') || title.includes('could not') || title.includes('ملغي')) {
+      return { bg: 'bg-red-50', text: 'text-red-500' };
     }
     if (title.includes('توصيل') || title.includes('progress')) {
-      return { bg: 'bg-blue-50 border-blue-100', text: 'text-blue-600' };
+      return { bg: 'bg-blue-50', text: 'text-blue-600' };
     }
     if (title.includes('قبول') || title.includes('اكتمال') || title.includes('accepted') || title.includes('completed')) {
-      return { bg: 'bg-emerald-50 border-emerald-100', text: 'text-emerald-600' };
+      return { bg: 'bg-emerald-50', text: 'text-emerald-600' };
     }
     if (item.screenId === 4 || item.orderId || name === 'myorders' || title.includes('طلب')) {
-      return { bg: 'bg-amber-50 border-amber-100', text: 'text-amber-600' };
+      return { bg: 'bg-gray-100', text: 'text-gray-500' };
     }
     if (item.screenId === 1 || name === 'clientmenus' || title.includes('قائمة') || title.includes('menu')) {
-      return { bg: 'bg-orange-50 border-orange-100', text: 'text-orange-600' };
+      return { bg: 'bg-orange-50', text: 'text-orange-500' };
     }
-    return { bg: 'bg-slate-100 border-slate-200', text: 'text-slate-600' };
+    return { bg: 'bg-slate-100', text: 'text-slate-600' };
   }
 
   getTimeAgo(dateStr?: string): string {

@@ -25,4 +25,8 @@ export class CommonDateService {
   getOrderStatuses(): Observable<DropdownItem[]> {
     return this._HttpClient.get<DropdownItem[]>(`${environment.apiUrl}/CommonData/FillOrderStatusDropdown`);
   }
+
+  getOrderTypes(): Observable<DropdownItem[]> {
+    return this._HttpClient.get<DropdownItem[]>(`${environment.apiUrl}/CommonData/FillOrderTypesDropdown`);
+  }
 }

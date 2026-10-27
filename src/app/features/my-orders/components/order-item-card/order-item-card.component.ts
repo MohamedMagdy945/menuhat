@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { NgClass } from '@angular/common';
+import { DecimalPipe, NgClass } from '@angular/common';
 import { IOrder } from '../../../cart/models/order';
 import { environment } from '../../../../core/environments/environment';
 
@@ -10,7 +10,7 @@ export interface StatusConfig {
 
 @Component({
   selector: 'app-order-item-card',
-  imports: [NgClass],
+  imports: [NgClass, DecimalPipe],
   templateUrl: './order-item-card.component.html',
   styleUrl: './order-item-card.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,7 +25,7 @@ export class OrderItemCardComponent {
   readonly logoUrl = computed(() => {
     const logo = this.order()?.logoURL;
     if (!logo) {
-      return '/images/default.png';
+      return '/images/default-restaurant.png';
     }
     if (logo.startsWith('http://') || logo.startsWith('https://')) {
       return logo;
@@ -37,15 +37,15 @@ export class OrderItemCardComponent {
   readonly statusConfig = computed<StatusConfig>(() => {
     const statusId = this.order()?.orderStatusId;
     switch (statusId) {
-      case 3: // قيد الانتظار
+      case 3: // قيد الانتظار / في انتظار القبول
         return {
-          label: 'قيد الانتظار',
+          label: 'في انتظار القبول',
           classes: 'bg-amber-50 text-amber-600',
         };
-      case 5: // تم الشحن
+      case 5: // تم الشحن / جاري التوصيل
         return {
-          label: 'تم الشحن',
-          classes: 'bg-orange-50 text-orange-500',
+          label: 'جاري التوصيل',
+          classes: 'bg-blue-50 text-blue-600',
         };
       case 4: // تم التوصيل
         return {
@@ -57,7 +57,7 @@ export class OrderItemCardComponent {
           label: 'مكتمل',
           classes: 'bg-emerald-50 text-emerald-600',
         };
-      case 2: // ملغي
+      case 2: // ملغي / مرفوض
         return {
           label: 'ملغي',
           classes: 'bg-rose-50 text-rose-500',
@@ -65,7 +65,7 @@ export class OrderItemCardComponent {
       default:
         return {
           label: 'قيد المتابعة',
-          classes: 'bg-gray-50 text-gray-500',
+          classes: 'bg-slate-100 text-slate-600',
         };
     }
   });
@@ -88,10 +88,12 @@ export class OrderItemCardComponent {
     try {
       const d = new Date(raw);
       if (!isNaN(d.getTime())) {
+        const now = new Date();
+        const isCurrentYear = d.getFullYear() === now.getFullYear();
         const datePart = new Intl.DateTimeFormat('ar-EG-u-nu-latn', {
-          day: 'numeric',
+          day: '2-digit',
           month: 'long',
-          year: 'numeric',
+          ...(isCurrentYear ? {} : { year: 'numeric' }),
         }).format(d);
 
         const timePart = new Intl.DateTimeFormat('ar-EG-u-nu-latn', {

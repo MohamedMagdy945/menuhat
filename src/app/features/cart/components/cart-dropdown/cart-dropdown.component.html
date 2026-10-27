@@ -1,132 +1,118 @@
 <div class="relative inline-block text-right" dir="rtl">
   <!-- Trigger Button (Cart Icon in Navbar) -->
-  <button
-    type="button"
-    (click)="toggleDropdown($event)"
-    aria-label="سلة المشتريات"
-    class="relative w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-600 shadow-sm cursor-pointer hover:bg-slate-50 hover:text-orange-500 transition-all duration-200"
-    [class.ring-2]="isOpen()"
-    [class.ring-orange-400]="isOpen()"
-  >
+  <button type="button" (click)="toggleDropdown($event)" aria-label="سلة المشتريات"
+    class="relative w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-600 shadow-sm cursor-pointer"
+    [class.ring-2]="isOpen()" [class.ring-orange-400]="isOpen()" title="السلة">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="1.8"
-        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-      />
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
     </svg>
 
     <!-- Badge Count -->
     @if (cartCount() > 0) {
-      <span
-        class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-orange-500 to-orange-600 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xs border-2 border-white"
-      >
-        {{ cartCount() > 99 ? '+99' : cartCount() }}
-      </span>
+    <span
+      class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-orange-500 to-orange-600 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xs border-2 border-white">
+      {{ cartCount() > 99 ? '+99' : cartCount() }}
+    </span>
     }
   </button>
 
   <!-- Dropdown Panel -->
   @if (isOpen()) {
-    <div
-      class="cart-dropdown-panel absolute left-0 sm:left-0 mt-3 w-84 sm:w-96 rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 z-50 overflow-hidden"
-    >
-      <!-- Dropdown Header -->
-      <div class="flex items-center justify-between px-4 py-3 bg-slate-50/90 border-b border-slate-100">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-sharp text-orange-500 text-[20px]">shopping_cart</span>
-          <span class="font-bold text-slate-800 text-sm">سلة المشتريات</span>
-          @if (cartCount() > 0) {
-            <span class="text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full font-bold">
-              {{ cartCount() }} عنصر
-            </span>
-          }
-        </div>
-
-        <button
-          type="button"
-          (click)="isOpen.set(false)"
-          class="text-slate-400 hover:text-slate-600 p-1 rounded-full transition-colors cursor-pointer"
-          aria-label="إغلاق"
-        >
-          <span class="material-symbols-sharp text-[18px]">close</span>
-        </button>
+  <div
+    class="cart-dropdown-panel absolute left-0 sm:left-0 mt-3 w-84 sm:w-96 rounded-2xl bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 z-50 overflow-hidden">
+    <!-- Dropdown Header -->
+    <div class="flex items-center justify-between px-4 py-3 bg-slate-50/90 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-sharp text-orange-500 text-[20px] select-none">shopping_cart</span>
+        <span class="font-bold text-slate-800 text-sm">سلة المشتريات</span>
+        @if (cartCount() > 0) {
+        <span class="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full font-bold border border-orange-100">
+          {{ cartCount() }} عناصر
+        </span>
+        }
       </div>
 
-      <!-- Dropdown Body -->
-      @if (isLoading()) {
-        <div class="py-12 flex flex-col items-center justify-center gap-2.5 text-slate-400 text-xs">
-          <span class="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></span>
-          <span class="font-medium">جاري تحميل السلة...</span>
+      <button type="button" (click)="isOpen.set(false)"
+        class="text-slate-400 p-1 rounded-full cursor-pointer"
+        aria-label="إغلاق">
+        <span class="material-symbols-sharp text-[18px]">close</span>
+      </button>
+    </div>
+
+    <!-- Dropdown Body -->
+    @if (isLoading()) {
+    <div class="py-12 flex flex-col items-center justify-center gap-2.5 text-slate-400 text-xs">
+      <span class="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></span>
+      <span class="font-medium">جاري تحميل السلة...</span>
+    </div>
+    } @else if (cartItems().length === 0) {
+    <div class="py-10 px-4 flex flex-col items-center justify-center text-center">
+      <div class="w-14 h-14 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center mb-2.5">
+        <span class="material-symbols-sharp text-3xl">remove_shopping_cart</span>
+      </div>
+      <p class="font-bold text-slate-700 text-sm">السلة فارغة حالياً</p>
+      <p class="text-xs text-slate-400 mt-1">تصفح المطاعم وأضف وجباتك المفضلة للمتابعة</p>
+    </div>
+    } @else {
+    <!-- Cart Items List -->
+    <div class="max-h-72 overflow-y-auto divide-y divide-slate-100 cart-items-scroll">
+      @for (item of cartItems(); track item.id) {
+      <div (click)="goToProduct(item.productId, $event)"
+        class="flex items-center gap-3 p-3 cursor-pointer group">
+        <!-- Item Image -->
+        <div class="w-13 h-13 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-100 p-1 flex items-center justify-center">
+          <img [src]="getItemImageUrl(item.photoURL)" [alt]="item.productName" class="w-full h-full object-contain"
+            (error)="$any($event.target).src = '/images/default-meal.png'" />
         </div>
-      } @else if (cartItems().length === 0) {
-        <div class="py-10 px-4 flex flex-col items-center justify-center text-center">
-          <div class="w-14 h-14 rounded-full bg-orange-50 text-orange-400 flex items-center justify-center mb-2.5">
-            <span class="material-symbols-sharp text-3xl">remove_shopping_cart</span>
+
+        <!-- Item Info -->
+        <div class="flex-1 min-w-0">
+          <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate" [title]="item.productName">
+            {{ item.productName }}
+          </h4>
+
+          <div class="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5 truncate">
+            <span class="material-symbols-sharp text-[13px] text-orange-400 select-none">storefront</span>
+            <span class="truncate">{{ item.clientName }}</span>
           </div>
-          <p class="font-bold text-slate-700 text-sm">السلة فارغة حالياً</p>
-          <p class="text-xs text-slate-400 mt-1">تصفح المطاعم وأضف وجباتك المفضلة للمتابعة</p>
-        </div>
-      } @else {
-        <!-- Cart Items List -->
-        <div class="max-h-72 overflow-y-auto divide-y divide-slate-100 cart-items-scroll">
-          @for (item of cartItems(); track item.id) {
-            <div class="flex items-center gap-3 p-3 hover:bg-slate-50/70 transition-colors">
-              <!-- Item Image -->
-              <div class="w-13 h-13 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-100">
-                <img
-                  [src]="getItemImageUrl(item.photoURL)"
-                  [alt]="item.productName"
-                  class="w-full h-full object-cover"
-                  (error)="$any($event.target).src = '/images/default.png'"
-                />
-              </div>
 
-              <!-- Item Info -->
-              <div class="flex-1 min-w-0">
-                <h4 class="text-xs sm:text-sm font-bold text-slate-800 truncate" [title]="item.productName">
-                  {{ item.productName }}
-                </h4>
-
-                <div class="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5 truncate">
-                  <span class="material-symbols-sharp text-[13px] text-orange-400">storefront</span>
-                  <span class="truncate">{{ item.clientName }}</span>
-                </div>
-
-                <div class="flex items-center justify-between mt-1 text-xs font-semibold">
-                  <span class="text-slate-500">
-                    {{ item.quantity }} × {{ item.price | number }} ج.م
-                  </span>
-                  <span class="text-orange-600 font-bold">
-                    {{ item.total | number }} ج.م
-                  </span>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-
-        <!-- Dropdown Footer -->
-        <div class="p-3.5 bg-slate-50/90 border-t border-slate-100 flex flex-col gap-2.5">
-          <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-700">
-            <span>المجموع الكلي:</span>
-            <span class="text-orange-600 text-sm sm:text-base font-extrabold">
-              {{ totalPrice() | number }} ج.م
+          <div class="flex items-center justify-between mt-1 text-xs font-semibold">
+            <span class="text-slate-500 text-[11px]">
+              {{ item.quantity }} × {{ item.price | number }} ج.م
+            </span>
+            <span class="text-orange-600 font-bold">
+              {{ item.total | number }} ج.م
             </span>
           </div>
-
-          <!-- Go to Cart Page ("عرض الكل") -->
-          <button
-            type="button"
-            (click)="goToCart($event)"
-            class="w-full py-2.5 px-4 rounded-xl bg-linear-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer active:scale-[0.99]"
-          >
-            <span>عرض الكل</span>
-            <span class="material-symbols-sharp text-base leading-none">arrow_back</span>
-          </button>
         </div>
+
+        <!-- Remove Item Button -->
+        <button type="button" (click)="removeItem(item, $event)" title="إزالة من السلة"
+          class="w-8 h-8 rounded-lg bg-rose-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0">
+          <span class="material-symbols-sharp text-[16px]">delete</span>
+        </button>
+      </div>
       }
     </div>
+
+    <!-- Dropdown Footer -->
+    <div class="p-3.5 bg-slate-50/90 border-t border-slate-100 flex flex-col gap-2.5">
+      <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800">
+        <span>المجموع الكلي:</span>
+        <span class="text-orange-600 text-sm sm:text-base font-bold">
+          {{ totalPrice() | number }} ج.م
+        </span>
+      </div>
+
+      <!-- Go to Cart Page ("عرض الكل") -->
+      <button type="button" (click)="goToCart($event)"
+        class="w-full py-2.5 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+        <span>عرض الكل</span>
+        <span class="material-symbols-sharp text-base leading-none">arrow_back</span>
+      </button>
+    </div>
+    }
+  </div>
   }
 </div>

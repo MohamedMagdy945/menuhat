@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FavoritesService } from './favorites.service';
 import { UserDataService } from '../auth/services/user-storage.service';
@@ -16,12 +16,30 @@ export class FavoritesComponent implements OnInit {
   readonly favoritesService = inject(FavoritesService);
   readonly userDataService = inject(UserDataService);
 
+  readonly searchQuery = signal<string>('');
   readonly skeletonCards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
   readonly skeletonCount = this.skeletonCards;
+
+  readonly filteredFavorites = computed(() => {
+    const query = this.searchQuery().trim().toLowerCase();
+    const list = this.favoritesService.favorites();
+    if (!query) return list;
+    return list.filter(
+      (item) =>
+        item.productName?.toLowerCase().includes(query) ||
+        item.clientName?.toLowerCase().includes(query)
+    );
+  });
 
   ngOnInit(): void {
     if (this.userDataService.getToken()) {
       this.favoritesService.loadFavorites();
+    }
+  }
+
+  refresh(): void {
+    if (this.userDataService.getToken()) {
+      this.favoritesService.loadFavorites(true);
     }
   }
 }

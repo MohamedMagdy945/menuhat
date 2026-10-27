@@ -108,6 +108,6 @@ input:-webkit-autofill:active {
 
 @media (min-width: 1536px) {
     .custom-container {
-        max-width: 1750px;
+        max-width: 1650px;
     }
 }

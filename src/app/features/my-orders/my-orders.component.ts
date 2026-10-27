@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { CommonModule, DecimalPipe, NgClass } from '@angular/common';
 import { IOrder } from '../cart/models/order';
 import { CartService } from '../cart/cart.service';
 import { CommonDateService } from '../../core/common-data/common-date';
@@ -11,7 +12,7 @@ export interface FilterTab {
 
 @Component({
   selector: 'app-my-orders',
-  imports: [OrderItemCardComponent],
+  imports: [CommonModule, DecimalPipe, NgClass, OrderItemCardComponent],
   templateUrl: './my-orders.component.html',
   styleUrl: './my-orders.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,6 +24,7 @@ export class MyOrdersComponent implements OnInit {
   readonly ordersList = signal<IOrder[]>([]);
   readonly isLoading = signal<boolean>(true);
   readonly activeStatus = signal<number>(0);
+  readonly searchQuery = signal<string>('');
 
   readonly filterTabs = signal<FilterTab[]>([
     { label: 'الكل', value: 0 },
@@ -33,13 +35,31 @@ export class MyOrdersComponent implements OnInit {
     { label: 'ملغي', value: 2 },
   ]);
 
+  getTabCount(status: number): number {
+    const list = this.ordersList();
+    if (status === 0) return list.length;
+    return list.filter((o) => o.orderStatusId === status).length;
+  }
+
   readonly filteredOrders = computed(() => {
     const status = this.activeStatus();
-    const orders = this.ordersList();
-    if (status === 0) {
-      return orders;
+    const query = this.searchQuery().trim().toLowerCase();
+    let orders = this.ordersList();
+
+    if (status !== 0) {
+      orders = orders.filter((order) => order.orderStatusId === status);
     }
-    return orders.filter((order) => order.orderStatusId === status);
+
+    if (query) {
+      orders = orders.filter(
+        (order) =>
+          order.serialOrder?.toLowerCase().includes(query) ||
+          order.clientName?.toLowerCase().includes(query) ||
+          String(order.menuOrdersId).includes(query)
+      );
+    }
+
+    return orders;
   });
 
   ngOnInit(): void {
@@ -61,6 +81,19 @@ export class MyOrdersComponent implements OnInit {
     });
 
     // Fetch orders list
+    this.cartService.GetUserCart().subscribe({
+      next: (res) => {
+        this.ordersList.set(res?.items || []);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+      },
+    });
+  }
+
+  refresh(): void {
+    this.isLoading.set(true);
     this.cartService.GetUserCart().subscribe({
       next: (res) => {
         this.ordersList.set(res?.items || []);

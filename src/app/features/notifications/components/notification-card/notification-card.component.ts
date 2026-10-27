@@ -20,7 +20,7 @@ export interface NotificationStatusConfig {
 @Component({
   selector: 'app-notification-card',
   standalone: true,
-  imports: [CommonModule, DatePipe, NgClass],
+  imports: [CommonModule, NgClass],
   templateUrl: './notification-card.component.html',
   styleUrl: './notification-card.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,64 +89,64 @@ export class NotificationCardComponent {
     const t = (it.title_Ar || it.title || '').toLowerCase();
     const name = it.name?.toLowerCase() || '';
 
-    if (t.includes('رفض') || t.includes('could not')) {
+    if (t.includes('رفض') || t.includes('could not') || t.includes('ملغي')) {
       return {
-        bg: 'bg-rose-50 border-rose-100',
+        bg: 'bg-rose-50 text-rose-600',
         text: 'text-rose-600',
-        badgeBg: 'bg-rose-50 text-rose-600',
+        badgeBg: 'bg-rose-50 text-rose-700',
         badgeText: '',
         label: 'طلب مرفوض',
       };
     }
     if (t.includes('توصيل') || t.includes('progress')) {
       return {
-        bg: 'bg-blue-50 border-blue-100',
+        bg: 'bg-blue-50 text-blue-600',
         text: 'text-blue-600',
-        badgeBg: 'bg-blue-50 text-blue-600',
+        badgeBg: 'bg-blue-50 text-blue-700',
         badgeText: '',
         label: 'جاري التوصيل',
       };
     }
     if (t.includes('قبول') || t.includes('accepted')) {
       return {
-        bg: 'bg-emerald-50 border-emerald-100',
+        bg: 'bg-emerald-50 text-emerald-600',
         text: 'text-emerald-600',
-        badgeBg: 'bg-emerald-50 text-emerald-600',
+        badgeBg: 'bg-emerald-50 text-emerald-700',
         badgeText: '',
         label: 'تم القبول',
       };
     }
     if (t.includes('اكتمال') || t.includes('completed')) {
       return {
-        bg: 'bg-emerald-50 border-emerald-100',
+        bg: 'bg-emerald-50 text-emerald-600',
         text: 'text-emerald-600',
-        badgeBg: 'bg-emerald-50 text-emerald-600',
+        badgeBg: 'bg-emerald-50 text-emerald-700',
         badgeText: '',
         label: 'مكتمل',
       };
     }
     if (it.screenId === 4 || it.orderId || name === 'myorders' || t.includes('طلب')) {
       return {
-        bg: 'bg-amber-50 border-amber-100',
-        text: 'text-amber-600',
-        badgeBg: 'bg-amber-50 text-amber-600',
+        bg: 'bg-gray-100 text-gray-500',
+        text: 'text-gray-500',
+        badgeBg: 'bg-amber-50 text-amber-700',
         badgeText: '',
         label: 'تحديث طلب',
       };
     }
     if (it.screenId === 1 || name === 'clientmenus' || t.includes('قائمة') || t.includes('menu')) {
       return {
-        bg: 'bg-orange-50 border-orange-100',
+        bg: 'bg-orange-50 text-orange-600',
         text: 'text-orange-600',
-        badgeBg: 'bg-orange-50 text-orange-600',
+        badgeBg: 'bg-orange-50 text-orange-700',
         badgeText: '',
         label: 'قائمة جديدة',
       };
     }
     return {
-      bg: 'bg-gray-100 border-gray-200',
-      text: 'text-gray-600',
-      badgeBg: 'bg-gray-100 text-gray-600',
+      bg: 'bg-slate-100 text-slate-600',
+      text: 'text-slate-600',
+      badgeBg: 'bg-slate-100 text-slate-700',
       badgeText: '',
       label: 'إشعار',
     };

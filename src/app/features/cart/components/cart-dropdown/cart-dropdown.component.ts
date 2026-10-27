@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { CartService } from '../../cart.service';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { environment } from '../../../../core/environments/environment';
+import { AddCartItem, CartMenuItem } from '../../models/cart-item';
 
 @Component({
   selector: 'app-cart-dropdown',
@@ -86,12 +87,50 @@ export class CartDropdownComponent implements OnInit {
 
   getItemImageUrl(photoURL: string | null): string {
     if (!photoURL) {
-      return '/images/default.png';
+      return '/images/default-meal.png';
     }
     if (photoURL.startsWith('http')) {
       return photoURL;
     }
     return `${this.filesUrl}${photoURL}`;
+  }
+
+  removeItem(item: CartMenuItem, event: Event): void {
+    event.stopPropagation();
+    const allItems = this.cartItems();
+    const isMatch = (it: CartMenuItem): boolean =>
+      it === item ||
+      (!!it.id && !!item.id && it.id === item.id) ||
+      (it.productId === item.productId && it.productPriceId === item.productPriceId);
+
+    let payload: AddCartItem[] = allItems
+      .filter((it) => !isMatch(it))
+      .map((it) => ({
+        productId: it.productId,
+        productPriceId: it.productPriceId ?? null,
+        quantity: it.quantity,
+        serial: it.serial ?? '',
+      }));
+
+    if (payload.length === 0) {
+      payload = [{
+        productId: item.productId,
+        productPriceId: item.productPriceId ?? null,
+        quantity: 0,
+        serial: item.serial ?? '',
+      }];
+    }
+
+    this._cartService.AddItemsAndRefreshCart(payload).subscribe({
+      error: (err) => console.error('Error removing item from cart:', err),
+    });
+  }
+
+  goToProduct(productId: number | undefined, event: Event): void {
+    if (!productId) return;
+    event.stopPropagation();
+    this.isOpen.set(false);
+    this._router.navigate(['/menu-items', productId]);
   }
 
   @HostListener('document:click', ['$event'])

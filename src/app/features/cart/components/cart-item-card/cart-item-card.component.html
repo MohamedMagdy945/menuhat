@@ -1,0 +1,49 @@
+<div class="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-1 sm:px-2 gap-3 sm:gap-4 bg-white">
+  <!-- Right Part: Image + Name + Unit Price -->
+  <div class="flex items-center gap-3.5 min-w-0 flex-1">
+    <!-- Product Image -->
+    <div class="w-16 h-16 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-100 flex items-center justify-center">
+      <img [src]="imageUrl()" (error)="$any($event.target).src = '/images/default-meal.png'"
+        [alt]="item().productName"
+        class="w-full h-full object-contain" />
+    </div>
+
+    <!-- Info -->
+    <div class="min-w-0 text-right flex-1">
+      <h3 class="text-sm sm:text-base font-semibold text-slate-700 truncate" [title]="item().productName">
+        {{ item().productName }}
+      </h3>
+      <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+        سعر القطعة: <span class="font-semibold text-slate-600">{{ item().price | number:'1.2-2' }} ج.م</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Left Part: Total Price + Quantity Control + Delete Button -->
+  <div class="flex items-center justify-between sm:justify-end gap-3.5 sm:gap-4 shrink-0  pt-2.5 sm:pt-0 border-slate-100">
+    <!-- Item Total Price -->
+    <div class="text-right">
+      <span class="text-[11px] text-slate-400 block font-medium">الإجمالي</span>
+      <span class="font-bold text-sm sm:text-base text-orange-500">
+        {{ item().total | number:'1.2-2' }} ج.م
+      </span>
+    </div>
+
+    <!-- Quantity Pill -->
+    <div class="flex items-center gap-2 rounded-full border border-slate-200 px-2 py-1 bg-white ">
+      <button type="button" (click)="onIncrease()" title="زيادة الكمية"
+        class="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-slate-700 font-bold text-sm cursor-pointer">+</button>
+      <span class="text-sm font-bold text-slate-800 min-w-5 text-center">{{ item().quantity }}</span>
+      <button type="button" (click)="onDecrease()" title="تقليل الكمية"
+        class="w-6 h-6 rounded-full bg-slate-50 flex items-center justify-center text-slate-700 font-bold text-sm cursor-pointer">-</button>
+    </div>
+
+    <!-- Delete Button -->
+    <button type="button" (click)="onDelete()"
+      class="w-8 h-8 rounded-lg bg-rose-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0"
+      title="حذف العنصر"
+      aria-label="حذف العنصر">
+      <span class="material-symbols-sharp text-[17px]">delete</span>
+    </button>
+  </div>
+</div>

@@ -1,10 +1,12 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from './cart.service';
 import { AddCartItem, CartMenuItem } from './models/cart-item';
 import { environment } from '../../core/environments/environment';
 import { UserDataService } from '../../core/services/userData.service';
+import { CartItemCardComponent } from './components/cart-item-card/cart-item-card.component';
+import { OrderCheckoutComponent } from './components/order-checkout/order-checkout.component';
 
 export interface RestaurantCartGroup {
   clientName: string;
@@ -15,7 +17,7 @@ export interface RestaurantCartGroup {
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, DecimalPipe, RouterModule],
+  imports: [CommonModule, DecimalPipe, RouterModule, CartItemCardComponent, OrderCheckoutComponent],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css',
 })
@@ -27,6 +29,7 @@ export class CartComponent implements OnInit {
   readonly filesUrl = environment.filesUrl;
   readonly isLoading = this._cartService.isLoading;
   readonly cartItems = this._cartService.cartItems;
+  readonly cartCount = this._cartService.cartCount;
 
   // Fixed service fee and tax rate (14%)
   readonly serviceFeeAmount = 25;
@@ -145,6 +148,8 @@ export class CartComponent implements OnInit {
     return `${this.filesUrl}${clean}`;
   }
 
+  readonly isCheckoutModalOpen = signal<boolean>(false);
+
   addToCart(items: AddCartItem[]): void {
     this._cartService.AddItemsAndRefreshCart(items).subscribe({
       error: () => {},
@@ -152,6 +157,15 @@ export class CartComponent implements OnInit {
   }
 
   checkout(): void {
-    console.log('Proceed to checkout with selected items:', this.cartItems());
+    if (this.cartItems().length === 0) return;
+    this.isCheckoutModalOpen.set(true);
+  }
+
+  closeCheckoutModal(): void {
+    this.isCheckoutModalOpen.set(false);
+  }
+
+  onOrderSuccess(): void {
+    this.isCheckoutModalOpen.set(false);
   }
 }

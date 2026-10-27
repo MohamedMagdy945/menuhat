@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, switchMap, tap, finalize, shareReplay } from 'rxjs';
 import { environment } from '../../core/environments/environment';
 import { AddCartItem, AddCartResponse, CartMenuItem, CartMenuResponse } from './models/cart-item';
+import { MenuOrderDTO } from './models/order';
 
 @Injectable({
   providedIn: 'root'
@@ -164,5 +165,18 @@ export class CartService {
     return this._HttpClient.get(
       `${environment.apiUrl}/EMHome/GetMyOrders?SortField=id`
     );
+  }
+
+  createMenuOrder(orderDto: MenuOrderDTO): Observable<any> {
+    return this._HttpClient.post(`${environment.apiUrl}/MenusOrders`, orderDto).pipe(
+      tap(() => {
+        // Refresh cart state to empty after successful order
+        this.GetCartsByUserId(true).subscribe({ error: () => {} });
+      })
+    );
+  }
+
+  getUserAddresses(): Observable<any[]> {
+    return this._HttpClient.get<any[]>(`${environment.apiUrl}/Profile/GetAddressByUserId`);
   }
 }
