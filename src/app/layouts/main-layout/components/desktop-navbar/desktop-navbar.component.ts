@@ -1,10 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LocationSelectorComponent } from '../../../../shared/components/location-selector/location-selector.component';
 import { CartDrawerComponent } from '../../../../features/cart/components/cart-drawer/cart-drawer.component';
 import { FavoriteSideDrawerComponent } from '../../../../features/favorites/components/favorite-side-drawer/favorite-side-drawer.component';
 import { NotificationSideDrawerComponent } from '../../../../features/notifications/components/notification-side-drawer/notification-side-drawer.component';
 import { AccountDropdownComponent } from '../../../../features/home/components/account-dropdown/account-dropdown.component';
+import { NotificationsService } from '../../../../features/notifications/services/notifications.service';
+import { FavoritesService } from '../../../../features/favorites/favorites.service';
+import { CartService } from '../../../../features/cart/cart.service';
 
 @Component({
   imports: [
@@ -20,4 +23,12 @@ import { AccountDropdownComponent } from '../../../../features/home/components/a
   styleUrl: './desktop-navbar.component.css',
   templateUrl: './desktop-navbar.component.html',
 })
-export class DesktopNavbarComponent {}
+export class DesktopNavbarComponent {
+  private readonly _notificationsService = inject(NotificationsService);
+  private readonly _favoritesService = inject(FavoritesService);
+  private readonly _cartService = inject(CartService);
+
+  readonly unreadCount = this._notificationsService.unreadCount;
+  readonly favoritesCount = computed(() => this._favoritesService.favorites().length);
+  readonly cartCount = this._cartService.cartCount;
+}

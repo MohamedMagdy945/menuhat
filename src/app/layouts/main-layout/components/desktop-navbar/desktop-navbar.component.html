@@ -1,7 +1,7 @@
 <!-- navbar.component.html -->
-<nav class="hidden md:block w-full pt-2">
+<nav class="hidden md:block w-full pt-1">
   <!-- Top Row -->
-  <div class="bg-[#e9ecef]">
+  <div class="">
     <div class="flex items-center justify-between gap-3 px-8 py-1">
       <!-- Logo (right side in RTL) -->
       <a routerLink="/" class="inline-flex items-center decoration-0 focus:outline-none shrink-0">
@@ -40,19 +40,82 @@
         </div>
       </div>
       <!-- Right Actions Container -->
-      <div class="flex items-center gap-3 shrink-0">
-        <!-- Notification Drawer -->
-        <app-notification-side-drawer></app-notification-side-drawer>
+      <div class="flex items-center gap-1 shrink-0">
+        <!-- Notification Icon & Drawer -->
+        <div
+          (click)="notificationDrawer.open()"
+          class="relative w-11 h-11 sm:w-11 sm:h-11 text-xl border border-gray-200 rounded-full bg-white flex items-center justify-center shadow-sm cursor-pointer select-none"
+          title="الإشعارات"
+          role="button"
+          tabindex="0"
+          (keydown.enter)="notificationDrawer.open()"
+          (keydown.space)="notificationDrawer.open()"
+        >
+          <span
+            class="material-symbols-sharp select-none text-amber-500"
+          >notifications</span>
 
-        <!-- Favorite Drawer -->
-        <app-favorite-side-drawer></app-favorite-side-drawer>
+          @if (unreadCount() > 0) {
+            <span
+              class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-amber-500 to-amber-600 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xs border-2 border-white"
+            >
+              {{ unreadCount() > 99 ? '+99' : unreadCount() }}
+            </span>
+          }
+        </div>
+        <app-notification-side-drawer #notificationDrawer></app-notification-side-drawer>
 
-        <!-- Cart Drawer -->
-        <app-cart-drawer></app-cart-drawer>
+        <!-- Favorite Icon & Drawer -->
+        <div
+          (click)="favoriteDrawer.open()"
+          class="relative w-11 h-11 sm:w-11 sm:h-11 text-xl border border-gray-200 rounded-full bg-white flex items-center justify-center shadow-sm cursor-pointer select-none"
+          title="المفضلة"
+          role="button"
+          tabindex="0"
+          (keydown.enter)="favoriteDrawer.open()"
+          (keydown.space)="favoriteDrawer.open()"
+        >
+          <span
+            class="material-symbols-sharp select-none text-rose-500"
+          >favorite</span>
+
+          @if (favoritesCount() > 0) {
+            <span
+              class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-rose-500 to-red-600 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xs border-2 border-white"
+            >
+              {{ favoritesCount() > 99 ? '+99' : favoritesCount() }}
+            </span>
+          }
+        </div>
+        <app-favorite-side-drawer #favoriteDrawer></app-favorite-side-drawer>
+
+        <!-- Cart Icon & Drawer -->
+        <div
+          (click)="cartDrawer.open()"
+          class="relative w-11 h-11 sm:w-11 sm:h-11 text-xl border border-gray-200 rounded-full bg-white flex items-center justify-center shadow-sm cursor-pointer select-none"
+          title="سلة المشتريات"
+          role="button"
+          tabindex="0"
+          (keydown.enter)="cartDrawer.open()"
+          (keydown.space)="cartDrawer.open()"
+        >
+          <span
+            class="material-symbols-sharp select-none text-orange-500"
+          >shopping_cart</span>
+
+          @if (cartCount() > 0) {
+            <span
+              class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-orange-500 to-orange-600 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xs border-2 border-white"
+            >
+              {{ cartCount() > 99 ? '+99' : cartCount() }}
+            </span>
+          }
+        </div>
+        <app-cart-drawer #cartDrawer></app-cart-drawer>
 
         <!-- Language Button -->
         <button
-          class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-sm font-bold text-slate-700 shadow-sm cursor-pointer"
+          class="w-11 h-11 sm:w-11 sm:h-11 text-sm font-bold border border-gray-200 rounded-full bg-white flex items-center justify-center text-slate-700 shadow-sm cursor-pointer select-none"
         >
           EN
         </button>

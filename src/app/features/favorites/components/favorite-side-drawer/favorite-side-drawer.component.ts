@@ -48,15 +48,20 @@ export class FavoriteSideDrawerComponent implements OnInit {
     return !!(this._userDataService.isAuthenticated() || this._userDataService.getToken());
   }
 
+  open(): void {
+    this.isDrawerOpen.set(true);
+    if (this.favorites().length === 0) {
+      this._favoritesService.loadFavorites(true);
+    }
+  }
+
+  close(): void {
+    this.closeDrawer();
+  }
+
   toggleDrawer(event?: Event): void {
     if (event) {
       event.stopPropagation();
-    }
-
-    if (!this.isUserLoggedIn()) {
-      this.isDrawerOpen.set(false);
-      this._router.navigate(['/login']);
-      return;
     }
 
     const nextState = !this.isDrawerOpen();
