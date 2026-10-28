@@ -98,7 +98,7 @@
     </div>
   } @else {
     <!-- Orders Cards List -->
-    <div class="space-y-3">
+    <div class="space-y-2">
       @for (order of filteredOrders(); track order.menuOrdersId) {
         <app-order-item-card
           [order]="order"

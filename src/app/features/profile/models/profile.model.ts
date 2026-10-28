@@ -2,8 +2,10 @@ export interface UserProfile {
   id: number;
   userTypeId?: number;
   fullName: string;
+  username?: string;
   email: string | null;
   mobile: string;
+  photoURL?: string | null;
   defaultLang?: string;
   isInTop?: boolean;
   governmentId?: number;
@@ -18,7 +20,7 @@ export interface UserProfile {
 
 export interface UpdateProfileRequest {
   fullName: string;
-  defaultLang: string;
+  defaultLang?: string;
 }
 
 export interface UserAddress {
@@ -27,6 +29,8 @@ export interface UserAddress {
   governmentId?: number;
   cityId?: number;
   address?: string;
+  title?: string;
+  type?: 'home' | 'work' | 'other';
 }
 
 export interface ChangePasswordRequest {

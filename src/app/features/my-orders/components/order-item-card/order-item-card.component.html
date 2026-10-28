@@ -1,5 +1,5 @@
 <article (click)="onView()"
-  class="bg-white rounded-2xl   shadow-2xs p-3 flex items-stretch justify-between gap-3 cursor-pointer">
+  class="bg-white rounded-lg border border-gray-200  shadow-xs p-3 flex items-stretch justify-between gap-3 cursor-pointer">
   <!-- Right Part: Restaurant Logo & Info (Start in RTL) -->
   <div class="flex items-start gap-3.5 min-w-0 flex-1">
     <!-- Restaurant Image / Storefront Logo -->
@@ -12,7 +12,7 @@
     <!-- Text Info -->
     <div class="min-w-0 text-right space-y-1 flex-1">
       <!-- Restaurant Name -->
-      <h3 class="font-semibold text-slate-800  truncate">
+      <h3 class="font-semibold text-slate-800 truncate">
         {{ order().clientName?.trim() || 'اسم المطعم' }}
       </h3>
 

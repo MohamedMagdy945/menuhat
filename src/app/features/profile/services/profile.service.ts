@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, finalize, catchError, of } from 'rxjs';
+import { Observable, tap, finalize, catchError, of, map } from 'rxjs';
 import { environment } from '../../../core/environments/environment';
 import { UserDataService } from '../../../core/services/userData.service';
 import {
@@ -35,7 +35,11 @@ export class ProfileService {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return this.http.get<UserProfile>(`${this.apiUrl}/Profile/GetProfileByUserId`).pipe(
+    return this.http.get<any>(`${this.apiUrl}/Profile/GetProfileByUserId`).pipe(
+      map((res: any) => {
+        const data = res?.result !== undefined ? res.result : res;
+        return data as UserProfile;
+      }),
       tap((data) => {
         this.profile.set(data);
       }),
@@ -56,11 +60,15 @@ export class ProfileService {
   updateProfile(data: UpdateProfileRequest): Observable<any> {
     return this.http.put(`${this.apiUrl}/Profile/PutProfile`, data).pipe(
       tap(() => {
-        this.profile.update((p) => (p ? { ...p, fullName: data.fullName, defaultLang: data.defaultLang } : p));
+        this.profile.update((p) => (p ? { ...p, fullName: data.fullName, defaultLang: data.defaultLang ?? p.defaultLang } : p));
         // Update user data in storage if applicable
         const current = this.userDataService.currentUser();
         if (current) {
-          this.userDataService.setUserData({ ...current, fullName: data.fullName, defaultLang: data.defaultLang });
+          this.userDataService.setUserData({
+            ...current,
+            fullName: data.fullName,
+            defaultLang: data.defaultLang ?? current.defaultLang ?? 'ar',
+          });
         }
       }),
     );
@@ -109,7 +117,12 @@ export class ProfileService {
    * Loads user addresses from /api/Profile/GetAddressByUserId
    */
   loadAddresses(): Observable<UserAddress[]> {
-    return this.http.get<UserAddress[]>(`${this.apiUrl}/Profile/GetAddressByUserId`).pipe(
+    return this.http.get<any>(`${this.apiUrl}/Profile/GetAddressByUserId`).pipe(
+      map((res: any) => {
+        if (Array.isArray(res)) return res;
+        if (Array.isArray(res?.result)) return res.result;
+        return [];
+      }),
       tap((addresses) => {
         this.addresses.set(addresses || []);
       }),
@@ -118,6 +131,35 @@ export class ProfileService {
         return of([]);
       }),
     );
+  }
+
+  /**
+   * Adds an address locally/reactively
+   */
+  addAddress(address: UserAddress): void {
+    this.addresses.update((list) => [
+      ...list,
+      {
+        ...address,
+        id: address.id || Date.now(),
+      },
+    ]);
+  }
+
+  /**
+   * Updates an address locally/reactively
+   */
+  updateAddress(address: UserAddress): void {
+    this.addresses.update((list) =>
+      list.map((item) => (item.id === address.id ? { ...item, ...address } : item)),
+    );
+  }
+
+  /**
+   * Deletes an address locally/reactively
+   */
+  deleteAddress(id: number): void {
+    this.addresses.update((list) => list.filter((item) => item.id !== id));
   }
 
   /**
