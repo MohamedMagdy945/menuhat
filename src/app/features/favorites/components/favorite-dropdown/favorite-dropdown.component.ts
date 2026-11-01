@@ -7,24 +7,24 @@ import {
   HostListener,
   ChangeDetectorRef,
   OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FavoritesService } from '../../favorites.service';
 import { FavoriteProduct } from '../../models';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { CartService } from '../../../cart/cart.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { environment } from '../../../../core/environments/environment';
-import { SideDrawerComponent } from '../../../../shared/components/side-drawer/side-drawer.component';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-favorite-dropdown',
   standalone: true,
-  imports: [CommonModule, DecimalPipe, RouterModule, SideDrawerComponent],
+  imports: [CommonModule, DecimalPipe, RouterModule],
   templateUrl: './favorite-dropdown.component.html',
   styleUrl: './favorite-dropdown.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FavoriteDropdownComponent implements OnInit {
   private readonly _favoritesService = inject(FavoritesService);
@@ -38,7 +38,6 @@ export class FavoriteDropdownComponent implements OnInit {
   readonly filesUrl = environment.filesUrl;
 
   readonly isOpen = signal<boolean>(false);
-  readonly isDrawerOpen = signal<boolean>(false);
   readonly favorites = this._favoritesService.favorites;
   readonly favoritesCount = computed(() => this.favorites().length);
   readonly isLoading = this._favoritesService.isLoading;
@@ -59,17 +58,21 @@ export class FavoriteDropdownComponent implements OnInit {
     }
 
     if (!this.isUserLoggedIn()) {
-      this.isDrawerOpen.set(false);
+      this.isOpen.set(false);
       this._router.navigate(['/login']);
       return;
     }
 
-    const nextState = !this.isDrawerOpen();
-    this.isDrawerOpen.set(nextState);
+    const nextState = !this.isOpen();
+    this.isOpen.set(nextState);
 
     if (nextState && this.favorites().length === 0) {
       this._favoritesService.loadFavorites(true);
     }
+  }
+
+  closeDropdown(): void {
+    this.isOpen.set(false);
   }
 
   goToFavorites(event?: Event): void {
@@ -77,31 +80,35 @@ export class FavoriteDropdownComponent implements OnInit {
       event.stopPropagation();
     }
     this.isOpen.set(false);
-    this.isDrawerOpen.set(true);
+    this._router.navigate(['/favorites']);
   }
 
   addToCart(item: FavoriteProduct, event: Event): void {
     event.stopPropagation();
-    this._cartService.addItem({
-      productId: item.id,
-      productPriceId: null,
-      quantity: 1,
-      serial: '',
-    }).subscribe({
-      next: () => {
-        this._toastService.success('تمت إضافة الوجبة إلى السلة');
-      },
-      error: () => {
-        this._toastService.error('تعذر إضافة الوجبة إلى السلة');
-      },
-    });
+    this._cartService
+      .addItem({
+        productId: item.id,
+        productPriceId: null,
+        quantity: 1,
+        serial: '',
+      })
+      .subscribe({
+        next: () => {
+          this._toastService.success('تمت إضافة الوجبة إلى السلة');
+          this._cdr.markForCheck();
+        },
+        error: () => {
+          this._toastService.error('تعذر إضافة الوجبة إلى السلة');
+          this._cdr.markForCheck();
+        },
+      });
   }
 
   goToProduct(productId: number, event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
-    this.isDrawerOpen.set(false);
+    this.isOpen.set(false);
     this._router.navigate(['/menu-items', productId]);
   }
 
@@ -131,17 +138,13 @@ export class FavoriteDropdownComponent implements OnInit {
     return `${this.filesUrl}${cleanPath}`;
   }
 
-  getItemPhoto(photoURL: string | null): string {
-    return this.getItemImageUrl(photoURL);
-  }
-
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
     if (!this.isOpen()) return;
     const target = event.target as HTMLElement;
     if (!this._elementRef.nativeElement.contains(target)) {
       this.isOpen.set(false);
-      this._cdr.detectChanges();
+      this._cdr.markForCheck();
     }
   }
 
@@ -149,7 +152,7 @@ export class FavoriteDropdownComponent implements OnInit {
   onEscape(): void {
     if (this.isOpen()) {
       this.isOpen.set(false);
-      this._cdr.detectChanges();
+      this._cdr.markForCheck();
     }
   }
 }

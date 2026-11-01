@@ -5,23 +5,23 @@ import {
   ElementRef,
   HostListener,
   ChangeDetectorRef,
-  OnInit
+  OnInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../cart.service';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { environment } from '../../../../core/environments/environment';
 import { AddCartItem, CartMenuItem } from '../../models/cart-item';
-import { SideDrawerComponent } from '../../../../shared/components/side-drawer/side-drawer.component';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cart-dropdown',
   standalone: true,
-  imports: [CommonModule, DecimalPipe, RouterModule, SideDrawerComponent],
+  imports: [CommonModule, DecimalPipe, RouterModule],
   templateUrl: './cart-dropdown.component.html',
-  styleUrl: './cart-dropdown.component.css'
+  styleUrl: './cart-dropdown.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CartDropdownComponent implements OnInit {
   private readonly _cartService = inject(CartService);
@@ -34,7 +34,6 @@ export class CartDropdownComponent implements OnInit {
   readonly filesUrl = environment.filesUrl;
 
   readonly isOpen = signal<boolean>(false);
-  readonly isDrawerOpen = signal<boolean>(false);
   readonly cartItems = this._cartService.cartItems;
   readonly cartCount = this._cartService.cartCount;
   readonly totalPrice = this._cartService.cartTotalPrice;
@@ -56,27 +55,31 @@ export class CartDropdownComponent implements OnInit {
     }
 
     if (!this.isUserLoggedIn()) {
-      this.isDrawerOpen.set(false);
+      this.isOpen.set(false);
       this._router.navigate(['/login']);
       return;
     }
 
-    const nextState = !this.isDrawerOpen();
-    this.isDrawerOpen.set(nextState);
+    const nextState = !this.isOpen();
+    this.isOpen.set(nextState);
 
     if (nextState) {
       this.fetchCartData();
     }
   }
 
+  closeDropdown(): void {
+    this.isOpen.set(false);
+  }
+
   fetchCartData(): void {
     this._cartService.GetCartsByUserId().subscribe({
       next: () => {
-        this._cdr.detectChanges();
+        this._cdr.markForCheck();
       },
       error: () => {
-        this._cdr.detectChanges();
-      }
+        this._cdr.markForCheck();
+      },
     });
   }
 
@@ -85,11 +88,6 @@ export class CartDropdownComponent implements OnInit {
       event.stopPropagation();
     }
     this.isOpen.set(false);
-    this.isDrawerOpen.set(true);
-  }
-
-  goToCheckout(): void {
-    this.isDrawerOpen.set(false);
     this._router.navigate(['/cart']);
   }
 
@@ -125,7 +123,8 @@ export class CartDropdownComponent implements OnInit {
     if (photoURL.startsWith('http')) {
       return photoURL;
     }
-    return `${this.filesUrl}${photoURL}`;
+    const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
+    return `${this.filesUrl}${cleanPath}`;
   }
 
   removeItem(item: CartMenuItem, event: Event): void {
@@ -146,12 +145,14 @@ export class CartDropdownComponent implements OnInit {
       }));
 
     if (payload.length === 0) {
-      payload = [{
-        productId: item.productId,
-        productPriceId: item.productPriceId ?? null,
-        quantity: 0,
-        serial: item.serial ?? '',
-      }];
+      payload = [
+        {
+          productId: item.productId,
+          productPriceId: item.productPriceId ?? null,
+          quantity: 0,
+          serial: item.serial ?? '',
+        },
+      ];
     }
 
     this._cartService.AddItemsAndRefreshCart(payload).subscribe({
@@ -172,7 +173,7 @@ export class CartDropdownComponent implements OnInit {
     const target = event.target as HTMLElement;
     if (!this._elementRef.nativeElement.contains(target)) {
       this.isOpen.set(false);
-      this._cdr.detectChanges();
+      this._cdr.markForCheck();
     }
   }
 
@@ -180,7 +181,7 @@ export class CartDropdownComponent implements OnInit {
   onEscape(): void {
     if (this.isOpen()) {
       this.isOpen.set(false);
-      this._cdr.detectChanges();
+      this._cdr.markForCheck();
     }
   }
 }

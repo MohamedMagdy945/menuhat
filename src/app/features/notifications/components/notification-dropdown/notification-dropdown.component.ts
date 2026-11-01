@@ -5,33 +5,34 @@ import {
   ElementRef,
   HostListener,
   OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from '../../services/notifications.service';
 import { AppNotification } from '../../models/notification.model';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { environment } from '../../../../core/environments/environment';
-import { SideDrawerComponent } from '../../../../shared/components/side-drawer/side-drawer.component';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-notification-dropdown',
   standalone: true,
-  imports: [CommonModule, RouterModule, SideDrawerComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './notification-dropdown.component.html',
   styleUrl: './notification-dropdown.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationDropdownComponent implements OnInit {
   private readonly _notificationsService = inject(NotificationsService);
   private readonly _userDataService = inject(UserDataService);
   private readonly _router = inject(Router);
   private readonly _elementRef = inject(ElementRef);
+  private readonly _cdr = inject(ChangeDetectorRef);
 
   readonly filesUrl = environment.filesUrl;
 
   readonly isOpen = signal<boolean>(false);
-  readonly isDrawerOpen = signal<boolean>(false);
   readonly notifications = this._notificationsService.notifications;
   readonly unreadCount = this._notificationsService.unreadCount;
   readonly totalCount = this._notificationsService.totalCount;
@@ -53,13 +54,13 @@ export class NotificationDropdownComponent implements OnInit {
     }
 
     if (!this.isUserLoggedIn()) {
-      this.isDrawerOpen.set(false);
+      this.isOpen.set(false);
       this._router.navigate(['/login']);
       return;
     }
 
-    const nextState = !this.isDrawerOpen();
-    this.isDrawerOpen.set(nextState);
+    const nextState = !this.isOpen();
+    this.isOpen.set(nextState);
 
     if (nextState && this.notifications().length === 0) {
       this._notificationsService.loadNotifications(true);
@@ -67,14 +68,14 @@ export class NotificationDropdownComponent implements OnInit {
   }
 
   closeDropdown(): void {
-    this.isDrawerOpen.set(false);
+    this.isOpen.set(false);
   }
 
   goToNotifications(event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
-    this.isDrawerOpen.set(false);
+    this.isOpen.set(false);
     this._router.navigate(['/notifications']);
   }
 
@@ -111,11 +112,9 @@ export class NotificationDropdownComponent implements OnInit {
       event.stopPropagation();
     }
 
-    // Mark as read immediately
     this._notificationsService.markAsRead(item.id);
-    this.isDrawerOpen.set(false);
+    this.isOpen.set(false);
 
-    // Contextual navigation based on screenId or name
     if (item.screenId === 4 || item.orderId || item.orderSerial || item.name === 'MyOrders') {
       this._router.navigate(['/my-orders']);
     } else if (item.screenId === 1 || item.name === 'ClientMenus' || item.serial) {
@@ -160,7 +159,12 @@ export class NotificationDropdownComponent implements OnInit {
     if (title.includes('توصيل') || title.includes('progress')) {
       return 'delivery_dining';
     }
-    if (title.includes('قبول') || title.includes('اكتمال') || title.includes('accepted') || title.includes('completed')) {
+    if (
+      title.includes('قبول') ||
+      title.includes('اكتمال') ||
+      title.includes('accepted') ||
+      title.includes('completed')
+    ) {
       return 'check_circle';
     }
     if (item.screenId === 4 || item.orderId || name === 'myorders' || title.includes('طلب')) {
@@ -182,7 +186,12 @@ export class NotificationDropdownComponent implements OnInit {
     if (title.includes('توصيل') || title.includes('progress')) {
       return { bg: 'bg-blue-50', text: 'text-blue-600' };
     }
-    if (title.includes('قبول') || title.includes('اكتمال') || title.includes('accepted') || title.includes('completed')) {
+    if (
+      title.includes('قبول') ||
+      title.includes('اكتمال') ||
+      title.includes('accepted') ||
+      title.includes('completed')
+    ) {
       return { bg: 'bg-emerald-50', text: 'text-emerald-600' };
     }
     if (item.screenId === 4 || item.orderId || name === 'myorders' || title.includes('طلب')) {
@@ -222,13 +231,19 @@ export class NotificationDropdownComponent implements OnInit {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (!this._elementRef.nativeElement.contains(event.target)) {
+    if (!this.isOpen()) return;
+    const target = event.target as HTMLElement;
+    if (!this._elementRef.nativeElement.contains(target)) {
       this.isOpen.set(false);
+      this._cdr.markForCheck();
     }
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
-    this.isOpen.set(false);
+    if (this.isOpen()) {
+      this.isOpen.set(false);
+      this._cdr.markForCheck();
+    }
   }
 }
