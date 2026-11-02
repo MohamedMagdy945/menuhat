@@ -20,4 +20,14 @@ export class RegisterService {
     return this._HttpClient.post(`${environment.apiUrl}/Auth/register`, data);
   }
 
+  recievePhoneVerification(data: { appId?: number; phone: string }): Observable<any> {
+    const payload = { appId: data.appId ?? 2, phone: data.phone };
+    return this._HttpClient.post(`${environment.apiUrl}/PhoneVerifications/RecievePhoneVerification`, payload);
+  }
+
+  checkPhoneVerified(data: { appId?: number; phone: string; otp: string }): Observable<any> {
+    const payload = { appId: data.appId ?? 2, phone: data.phone, otp: data.otp };
+    return this._HttpClient.post(`${environment.apiUrl}/PhoneVerifications/CheckVerified`, payload);
+  }
+
 }

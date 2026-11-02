@@ -266,10 +266,15 @@ export class RegisterComponent implements OnInit {
           localStorage.setItem('usertoken', res.data.token);
           localStorage.setItem('userData', JSON.stringify(res.data));
           const message = this.isOwner
-            ? 'تم إنشاء حساب صاحب المطعم بنجاح! مرحباً بك شريكاً لنا'
-            : 'تم إنشاء حساب العميل بنجاح! استمتع بأشهى الوجبات والعروض';
+            ? 'تم إنشاء حساب صاحب المطعم بنجاح! يرجى تأكيد رقم هاتفك'
+            : 'تم إنشاء الحساب بنجاح! يرجى تأكيد رقم هاتفك';
           this._toast.success(message);
-          this._router.navigate([this.isOwner ? '/dashboard' : '/home']);
+          this._router.navigate(['/send-mobile-verification'], {
+            queryParams: {
+              phone: cleanFormValue.mobile || '',
+              role: this.isOwner ? 'owner' : 'customer'
+            }
+          });
         }
       },
       error: (err: HttpErrorResponse) => {

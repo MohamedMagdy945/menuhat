@@ -9,7 +9,13 @@
     [class.ring-rose-400]="isOpen()"
     title="المفضلة"
   >
-    <span class="material-symbols-sharp select-none text-rose-500 text-xl">favorite</span>
+    <div class="flex items-center justify-center transition-colors text-lg">
+      <span
+        class="material-symbols-sharp select-none leading-none"
+        [class.text-rose-500]="isOpen()"
+        [class.text-gray-600]="!isOpen()"
+      >favorite</span>
+    </div>
 
     <!-- Badge Count -->
     @if (favoritesCount() > 0) {

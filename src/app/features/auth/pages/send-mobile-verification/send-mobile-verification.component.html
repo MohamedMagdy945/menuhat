@@ -1,0 +1,129 @@
+<div class="w-full flex items-center justify-center py-2 sm:py-4">
+  <!-- Centered Card -->
+  <div
+    class="relative z-10 mx-auto flex w-full max-w-110 flex-col rounded-3xl border border-gray-100 shadow-xs bg-white p-6 sm:p-8">
+
+    <!-- Brand Header -->
+    <div class="flex flex-col items-center text-center">
+      <a routerLink="/" class="inline-block transition-transform duration-200" aria-label="Menuhat Home">
+        <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-15 w-auto object-contain" />
+      </a>
+
+      @if (step() === 'phone') {
+      <h1 class="mt-4 text-xl font-bold tracking-tight text-slate-900">
+        تأكيد رقم الهاتف
+      </h1>
+      <p class="mt-1 font-semibold text-xs sm:text-sm text-gray-400">
+        أدخل رقم هاتفك المحمول لتلقي رمز التحقق وإكمال تفعيل حسابك
+      </p>
+      } @else {
+      <h1 class="mt-4 text-xl font-bold tracking-tight text-slate-900">
+        تأكيد رمز التحقق
+      </h1>
+      <p class="mt-1 font-semibold text-xs sm:text-sm text-gray-400">
+        تم إرسال رمز التحقق المكون من 6 أرقام في رسالة نصية إلى
+        <span class="block mt-0.5 font-bold text-slate-700" dir="ltr">{{ phone }}</span>
+      </p>
+      }
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- STEP 1: Enter Phone Number                                          -->
+    <!-- =================================================================== -->
+    @if (step() === 'phone') {
+    <form [formGroup]="phoneForm" (ngSubmit)="onSendCode()" class="mt-6 w-full">
+      <app-form-input
+        formControlName="phone"
+        label="رقم الهاتف"
+        type="tel"
+        placeholder="01xxxxxxxxx"
+        autocomplete="tel"
+        [customErrors]="validationMessages.phone"
+      >
+        <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
+          call
+        </span>
+      </app-form-input>
+
+      <app-loading-button
+        type="submit"
+        text="إرسال رمز التحقق"
+        loadingText="جاري الإرسال..."
+        [loading]="isLoading()"
+        [disabled]="phoneForm.invalid || isLoading()"
+        [fullWidth]="true"
+      />
+    </form>
+    }
+
+    <!-- =================================================================== -->
+    <!-- STEP 2: Validate OTP Code                                           -->
+    <!-- =================================================================== -->
+    @if (step() === 'otp') {
+    <!-- OTP Input Boxes -->
+    <div class="my-6 flex items-center justify-center gap-2 sm:gap-2.5" dir="ltr">
+      @for (digit of otpDigits; track $index) {
+      <input
+        type="text"
+        inputmode="numeric"
+        maxLength="6"
+        [id]="'otp-input-' + $index"
+        [value]="otpDigits[$index]"
+        (input)="onOtpInput($event, $index)"
+        (keydown)="onOtpKeyDown($event, $index)"
+        (focus)="$any($event.target).select()"
+        class="h-13 w-11 sm:h-14 sm:w-13 text-center text-xl sm:text-2xl font-black text-slate-900 bg-slate-50 border-[1.5px] border-slate-200 rounded-2xl outline-none transition-all duration-200 hover:border-slate-300 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-500/0"
+      />
+      }
+    </div>
+
+    <!-- Verify Button -->
+    <app-loading-button
+      type="button"
+      text="تأكيد ومتابعة للوحة التحكم"
+      loadingText="جاري التحقق..."
+      [loading]="isLoading()"
+      [disabled]="isVerifyDisabled"
+      [fullWidth]="true"
+      (clicked)="onVerifyCode()"
+    />
+
+    <!-- Resend & Change Phone Section -->
+    <div class="mt-6 flex flex-col items-center justify-center gap-3 text-center text-sm">
+      @if (timeLeft > 0) {
+      <p class="text-xs sm:text-sm font-medium text-slate-500">
+        إعادة إرسال الرمز خلال
+        <span class="font-bold text-orange-600 tracking-wider">
+          00:{{ timeLeft < 10 ? '0' + timeLeft : timeLeft }}
+        </span>
+      </p>
+      } @else {
+      <button
+        type="button"
+        (click)="resendCode()"
+        class="inline-flex cursor-pointer items-center gap-1.5 font-bold text-orange-600 transition-colors duration-200 hover:text-orange-700 hover:underline bg-transparent border-none">
+        <span class="material-symbols-sharp select-none text-[18px]">refresh</span>
+        <span>إعادة إرسال الرمز</span>
+      </button>
+      }
+
+      <!-- Change Phone Link -->
+      <div
+        class="flex items-center justify-center gap-1.5 text-xs sm:text-sm text-slate-500 pt-3 border-t border-slate-100 w-full">
+        <span>أدخلت رقماً خاطئاً؟</span>
+        <button
+          type="button"
+          (click)="changePhone()"
+          class="group inline-flex cursor-pointer items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline bg-transparent border-none p-0">
+          <span>تغيير رقم الهاتف</span>
+          <span
+            class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1">
+            arrow_back
+          </span>
+        </button>
+      </div>
+    </div>
+    }
+
+  </div>
+</div>

@@ -9,7 +9,13 @@
     [class.ring-orange-400]="isOpen()"
     title="سلة المشتريات"
   >
-    <span class="material-symbols-sharp select-none text-orange-500 text-xl">shopping_cart</span>
+    <div class="flex items-center justify-center transition-colors text-lg">
+      <span
+        class="material-symbols-sharp select-none leading-none"
+        [class.text-orange-500]="isOpen()"
+        [class.text-gray-600]="!isOpen()"
+      >shopping_cart</span>
+    </div>
 
     <!-- Badge Count -->
     @if (cartCount() > 0) {

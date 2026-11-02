@@ -104,6 +104,29 @@ export const routes: Routes = [
     },
 
     {
+        path: 'send-mobile-verification',
+        component: AuthLayoutComponent,
+        children: [
+            {
+                path: '',
+                loadComponent: () =>
+                    import('./features/auth/pages/send-mobile-verification/send-mobile-verification.component')
+                        .then(m => m.SendMobileVerificationComponent)
+            }
+        ]
+    },
+    {
+        path: 'verify-mobile',
+        redirectTo: 'send-mobile-verification',
+        pathMatch: 'full'
+    },
+    {
+        path: 'mobile-verification',
+        redirectTo: 'send-mobile-verification',
+        pathMatch: 'full'
+    },
+
+    {
         path: 'register/owner',
         redirectTo: 'register',
         pathMatch: 'full'
