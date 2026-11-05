@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { DashboardService } from '../../../../core/services/dashboard.service';
+import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { DashboardService } from '../../../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard-header',
@@ -8,12 +8,14 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardHeaderComponent {
   protected readonly dashboardService = inject(DashboardService);
 
   readonly isRestaurantOpen = this.dashboardService.isRestaurantOpen;
   readonly isCollapsed = this.dashboardService.isCollapsed;
+  readonly restaurantName = computed(() => this.dashboardService.dashboardData()?.restaurant?.name || 'مطعمي');
 
   toggleMobileSidebar(): void {
     this.dashboardService.toggleMobile();

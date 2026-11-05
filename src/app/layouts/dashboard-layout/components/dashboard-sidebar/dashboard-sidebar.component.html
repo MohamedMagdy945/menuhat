@@ -1,174 +1,112 @@
-<!-- Backdrop for Mobile below Header -->
+<!-- Backdrop for Mobile -->
 @if (isMobileOpen()) {
   <div
-    class="fixed top-20 inset-x-0 bottom-0 z-30 bg-slate-900/50 backdrop-blur-xs lg:hidden transition-opacity"
+    class="fixed inset-0 z-30 bg-slate-900/50 lg:hidden"
     (click)="closeMobile()"
     aria-hidden="true"
   ></div>
 }
 
-<!-- Full Dashboard Sidebar Container (Positioned directly under the header at top-20) -->
+<!-- Full Dashboard Sidebar Container (Full Height inset-y-0) -->
 <aside
-  class="fixed top-20 bottom-0 right-0 z-40 flex flex-col w-68 bg-white border-l border-slate-200/80 shadow-sm select-none transition-transform duration-300 max-lg:shadow-xl"
-  [class.max-lg:translate-x-full]="!isMobileOpen()"
-  dir="rtl" aria-label="Main Navigation">
+  class="fixed inset-y-0 right-0 z-40 flex flex-col w-68 bg-white border-l border-gray-100 shadow-sm select-none max-lg:shadow-xl"
+  [class.max-lg:hidden]="!isMobileOpen()"
+  aria-label="Main Navigation"
+>
+  <!-- Sidebar Brand Header -->
+  <div class="h-18 px-4 border-b border-gray-100 flex items-center justify-between shrink-0">
+    <a routerLink="/dashboard" class="flex items-center gap-2.5">
+      <div
+        class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-xs"
+      >
+        <span class="material-symbols-sharp text-2xl" aria-hidden="true">restaurant</span>
+      </div>
+      <div class="flex flex-col min-w-0">
+        <div class="flex items-center gap-1.5">
+          <span class="font-bold text-base text-slate-900 tracking-tight">مِنيوهات</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-orange-100 text-orange-700">لوحة الإدارة</span>
+        </div>
+        <span class="text-xs text-slate-400 font-medium truncate">{{ restaurantName() }}</span>
+      </div>
+    </a>
 
-  <!-- =========================================================================
-       Scrollable Navigation (Continuous List with Identical Item Styles)
-       ========================================================================= -->
+    <!-- Mobile Close Button -->
+    <button
+      type="button"
+      (click)="closeMobile()"
+      class="lg:hidden p-1.5 rounded-lg text-slate-400 cursor-pointer"
+      aria-label="إغلاق القائمة"
+    >
+      <span class="material-symbols-sharp text-xl">close</span>
+    </button>
+  </div>
+
+  <!-- Scrollable Navigation (Flat List without Grouping) -->
   <nav class="flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scroll" aria-label="Dashboard Menu">
     <ul class="flex flex-col gap-1 p-0 m-0 list-none" role="list">
+      @for (item of navItems; track item.id) {
+        <li>
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="is-active"
+            [routerLinkActiveOptions]="{ exact: !!item.exact }"
+            (click)="closeMobile()"
+            class="main-nav-item"
+          >
+            <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">
+              {{ item.icon }}
+            </span>
+            <span class="main-nav-label">{{ item.label }}</span>
 
-      <!-- 1. Home Dashboard -->
-      <li>
-        <a href="/dashboard" routerLink="/dashboard" routerLinkActive="is-active"
-          [routerLinkActiveOptions]="{ exact: true }" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">space_dashboard</span>
-          <span class="main-nav-label">الرئيسية</span>
-        </a>
-      </li>
+            @if (item.hasLiveIndicator) {
+              <span class="live-indicator" title="حالة حية"></span>
+            }
 
-      <!-- 2. Analytics -->
-      <li>
-        <a href="/dashboard/analytics" routerLink="/dashboard/analytics" routerLinkActive="is-active"
-          class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">monitoring</span>
-          <span class="main-nav-label">الإحصائيات والتحليلات</span>
-        </a>
-      </li>
-
-      <!-- 3. Live Dining Hall Monitor -->
-      <li>
-        <a href="/dashboard/live-monitor" routerLink="/dashboard/live-monitor" routerLinkActive="is-active"
-          class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">table_restaurant</span>
-          <span class="main-nav-label">مراقبة الصالة الحية</span>
-          <span class="live-indicator" title="Live status"></span>
-        </a>
-      </li>
-
-      <!-- 4. Current Orders -->
-      <li>
-        <a href="/dashboard/orders" routerLink="/dashboard/orders" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">receipt_long</span>
-          <span class="main-nav-label">الطلبات الحالية</span>
-          <span class="main-nav-badge">18</span>
-        </a>
-      </li>
-
-      <!-- 5. Restaurant Menu -->
-      <li>
-        <a href="/dashboard/menu" routerLink="/dashboard/menu" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">restaurant_menu</span>
-          <span class="main-nav-label">قائمة الطعام (المنيو)</span>
-        </a>
-      </li>
-
-      <!-- 6. Most Ordered -->
-      <li>
-        <a href="/dashboard/most-ordered" routerLink="/dashboard/most-ordered" routerLinkActive="is-active"
-          class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">stars</span>
-          <span class="main-nav-label">الأكثر طلباً</span>
-        </a>
-      </li>
-
-      <!-- 7. Offers & Discounts -->
-      <li>
-        <a href="/dashboard/offers" routerLink="/dashboard/offers" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">local_offer</span>
-          <span class="main-nav-label">العروض والخصومات</span>
-          <span class="main-nav-badge badge-success">جديد</span>
-        </a>
-      </li>
-
-      <!-- 8. Daily & Monthly Reports -->
-      <li>
-        <a href="/dashboard/reports" routerLink="/dashboard/reports" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">bar_chart</span>
-          <span class="main-nav-label">التقارير اليومية والشهرية</span>
-        </a>
-      </li>
-
-      <!-- 9. Delivery Riders -->
-      <li>
-        <a href="/dashboard/delivery" routerLink="/dashboard/delivery" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">two_wheeler</span>
-          <span class="main-nav-label">مناديب التوصيل</span>
-          <span class="main-nav-badge badge-info">4</span>
-        </a>
-      </li>
-
-      <!-- 10. Invoices & Finance -->
-      <li>
-        <a href="/dashboard/invoices" routerLink="/dashboard/invoices" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">account_balance_wallet</span>
-          <span class="main-nav-label">الفواتير والمالية</span>
-        </a>
-      </li>
-
-      <!-- 11. Customer Reviews -->
-      <li>
-        <a href="/dashboard/reviews" routerLink="/dashboard/reviews" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">reviews</span>
-          <span class="main-nav-label">تقييمات العملاء</span>
-        </a>
-      </li>
-
-      <!-- 12. Technical Support -->
-      <li>
-        <a href="/dashboard/support" routerLink="/dashboard/support" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">support_agent</span>
-          <span class="main-nav-label">الدعم الفني</span>
-        </a>
-      </li>
-
-      <!-- 13. Complaints & Feedback -->
-      <li>
-        <a href="/dashboard/complaints" routerLink="/dashboard/complaints" routerLinkActive="is-active"
-          class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">report_problem</span>
-          <span class="main-nav-label">الشكاوى والملاحظات</span>
-          <span class="main-nav-badge badge-warning">تنبيه</span>
-        </a>
-      </li>
-
-      <!-- 14. Restaurant Settings -->
-      <li>
-        <a href="/dashboard/settings" routerLink="/dashboard/settings" routerLinkActive="is-active" class="main-nav-item">
-          <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">tune</span>
-          <span class="main-nav-label">إعدادات المطعم</span>
-        </a>
-      </li>
-
+            @if (item.badge) {
+              <span
+                class="main-nav-badge"
+                [class.badge-warning]="item.badgeVariant === 'warning'"
+                [class.badge-info]="item.badgeVariant === 'info'"
+                [class.badge-danger]="item.badgeVariant === 'danger'"
+                [class.badge-success]="item.badgeVariant === 'success'"
+              >
+                {{ item.badge }}
+              </span>
+            }
+          </a>
+        </li>
+      }
     </ul>
   </nav>
 
-  <!-- =========================================================================
-       User Profile & Logout Footer
-       ========================================================================= -->
-  <footer class="p-3 border-t border-slate-100 bg-slate-50/70 shrink-0">
-    <div class="flex items-center gap-3 p-2 rounded-xl bg-white border border-slate-200/70 shadow-xs">
+  <!-- User Profile & Quick Info Footer -->
+  <footer class="p-3 border-t border-gray-100 bg-slate-50/70 shrink-0">
+    <div class="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-gray-100 shadow-xs">
       <!-- User Avatar -->
       <div class="relative shrink-0">
         <div
-          class="w-10 h-10 rounded-full bg-linear-to-tr from-orange-400 to-amber-500 text-white font-bold text-sm flex items-center justify-center shadow-xs">
+          class="w-10 h-10 rounded-full bg-orange-500 text-white font-bold text-sm flex items-center justify-center shadow-xs"
+        >
           AM
         </div>
         <span class="absolute bottom-0 left-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"></span>
       </div>
+
       <!-- User Text Details -->
       <div class="flex flex-col min-w-0 flex-1">
-        <span class="text-sm font-bold text-slate-800 truncate">أحمد المحمد</span>
-        <span class="text-xs text-slate-500 truncate">ahmed.m@beitmandi.com</span>
+        <span class="text-sm font-semibold text-slate-800 truncate">{{ userProfile.name }}</span>
+        <span class="text-xs text-slate-400 truncate">{{ restaurantName() }}</span>
       </div>
+
       <!-- Quick Logout Button -->
-      <a href="/login" routerLink="/login"
-        class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
-        aria-label="تسجيل الخروج">
+      <a
+        routerLink="/login"
+        class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 shrink-0 cursor-pointer"
+        aria-label="تسجيل الخروج"
+        title="تسجيل الخروج"
+      >
         <span class="material-symbols-sharp text-[20px]">logout</span>
       </a>
     </div>
   </footer>
-
 </aside>

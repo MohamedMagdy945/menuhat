@@ -1,24 +1,8 @@
 import { Routes } from '@angular/router';
 
-import { Offers } from './features/offers/pages/offers/offers';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
 import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
-import { HomeComponent } from './features/home/home.component';
-import { CartComponent } from './features/cart/cart.component';
-import { MyOrdersComponent } from './features/my-orders/my-orders.component';
-import { FavoritesComponent } from './features/favorites/favorites.component';
-import { ProfileComponent } from './features/profile/profile.component';
-import { TestLoadingComponent } from './features/testing/testing';
-
-import { RestaurantsComponent } from './features/restaurants/restaurants.component';
-import { RestaurantDetailsComponent } from './features/restaurants/components/restaurant-details/restaurant-details.component';
-
-import { TechnicalSupportComponent } from './features/technical-support/components/technical-support/technical-support.component';
-
-import { MealsComponent } from './features/menu-items/menu-item.component';
-import { MenuItemDetailsComponent } from './features/menu-items/components/menu-item-details/menu-item-details.component';
-
 
 export const routes: Routes = [
 
@@ -127,6 +111,28 @@ export const routes: Routes = [
     },
 
     {
+        path: 'create-restaurant',
+        loadComponent: () =>
+            import('./features/dashboard/restaurant/create-restaurants/create-restaurant.component')
+                .then(m => m.CreateRestaurantComponent ?? m.CreateRestaurant)
+    },
+    {
+        path: 'create-client',
+        redirectTo: 'create-restaurant',
+        pathMatch: 'full'
+    },
+    {
+        path: 'dashboard/restaurant/create-restaurant',
+        redirectTo: 'create-restaurant',
+        pathMatch: 'full'
+    },
+    {
+        path: 'dashboard/create-restaurant',
+        redirectTo: 'create-restaurant',
+        pathMatch: 'full'
+    },
+
+    {
         path: 'register/owner',
         redirectTo: 'register',
         pathMatch: 'full'
@@ -175,12 +181,16 @@ export const routes: Routes = [
 
             {
                 path: '',
-                component: HomeComponent
+                loadComponent: () =>
+                    import('./features/home/home.component')
+                        .then(m => m.HomeComponent)
             },
 
             {
                 path: 'home',
-                component: HomeComponent
+                loadComponent: () =>
+                    import('./features/home/home.component')
+                        .then(m => m.HomeComponent)
             },
 
 
@@ -190,27 +200,37 @@ export const routes: Routes = [
 
             {
                 path: 'cart',
-                component: CartComponent
+                loadComponent: () =>
+                    import('./features/cart/cart.component')
+                        .then(m => m.CartComponent)
             },
 
             {
                 path: 'favorites',
-                component: FavoritesComponent
+                loadComponent: () =>
+                    import('./features/favorites/favorites.component')
+                        .then(m => m.FavoritesComponent)
             },
 
             {
                 path: 'profile',
-                component: ProfileComponent
+                loadComponent: () =>
+                    import('./features/profile/profile.component')
+                        .then(m => m.ProfileComponent)
             },
 
             {
                 path: 'offers',
-                component: Offers
+                loadComponent: () =>
+                    import('./features/offers/pages/offers/offers')
+                        .then(m => m.Offers)
             },
 
             {
                 path: 'test',
-                component: TestLoadingComponent
+                loadComponent: () =>
+                    import('./features/testing/testing')
+                        .then(m => m.TestLoadingComponent)
             },
 
 
@@ -220,19 +240,21 @@ export const routes: Routes = [
 
             {
                 path: 'restaurants',
-
                 children: [
-
                     // /restaurants
                     {
                         path: '',
-                        component: RestaurantsComponent
+                        loadComponent: () =>
+                            import('./features/restaurants/restaurants.component')
+                                .then(m => m.RestaurantsComponent)
                     },
 
                     // /restaurants/:serial
                     {
                         path: ':serial',
-                        component: RestaurantDetailsComponent
+                        loadComponent: () =>
+                            import('./features/restaurants/components/restaurant-details/restaurant-details.component')
+                                .then(m => m.RestaurantDetailsComponent)
                     }
                 ]
             },
@@ -244,12 +266,16 @@ export const routes: Routes = [
 
             {
                 path: 'most-ordered',
-                component: MealsComponent
+                loadComponent: () =>
+                    import('./features/menu-items/menu-item.component')
+                        .then(m => m.MealsComponent)
             },
 
             {
                 path: 'most-visited',
-                component: RestaurantsComponent,
+                loadComponent: () =>
+                    import('./features/restaurants/restaurants.component')
+                        .then(m => m.RestaurantsComponent),
                 data: {
                     filter: 'most-visited'
                 }
@@ -257,7 +283,9 @@ export const routes: Routes = [
 
             {
                 path: 'top-rated',
-                component: RestaurantsComponent,
+                loadComponent: () =>
+                    import('./features/restaurants/restaurants.component')
+                        .then(m => m.RestaurantsComponent),
                 data: {
                     filter: 'top-rated'
                 }
@@ -276,9 +304,7 @@ export const routes: Routes = [
 
             {
                 path: 'menu-items',
-
                 children: [
-
                     // /menu-items -> redirect to /most-ordered
                     {
                         path: '',
@@ -289,7 +315,9 @@ export const routes: Routes = [
                     // /menu-items/:id
                     {
                         path: ':id',
-                        component: MenuItemDetailsComponent
+                        loadComponent: () =>
+                            import('./features/menu-items/components/menu-item-details/menu-item-details.component')
+                                .then(m => m.MenuItemDetailsComponent)
                     }
                 ]
             },
@@ -301,17 +329,9 @@ export const routes: Routes = [
 
             {
                 path: 'my-orders',
-                component: MyOrdersComponent
-            },
-
-
-            // =================================================
-            // Favorites
-            // =================================================
-
-            {
-                path: 'favorites',
-                component: FavoritesComponent
+                loadComponent: () =>
+                    import('./features/my-orders/my-orders.component')
+                        .then(m => m.MyOrdersComponent)
             },
 
 
@@ -321,7 +341,9 @@ export const routes: Routes = [
 
             {
                 path: 'support',
-                component: TechnicalSupportComponent
+                loadComponent: () =>
+                    import('./features/technical-support/components/technical-support/technical-support.component')
+                        .then(m => m.TechnicalSupportComponent)
             },
 
 
@@ -350,86 +372,43 @@ export const routes: Routes = [
             {
                 path: '',
                 loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'orders',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'analytics',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'live-monitor',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
+                    import('./features/dashboard/dashboard/dashboard.component')
+                        .then(m => m.DashboardComponent)
             },
             {
                 path: 'menu',
                 loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
+                    import('./features/dashboard/menus/menus.component')
+                        .then(m => m.MenusComponent)
+            },
+            {
+                path: 'menus',
+                redirectTo: 'menu',
+                pathMatch: 'full'
+            },
+            {
+                path: 'orders',
+                loadComponent: () =>
+                    import('./features/dashboard/orders/orders.component')
+                        .then(m => m.OrdersComponent)
+            },
+            {
+                path: 'orders/:id',
+                loadComponent: () =>
+                    import('./features/dashboard/orders/orders.component')
+                        .then(m => m.OrdersComponent)
             },
             {
                 path: 'most-ordered',
                 loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'offers',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
+                    import('./features/dashboard/most-ordered/most-ordered.component')
+                        .then(m => m.MostOrderedComponent)
             },
             {
                 path: 'reports',
                 loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'delivery',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'invoices',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'reviews',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'support',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'complaints',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
-            },
-            {
-                path: 'settings',
-                loadComponent: () =>
-                    import('./features/dashboard/pages/dashboard-home/dashboard-home.component')
-                        .then(m => m.DashboardHomeComponent)
+                    import('./features/dashboard/reports/reports.component')
+                        .then(m => m.ReportsComponent)
             }
         ]
     },

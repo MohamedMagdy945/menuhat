@@ -199,8 +199,12 @@ export class SendMobileVerificationComponent implements OnInit, OnDestroy {
         this.isLoading.set(false);
         this._toast.success('تم التحقق من رقم الهاتف بنجاح! مرحباً بك');
 
-        // Go to dashboard to create restaurant
-        this._router.navigate(['/dashboard']);
+        // Go to create restaurant page for owner, home for customer
+        if (this.role === 'owner') {
+          this._router.navigate(['/create-restaurant']);
+        } else {
+          this._router.navigate(['/home']);
+        }
       },
       error: (err) => {
         this.isLoading.set(false);

@@ -1,0 +1,243 @@
+<div class="space-y-6">
+  <!-- Page Header (Exact Match to Image 2) -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+    <!-- Right side (in RTL): Icon + Title & Pill + Subtitle -->
+    <div class="flex items-center gap-3.5">
+      <!-- Peach rounded-2xl square icon box with cutlery icon (Image 2) -->
+      <div
+        class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100/80 flex items-center justify-center shrink-0 shadow-xs"
+      >
+        <span class="material-symbols-sharp text-2xl text-orange-500 select-none">
+          restaurant
+        </span>
+      </div>
+
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            الوجبات الأكثر طلباً
+          </h1>
+          <!-- Pill badge (Image 2: 50 وجبة) -->
+          <span
+            class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-50 text-sky-700 border border-sky-100 shrink-0"
+          >
+            {{ totalProductsCount() }} وجبة
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+          اكتشف الوجبات والأطباق المميزة التي يفضلها الجميع
+        </p>
+      </div>
+    </div>
+
+    <!-- Left side (in RTL): Action buttons -->
+    <div class="flex items-center gap-2">
+      <a
+        routerLink="/dashboard/reports"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+      >
+        <span class="material-symbols-sharp text-base text-slate-500">bar_chart</span>
+        <span>التقارير اليومية</span>
+      </a>
+
+      <a
+        routerLink="/dashboard"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+      >
+        <span class="material-symbols-sharp text-base text-slate-500">arrow_forward</span>
+        <span>الرئيسية</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Summary KPI Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <!-- Card 1: إجمالي مبيعات الأكثر طلباً -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl">payments</span>
+      </div>
+      <div class="space-y-1 min-w-0">
+        <p class="text-xs text-slate-400 font-medium truncate">إجمالي الإيرادات</p>
+        <p class="text-xl sm:text-2xl font-bold text-slate-900">
+          {{ totalRevenueSum() | number:'1.0-0' }} <span class="text-xs font-semibold text-orange-500">ج.م</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Card 2: إجمالي الكميات المباعة -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl">shopping_cart</span>
+      </div>
+      <div class="space-y-1 min-w-0">
+        <p class="text-xs text-slate-400 font-medium truncate">إجمالي الطلبات للوجبات</p>
+        <p class="text-xl sm:text-2xl font-bold text-slate-900">
+          {{ totalOrdersSum() | number }} <span class="text-xs font-semibold text-slate-400">طلب</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Card 3: الوجبة الأكثر طلباً -->
+    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl">stars</span>
+      </div>
+      <div class="space-y-1 min-w-0">
+        <p class="text-xs text-slate-400 font-medium truncate">الوجبة الأكثر مبيعاً</p>
+        <p class="text-base sm:text-lg font-bold text-slate-900 truncate">
+          {{ topProduct()?.name || 'مندي دجاج' }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Category Filters -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <!-- Search Bar -->
+    <div class="relative flex-1 max-w-md">
+      <input
+        type="text"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        placeholder="ابحث عن وجبة الأكثر طلباً..."
+        class="w-full py-2.5 pr-10 pl-4 bg-slate-50 text-slate-800 placeholder-slate-400 text-xs sm:text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:bg-white focus:outline-none shadow-xs"
+      />
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+        <span class="material-symbols-sharp text-[18px]">search</span>
+      </div>
+    </div>
+
+    <!-- Categories Filter Pills -->
+    <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5 custom-scroll">
+      @for (cat of categories(); track cat) {
+        <button
+          type="button"
+          (click)="selectedCategory.set(cat)"
+          class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer shrink-0 transition-none shadow-xs"
+          [class.bg-orange-500]="selectedCategory() === cat"
+          [class.text-white]="selectedCategory() === cat"
+          [class.bg-slate-100]="selectedCategory() !== cat"
+          [class.text-slate-600]="selectedCategory() !== cat"
+        >
+          {{ cat === 'all' ? 'جميع الوجبات' : cat }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-12 text-center space-y-3">
+      <div class="w-10 h-10 border-3 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+      <p class="text-sm font-semibold text-slate-600">جاري تحميل إحصائيات الوجبات الأكثر طلباً...</p>
+    </div>
+  }
+
+  <!-- Products Ranking List Card -->
+  @if (!isLoading()) {
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 sm:p-6 space-y-4">
+      <div class="flex items-center justify-between pb-1">
+        <h2 class="text-base sm:text-lg font-bold text-slate-900">
+          ترتيب الوجبات حسب الإقبال
+        </h2>
+        <span class="text-xs text-slate-400 font-medium">
+          مبني على تقارير مبيعات Swagger API: <code class="text-orange-500 font-bold" dir="ltr">/Reports/product-stats</code>
+        </span>
+      </div>
+
+      <!-- Ranked Table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-right border-collapse">
+          <thead>
+            <tr class="border-b border-gray-100 text-xs font-bold text-slate-400">
+              <th class="pb-3 text-center w-14">الترتيب</th>
+              <th class="pb-3 text-right">الوجبة والتصنيف</th>
+              <th class="pb-3 text-center w-28">السعر</th>
+              <th class="pb-3 text-center w-32">عدد مرات الطلب</th>
+              <th class="pb-3 text-center w-40">نسبة الإقبال</th>
+              <th class="pb-3 text-left w-32">إجمالي المبيعات</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-50">
+            @for (product of filteredItems(); track product.id) {
+              <tr class="align-middle">
+                <!-- Rank # -->
+                <td class="py-4 text-center">
+                  <span
+                    class="w-7 h-7 rounded-xl font-black text-xs inline-flex items-center justify-center shadow-xs"
+                    [class.bg-amber-100]="product.rank === 1"
+                    [class.text-amber-700]="product.rank === 1"
+                    [class.bg-slate-200]="product.rank === 2"
+                    [class.text-slate-700]="product.rank === 2"
+                    [class.bg-orange-100]="product.rank === 3"
+                    [class.text-orange-700]="product.rank === 3"
+                    [class.bg-slate-50]="product.rank > 3"
+                    [class.text-slate-400]="product.rank > 3"
+                  >
+                    #{{ product.rank }}
+                  </span>
+                </td>
+
+                <!-- Product Name & Thumbnail -->
+                <td class="py-4 px-3">
+                  <div class="flex items-center gap-3">
+                    <img
+                      [src]="product.image"
+                      (error)="$any($event.target).src = '/images/default.png'"
+                      [alt]="product.name"
+                      class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover shrink-0 bg-slate-100 border border-gray-100 shadow-xs"
+                    />
+                    <div class="min-w-0">
+                      <h3 class="font-bold text-sm sm:text-base text-slate-900 truncate">
+                        {{ product.name }}
+                      </h3>
+                      <span class="text-xs text-slate-400 font-medium">
+                        {{ product.category }}
+                      </span>
+                    </div>
+                  </div>
+                </td>
+
+                <!-- Unit Price -->
+                <td class="py-4 px-2 text-center text-xs sm:text-sm font-semibold text-slate-700 whitespace-nowrap">
+                  {{ product.price | number:'1.0-2' }} ج.م
+                </td>
+
+                <!-- Orders Count -->
+                <td class="py-4 px-2 text-center">
+                  <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-bold">
+                    <span>{{ product.ordersCount }}</span>
+                    <span class="text-[10px] text-slate-400 font-normal">طلب</span>
+                  </span>
+                </td>
+
+                <!-- Percentage Bar -->
+                <td class="py-4 px-3">
+                  <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                    <div
+                      class="bg-orange-500 h-2 rounded-full"
+                      [style.width.%]="product.percentage || 50"
+                    ></div>
+                  </div>
+                </td>
+
+                <!-- Total Revenue -->
+                <td class="py-4 pl-0 pr-2 text-left text-xs sm:text-sm font-bold text-orange-500 whitespace-nowrap">
+                  {{ product.totalRevenue | number:'1.0-0' }} ج.م
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="py-8 text-center text-slate-400 text-sm">
+                  لا توجد وجبات تطابق بحثك حالياً.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  }
+</div>
+

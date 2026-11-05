@@ -1,0 +1,197 @@
+<div class="space-y-12">
+  <!-- Top Restaurant Banner (Profile / Home Exact Style) -->
+  <div
+    class="relative rounded-2xl h-44 sm:h-50 md:h-60 overflow-hidden bg-linear-to-r from-[#FFCB55] via-[#FFA52F] to-[#F47716] shadow-sm"
+  >
+    <!-- Soft Radial Glow Overlay (Pristine original background) -->
+    <div
+      class="absolute inset-0 bg-[radial-gradient(circle_at_35%_45%,rgba(255,220,110,0.45),transparent_45%)] pointer-events-none"
+    ></div>
+
+    <!-- Food / Cart Illustration (Left in RTL) -->
+    <div class="absolute left-4 sm:left-8 md:left-14 bottom-0 h-full flex items-end pointer-events-none z-10">
+      <img
+        src="/images/banner-3.png"
+        alt="Illustration"
+        class="h-40 sm:h-52 md:h-53 object-contain drop-shadow-xl"
+        style="transform: scale(1.25); transform-origin: bottom left;"
+      />
+    </div>
+    <!-- Top Pill Badge -->
+      <span
+        class="inline-flex m-4 items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white mb-2 border border-white/25 shadow-xs bg-black/25 backdrop-blur-md"
+      >
+        <span class="material-symbols-sharp text-[14px]">storefront</span>
+        <span>منيوحات - لوحة الإدارة</span>
+      </span>
+    <!-- Banner Content (Right in RTL) -->
+    <div
+      class="relative z-10 h-full flex flex-col justify-center items-start text-right px-6 sm:px-10 md:px-14 text-white max-w-sm sm:max-w-md md:max-w-xl"
+    >
+  
+
+      <!-- Restaurant Name (High visibility) -->
+      <h1 class="text-3xl sm:text-4xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] leading-tight tracking-wide">
+        {{ restaurant().name }}
+      </h1>
+
+      <!-- Location, Rating & Status Details Row (Clear Pills) -->
+      <div class="flex flex-wrap items-center gap-2 mt-2.5 text-white text-xs sm:text-sm font-semibold">
+        <!-- Location Pill -->
+        @if (restaurant().branch) {
+          <div class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold text-white border border-white/20 shadow-xs bg-black/25 backdrop-blur-md">
+            <span class="material-symbols-sharp text-sm text-amber-300 select-none">location_on</span>
+            <span>{{ restaurant().branch }}</span>
+          </div>
+        }
+
+        <!-- Rating Pill Badge -->
+        <div
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold text-white border border-white/20 shadow-xs bg-black/25 backdrop-blur-md"
+        >
+          <span class="text-amber-300 text-xs select-none">★</span>
+          <span>{{ restaurant().rating }}</span>
+          <span class="text-white/80 font-normal">({{ restaurant().reviewsCount }})</span>
+        </div>
+
+        <!-- Status Toggle Button -->
+        <button
+          type="button"
+          (click)="toggleStatus()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold text-white cursor-pointer border border-white/20 shadow-xs bg-black/30 backdrop-blur-md"
+          title="تغيير حالة المطعم"
+        >
+          <span
+            class="w-2 h-2 rounded-full"
+            [class.bg-emerald-400]="isRestaurantOpen()"
+            [class.bg-rose-400]="!isRestaurantOpen()"
+          ></span>
+          <span>{{ isRestaurantOpen() ? 'مفتوح الآن' : 'مغلق مؤقتاً' }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stat Summary Cards Row (4 Cards) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (stat of stats(); track stat.id) {
+      <div
+        class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4"
+      >
+        <!-- Icon -->
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 {{ stat.iconBg }}">
+          <span class="material-symbols-sharp text-2xl">{{ stat.icon }}</span>
+        </div>
+
+        <!-- Word (Title) & Number (Value) directly next to icon -->
+        <div class="space-y-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <p class="text-sm text-slate-400 font-medium truncate">{{ stat.title }}</p>
+            @if (stat.badge) {
+              <span
+                class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0"
+                [class.bg-emerald-50]="stat.badgeVariant === 'success'"
+                [class.text-emerald-600]="stat.badgeVariant === 'success'"
+                [class.border]="stat.badgeVariant === 'success'"
+                [class.border-emerald-200]="stat.badgeVariant === 'success'"
+                [class.bg-orange-50]="stat.badgeVariant === 'warning'"
+                [class.text-orange-600]="stat.badgeVariant === 'warning'"
+                [class.border-orange-200]="stat.badgeVariant === 'warning'"
+              >
+                {{ stat.badge }}
+              </span>
+            }
+          </div>
+          <p class="text-2xl sm:text-3xl font-semibold text-slate-900">
+            {{ stat.value }}
+          </p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Current Orders Section (الطلبات الحالية) -->
+  <div class="space-y-4">
+    <!-- Section Header -->
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-bold text-slate-900">
+          الطلبات الحالية
+        </h2>
+        <p class="text-sm text-slate-400">متابعة أحدث طلبات الزبائن الواردة</p>
+      </div>
+
+      <a
+        routerLink="/dashboard/orders"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs px-3.5 py-2 rounded-xl cursor-pointer flex items-center gap-1"
+      >
+        <span>عرض الكل</span>
+        <span class="material-symbols-sharp text-sm">arrow_back</span>
+      </a>
+    </div>
+
+    <!-- Orders Cards List -->
+    <div class="space-y-2.5">
+      @for (order of orders(); track order.id) {
+        <div
+          class="bg-white rounded-2xl p-4 sm:px-6 border border-gray-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+        >
+          <!-- Right: Customer Info & Order Number -->
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-sm shrink-0"
+            >
+              {{ order.customerName.charAt(0) }}
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-slate-900">
+                  {{ order.customerName }}
+                </span>
+                <span class="text-xs font-semibold text-slate-400">
+                  {{ order.orderNumber }}
+                </span>
+              </div>
+              <div class="flex items-center gap-1 text-xs text-slate-400 mt-0.5">
+                <span class="material-symbols-sharp text-xs">schedule</span>
+                <span>{{ order.time }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center: Status Badge -->
+          <div class="sm:self-center">
+            <span
+              class="px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 {{ order.statusColor }}"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+              {{ order.statusLabel }}
+            </span>
+          </div>
+
+          <!-- Left: Price & Details Action -->
+          <div class="flex items-center justify-between sm:justify-end gap-4">
+            <span class="text-base font-bold text-orange-500">
+              {{ order.price }} ج.م
+            </span>
+
+            <button
+              type="button"
+              class="w-8 h-8 rounded-lg bg-slate-50 border border-gray-200 text-slate-500 flex items-center justify-center cursor-pointer"
+              title="عرض تفاصيل الطلب"
+              [routerLink]="['/dashboard/orders', order.id]"
+            >
+              <span class="material-symbols-sharp text-lg">chevron_left</span>
+            </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="p-8 text-center bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <span class="material-symbols-sharp text-4xl text-slate-300">receipt_long</span>
+          <p class="text-sm font-bold text-slate-700 mt-2">لا توجد طلبات واردة حالياً</p>
+          <p class="text-xs text-slate-400 mt-0.5">ستظهر الطلبات الجديدة هنا فور قيام العملاء بالطلب</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

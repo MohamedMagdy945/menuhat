@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { finalize } from 'rxjs';
 import { LoginService } from '../../services/login.service';
 import { LoginRequest, LoginResponse } from '../../models';
 import { UserDataService } from '../../../../core/services/userData.service';
@@ -86,23 +85,47 @@ export class LoginComponent implements OnInit {
     };
 
     this._AuthServices.login(loginData)
-      .pipe(
-        finalize(() => {
-          this.isLoading.set(false);
-          this._cdr.detectChanges();
-        })
-      )
       .subscribe({
         next: (res: LoginResponse) => {
           if (res && res.data) {
             this._userDataService.setUserData(res.data, res.data.token);
-            this._Router.navigate(['/home']);
+
+            const isAdmin = res.data.userTypeId === 1 || !!res.data.businessOwner;
+
+            if (isAdmin) {
+              // Admin/Owner: check if dashboard exists
+              this._AuthServices.getOwnerDashboard(res.data.token).subscribe({
+                next: (dashRes) => {
+                  this.isLoading.set(false);
+                  this._cdr.detectChanges();
+                  if (dashRes && (dashRes.isSuccess === false || dashRes.status === false)) {
+                    this._Router.navigate(['/create-restaurant']);
+                  } else {
+                    this._Router.navigate(['/dashboard']);
+                  }
+                },
+                error: (dashErr) => {
+                  // If dashboard returns with error, navigate to create new restaurant page
+                  console.warn('Dashboard check returned error, navigating to create restaurant:', dashErr);
+                  this.isLoading.set(false);
+                  this._cdr.detectChanges();
+                  this._Router.navigate(['/create-restaurant']);
+                }
+              });
+            } else {
+              // Regular user / customer -> go to home
+              this.isLoading.set(false);
+              this._cdr.detectChanges();
+              this._Router.navigate(['/home']);
+            }
           } else {
+            this.isLoading.set(false);
             this.errorMessage.set(res?.message || 'تعذر تسجيل الدخول، يرجى التحقق من صحة البيانات والمحاولة مجدداً');
             this._cdr.detectChanges();
           }
         },
         error: (err: HttpErrorResponse) => {
+          this.isLoading.set(false);
           const message =
             err?.error?.message ||
             (typeof err?.error === 'string' ? err.error : null) ||

@@ -1,10 +1,17 @@
 <div class="min-h-screen bg-background text-slate-800 antialiased flex flex-col relative">
-  <!-- 1. Full-Width Top Header (Spans edge-to-edge across the entire screen) -->
-  <app-dashboard-header class="sticky top-0 z-50 w-full" />
+  <!-- Mobile Menu Trigger Button -->
+  <button
+    type="button"
+    (click)="dashboardService.toggleMobile()"
+    class="fixed top-4 right-4 z-30 lg:hidden w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-700 shadow-xs flex items-center justify-center cursor-pointer"
+    aria-label="فتح القائمة"
+  >
+    <span class="material-symbols-sharp text-2xl">menu</span>
+  </button>
 
-  <!-- 2. Body Container below Header -->
+  <!-- Body Container -->
   <div class="flex flex-1 relative">
-    <!-- Sidebar Component (Positioned directly under the header at top-20) -->
+    <!-- Sidebar Component (Full Height) -->
     <app-dashboard-sidebar />
 
     <!-- Main Dynamic Content (Router Outlet) with margin for sidebar -->

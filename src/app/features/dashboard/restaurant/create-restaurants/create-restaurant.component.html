@@ -1,0 +1,399 @@
+<div class=" flex flex-col justify-center py-6 ">
+  <!-- Brand & Intro Header -->
+  <div class="sm:mx-auto sm:w-full sm:max-w-3xl text-center mb-6">
+    <a routerLink="/" class="inline-flex items-center justify-center mb-3">
+      <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-16 w-auto object-contain" />
+    </a>
+    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+      تسجيل بيانات مطعمك الجديد
+    </h1>
+    <p class="mt-1 text-sm text-slate-400 font-medium">
+      أدخل بيانات مطعمك لتأسيس هويتك الرقمية وبدء إدارة قائمة الطعام واستقبال الطلبات
+    </p>
+  </div>
+
+  <!-- Form Card Container -->
+  <div class="sm:mx-auto sm:w-full sm:max-w-3xl">
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-6 sm:p-10">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-3">
+
+        <!-- =================================================================== -->
+        <!-- Section 1: Basic Information                                        -->
+        <!-- =================================================================== -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
+            <span class="material-symbols-sharp text-[22px] text-orange-500 select-none">
+              store
+            </span>
+            <h2 class="text-base font-bold text-slate-800">
+              البيانات الأساسية وتصنيف النشاط
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Client Name (Arabic) -->
+            <div>
+              <app-form-input formControlName="clientName" label="اسم المطعم (بالعربية) *"
+                placeholder="مثال: مطعم بيت المندي" [customErrors]="validationMessages.clientName">
+                <span input-icon class="material-symbols-sharp select-none text-[20px]">
+                  storefront
+                </span>
+              </app-form-input>
+            </div>
+
+            <!-- Client Name (English) -->
+            <div>
+              <app-form-input formControlName="clientName_En" label="اسم المطعم (بالإنجليزية)"
+                placeholder="مثال: Beit Al-Mandi" dir="ltr">
+                <span input-icon class="material-symbols-sharp select-none text-[20px]">
+                  translate
+                </span>
+              </app-form-input>
+            </div>
+
+            <!-- Field / Category -->
+            <div>
+              <app-form-select formControlName="fieldId" label="نشاط / تصنيف المطعم *" [options]="fields"
+                [placeholder]="isLoadingFields() ? 'جاري تحميل التصنيفات...' : 'اختر تصنيف المطعم'">
+              </app-form-select>
+            </div>
+
+            <!-- Order Condition -->
+            <div>
+              <app-form-select formControlName="orderConditionId" label="شروط وخيارات الطلب *"
+                [options]="orderConditions"
+                [placeholder]="isLoadingConditions() ? 'جاري تحميل شروط الطلب...' : 'اختر شروط الطلب'">
+              </app-form-select>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- Section 2: Location & Address                                       -->
+        <!-- =================================================================== -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
+            <span class="material-symbols-sharp text-[22px] text-orange-500 select-none">
+              location_on
+            </span>
+            <h2 class="text-base font-bold text-slate-800">
+              الموقع الجغرافي والعنوان
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Governorate Dropdown -->
+            <div>
+              <app-form-select formControlName="governmentId" label="المحافظة *" [options]="governorates"
+                [placeholder]="isLoadingGovernorates() ? 'جاري تحميل المحافظات...' : 'اختر المحافظة'"
+                [disabled]="isLoadingGovernorates()" (change)="onGovernorateChange($event)">
+              </app-form-select>
+            </div>
+
+            <!-- City Dropdown -->
+            <div>
+              <app-form-select formControlName="cityId" label="المدينة *" [options]="cities"
+                [placeholder]="isLoadingCities() ? 'جاري تحميل المدن...' : (form.get('governmentId')?.value ? 'اختر المدينة' : 'يرجى اختيار المحافظة أولاً')"
+                [disabled]="isLoadingCities() || !form.get('governmentId')?.value">
+              </app-form-select>
+            </div>
+
+            <!-- Address (Arabic) -->
+            <div>
+              <app-form-input formControlName="address" label="العنوان بالتفصيل (بالعربية) *"
+                placeholder="مثال: شارع النصر، أمام البنك الأهلي" [customErrors]="validationMessages.address">
+                <span input-icon class="material-symbols-sharp select-none text-[20px]">
+                  home_pin
+                </span>
+              </app-form-input>
+            </div>
+
+            <!-- Address (English) -->
+            <div>
+              <app-form-input formControlName="address_En" label="العنوان (بالإنجليزية)"
+                placeholder="Example: Al-Nasr St, Near National Bank" dir="ltr">
+                <span input-icon class="material-symbols-sharp select-none text-[20px]">
+                  signpost
+                </span>
+              </app-form-input>
+            </div>
+
+            <!-- Coordinates: Latitude & Longitude -->
+            <div>
+              <app-form-input formControlName="latitude" label="خط العرض (Latitude)" type="number"
+                placeholder="مثال: 30.0444" dir="ltr">
+                <span input-icon class="material-symbols-sharp select-none text-[20px]">
+                  explore
+                </span>
+              </app-form-input>
+            </div>
+
+            <div>
+              <app-form-input formControlName="longitude" label="خط الطول (Longitude)" type="number"
+                placeholder="مثال: 31.2357" dir="ltr">
+                <span input-icon class="material-symbols-sharp select-none text-[20px]">
+                  explore
+                </span>
+              </app-form-input>
+            </div>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- Section 3: Operating Hours & Notes                                  -->
+        <!-- =================================================================== -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
+            <span class="material-symbols-sharp text-[22px] text-orange-500 select-none">
+              schedule
+            </span>
+            <h2 class="text-base font-bold text-slate-800">
+              ساعات العمل والملاحظات
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- From Time -->
+            <div>
+              <app-form-input formControlName="fromTimeString" label="مواعيد العمل (من الساعة)" type="time"
+                placeholder="10:00">
+                <span input-icon class="material-symbols-sharp select-none text-[20px]">
+                  alarm
+                </span>
+              </app-form-input>
+            </div>
+
+            <!-- To Time -->
+            <div>
+              <app-form-input formControlName="toTimeString" label="مواعيد العمل (إلى الساعة)" type="time"
+                placeholder="22:00">
+                <span input-icon class="material-symbols-sharp select-none text-[20px]">
+                  alarm_on
+                </span>
+              </app-form-input>
+            </div>
+          </div>
+
+          <!-- Notes / Description -->
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+              نبذة أو ملاحظات عن المطعم
+            </label>
+            <textarea formControlName="notes" rows="3"
+              placeholder="مثال: مطعم متخصص في تقديم أشهى المأكولات والمشويات مع خدمة توصيل سريعة..."
+              class="w-full resize-none rounded-xl border border-gray-200 bg-slate-50 p-3.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-orange-500 focus:bg-white"></textarea>
+          </div>
+
+          <!-- Visibility Toggle Checkbox -->
+          <div class="flex items-center justify-start pt-1">
+            <label
+              class="inline-flex items-center gap-2.5 cursor-pointer text-sm font-semibold text-slate-700 select-none">
+              <input type="checkbox" formControlName="isVisable"
+                class="h-4 w-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500 cursor-pointer" />
+              <span>إظهار المطعم في قائمة المطاعم المتاحة للعملاء فور الإنشاء</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- =================================================================== -->
+        <!-- Visual Media Section: Logo, Cover & Menu Image (Original Style)     -->
+        <!-- =================================================================== -->
+        <section class="space-y-4">
+          <div class="flex items-center gap-2 pb-2 border-b border-gray-100">
+            <span class="material-symbols-sharp text-[22px] text-orange-500 select-none">
+              photo_library
+            </span>
+            <h2 class="text-base font-bold text-slate-800">
+              الهوية البصرية وقائمة الطعام (الشعار، الغلاف، والمنيو)
+            </h2>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+            <!-- 1. Logo Upload Box -->
+            <div
+              class="flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 bg-slate-50/50 text-center gap-1.5">
+              <div class="relative h-14 w-20 shrink-0">
+                <div
+                  class="h-full w-full rounded-xl border border-gray-200 overflow-hidden bg-white flex items-center justify-center shadow-xs">
+                  @if (logoPreviewUrl()) {
+                  <img [src]="logoPreviewUrl()" alt="شعار المطعم" class="h-full w-full object-cover" />
+                  } @else {
+                  <span class="material-symbols-sharp text-2xl text-slate-400 select-none">
+                    restaurant
+                  </span>
+                  }
+                </div>
+
+                <label for="restaurant-logo-input"
+                  class="absolute -bottom-1 -right-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-orange-500 text-white shadow-xs"
+                  title="اختيار شعار المطعم">
+                  <span class="material-symbols-sharp select-none text-[11px]">photo_camera</span>
+                </label>
+              </div>
+
+              <div class="flex flex-col min-w-0">
+                <span class="font-semibold text-slate-800 text-xs">شعار المطعم</span>
+                <span class="text-[10px] text-slate-400">صورة الشعار (Logo)</span>
+              </div>
+
+              @if (logoPreviewUrl()) {
+              <button type="button" (click)="removeLogo(logoFileInput)"
+                class="bg-red-50 text-red-500 rounded-md px-2 py-0.5 text-[11px] font-semibold cursor-pointer"
+                title="إزالة الشعار">
+                حذف
+              </button>
+              }
+
+              <input #logoFileInput id="restaurant-logo-input" type="file" accept="image/*"
+                (change)="onLogoSelected($event)" class="hidden" />
+            </div>
+
+            <!-- 2. Cover Banner Upload Box -->
+            <div
+              class="flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 bg-slate-50/50 text-center gap-1.5">
+              <div class="relative h-14 w-20 shrink-0">
+                <div
+                  class="h-full w-full rounded-xl border border-gray-200 overflow-hidden bg-white flex items-center justify-center shadow-xs">
+                  @if (coverPreviewUrl()) {
+                  <img [src]="coverPreviewUrl()" alt="غلاف المطعم" class="h-full w-full object-cover" />
+                  } @else {
+                  <span class="material-symbols-sharp text-2xl text-slate-400 select-none">
+                    panorama
+                  </span>
+                  }
+                </div>
+
+                <label for="restaurant-cover-input"
+                  class="absolute -bottom-1 -right-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-orange-500 text-white shadow-xs"
+                  title="اختيار غلاف المطعم">
+                  <span class="material-symbols-sharp select-none text-[11px]">photo_camera</span>
+                </label>
+              </div>
+
+              <div class="flex flex-col min-w-0">
+                <span class="font-semibold text-slate-800 text-xs">صورة الغلاف</span>
+                <span class="text-[10px] text-slate-400">بانر المتجر (Cover)</span>
+              </div>
+
+              @if (coverPreviewUrl()) {
+              <button type="button" (click)="removeCover(coverFileInput)"
+                class="bg-red-50 text-red-500 rounded-md px-2 py-0.5 text-[11px] font-semibold cursor-pointer"
+                title="إزالة الغلاف">
+                حذف
+              </button>
+              }
+
+              <input #coverFileInput id="restaurant-cover-input" type="file" accept="image/*"
+                (change)="onCoverSelected($event)" class="hidden" />
+            </div>
+
+            <!-- 3. Menu Image Upload Box -->
+            <div
+              class="flex flex-col items-center justify-center p-3 rounded-xl border border-gray-200 bg-slate-50/50 text-center gap-1.5">
+              <div class="relative h-14 w-20 shrink-0">
+                <div
+                  class="h-full w-full rounded-xl border border-gray-200 overflow-hidden bg-white flex items-center justify-center shadow-xs">
+                  @if (menuImagePreviewUrl()) {
+                  <img [src]="menuImagePreviewUrl()" alt="صورة قائمة الطعام" class="h-full w-full object-cover" />
+                  } @else {
+                  <span class="material-symbols-sharp text-2xl text-slate-400 select-none">
+                    restaurant_menu
+                  </span>
+                  }
+                </div>
+
+                <label for="restaurant-menu-input"
+                  class="absolute -bottom-1 -right-1 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-orange-500 text-white shadow-xs"
+                  title="اختيار صورة قائمة الطعام">
+                  <span class="material-symbols-sharp select-none text-[11px]">photo_camera</span>
+                </label>
+              </div>
+
+              <div class="flex flex-col min-w-0">
+                <span class="font-semibold text-slate-800 text-xs">قائمة الطعام</span>
+                <span class="text-[10px] text-slate-400">صورة المنيو (Menu)</span>
+              </div>
+
+              @if (menuImagePreviewUrl()) {
+              <button type="button" (click)="removeMenuImage(menuFileInput)"
+                class="bg-red-50 text-red-500 rounded-md px-2 py-0.5 text-[11px] font-semibold cursor-pointer"
+                title="إزالة صورة المنيو">
+                حذف
+              </button>
+              }
+
+              <input #menuFileInput id="restaurant-menu-input" type="file" accept="image/*"
+                (change)="onMenuImageSelected($event)" class="hidden" />
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Actions Row: Submit -->
+        <div class="pt-4 border-t border-gray-100 flex flex-col gap-3">
+          <app-loading-button type="submit" text="إنشاء المطعم وتفعيل الحساب" loadingText="جاري إنشاء المطعم..."
+            [loading]="isLoading()" [disabled]="form.invalid || isLoading()" [fullWidth]="true" />
+
+          <div class="flex items-center justify-center gap-2 text-xs text-slate-400">
+            <span class="material-symbols-sharp text-sm">verified_user</span>
+            <span>سيتم حفظ بيانات المطعم وربطه بحسابك وتوجيهك إلى لوحة التحكم</span>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Success Response Modal / Overlay -->
+  @if (responseSuccess()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div class="relative w-full max-w-md rounded-2xl bg-white p-6 sm:p-8 text-center shadow-lg border border-gray-100">
+      <!-- Success Icon -->
+      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-500 mb-4">
+        <span class="material-symbols-sharp text-4xl select-none">check_circle</span>
+      </div>
+
+      <h3 class="text-xl font-bold text-slate-900">
+        تم إنشاء المطعم بنجاح!
+      </h3>
+      <p class="text-xs sm:text-sm text-slate-400 mt-1.5 leading-relaxed">
+        تهانينا! تم تسجيل مطعمك في منصة منيوحات وتفعيل صلاحيات الإدارة بنجاح.
+      </p>
+
+      <!-- Response Details Card -->
+      @if (createdRestaurantData()) {
+      <div class="my-5 rounded-xl bg-slate-50 border border-slate-100 p-4 text-start text-xs space-y-2">
+        <div class="flex items-center justify-between pb-1.5 border-b border-slate-200/60 font-semibold">
+          <span class="text-slate-500">اسم المطعم:</span>
+          <span class="text-slate-900 font-bold">
+            {{ createdRestaurantData().clientName || form.get('clientName')?.value }}
+          </span>
+        </div>
+
+        @if (createdRestaurantData().serial) {
+        <div class="flex items-center justify-between pb-1.5 border-b border-slate-200/60 font-semibold">
+          <span class="text-slate-500">الرقم التعريفي (Serial):</span>
+          <span class="font-mono font-bold text-orange-600" dir="ltr">#{{ createdRestaurantData().serial }}</span>
+        </div>
+        }
+
+        @if (createdRestaurantData().id) {
+        <div class="flex items-center justify-between font-semibold">
+          <span class="text-slate-500">معرف المطعم (ID):</span>
+          <span class="font-mono text-slate-800">{{ createdRestaurantData().id }}</span>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- Dashboard Action Button -->
+      <button type="button" (click)="goToDashboard()"
+        class="w-full bg-orange-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl cursor-pointer flex items-center justify-center gap-2">
+        <span>الانتقال إلى لوحة التحكم</span>
+        <span class="material-symbols-sharp text-base leading-none">arrow_back</span>
+      </button>
+    </div>
+  </div>
+  }
+</div>

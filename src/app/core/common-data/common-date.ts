@@ -29,4 +29,12 @@ export class CommonDateService {
   getOrderTypes(): Observable<DropdownItem[]> {
     return this._HttpClient.get<DropdownItem[]>(`${environment.apiUrl}/CommonData/FillOrderTypesDropdown`);
   }
+
+  getFields(): Observable<DropdownItem[]> {
+    return this._HttpClient.get<DropdownItem[]>(`${environment.apiUrl}/CommonData/FillFieldsDropdown`);
+  }
+
+  getOrderConditions(): Observable<DropdownItem[]> {
+    return this._HttpClient.get<DropdownItem[]>(`${environment.apiUrl}/CommonData/FillOrderConditionsDropdown`);
+  }
 }

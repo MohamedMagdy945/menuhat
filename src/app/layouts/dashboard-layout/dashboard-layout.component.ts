@@ -1,15 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DashboardSidebarComponent } from './components/dashboard-sidebar/dashboard-sidebar.component';
-import { DashboardHeaderComponent } from './components/dashboard-header/dashboard-header.component';
 import { DashboardService } from '../../core/services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard-layout',
   standalone: true,
-  imports: [RouterOutlet, DashboardSidebarComponent, DashboardHeaderComponent],
+  imports: [RouterOutlet, DashboardSidebarComponent],
   templateUrl: './dashboard-layout.component.html',
   styleUrl: './dashboard-layout.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardLayoutComponent {
   protected readonly dashboardService = inject(DashboardService);

@@ -1,0 +1,149 @@
+<div class="space-y-6" dir="rtl">
+  <!-- Page Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+        قائمة الطعام (المنيو)
+      </h1>
+      <p class="text-sm text-slate-400 mt-1">
+        إدارة أصناف الوجبات والأسعار وحالة التوفر في المطعم
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="bg-orange-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl cursor-pointer inline-flex items-center gap-2 shadow-sm"
+      >
+        <span class="material-symbols-sharp text-lg">add_circle</span>
+        <span>إضافة وجبة جديدة</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search & Category Filters Card -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 space-y-4">
+    <!-- Search Bar -->
+    <div class="relative w-full">
+      <input
+        type="text"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        placeholder="ابحث عن وجبة بالاسم..."
+        class="w-full py-2.5 pr-10 pl-4 bg-slate-50 text-slate-800 placeholder-slate-400 text-sm rounded-xl border border-gray-200 focus:border-orange-500 focus:bg-white focus:outline-none"
+      />
+      <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+        <span class="material-symbols-sharp text-[20px]">search</span>
+      </div>
+    </div>
+
+    <!-- Category Filter Pills -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1">
+      @for (category of categories(); track category.id) {
+        <button
+          type="button"
+          (click)="selectCategory(category.id)"
+          class="px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap cursor-pointer transition-none"
+          [class.bg-orange-500]="selectedCategoryId() === category.id"
+          [class.text-white]="selectedCategoryId() === category.id"
+          [class.bg-slate-100]="selectedCategoryId() !== category.id"
+          [class.text-slate-600]="selectedCategoryId() !== category.id"
+        >
+          {{ category.name }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Menu Items Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (item of filteredItems(); track item.id) {
+      <div
+        class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex flex-col justify-between gap-3"
+      >
+        <!-- Top: Dish Image + Status Pill -->
+        <div class="relative h-44 w-full rounded-xl overflow-hidden bg-slate-100">
+          <img
+            [src]="item.image"
+            [alt]="item.name"
+            class="h-full w-full object-cover"
+          />
+
+          <!-- Category Badge -->
+          <span
+            class="absolute top-2 right-2 px-2.5 py-1 rounded-lg bg-black/50 text-white text-[11px] font-semibold"
+          >
+            {{ item.category }}
+          </span>
+
+          <!-- Availability Pill -->
+          <button
+            type="button"
+            (click)="toggleAvailability(item)"
+            class="absolute top-2 left-2 px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer"
+            [class.bg-emerald-500]="item.isAvailable"
+            [class.text-white]="item.isAvailable"
+            [class.bg-red-500]="!item.isAvailable"
+            [class.text-white]="!item.isAvailable"
+          >
+            {{ item.isAvailable ? 'متوفر' : 'غير متوفر' }}
+          </button>
+        </div>
+
+        <!-- Middle: Title, English Name & Description -->
+        <div class="space-y-1">
+          <div class="flex items-center justify-between gap-2">
+            <h2 class="font-bold text-base text-slate-900 truncate">
+              {{ item.name }}
+            </h2>
+            <span class="text-base font-bold text-orange-500 shrink-0">
+              {{ item.price }} ج.م
+            </span>
+          </div>
+
+          @if (item.nameEn) {
+            <p class="text-xs text-slate-400" dir="ltr">
+              {{ item.nameEn }}
+            </p>
+          }
+
+          <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed pt-1">
+            {{ item.description }}
+          </p>
+        </div>
+
+        <!-- Bottom: Orders count & Action Buttons -->
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+          <div class="flex items-center gap-1 text-xs text-slate-400 font-medium">
+            <span class="material-symbols-sharp text-sm">trending_up</span>
+            <span>{{ item.ordersCount }} طلب تم</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="w-8 h-8 rounded-lg bg-slate-50 border border-gray-200 text-slate-600 flex items-center justify-center cursor-pointer"
+              title="تعديل الوجبة"
+            >
+              <span class="material-symbols-sharp text-base">edit</span>
+            </button>
+            <button
+              type="button"
+              class="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center cursor-pointer"
+              title="حذف الوجبة"
+            >
+              <span class="material-symbols-sharp text-base">delete</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    } @empty {
+      <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+        <span class="material-symbols-sharp text-5xl text-slate-300">search_off</span>
+        <h3 class="font-bold text-base text-slate-700 mt-2">لا توجد وجبات تطابق البحث</h3>
+        <p class="text-xs text-slate-400 mt-1">جرب البحث بكلمات أخرى أو اختر تصنيفاً آخر</p>
+      </div>
+    }
+  </div>
+</div>
+

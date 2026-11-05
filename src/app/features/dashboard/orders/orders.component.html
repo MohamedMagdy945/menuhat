@@ -1,0 +1,292 @@
+<div class="space-y-6">
+  <!-- Page Header (Style from Image 2) -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+    <!-- Right side (in RTL): Icon + Title & Pill + Subtitle -->
+    <div class="flex items-center gap-3.5">
+      <!-- Peach rounded-2xl square icon box with cutlery icon -->
+      <div
+        class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100/80 flex items-center justify-center shrink-0 shadow-xs"
+      >
+        <span class="material-symbols-sharp text-2xl text-orange-500 select-none">
+          restaurant
+        </span>
+      </div>
+
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            تفاصيل الطلب
+          </h1>
+          <span
+            class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-50 text-sky-600 border border-sky-100 shrink-0"
+          >
+            {{ order()?.orderCode || '#1024' }}
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+          متابعة وإدارة تفاصيل الطلب، المنتجات والعميل
+        </p>
+      </div>
+    </div>
+
+    <!-- Left side (in RTL): Action buttons (Receive, Cancel, Print receipt & Back to Dashboard) -->
+    <div class="flex items-center gap-2 flex-wrap">
+      @if (order(); as ord) {
+        @if (ord.statusId !== 1 && ord.statusId !== 2) {
+          <button
+            type="button"
+            (click)="receiveCurrentOrder()"
+            [disabled]="actionInProgress()"
+            class="bg-emerald-600 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+            title="استلام الطلب وتأكيده (MenusOrders/Receive)"
+          >
+            <span class="material-symbols-sharp text-base">check_circle</span>
+            <span>استلام الطلب</span>
+          </button>
+
+          <button
+            type="button"
+            (click)="cancelCurrentOrder()"
+            [disabled]="actionInProgress()"
+            class="bg-white border border-red-200 text-red-500 font-semibold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+            title="إلغاء الطلب (MenusOrders/Cancel)"
+          >
+            <span class="material-symbols-sharp text-base">cancel</span>
+            <span>إلغاء</span>
+          </button>
+        }
+      }
+
+      <button
+        type="button"
+        (click)="printOrder()"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+        title="طباعة الفاتورة"
+      >
+        <span class="material-symbols-sharp text-base text-slate-500">print</span>
+        <span>طباعة الإيصال</span>
+      </button>
+
+      <a
+        routerLink="/dashboard"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+      >
+        <span class="material-symbols-sharp text-base text-slate-500">arrow_forward</span>
+        <span>لوحة التحكم</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Quick Order Switcher (Recent Orders) -->
+  <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scroll">
+    <span class="text-xs font-semibold text-slate-400 shrink-0">الطلبات:</span>
+    @for (rec of recentOrders(); track rec.id) {
+      <button
+        type="button"
+        (click)="selectOrder(rec.id)"
+        class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer shrink-0 transition-colors shadow-xs"
+        [class.bg-orange-500]="activeOrderId() === rec.id"
+        [class.text-white]="activeOrderId() === rec.id"
+        [class.bg-white]="activeOrderId() !== rec.id"
+        [class.text-slate-700]="activeOrderId() !== rec.id"
+        [class.border]="activeOrderId() !== rec.id"
+        [class.border-gray-200]="activeOrderId() !== rec.id"
+      >
+        <span>{{ rec.code }}</span>
+        <span class="text-[10px] opacity-75 mr-1 font-normal">({{ rec.name }})</span>
+      </button>
+    }
+  </div>
+
+  <!-- Loading State -->
+  @if (isLoading()) {
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-12 text-center space-y-3">
+      <div class="w-10 h-10 border-3 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+      <p class="text-sm font-semibold text-slate-600">جاري تحميل بيانات الطلب من السيرفر...</p>
+    </div>
+  }
+
+  <!-- Order Content Layout (Matching Image 1 Exactly) -->
+  @if (!isLoading() && order(); as ord) {
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- ======================================================== -->
+      <!-- RIGHT COLUMN: MAIN ORDER & PRODUCTS (8 Cols in LG) -->
+      <!-- ======================================================== -->
+      <section class="lg:col-span-8 space-y-6">
+        <!-- 1. Top Order Summary Card -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 sm:p-6 space-y-5">
+          <!-- Top Row: Order Number + Status Pill -->
+          <div class="flex items-center justify-between">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              {{ ord.orderCode }}
+            </h2>
+
+            <!-- Status Pill (Image 1: • تم التحضير) -->
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-200"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+              <span>{{ ord.statusLabel }}</span>
+            </span>
+          </div>
+
+          <!-- 3 Info Boxes Grid (Order Code, Date/Time, Order Type & Seating) -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+            <!-- Box 1: كود الطلب -->
+            <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
+              <span class="text-xs font-medium text-slate-400 block">كود الطلب</span>
+              <p class="text-base font-bold text-slate-900 tracking-wide">
+                {{ ord.orderCode }}
+              </p>
+            </div>
+
+            <!-- Box 2: التاريخ والوقت -->
+            <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
+              <span class="text-xs font-medium text-slate-400 block">التاريخ والوقت</span>
+              <p class="text-base font-bold text-slate-900">
+                {{ ord.dateTime }}
+              </p>
+            </div>
+
+            <!-- Box 3: نوع الطلب والجلوس -->
+            <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
+              <span class="text-xs font-medium text-slate-400 block">نوع الطلب والجلوس</span>
+              <p class="text-base font-bold text-slate-900">
+                {{ ord.orderType }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Products List Card (المنتجات المطلوبة) -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 sm:p-6 space-y-4">
+          <!-- Card Header: Title + Items Count Badge -->
+          <div class="flex items-center justify-between pb-1">
+            <h3 class="text-base sm:text-lg font-bold text-slate-900">
+              المنتجات المطلوبة
+            </h3>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
+              {{ ord.itemsCount }} أصناف
+            </span>
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse">
+              <thead>
+                <tr class="border-b border-gray-100 text-xs font-bold text-slate-400">
+                  <th class="pb-3 font-semibold text-right">الصنف والتفاصيل</th>
+                  <th class="pb-3 font-semibold text-center w-24">الكمية</th>
+                  <th class="pb-3 font-semibold text-center w-28">سعر الوحدة</th>
+                  <th class="pb-3 font-semibold text-left w-28">الإجمالي</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-50">
+                @for (item of ord.items; track item.id) {
+                  <tr class="align-middle">
+                    <!-- Product Info & Photo -->
+                    <td class="py-4 pr-0 pl-3">
+                      <div class="flex items-center gap-3">
+                        <img
+                          [src]="item.image"
+                          (error)="$any($event.target).src = '/images/default.png'"
+                          [alt]="item.name"
+                          class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shrink-0 bg-slate-100 border border-gray-100 shadow-xs"
+                        />
+                        <div class="min-w-0 space-y-0.5">
+                          <h4 class="font-bold text-sm sm:text-base text-slate-900">
+                            {{ item.name }}
+                          </h4>
+                          @if (item.description) {
+                            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2 max-w-md font-normal">
+                              {{ item.description }}
+                            </p>
+                          }
+                        </div>
+                      </div>
+                    </td>
+
+                    <!-- Quantity Pill (Image 1: 1×, 2× in rounded pill) -->
+                    <td class="py-4 px-2 text-center">
+                      <span
+                        class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200/60"
+                        dir="ltr"
+                      >
+                        {{ item.quantity }}×
+                      </span>
+                    </td>
+
+                    <!-- Unit Price -->
+                    <td class="py-4 px-2 text-center text-xs sm:text-sm font-semibold text-slate-700 whitespace-nowrap">
+                      {{ item.unitPrice | number:'1.0-2' }} {{ ord.currency }}
+                    </td>
+
+                    <!-- Total Price in Orange -->
+                    <td class="py-4 pl-0 pr-2 text-left text-xs sm:text-sm font-bold text-orange-500 whitespace-nowrap">
+                      {{ item.totalPrice | number:'1.0-2' }} {{ ord.currency }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- LEFT COLUMN: CUSTOMER & FINAL TOTAL (4 Cols in LG) -->
+      <!-- ======================================================== -->
+      <aside class="lg:col-span-4 space-y-6">
+        <!-- 1. Customer Information Card -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 space-y-3.5">
+          <!-- Customer Name -->
+          <h3 class="text-base sm:text-lg font-bold text-slate-900">
+            {{ ord.customerName }}
+          </h3>
+
+          <!-- Address Box -->
+          <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 space-y-1">
+            <span class="text-[11px] font-medium text-slate-400 block">العنوان المسجل</span>
+            <p class="text-xs sm:text-sm font-semibold text-slate-700 leading-relaxed">
+              {{ ord.customerAddress }}
+            </p>
+          </div>
+
+          <!-- Phone Box -->
+          <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3 text-center">
+            <a
+              [href]="'tel:' + ord.customerPhone"
+              class="text-sm font-bold text-slate-800 tracking-wider block"
+              dir="ltr"
+            >
+              {{ ord.customerPhone }}
+            </a>
+          </div>
+        </div>
+
+        <!-- 2. Final Total Card (الإجمالي النهائي) -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 flex items-center justify-between gap-4">
+          <div>
+            <h4 class="text-base font-bold text-slate-900">
+              الإجمالي النهائي
+            </h4>
+            <p class="text-xs text-slate-400 mt-0.5">
+              شامل الضريبة والخدمة
+            </p>
+          </div>
+
+          <!-- Large Bold Orange Price (120 ج.م) -->
+          <div class="flex items-baseline gap-1 text-orange-500 font-extrabold">
+            <span class="text-3xl sm:text-4xl font-black">
+              {{ ord.totalPrice | number:'1.0-2' }}
+            </span>
+            <span class="text-sm font-bold">
+              {{ ord.currency }}
+            </span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  }
+</div>
+
