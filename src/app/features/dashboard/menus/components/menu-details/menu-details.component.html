@@ -1,0 +1,175 @@
+<div class="space-y-6">
+
+  <!-- Restaurant Summary Card (Matching order-details design language) -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 sm:p-6 space-y-5">
+    <!-- Top Row: Name + Status Badge + Quick Action -->
+    <div class="flex items-center justify-between flex-wrap gap-3">
+      <div class="flex items-center gap-3">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          {{ restaurant().name }}
+        </h2>
+        @if (restaurant().isOpen) {
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            نشط الآن
+          </span>
+        } @else {
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-50 text-slate-500 border border-slate-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+            مغلق مؤقتاً
+          </span>
+        }
+      </div>
+
+      <!-- Quick Action: Open Electronic Menu -->
+      <button
+        type="button"
+        (click)="onOpenElectronicMenu.emit()"
+        class="bg-orange-500 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+      >
+        <span class="material-symbols-sharp text-base">visibility</span>
+        <span>معاينة المنيو الإلكتروني</span>
+      </button>
+    </div>
+
+    <!-- 3 Info Boxes (Exact design from order-details) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div class="bg-slate-50 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
+        <span class="text-xs font-medium text-slate-400 block">اسم المطعم</span>
+        <p class="text-sm font-bold text-slate-900 truncate">{{ restaurant().name }}</p>
+      </div>
+
+      <div class="bg-slate-50 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
+        <span class="text-xs font-medium text-slate-400 block">العنوان والفرع</span>
+        <p class="text-sm font-bold text-slate-900 truncate">{{ restaurant().location }}</p>
+      </div>
+
+      <div class="bg-slate-50 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
+        <span class="text-xs font-medium text-slate-400 block">عدد الزيارات</span>
+        <p class="text-sm font-bold text-slate-900">{{ restaurant().visitsCount }} زيارة</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Menu Settings Options List (Exact options from Mobile Screenshot 2) -->
+  <div class="space-y-3">
+
+    <!-- 1. عرض المنيو الإلكتروني -->
+    <button
+      type="button"
+      (click)="onOpenElectronicMenu.emit()"
+      class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
+    >
+      <span class="font-bold text-sm sm:text-base text-slate-800">عرض المنيو الإلكتروني</span>
+      <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-xl text-orange-500">restaurant</span>
+      </div>
+    </button>
+
+    <!-- 2. عرض المنيو الورقي -->
+    <button
+      type="button"
+      (click)="onOpenPaperMenu.emit()"
+      class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
+    >
+      <span class="font-bold text-sm sm:text-base text-slate-800">عرض المنيو الورقي</span>
+      <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-xl text-orange-500">menu_book</span>
+      </div>
+    </button>
+
+    <!-- 3. عرض المنيو QR -->
+    <button
+      type="button"
+      (click)="onOpenQrModal.emit()"
+      class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
+    >
+      <span class="font-bold text-sm sm:text-base text-slate-800">عرض المنيو QR</span>
+      <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-xl text-orange-500">qr_code_2</span>
+      </div>
+    </button>
+
+    <!-- 4. إغلاق المنيو (Toggle Switch) -->
+    <div class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between">
+      <span class="font-bold text-sm sm:text-base text-slate-800">إغلاق المنيو</span>
+      <button
+        type="button"
+        (click)="onToggleCloseMenu.emit()"
+        class="w-12 h-6 rounded-full p-0.5 flex items-center cursor-pointer transition-colors"
+        [class.bg-orange-500]="isMenuClosed()"
+        [class.justify-end]="isMenuClosed()"
+        [class.bg-slate-200]="!isMenuClosed()"
+        [class.justify-start]="!isMenuClosed()"
+        title="إغلاق أو فتح المنيو"
+      >
+        <span class="w-5 h-5 rounded-full bg-white shadow-sm inline-block"></span>
+      </button>
+    </div>
+
+    <!-- 5. إخفاء المنيو (Toggle Switch - Active Orange) -->
+    <div class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between">
+      <span class="font-bold text-sm sm:text-base text-slate-800">إخفاء المنيو</span>
+      <button
+        type="button"
+        (click)="onToggleHideMenu.emit()"
+        class="w-12 h-6 rounded-full p-0.5 flex items-center cursor-pointer transition-colors"
+        [class.bg-orange-500]="isMenuHidden()"
+        [class.justify-end]="isMenuHidden()"
+        [class.bg-slate-200]="!isMenuHidden()"
+        [class.justify-start]="!isMenuHidden()"
+        title="إخفاء أو إظهار المنيو"
+      >
+        <span class="w-5 h-5 rounded-full bg-white shadow-sm inline-block"></span>
+      </button>
+    </div>
+
+    <!-- 6. تعديل البيانات الأساسية -->
+    <button
+      type="button"
+      (click)="onOpenEditInfo.emit()"
+      class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
+    >
+      <span class="font-bold text-sm sm:text-base text-slate-800">تعديل البيانات الأساسية</span>
+      <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-xl text-orange-500">edit_note</span>
+      </div>
+    </button>
+
+    <!-- 7. الأقسام الرئيسية -->
+    <button
+      type="button"
+      (click)="onOpenCategories.emit()"
+      class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
+    >
+      <span class="font-bold text-sm sm:text-base text-slate-800">الأقسام الرئيسية</span>
+      <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-xl text-orange-500">category</span>
+      </div>
+    </button>
+
+    <!-- 8. الأقسام الفرعية -->
+    <button
+      type="button"
+      (click)="onOpenSubCategories.emit()"
+      class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
+    >
+      <span class="font-bold text-sm sm:text-base text-slate-800">الأقسام الفرعية</span>
+      <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-xl text-orange-500">account_tree</span>
+      </div>
+    </button>
+
+    <!-- 9. حذف PDF -->
+    <button
+      type="button"
+      (click)="onOpenDeletePdf.emit()"
+      class="w-full bg-red-50 text-red-500 rounded-2xl border border-red-100/70 p-4 flex items-center justify-between cursor-pointer font-bold text-sm sm:text-base shadow-xs"
+    >
+      <span>حذف PDF</span>
+      <span class="material-symbols-sharp text-xl text-red-500">delete</span>
+    </button>
+
+  </div>
+</div>
+

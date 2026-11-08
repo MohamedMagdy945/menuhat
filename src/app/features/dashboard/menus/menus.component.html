@@ -1,374 +1,213 @@
-<div class="space-y-6 max-w-4xl mx-auto" dir="rtl">
+<div class="space-y-6 w-full" dir="rtl">
 
   <!-- ======================================================== -->
-  <!-- VIEW 1: المنيو (Matching Mobile App Screenshot 1)        -->
+  <!-- VIEW 1: SINGLE MENU DETAILS (When isDetailsOpen is true) -->
   <!-- ======================================================== -->
-  @if (viewMode() === 'card') {
-    <!-- Page Header -->
-    <div class="flex items-center justify-between pb-1">
-      <div>
-        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-          المنيو
-        </h1>
-        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
-          إدارة إعدادات المنيو وتفاصيل مطعمك
-        </p>
-      </div>
+  @if (isDetailsOpen()) {
+    <div class="w-full space-y-6">
 
-      <button
-        type="button"
-        (click)="setViewMode('settings')"
-        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
-      >
-        <span class="material-symbols-sharp text-lg text-orange-500">settings</span>
-        <span>إعدادات المنيو</span>
-      </button>
-    </div>
-
-    <!-- Restaurant Card (Exact Match to Mobile App Screenshot 1) -->
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-      <!-- Cover Photo with Status Pill -->
-      <div class="relative h-60 sm:h-72 w-full bg-slate-100 overflow-hidden">
-        <img
-          [src]="restaurant().coverUrl"
-          [alt]="restaurant().name"
-          class="w-full h-full object-cover"
-        />
-
-        <!-- Status Badge (نشط الآن / مغلق) -->
-        <div class="absolute top-4 right-4">
-          @if (restaurant().isOpen) {
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white text-emerald-600 shadow-xs border border-gray-100">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-              <span>نشط الآن</span>
-            </span>
-          } @else {
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white text-slate-500 shadow-xs border border-gray-100">
-              <span class="w-2 h-2 rounded-full bg-slate-400 inline-block"></span>
-              <span>مغلق</span>
-            </span>
-          }
-        </div>
-      </div>
-
-      <!-- Card Body -->
-      <div class="p-5 sm:p-6 space-y-4">
-        <!-- Restaurant Name & Stats -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <h2 class="text-lg sm:text-xl font-bold text-slate-900">
-            {{ restaurant().name }}
-          </h2>
-
-          <div class="flex items-center gap-4 text-xs sm:text-sm text-slate-400">
-            <!-- Visits Count -->
-            <div class="flex items-center gap-1.5">
-              <span class="material-symbols-sharp text-base text-slate-400">visibility</span>
-              <span>{{ restaurant().visitsCount }} زيارة</span>
-            </div>
-
-            <!-- Location -->
-            <div class="flex items-center gap-1.5">
-              <span class="material-symbols-sharp text-base text-slate-400">location_on</span>
-              <span class="truncate max-w-[200px]">{{ restaurant().location }}</span>
-            </div>
+      <!-- Details Header (Exact Header Design from orders.component.html) -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+        <div class="flex items-center gap-3.5">
+          <div
+            class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs">
+            <span class="material-symbols-sharp text-2xl text-orange-500">restaurant_menu</span>
           </div>
-        </div>
-
-        <div class="border-t border-gray-100 pt-3">
-          <!-- "عرض التفاصيل >" Link Button -->
-          <button
-            type="button"
-            (click)="setViewMode('settings')"
-            class="text-orange-500 font-semibold text-sm cursor-pointer flex items-center gap-1.5 w-fit"
-          >
-            <span>عرض التفاصيل</span>
-            <span class="material-symbols-sharp text-lg">chevron_left</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  }
-
-  <!-- ======================================================== -->
-  <!-- VIEW 2: إعدادات المنيو (Matching Mobile App Screenshot 2)  -->
-  <!-- ======================================================== -->
-  @if (viewMode() === 'settings') {
-    <!-- Page Header with Back Button -->
-    <div class="flex items-center justify-between pb-1">
-      <div class="flex items-center gap-3">
-        <button
-          type="button"
-          (click)="setViewMode('card')"
-          class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-700 flex items-center justify-center cursor-pointer shadow-xs"
-          title="العودة للمنيو"
-        >
-          <span class="material-symbols-sharp text-xl">arrow_forward</span>
-        </button>
-        <div>
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            إعدادات المنيو
-          </h1>
-          <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
-            خيارات العرض وتعديل الأقسام والبيانات
-          </p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Options List (Exact layout of Screenshot 2) -->
-    <div class="space-y-3">
-
-      <!-- 1. عرض المنيو الإلكتروني -->
-      <button
-        type="button"
-        (click)="openElectronicMenu()"
-        class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
-      >
-        <span class="font-bold text-sm sm:text-base text-slate-800">عرض المنيو الإلكتروني</span>
-        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-          <span class="material-symbols-sharp text-xl text-orange-500">restaurant</span>
-        </div>
-      </button>
-
-      <!-- 2. عرض المنيو الورقي -->
-      <button
-        type="button"
-        (click)="openPaperMenu()"
-        class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
-      >
-        <span class="font-bold text-sm sm:text-base text-slate-800">عرض المنيو الورقي</span>
-        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-          <span class="material-symbols-sharp text-xl text-orange-500">menu_book</span>
-        </div>
-      </button>
-
-      <!-- 3. عرض المنيو QR -->
-      <button
-        type="button"
-        (click)="openQrModal()"
-        class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
-      >
-        <span class="font-bold text-sm sm:text-base text-slate-800">عرض المنيو QR</span>
-        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-          <span class="material-symbols-sharp text-xl text-orange-500">qr_code_2</span>
-        </div>
-      </button>
-
-      <!-- 4. إغلاق المنيو (Toggle Switch) -->
-      <div class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between">
-        <span class="font-bold text-sm sm:text-base text-slate-800">إغلاق المنيو</span>
-        <!-- iOS Toggle Switch -->
-        <button
-          type="button"
-          (click)="toggleCloseMenu()"
-          class="w-12 h-6 rounded-full p-0.5 flex items-center cursor-pointer transition-colors"
-          [class.bg-orange-500]="isMenuClosed()"
-          [class.justify-end]="isMenuClosed()"
-          [class.bg-slate-200]="!isMenuClosed()"
-          [class.justify-start]="!isMenuClosed()"
-          title="إغلاق أو فتح المنيو"
-        >
-          <span class="w-5 h-5 rounded-full bg-white shadow-sm inline-block"></span>
-        </button>
-      </div>
-
-      <!-- 5. إخفاء المنيو (Toggle Switch - Active Orange in screenshot) -->
-      <div class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between">
-        <span class="font-bold text-sm sm:text-base text-slate-800">إخفاء المنيو</span>
-        <!-- iOS Toggle Switch -->
-        <button
-          type="button"
-          (click)="toggleHideMenu()"
-          class="w-12 h-6 rounded-full p-0.5 flex items-center cursor-pointer transition-colors"
-          [class.bg-orange-500]="isMenuHidden()"
-          [class.justify-end]="isMenuHidden()"
-          [class.bg-slate-200]="!isMenuHidden()"
-          [class.justify-start]="!isMenuHidden()"
-          title="إخفاء أو إظهار المنيو"
-        >
-          <span class="w-5 h-5 rounded-full bg-white shadow-sm inline-block"></span>
-        </button>
-      </div>
-
-      <!-- 6. تعديل البيانات الأساسية -->
-      <button
-        type="button"
-        (click)="openEditInfo()"
-        class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
-      >
-        <span class="font-bold text-sm sm:text-base text-slate-800">تعديل البيانات الأساسية</span>
-        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-          <span class="material-symbols-sharp text-xl text-orange-500">edit_note</span>
-        </div>
-      </button>
-
-      <!-- 7. الأقسام الرئيسية -->
-      <button
-        type="button"
-        (click)="setViewMode('categories')"
-        class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
-      >
-        <span class="font-bold text-sm sm:text-base text-slate-800">الأقسام الرئيسية</span>
-        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-          <span class="material-symbols-sharp text-xl text-orange-500">category</span>
-        </div>
-      </button>
-
-      <!-- 8. الأقسام الفرعية -->
-      <button
-        type="button"
-        (click)="setViewMode('subcategories')"
-        class="w-full bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between cursor-pointer"
-      >
-        <span class="font-bold text-sm sm:text-base text-slate-800">الأقسام الفرعية</span>
-        <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-          <span class="material-symbols-sharp text-xl text-orange-500">account_tree</span>
-        </div>
-      </button>
-
-      <!-- 9. حذف PDF (Red Button with Trash Icon) -->
-      <button
-        type="button"
-        (click)="openDeletePdfModal()"
-        class="w-full bg-red-50 text-red-500 rounded-2xl border border-red-100/70 p-4 flex items-center justify-between cursor-pointer font-bold text-sm sm:text-base shadow-xs"
-      >
-        <span>حذف PDF</span>
-        <span class="material-symbols-sharp text-xl text-red-500">delete</span>
-      </button>
-
-    </div>
-  }
-
-  <!-- ======================================================== -->
-  <!-- VIEW 3: الأقسام الرئيسية (Categories Manager)           -->
-  <!-- ======================================================== -->
-  @if (viewMode() === 'categories') {
-    <div class="flex items-center justify-between pb-1">
-      <div class="flex items-center gap-3">
-        <button
-          type="button"
-          (click)="setViewMode('settings')"
-          class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-700 flex items-center justify-center cursor-pointer shadow-xs"
-        >
-          <span class="material-symbols-sharp text-xl">arrow_forward</span>
-        </button>
-        <div>
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            الأقسام الرئيسية
-          </h1>
-          <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
-            إدارة وتعديل أقسام المنيو الأساسية
-          </p>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        (click)="showAddCategoryModal.set(true)"
-        class="bg-orange-500 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
-      >
-        <span class="material-symbols-sharp text-lg">add</span>
-        <span>إضافة قسم رئيسي</span>
-      </button>
-    </div>
-
-    <!-- Categories List -->
-    <div class="space-y-3">
-      @for (cat of mainCategories(); track cat.id) {
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-              <span class="material-symbols-sharp text-lg text-orange-500">category</span>
+          <div>
+            <div class="flex items-center gap-2.5">
+              <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+                @if (subSection() === 'categories') {
+                  الأقسام الرئيسية
+                } @else if (subSection() === 'subcategories') {
+                  الأقسام الفرعية
+                } @else {
+                  تفاصيل المنيو
+                }
+              </h1>
+              <span
+                class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-50 text-sky-600 border border-sky-100 shrink-0">
+                {{ restaurant().name }}
+              </span>
             </div>
-            <div>
-              <h2 class="font-bold text-sm sm:text-base text-slate-900">{{ cat.name }}</h2>
-              @if (cat.name_En) {
-                <span class="text-xs text-slate-400">{{ cat.name_En }}</span>
+            <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+              @if (subSection() === 'categories') {
+                إدارة وتعديل الأقسام الرئيسية للمنيو
+              } @else if (subSection() === 'subcategories') {
+                إدارة وتعديل الأقسام الفرعية التابعة للمنيو
+              } @else {
+                متابعة وإدارة تفاصيل المنيو وإعدادات المطعم
               }
-            </div>
+            </p>
+          </div>
+        </div>
+
+        <button type="button" (click)="closeDetails()"
+          class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs w-fit">
+          <span class="material-symbols-sharp text-base text-slate-500">arrow_forward</span>
+          <span>
+            @if (subSection() !== 'none') {
+              العودة لتفاصيل المنيو
+            } @else {
+              العودة لبطاقة المنيو
+            }
+          </span>
+        </button>
+      </div>
+
+      <!-- SUB-VIEW: Main Categories Manager -->
+      @if (subSection() === 'categories') {
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">قائمة الأقسام الرئيسية</h2>
+            <button
+              type="button"
+              (click)="showAddCategoryModal.set(true)"
+              class="bg-orange-500 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+            >
+              <span class="material-symbols-sharp text-lg">add</span>
+              <span>إضافة قسم رئيسي</span>
+            </button>
           </div>
 
-          <button
-            type="button"
-            (click)="deleteCategory(cat)"
-            class="bg-red-50 text-red-500 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
-            title="حذف القسم"
-          >
-            <span class="material-symbols-sharp text-base">delete</span>
-          </button>
-        </div>
-      } @empty {
-        <div class="p-12 text-center bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2">
-          <p class="text-slate-700 font-bold">لا توجد أقسام رئيسية مضافة حالياً</p>
-          <p class="text-xs text-slate-400">انقر على زر "إضافة قسم رئيسي" للبدء</p>
+          <div class="space-y-3">
+            @for (cat of mainCategories(); track cat.id) {
+              <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-sharp text-lg text-orange-500">category</span>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm sm:text-base text-slate-900">{{ cat.name }}</h3>
+                    @if (cat.name_En) {
+                      <span class="text-xs text-slate-400">{{ cat.name_En }}</span>
+                    }
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  (click)="deleteCategory(cat)"
+                  class="bg-red-50 text-red-500 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                  title="حذف القسم"
+                >
+                  <span class="material-symbols-sharp text-base">delete</span>
+                </button>
+              </div>
+            } @empty {
+              <div class="p-12 text-center bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2">
+                <p class="text-slate-700 font-bold">لا توجد أقسام رئيسية مضافة حالياً</p>
+                <p class="text-xs text-slate-400">انقر على زر "إضافة قسم رئيسي" للبدء</p>
+              </div>
+            }
+          </div>
         </div>
       }
+
+      <!-- SUB-VIEW: Sub Categories Manager -->
+      @if (subSection() === 'subcategories') {
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base sm:text-lg font-bold text-slate-900">قائمة الأقسام الفرعية</h2>
+            <button
+              type="button"
+              (click)="showAddSubCategoryModal.set(true)"
+              class="bg-orange-500 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+            >
+              <span class="material-symbols-sharp text-lg">add</span>
+              <span>إضافة قسم فرعي</span>
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            @for (sub of subCategories(); track sub.id) {
+              <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-sharp text-lg text-orange-500">account_tree</span>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-sm sm:text-base text-slate-900">{{ sub.name }}</h3>
+                    <span class="text-xs text-slate-400">{{ sub.mainCategoryName || 'قسم رئيسي' }}</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  (click)="deleteSubCategory(sub)"
+                  class="bg-red-50 text-red-500 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
+                  title="حذف القسم الفرعي"
+                >
+                  <span class="material-symbols-sharp text-base">delete</span>
+                </button>
+              </div>
+            } @empty {
+              <div class="p-12 text-center bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2">
+                <p class="text-slate-700 font-bold">لا توجد أقسام فرعية مضافة حالياً</p>
+                <p class="text-xs text-slate-400">انقر على زر "إضافة قسم فرعي" للبدء</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Default Menu Details Component -->
+      @if (subSection() === 'none') {
+        <app-menu-details
+          [restaurant]="restaurant()"
+          [isMenuClosed]="isMenuClosed()"
+          [isMenuHidden]="isMenuHidden()"
+          (onOpenElectronicMenu)="openElectronicMenu()"
+          (onOpenPaperMenu)="openPaperMenu()"
+          (onOpenQrModal)="openQrModal()"
+          (onToggleCloseMenu)="toggleCloseMenu()"
+          (onToggleHideMenu)="toggleHideMenu()"
+          (onOpenEditInfo)="openEditInfo()"
+          (onOpenCategories)="openCategories()"
+          (onOpenSubCategories)="openSubCategories()"
+          (onOpenDeletePdf)="openDeletePdfModal()" />
+      }
+
     </div>
   }
 
   <!-- ======================================================== -->
-  <!-- VIEW 4: الأقسام الفرعية (SubCategories Manager)         -->
+  <!-- VIEW 2: MAIN MENU VIEW (Default View)                   -->
   <!-- ======================================================== -->
-  @if (viewMode() === 'subcategories') {
-    <div class="flex items-center justify-between pb-1">
-      <div class="flex items-center gap-3">
-        <button
-          type="button"
-          (click)="setViewMode('settings')"
-          class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-700 flex items-center justify-center cursor-pointer shadow-xs"
-        >
-          <span class="material-symbols-sharp text-xl">arrow_forward</span>
-        </button>
+  @if (!isDetailsOpen()) {
+
+    <!-- Page Header (Exact Header Design from orders.component.html) -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div
+          class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs">
+          <span class="material-symbols-sharp text-2xl text-orange-500">restaurant_menu</span>
+        </div>
         <div>
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            الأقسام الفرعية
-          </h1>
-          <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
-            إدارة وتعديل الأقسام الفرعية التابعة للأقسام الرئيسية
-          </p>
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">المنيو</h1>
+            <span
+              class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100 shrink-0">
+              {{ restaurant().name }}
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-400 mt-0.5">متابعة وإدارة تفاصيل المنيو وإعدادات المطعم</p>
         </div>
       </div>
 
-      <button
-        type="button"
-        (click)="showAddSubCategoryModal.set(true)"
-        class="bg-orange-500 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
-      >
-        <span class="material-symbols-sharp text-lg">add</span>
-        <span>إضافة قسم فرعي</span>
-      </button>
+      <a routerLink="/dashboard"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs w-fit">
+        <span class="material-symbols-sharp text-base text-slate-500">arrow_forward</span>
+        <span>لوحة التحكم</span>
+      </a>
     </div>
 
-    <!-- Subcategories List -->
-    <div class="space-y-3">
-      @for (sub of subCategories(); track sub.id) {
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-              <span class="material-symbols-sharp text-lg text-orange-500">account_tree</span>
-            </div>
-            <div>
-              <h2 class="font-bold text-sm sm:text-base text-slate-900">{{ sub.name }}</h2>
-              <span class="text-xs text-slate-400">{{ sub.mainCategoryName || 'قسم رئيسي' }}</span>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            (click)="deleteSubCategory(sub)"
-            class="bg-red-50 text-red-500 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"
-            title="حذف القسم الفرعي"
-          >
-            <span class="material-symbols-sharp text-base">delete</span>
-          </button>
-        </div>
-      } @empty {
-        <div class="p-12 text-center bg-white rounded-2xl border border-gray-100 shadow-sm space-y-2">
-          <p class="text-slate-700 font-bold">لا توجد أقسام فرعية مضافة حالياً</p>
-          <p class="text-xs text-slate-400">انقر على زر "إضافة قسم فرعي" للبدء</p>
-        </div>
-      }
+    <!-- Menu Card Component (Constrained to max-w-sm, aligned to right) -->
+    <div class="w-full max-w-sm">
+      <app-menu-card
+        [restaurant]="restaurant()"
+        (onViewDetails)="openDetails()" />
     </div>
+
   }
 
   <!-- ======================================================== -->
@@ -389,7 +228,7 @@
             <img [src]="restaurant().qrCodeUrl" alt="QR Code" class="w-full h-full object-contain" />
           } @else {
             <div class="text-center space-y-2">
-              <span class="material-symbols-sharp text-5xl text-slate-400">qr_code_2</span>
+              <span class="material-symbols-sharp text-5xl text-slate-400 select-none">qr_code_2</span>
               <p class="text-xs text-slate-400">رمز QR الافتراضي للمطعم</p>
             </div>
           }

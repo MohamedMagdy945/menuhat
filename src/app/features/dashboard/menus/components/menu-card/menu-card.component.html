@@ -1,0 +1,61 @@
+<div class="bg-white rounded-2xl border border-gray-100 shadow-xs overflow-hidden select-none w-full max-w-sm">
+  <!-- Cover Photo with Status Pill -->
+  <div class="relative h-48 sm:h-52 w-full bg-slate-100 overflow-hidden">
+    <img
+      [src]="restaurant().coverUrl"
+      (error)="$any($event.target).src = '/images/banner-3.png'"
+      [alt]="restaurant().name"
+      class="w-full h-full object-cover"
+    />
+
+    <!-- Status Badge (نشط الآن / مغلق) -->
+    <div class="absolute top-3.5 right-3.5">
+      @if (restaurant().isOpen) {
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white text-emerald-600 shadow-xs border border-gray-100">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
+          <span>نشط الآن</span>
+        </span>
+      } @else {
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white text-slate-500 shadow-xs border border-gray-100">
+          <span class="w-2 h-2 rounded-full bg-slate-400 inline-block"></span>
+          <span>مغلق</span>
+        </span>
+      }
+    </div>
+  </div>
+
+  <!-- Card Body -->
+  <div class="p-5 space-y-3.5 text-right">
+    <!-- Restaurant Name -->
+    <h2 class="text-lg font-bold text-slate-900 leading-snug">
+      {{ restaurant().name }}
+    </h2>
+
+    <!-- Location & Visits Row (Matching mobile app layout) -->
+    <div class="flex items-center justify-between text-xs sm:text-sm text-slate-400 gap-2">
+      <!-- Location -->
+      <div class="flex items-center gap-1.5 min-w-0">
+        <span class="material-symbols-sharp text-base text-slate-400 select-none shrink-0">location_on</span>
+        <span class="truncate">{{ restaurant().location }}</span>
+      </div>
+
+      <!-- Visits Count -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <span class="material-symbols-sharp text-base text-slate-400 select-none">visibility</span>
+        <span>{{ restaurant().visitsCount }} زيارة</span>
+      </div>
+    </div>
+
+    <!-- Divider & View Details Button -->
+    <div class="border-t border-gray-100 pt-3">
+      <button
+        type="button"
+        (click)="onViewDetails.emit()"
+        class="text-orange-500 font-semibold text-sm cursor-pointer flex items-center gap-1 w-fit"
+      >
+        <span>عرض التفاصيل</span>
+        <span class="material-symbols-sharp text-base">chevron_left</span>
+      </button>
+    </div>
+  </div>
+</div>

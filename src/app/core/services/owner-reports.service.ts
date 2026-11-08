@@ -3,6 +3,13 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { DASHBOARD_API_ENDPOINTS } from '../constants/dashboard-api.constants';
 import { environment } from '../environments/environment';
+import {
+  ReportParams,
+  ReportResponseDto,
+  ReportView,
+  ReportDailyItem,
+  ReportKpis,
+} from '../../features/dashboard/reports/models/report.model';
 
 export interface ProductStatItem {
   id: number | string;
@@ -37,27 +44,15 @@ export class OwnerReportsService {
 
   readonly productStats = signal<ProductStatItem[]>([]);
   readonly dailyReports = signal<DailyOrderReportItem[]>([]);
+  readonly menuOwnerReports = signal<ReportResponseDto | null>(null);
   readonly isLoading = signal<boolean>(false);
   readonly errorMessage = signal<string | null>(null);
 
   resolveImageUrl(url: string | null | undefined): string {
-    if (!url || typeof url !== 'string') return '';
-    const trimmed = url.trim();
-    if (!trimmed) return '';
-    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:')) {
-      return trimmed;
-    }
-    const cleanBase = this.filesUrl.replace(/\/+$/, '');
-    if (trimmed.startsWith('/UploadedFiles')) {
-      const origin = cleanBase.replace(/\/UploadedFiles$/, '');
-      return `${origin}${trimmed}`;
-    }
-    if (trimmed.startsWith('UploadedFiles')) {
-      const origin = cleanBase.replace(/\/UploadedFiles$/, '');
-      return `${origin}/${trimmed}`;
-    }
-    const path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
-    return `${cleanBase}${path}`;
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const path = url.startsWith('/') ? url : `/${url}`;
+    return `${this.filesUrl}${path}`;
   }
 
   // =========================================================================
@@ -167,17 +162,41 @@ export class OwnerReportsService {
   // =========================================================================
   // 3. static String ownerMenuOwnerReports = '$baseUrl/Reports/MenuOwnerReports';
   // =========================================================================
-  getMenuOwnerReports(paramsObj?: Record<string, any>): Observable<any> {
+  getMenuOwnerReports(paramsObj?: ReportParams): Observable<ReportResponseDto | null> {
+    this.isLoading.set(true);
     let params = new HttpParams();
     if (paramsObj) {
-      Object.keys(paramsObj).forEach((k) => {
-        if (paramsObj[k] !== undefined && paramsObj[k] !== null) {
-          params = params.set(k, paramsObj[k].toString());
-        }
-      });
+      if (paramsObj.StartDay) params = params.set('StartDay', paramsObj.StartDay);
+      if (paramsObj.EndDay) params = params.set('EndDay', paramsObj.EndDay);
+      if (paramsObj.ReportType) params = params.set('ReportType', paramsObj.ReportType);
+      if (paramsObj.GroupBy) params = params.set('GroupBy', paramsObj.GroupBy);
     }
+
     return this.http.get<any>(DASHBOARD_API_ENDPOINTS.ownerMenuOwnerReports, { params }).pipe(
-      catchError(() => of(null))
+      map((res) => {
+        const raw = res?.result ?? res?.data ?? res;
+        if (raw && typeof raw === 'object') {
+          return {
+            items: Array.isArray(raw.items) ? raw.items : Array.isArray(raw) ? raw : [],
+            itemsCount: raw.itemsCount ?? (Array.isArray(raw) ? raw.length : 0),
+            totalPages: raw.totalPages ?? 1,
+          };
+        }
+        return null;
+      }),
+      tap({
+        next: (dto) => {
+          this.menuOwnerReports.set(dto);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+        },
+      }),
+      catchError(() => {
+        this.isLoading.set(false);
+        return of(null);
+      })
     );
   }
 

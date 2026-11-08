@@ -1,243 +1,223 @@
-<div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
-    <!-- Right side (in RTL): Icon + Title & Pill + Subtitle -->
-    <div class="flex items-center gap-3.5">
-      <div
-        class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100/80 flex items-center justify-center shrink-0 shadow-xs"
-      >
-        <span class="material-symbols-sharp text-2xl text-orange-500 select-none">
-          bar_chart
-        </span>
-      </div>
+<div class="space-y-6 max-w-7xl mx-auto" dir="rtl">
 
-      <div>
-        <div class="flex items-center gap-2.5">
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            التقارير اليومية والشهرية
-          </h1>
-          <span
-            class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100 shrink-0"
-          >
-            تقرير المبيعات
-          </span>
-        </div>
-        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
-          متابعة وإدارة التقارير المالية والطلبات اليومية للمطعم
-        </p>
-      </div>
-    </div>
+  <!-- ======================================================== -->
+  <!-- 1. TOP FILTER BAR (Matching Screenshot 1)               -->
+  <!-- ======================================================== -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
-    <!-- Left side (in RTL): Action buttons -->
-    <div class="flex items-center gap-2">
+    <!-- Right Side in RTL: Segmented Tabs (الكل / اليوم / أمس / آخر 7 أيام) -->
+    <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+      <!-- الكل -->
       <button
         type="button"
-        (click)="printReport()"
-        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
-        title="طباعة التقرير"
+        (click)="setPeriod('all')"
+        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap transition-none"
+        [class.bg-orange-500]="filterPeriod() === 'all'"
+        [class.text-white]="filterPeriod() === 'all'"
+        [class.bg-transparent]="filterPeriod() !== 'all'"
+        [class.text-slate-600]="filterPeriod() !== 'all'"
       >
-        <span class="material-symbols-sharp text-base text-slate-500">print</span>
-        <span>طباعة التقرير</span>
+        الكل
       </button>
 
-      <a
-        routerLink="/dashboard/most-ordered"
-        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+      <!-- اليوم (Active Orange in screenshot) -->
+      <button
+        type="button"
+        (click)="setPeriod('today')"
+        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap transition-none shadow-xs"
+        [class.bg-orange-500]="filterPeriod() === 'today'"
+        [class.text-white]="filterPeriod() === 'today'"
+        [class.bg-transparent]="filterPeriod() !== 'today'"
+        [class.text-slate-600]="filterPeriod() !== 'today'"
       >
-        <span class="material-symbols-sharp text-base text-slate-500">stars</span>
-        <span>الأكثر طلباً</span>
-      </a>
+        اليوم
+      </button>
 
-      <a
-        routerLink="/dashboard"
-        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
+      <!-- أمس -->
+      <button
+        type="button"
+        (click)="setPeriod('yesterday')"
+        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap transition-none"
+        [class.bg-orange-500]="filterPeriod() === 'yesterday'"
+        [class.text-white]="filterPeriod() === 'yesterday'"
+        [class.bg-transparent]="filterPeriod() !== 'yesterday'"
+        [class.text-slate-600]="filterPeriod() !== 'yesterday'"
       >
-        <span class="material-symbols-sharp text-base text-slate-500">arrow_forward</span>
-        <span>الرئيسية</span>
-      </a>
+        أمس
+      </button>
+
+      <!-- آخر 7 أيام -->
+      <button
+        type="button"
+        (click)="setPeriod('week')"
+        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap transition-none"
+        [class.bg-orange-500]="filterPeriod() === 'week'"
+        [class.text-white]="filterPeriod() === 'week'"
+        [class.bg-transparent]="filterPeriod() !== 'week'"
+        [class.text-slate-600]="filterPeriod() !== 'week'"
+      >
+        آخر 7 أيام
+      </button>
     </div>
+
+    <!-- Left Side in RTL: Date Picker Dropdown Button -->
+    <div class="relative w-fit">
+      <label class="bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 flex items-center gap-2 cursor-pointer shadow-xs">
+        <span class="material-symbols-sharp text-base text-orange-500 select-none">calendar_month</span>
+        <span>{{ formattedSelectedDate() }}</span>
+        <span class="material-symbols-sharp text-base text-slate-400 select-none">keyboard_arrow_down</span>
+        <input
+          type="date"
+          [value]="selectedDate()"
+          (change)="onDateChange($any($event.target).value)"
+          class="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+        />
+      </label>
+    </div>
+
   </div>
 
-  <!-- Filter Period Tabs -->
-  <div class="flex items-center gap-2 overflow-x-auto pb-0.5 custom-scroll">
-    <button
-      type="button"
-      (click)="setPeriod('today')"
-      class="px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-none shadow-xs"
-      [class.bg-orange-500]="activePeriod() === 'today'"
-      [class.text-white]="activePeriod() === 'today'"
-      [class.bg-white]="activePeriod() !== 'today'"
-      [class.text-slate-700]="activePeriod() !== 'today'"
-      [class.border]="activePeriod() !== 'today'"
-      [class.border-gray-200]="activePeriod() !== 'today'"
-    >
-      <span>اليوم</span>
-    </button>
+  <!-- ======================================================== -->
+  <!-- 2. FOUR KPI STAT CARDS ROW (Exact match to Screenshot 1) -->
+  <!-- ======================================================== -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
 
-    <button
-      type="button"
-      (click)="setPeriod('week')"
-      class="px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-none shadow-xs"
-      [class.bg-orange-500]="activePeriod() === 'week'"
-      [class.text-white]="activePeriod() === 'week'"
-      [class.bg-white]="activePeriod() !== 'week'"
-      [class.text-slate-700]="activePeriod() !== 'week'"
-      [class.border]="activePeriod() !== 'week'"
-      [class.border-gray-200]="activePeriod() !== 'week'"
-    >
-      <span>هذا الأسبوع</span>
-    </button>
+    <!-- Card 1: إجمالي الطلبات -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col justify-between gap-4 select-none">
+      <div class="flex items-center justify-between">
+        <!-- Circular Icon -->
+        <div class="w-11 h-11 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+          <span class="material-symbols-sharp text-xl text-orange-500">shopping_bag</span>
+        </div>
 
-    <button
-      type="button"
-      (click)="setPeriod('month')"
-      class="px-4 py-2 rounded-xl text-xs font-bold cursor-pointer transition-none shadow-xs"
-      [class.bg-orange-500]="activePeriod() === 'month'"
-      [class.text-white]="activePeriod() === 'month'"
-      [class.bg-white]="activePeriod() !== 'month'"
-      [class.text-slate-700]="activePeriod() !== 'month'"
-      [class.border]="activePeriod() !== 'month'"
-      [class.border-gray-200]="activePeriod() !== 'month'"
-    >
-      <span>هذا الشهر</span>
-    </button>
-  </div>
-
-  <!-- Summary KPI Cards -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-    <!-- Card 1: إجمالي الإيرادات -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4">
-      <div class="w-12 h-12 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
-        <span class="material-symbols-sharp text-2xl">account_balance_wallet</span>
-      </div>
-      <div class="space-y-1 min-w-0">
-        <p class="text-xs text-slate-400 font-medium truncate">إجمالي الإيرادات</p>
-        <p class="text-xl sm:text-2xl font-bold text-slate-900">
-          {{ totalRevenue() | number:'1.0-0' }} <span class="text-xs font-semibold text-orange-500">ج.م</span>
-        </p>
-      </div>
-    </div>
-
-    <!-- Card 2: إجمالي الطلبات -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4">
-      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
-        <span class="material-symbols-sharp text-2xl">receipt_long</span>
-      </div>
-      <div class="space-y-1 min-w-0">
-        <p class="text-xs text-slate-400 font-medium truncate">إجمالي الطلبات</p>
-        <p class="text-xl sm:text-2xl font-bold text-slate-900">
-          {{ totalOrders() | number }}
-        </p>
-      </div>
-    </div>
-
-    <!-- Card 3: متوسط قيمة الطلب -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4">
-      <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0">
-        <span class="material-symbols-sharp text-2xl">calculate</span>
-      </div>
-      <div class="space-y-1 min-w-0">
-        <p class="text-xs text-slate-400 font-medium truncate">متوسط قيمة الطلب</p>
-        <p class="text-xl sm:text-2xl font-bold text-slate-900">
-          {{ averageOrderValue() | number:'1.0-0' }} <span class="text-xs font-semibold text-slate-400">ج.م</span>
-        </p>
-      </div>
-    </div>
-
-    <!-- Card 4: الطلبات المكتملة -->
-    <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4">
-      <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-        <span class="material-symbols-sharp text-2xl">check_circle</span>
-      </div>
-      <div class="space-y-1 min-w-0">
-        <p class="text-xs text-slate-400 font-medium truncate">طلبات مكتملة بنجاح</p>
-        <p class="text-xl sm:text-2xl font-bold text-slate-900">
-          {{ totalCompletedOrders() | number }}
-        </p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Loading State -->
-  @if (isLoading()) {
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-12 text-center space-y-3">
-      <div class="w-10 h-10 border-3 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-      <p class="text-sm font-semibold text-slate-600">جاري تحميل بيانات التقارير اليومية من السيرفر...</p>
-    </div>
-  }
-
-  <!-- Daily Breakdown Table -->
-  @if (!isLoading()) {
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 sm:p-6 space-y-4">
-      <div class="flex items-center justify-between pb-1">
-        <h2 class="text-base sm:text-lg font-bold text-slate-900">
-          تفاصيل الطلبات اليومية
-        </h2>
-        <span class="text-xs text-slate-400 font-medium">
-          Swagger API: <code class="text-orange-500 font-bold" dir="ltr">/Reports/DailyMenuOrders</code>
+        <!-- Trend Pill Badge -->
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600">
+          <span class="material-symbols-sharp text-xs">trending_up</span>
+          <span>{{ kpis().ordersGrowth }}</span>
         </span>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-right border-collapse">
-          <thead>
-            <tr class="border-b border-gray-100 text-xs font-bold text-slate-400">
-              <th class="pb-3 text-right">التاريخ واليوم</th>
-              <th class="pb-3 text-center w-28">عدد الطلبات</th>
-              <th class="pb-3 text-center w-28">الطلبات المكتملة</th>
-              <th class="pb-3 text-center w-28">الطلبات الملغاة</th>
-              <th class="pb-3 text-center w-32">متوسط الطلب</th>
-              <th class="pb-3 text-left w-36">إجمالي الإيراد</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-50">
-            @for (row of reports(); track row.id) {
-              <tr class="align-middle">
-                <!-- Date & Day -->
-                <td class="py-4 pr-0 pl-3">
-                  <div class="flex items-center gap-2">
-                    <span class="material-symbols-sharp text-base text-slate-400">calendar_today</span>
-                    <div>
-                      <p class="font-bold text-sm text-slate-900">{{ row.date }}</p>
-                      <p class="text-xs text-slate-400">{{ row.dayName }}</p>
-                    </div>
-                  </div>
-                </td>
-
-                <!-- Total Orders -->
-                <td class="py-4 px-2 text-center font-bold text-slate-800 text-sm">
-                  {{ row.totalOrders }}
-                </td>
-
-                <!-- Completed -->
-                <td class="py-4 px-2 text-center">
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold text-xs">
-                    {{ row.completedOrders }}
-                  </span>
-                </td>
-
-                <!-- Cancelled -->
-                <td class="py-4 px-2 text-center">
-                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold text-xs">
-                    {{ row.cancelledOrders }}
-                  </span>
-                </td>
-
-                <!-- Average Value -->
-                <td class="py-4 px-2 text-center font-semibold text-slate-700 text-xs sm:text-sm">
-                  {{ row.averageOrderValue | number:'1.0-0' }} ج.م
-                </td>
-
-                <!-- Revenue -->
-                <td class="py-4 pl-0 pr-2 text-left font-bold text-orange-500 text-sm sm:text-base whitespace-nowrap">
-                  {{ row.totalRevenue | number:'1.0-0' }} ج.م
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+      <div class="text-right space-y-1">
+        <span class="text-xs sm:text-sm text-slate-400 font-medium block">إجمالي الطلبات</span>
+        <p class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          {{ kpis().totalOrders | number }}
+        </p>
       </div>
     </div>
-  }
-</div>
 
+    <!-- Card 2: الإجمالي -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col justify-between gap-4 select-none">
+      <div class="flex items-center justify-between">
+        <!-- Circular Icon -->
+        <div class="w-11 h-11 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+          <span class="material-symbols-sharp text-xl text-orange-500">menu_book</span>
+        </div>
+
+        <!-- Trend Pill Badge -->
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600">
+          <span class="material-symbols-sharp text-xs">trending_up</span>
+          <span>{{ kpis().revenueGrowth }}</span>
+        </span>
+      </div>
+
+      <div class="text-right space-y-1">
+        <span class="text-xs sm:text-sm text-slate-400 font-medium block">الإجمالي</span>
+        <p class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          {{ kpis().totalRevenue | number }} ج.م
+        </p>
+      </div>
+    </div>
+
+    <!-- Card 3: عدد المشترين -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col justify-between gap-4 select-none">
+      <div class="flex items-center justify-between">
+        <!-- Circular Icon -->
+        <div class="w-11 h-11 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+          <span class="material-symbols-sharp text-xl text-orange-500">groups</span>
+        </div>
+
+        <!-- Trend Pill Badge -->
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600">
+          <span class="material-symbols-sharp text-xs">trending_up</span>
+          <span>{{ kpis().customerGrowth }}</span>
+        </span>
+      </div>
+
+      <div class="text-right space-y-1">
+        <span class="text-xs sm:text-sm text-slate-400 font-medium block">عدد المشترين</span>
+        <p class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          {{ kpis().customerCount | number }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Card 4: عدد الزوار -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col justify-between gap-4 select-none">
+      <div class="flex items-center justify-between">
+        <!-- Circular Icon -->
+        <div class="w-11 h-11 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+          <span class="material-symbols-sharp text-xl text-orange-500">visibility</span>
+        </div>
+
+        <!-- Trend Pill Badge (Gray neutral in screenshot) -->
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-500">
+          <span>{{ kpis().visitorsGrowth }}</span>
+        </span>
+      </div>
+
+      <div class="text-right space-y-1">
+        <span class="text-xs sm:text-sm text-slate-400 font-medium block">عدد الزوار</span>
+        <p class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+          {{ kpis().visitorsCount | number }}
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3. سجل التقارير اليومية (Exact match to Screenshot 1)     -->
+  <!-- ======================================================== -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-6 space-y-6">
+
+    <!-- Section Header -->
+    <div class="flex items-center justify-between pb-1">
+      <!-- Title with Orange Pill Accent on Right -->
+      <div class="flex items-center gap-2.5">
+        <span class="w-1.5 h-6 rounded-full bg-orange-500 shrink-0 inline-block"></span>
+        <h2 class="text-base sm:text-lg font-bold text-slate-900">سجل التقارير اليومية</h2>
+      </div>
+
+      <!-- Left Orange Link: عرض جميع الأيام -->
+      <button
+        type="button"
+        (click)="toggleShowAllDays()"
+        class="text-xs sm:text-sm font-bold text-orange-500 cursor-pointer flex items-center gap-1"
+      >
+        <span>{{ showAllDays() ? 'عرض أقل' : 'عرض جميع الأيام' }}</span>
+        <span class="material-symbols-sharp text-sm">
+          {{ showAllDays() ? 'expand_less' : 'expand_more' }}
+        </span>
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="py-12 text-center space-y-3">
+        <div class="w-9 h-9 border-[3px] border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <p class="text-xs font-semibold text-slate-400">جاري تحميل التقارير من السيرفر...</p>
+      </div>
+    }
+
+    <!-- 2-Column Grid of Daily Report Cards (Matching Screenshot 1) -->
+    @if (!isLoading()) {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+        @for (item of reportItems(); track item.id) {
+          <app-report-item-card [item]="item" />
+        }
+      </div>
+    }
+
+  </div>
+
+</div>

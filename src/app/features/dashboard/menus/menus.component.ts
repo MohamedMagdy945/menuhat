@@ -4,13 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { MenuCategoriesService, MenuMainCategory, MenuSubCategory } from '../../../core/services/menu-categories.service';
+import { MenuCardComponent, MenuRestaurantCardData } from './components/menu-card/menu-card.component';
+import { MenuDetailsComponent } from './components/menu-details/menu-details.component';
 
-export type MenuViewMode = 'card' | 'settings' | 'categories' | 'subcategories';
+export type MenuViewSubSection = 'none' | 'categories' | 'subcategories';
 
 @Component({
   selector: 'app-dashboard-menus',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterLink,
+    MenuCardComponent,
+    MenuDetailsComponent,
+  ],
   templateUrl: './menus.component.html',
   styleUrl: './menus.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,9 +27,10 @@ export class MenusComponent implements OnInit {
   protected readonly dashboardService = inject(DashboardService);
   protected readonly menuCategoriesService = inject(MenuCategoriesService);
 
-  readonly viewMode = signal<MenuViewMode>('card');
+  readonly isDetailsOpen = signal<boolean>(false);
+  readonly subSection = signal<MenuViewSubSection>('none');
 
-  // Toggle Switches matching screenshot 2
+  // Toggle Switches matching mobile design
   readonly isMenuClosed = signal<boolean>(false);
   readonly isMenuHidden = signal<boolean>(true);
 
@@ -39,12 +48,12 @@ export class MenusComponent implements OnInit {
   readonly newSubCategoryName = signal<string>('');
   readonly selectedMainCatId = signal<number>(1);
 
-  // Categories from service
+  // Categories signals
   readonly mainCategories = this.menuCategoriesService.mainCategories;
   readonly subCategories = this.menuCategoriesService.subCategories;
   readonly isLoadingCategories = this.menuCategoriesService.isLoading;
 
-  readonly restaurant = computed(() => {
+  readonly restaurant = computed<MenuRestaurantCardData>(() => {
     const data = this.dashboardService.dashboardData();
     const rest = data?.restaurant;
     return {
@@ -77,8 +86,29 @@ export class MenusComponent implements OnInit {
     }
   }
 
-  setViewMode(mode: MenuViewMode): void {
-    this.viewMode.set(mode);
+  openDetails(): void {
+    this.isDetailsOpen.set(true);
+    this.subSection.set('none');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  closeDetails(): void {
+    if (this.subSection() !== 'none') {
+      this.subSection.set('none');
+      return;
+    }
+    this.isDetailsOpen.set(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  openCategories(): void {
+    this.subSection.set('categories');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  openSubCategories(): void {
+    this.subSection.set('subcategories');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   toggleCloseMenu(): void {
