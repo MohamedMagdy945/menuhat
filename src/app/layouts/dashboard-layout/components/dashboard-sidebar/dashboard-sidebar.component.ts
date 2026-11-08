@@ -59,7 +59,7 @@ export class DashboardSidebarComponent {
     },
     {
       id: 'menu',
-      label: 'قائمة الطعام',
+      label: 'المنيو',
       icon: 'restaurant_menu',
       route: '/dashboard/menu',
     },

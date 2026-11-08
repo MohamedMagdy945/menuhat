@@ -1,292 +1,313 @@
 <div class="space-y-6">
-  <!-- Page Header (Style from Image 2) -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
-    <!-- Right side (in RTL): Icon + Title & Pill + Subtitle -->
-    <div class="flex items-center gap-3.5">
-      <!-- Peach rounded-2xl square icon box with cutlery icon -->
-      <div
-        class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100/80 flex items-center justify-center shrink-0 shadow-xs"
-      >
-        <span class="material-symbols-sharp text-2xl text-orange-500 select-none">
-          restaurant
-        </span>
+
+  <!-- ======================================================== -->
+  <!-- VIEW 1: SINGLE ORDER DETAILS (When activeOrderId is set) -->
+  <!-- ======================================================== -->
+  @if (activeOrderId()) {
+    <!-- Details Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs">
+          <span class="material-symbols-sharp text-2xl text-orange-500">restaurant</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              تفاصيل الطلب
+            </h1>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-50 text-sky-600 border border-sky-100 shrink-0">
+              {{ currentOrder()?.orderCode || '#' + activeOrderId() }}
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+            متابعة وإدارة تفاصيل الطلب والعميل
+          </p>
+        </div>
       </div>
 
-      <div>
-        <div class="flex items-center gap-2.5">
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
-            تفاصيل الطلب
-          </h1>
-          <span
-            class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-50 text-sky-600 border border-sky-100 shrink-0"
-          >
-            {{ order()?.orderCode || '#1024' }}
-          </span>
-        </div>
-        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
-          متابعة وإدارة تفاصيل الطلب، المنتجات والعميل
-        </p>
-      </div>
+      <button type="button" (click)="backToList()"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs w-fit">
+        <span class="material-symbols-sharp text-base text-slate-500">arrow_forward</span>
+        <span>العودة لقائمة الطلبات</span>
+      </button>
     </div>
 
-    <!-- Left side (in RTL): Action buttons (Receive, Cancel, Print receipt & Back to Dashboard) -->
-    <div class="flex items-center gap-2 flex-wrap">
-      @if (order(); as ord) {
-        @if (ord.statusId !== 1 && ord.statusId !== 2) {
-          <button
-            type="button"
-            (click)="receiveCurrentOrder()"
-            [disabled]="actionInProgress()"
-            class="bg-emerald-600 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs disabled:opacity-50"
-            title="استلام الطلب وتأكيده (MenusOrders/Receive)"
-          >
-            <span class="material-symbols-sharp text-base">check_circle</span>
-            <span>استلام الطلب</span>
-          </button>
+    <!-- Loading Order Details -->
+    @if (isLoadingOrder()) {
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-14 text-center space-y-3">
+        <div class="w-10 h-10 border-[3px] border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <p class="text-sm font-semibold text-slate-500">جاري تحميل تفاصيل الطلب...</p>
+      </div>
+    }
 
-          <button
-            type="button"
-            (click)="cancelCurrentOrder()"
-            [disabled]="actionInProgress()"
-            class="bg-white border border-red-200 text-red-500 font-semibold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs disabled:opacity-50"
-            title="إلغاء الطلب (MenusOrders/Cancel)"
-          >
-            <span class="material-symbols-sharp text-base">cancel</span>
-            <span>إلغاء</span>
-          </button>
-        }
-      }
+    <!-- Order Details Component -->
+    @if (!isLoadingOrder() && currentOrder(); as ord) {
+      <app-order-details
+        [order]="ord"
+        [actionInProgress]="actionInProgress()"
+        (onReceive)="receiveCurrentOrder()"
+        (onCancel)="cancelCurrentOrder()"
+        (onPrint)="printOrder()" />
+    }
+  }
 
-      <button
-        type="button"
-        (click)="printOrder()"
-        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
-        title="طباعة الفاتورة"
-      >
-        <span class="material-symbols-sharp text-base text-slate-500">print</span>
-        <span>طباعة الإيصال</span>
-      </button>
+  <!-- ======================================================== -->
+  <!-- VIEW 2: ALL ORDERS LIST WITH PAGINATION (Default View)   -->
+  <!-- ======================================================== -->
+  @if (!activeOrderId()) {
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs">
+          <span class="material-symbols-sharp text-2xl text-orange-500">receipt_long</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">الطلبات</h1>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100 shrink-0">
+              {{ allOrders().length }} طلب
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-400 mt-0.5">متابعة وإدارة جميع طلبات المطعم</p>
+        </div>
+      </div>
 
-      <a
-        routerLink="/dashboard"
-        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs"
-      >
+      <a routerLink="/dashboard"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs w-fit">
         <span class="material-symbols-sharp text-base text-slate-500">arrow_forward</span>
         <span>لوحة التحكم</span>
       </a>
     </div>
-  </div>
 
-  <!-- Quick Order Switcher (Recent Orders) -->
-  <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scroll">
-    <span class="text-xs font-semibold text-slate-400 shrink-0">الطلبات:</span>
-    @for (rec of recentOrders(); track rec.id) {
+    <!-- Search Bar (Matching Mobile App Screenshot) -->
+    <div class="relative w-full">
+      <input
+        type="text"
+        [value]="searchQuery()"
+        (input)="onSearch($any($event.target).value)"
+        placeholder="ابحث رقم الأوردر أو رقم الهاتف"
+        class="w-full bg-white border border-gray-100 rounded-full py-3 pr-11 pl-4 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 " />
+      <span class="material-symbols-sharp absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none">
+        search
+      </span>
+      @if (searchQuery()) {
+        <button
+          type="button"
+          (click)="onSearch('')"
+          class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm cursor-pointer">
+          ✕
+        </button>
+      }
+    </div>
+
+    <!-- Filter Pills (الكل / قيد الانتظار / جاري التجهيز / اليوم / المكتملة / المرفوضة) -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <!-- الكل -->
       <button
         type="button"
-        (click)="selectOrder(rec.id)"
-        class="px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer shrink-0 transition-colors shadow-xs"
-        [class.bg-orange-500]="activeOrderId() === rec.id"
-        [class.text-white]="activeOrderId() === rec.id"
-        [class.bg-white]="activeOrderId() !== rec.id"
-        [class.text-slate-700]="activeOrderId() !== rec.id"
-        [class.border]="activeOrderId() !== rec.id"
-        [class.border-gray-200]="activeOrderId() !== rec.id"
-      >
-        <span>{{ rec.code }}</span>
-        <span class="text-[10px] opacity-75 mr-1 font-normal">({{ rec.name }})</span>
+        (click)="setTab('all')"
+        class="px-5 py-2 rounded-full text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap "
+        [class.bg-orange-500]="selectedTab() === 'all'"
+        [class.text-white]="selectedTab() === 'all'"
+        [class.bg-white]="selectedTab() !== 'all'"
+        [class.text-slate-600]="selectedTab() !== 'all'"
+        [class.border]="selectedTab() !== 'all'"
+        [class.border-gray-100]="selectedTab() !== 'all'">
+        الكل
       </button>
+
+      <!-- قيد الانتظار -->
+      <button
+        type="button"
+        (click)="setTab('pending')"
+        class="px-5 py-2 rounded-full text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap "
+        [class.bg-orange-500]="selectedTab() === 'pending'"
+        [class.text-white]="selectedTab() === 'pending'"
+        [class.bg-white]="selectedTab() !== 'pending'"
+        [class.text-slate-600]="selectedTab() !== 'pending'"
+        [class.border]="selectedTab() !== 'pending'"
+        [class.border-gray-100]="selectedTab() !== 'pending'">
+        قيد الانتظار
+      </button>
+
+      <!-- جاري التجهيز -->
+      <button
+        type="button"
+        (click)="setTab('preparing')"
+        class="px-5 py-2 rounded-full text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap "
+        [class.bg-orange-500]="selectedTab() === 'preparing'"
+        [class.text-white]="selectedTab() === 'preparing'"
+        [class.bg-white]="selectedTab() !== 'preparing'"
+        [class.text-slate-600]="selectedTab() !== 'preparing'"
+        [class.border]="selectedTab() !== 'preparing'"
+        [class.border-gray-100]="selectedTab() !== 'preparing'">
+        جاري التجهيز
+      </button>
+
+      <!-- اليوم -->
+      <button
+        type="button"
+        (click)="setTab('today')"
+        class="px-5 py-2 rounded-full text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap "
+        [class.bg-orange-500]="selectedTab() === 'today'"
+        [class.text-white]="selectedTab() === 'today'"
+        [class.bg-white]="selectedTab() !== 'today'"
+        [class.text-slate-600]="selectedTab() !== 'today'"
+        [class.border]="selectedTab() !== 'today'"
+        [class.border-gray-100]="selectedTab() !== 'today'">
+        اليوم
+      </button>
+
+      <!-- المكتملة -->
+      <button
+        type="button"
+        (click)="setTab('completed')"
+        class="px-5 py-2 rounded-full text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap "
+        [class.bg-orange-500]="selectedTab() === 'completed'"
+        [class.text-white]="selectedTab() === 'completed'"
+        [class.bg-white]="selectedTab() !== 'completed'"
+        [class.text-slate-600]="selectedTab() !== 'completed'"
+        [class.border]="selectedTab() !== 'completed'"
+        [class.border-gray-100]="selectedTab() !== 'completed'">
+        المكتملة
+      </button>
+
+      <!-- المرفوضة -->
+      <button
+        type="button"
+        (click)="setTab('rejected')"
+        class="px-5 py-2 rounded-full text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap "
+        [class.bg-orange-500]="selectedTab() === 'rejected'"
+        [class.text-white]="selectedTab() === 'rejected'"
+        [class.bg-white]="selectedTab() !== 'rejected'"
+        [class.text-slate-600]="selectedTab() !== 'rejected'"
+        [class.border]="selectedTab() !== 'rejected'"
+        [class.border-gray-100]="selectedTab() !== 'rejected'">
+        المرفوضة
+      </button>
+    </div>
+
+    <!-- Section Heading (الطلبات الحالية / عرض الكل) -->
+    <div class="flex items-center justify-between pt-1">
+      <h2 class="text-base sm:text-lg font-bold text-slate-900">الطلبات الحالية</h2>
+      <button
+        type="button"
+        (click)="setTab('all')"
+        class="text-xs sm:text-sm font-bold text-orange-500 cursor-pointer">
+        عرض الكل
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-14 text-center space-y-3">
+        <div class="w-10 h-10 border-[3px] border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <p class="text-sm font-semibold text-slate-500">جاري تحميل الطلبات...</p>
+      </div>
     }
-  </div>
 
-  <!-- Loading State -->
-  @if (isLoading()) {
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-12 text-center space-y-3">
-      <div class="w-10 h-10 border-3 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-      <p class="text-sm font-semibold text-slate-600">جاري تحميل بيانات الطلب من السيرفر...</p>
-    </div>
+    <!-- Orders List -->
+    @if (!isLoading()) {
+      @if (pagedOrders().length > 0) {
+        <div class="flex flex-col gap-3">
+          @for (order of pagedOrders(); track order.id) {
+            <app-order-card
+              [order]="order"
+              (onAccept)="acceptOrder($event)"
+              (onReject)="rejectOrder($event)" />
+          }
+        </div>
+      } @else {
+        <!-- Empty State -->
+        <div class="p-14 text-center bg-white rounded-2xl border border-gray-100 shadow-sm space-y-3">
+          <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto">
+            <span class="material-symbols-sharp text-4xl text-slate-300">receipt_long</span>
+          </div>
+          <p class="text-base font-bold text-slate-700">لا توجد طلبات تطابق البحث أو الفلتر</p>
+          <p class="text-sm text-slate-400">يمكنك تعديل البحث أو اختيار فلتر آخر</p>
+        </div>
+      }
+
+      <!-- Pagination Controls -->
+      @if (totalPages() > 1) {
+        <div class="flex items-center justify-center gap-2 pt-2 flex-wrap">
+
+          <!-- Prev -->
+          <button type="button" (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1"
+            class="w-9 h-9 rounded-xl border border-gray-200 bg-white text-slate-600 font-bold flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs">
+            <span class="material-symbols-sharp text-lg">chevron_right</span>
+          </button>
+
+          <!-- First page if not shown -->
+          @if (pages()[0] > 1) {
+            <button type="button" (click)="goToPage(1)"
+              class="w-9 h-9 rounded-xl border border-gray-200 bg-white text-slate-700 text-sm font-semibold cursor-pointer shadow-xs">
+              1
+            </button>
+            @if (pages()[0] > 2) {
+              <span class="text-slate-400 text-sm px-1">...</span>
+            }
+          }
+
+          <!-- Page Numbers -->
+          @for (page of pages(); track page) {
+            <button type="button" (click)="goToPage(page)"
+              class="w-9 h-9 rounded-xl text-sm font-bold cursor-pointer shadow-xs"
+              [class.bg-orange-500]="currentPage() === page"
+              [class.text-white]="currentPage() === page"
+              [class.border-orange-500]="currentPage() === page"
+              [class.border]="currentPage() === page"
+              [class.bg-white]="currentPage() !== page"
+              [class.text-slate-700]="currentPage() !== page"
+              [class.border-gray-200]="currentPage() !== page"
+              [class.border]="currentPage() !== page">
+              {{ page }}
+            </button>
+          }
+
+          <!-- Last page if not shown -->
+          @if (pages()[pages().length - 1] < totalPages()) {
+            @if (pages()[pages().length - 1] < totalPages() - 1) {
+              <span class="text-slate-400 text-sm px-1">...</span>
+            }
+            <button type="button" (click)="goToPage(totalPages())"
+              class="w-9 h-9 rounded-xl border border-gray-200 bg-white text-slate-700 text-sm font-semibold cursor-pointer shadow-xs">
+              {{ totalPages() }}
+            </button>
+          }
+
+          <!-- Next -->
+          <button type="button" (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()"
+            class="w-9 h-9 rounded-xl border border-gray-200 bg-white text-slate-600 font-bold flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-xs">
+            <span class="material-symbols-sharp text-lg">chevron_left</span>
+          </button>
+
+        </div>
+
+        <!-- Page Info -->
+        <p class="text-center text-xs text-slate-400">
+          صفحة {{ currentPage() }} من {{ totalPages() }} • إجمالي {{ allOrders().length }} طلب
+        </p>
+      }
+    }
   }
 
-  <!-- Order Content Layout (Matching Image 1 Exactly) -->
-  @if (!isLoading() && order(); as ord) {
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      <!-- ======================================================== -->
-      <!-- RIGHT COLUMN: MAIN ORDER & PRODUCTS (8 Cols in LG) -->
-      <!-- ======================================================== -->
-      <section class="lg:col-span-8 space-y-6">
-        <!-- 1. Top Order Summary Card -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 sm:p-6 space-y-5">
-          <!-- Top Row: Order Number + Status Pill -->
-          <div class="flex items-center justify-between">
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              {{ ord.orderCode }}
-            </h2>
-
-            <!-- Status Pill (Image 1: • تم التحضير) -->
-            <span
-              class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-200"
-            >
-              <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
-              <span>{{ ord.statusLabel }}</span>
-            </span>
-          </div>
-
-          <!-- 3 Info Boxes Grid (Order Code, Date/Time, Order Type & Seating) -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
-            <!-- Box 1: كود الطلب -->
-            <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
-              <span class="text-xs font-medium text-slate-400 block">كود الطلب</span>
-              <p class="text-base font-bold text-slate-900 tracking-wide">
-                {{ ord.orderCode }}
-              </p>
-            </div>
-
-            <!-- Box 2: التاريخ والوقت -->
-            <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
-              <span class="text-xs font-medium text-slate-400 block">التاريخ والوقت</span>
-              <p class="text-base font-bold text-slate-900">
-                {{ ord.dateTime }}
-              </p>
-            </div>
-
-            <!-- Box 3: نوع الطلب والجلوس -->
-            <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 text-center space-y-1">
-              <span class="text-xs font-medium text-slate-400 block">نوع الطلب والجلوس</span>
-              <p class="text-base font-bold text-slate-900">
-                {{ ord.orderType }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Products List Card (المنتجات المطلوبة) -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 sm:p-6 space-y-4">
-          <!-- Card Header: Title + Items Count Badge -->
-          <div class="flex items-center justify-between pb-1">
-            <h3 class="text-base sm:text-lg font-bold text-slate-900">
-              المنتجات المطلوبة
-            </h3>
-            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
-              {{ ord.itemsCount }} أصناف
-            </span>
-          </div>
-
-          <!-- Table Container -->
-          <div class="overflow-x-auto">
-            <table class="w-full text-right border-collapse">
-              <thead>
-                <tr class="border-b border-gray-100 text-xs font-bold text-slate-400">
-                  <th class="pb-3 font-semibold text-right">الصنف والتفاصيل</th>
-                  <th class="pb-3 font-semibold text-center w-24">الكمية</th>
-                  <th class="pb-3 font-semibold text-center w-28">سعر الوحدة</th>
-                  <th class="pb-3 font-semibold text-left w-28">الإجمالي</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-gray-50">
-                @for (item of ord.items; track item.id) {
-                  <tr class="align-middle">
-                    <!-- Product Info & Photo -->
-                    <td class="py-4 pr-0 pl-3">
-                      <div class="flex items-center gap-3">
-                        <img
-                          [src]="item.image"
-                          (error)="$any($event.target).src = '/images/default.png'"
-                          [alt]="item.name"
-                          class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shrink-0 bg-slate-100 border border-gray-100 shadow-xs"
-                        />
-                        <div class="min-w-0 space-y-0.5">
-                          <h4 class="font-bold text-sm sm:text-base text-slate-900">
-                            {{ item.name }}
-                          </h4>
-                          @if (item.description) {
-                            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2 max-w-md font-normal">
-                              {{ item.description }}
-                            </p>
-                          }
-                        </div>
-                      </div>
-                    </td>
-
-                    <!-- Quantity Pill (Image 1: 1×, 2× in rounded pill) -->
-                    <td class="py-4 px-2 text-center">
-                      <span
-                        class="inline-flex items-center justify-center px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200/60"
-                        dir="ltr"
-                      >
-                        {{ item.quantity }}×
-                      </span>
-                    </td>
-
-                    <!-- Unit Price -->
-                    <td class="py-4 px-2 text-center text-xs sm:text-sm font-semibold text-slate-700 whitespace-nowrap">
-                      {{ item.unitPrice | number:'1.0-2' }} {{ ord.currency }}
-                    </td>
-
-                    <!-- Total Price in Orange -->
-                    <td class="py-4 pl-0 pr-2 text-left text-xs sm:text-sm font-bold text-orange-500 whitespace-nowrap">
-                      {{ item.totalPrice | number:'1.0-2' }} {{ ord.currency }}
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ======================================================== -->
-      <!-- LEFT COLUMN: CUSTOMER & FINAL TOTAL (4 Cols in LG) -->
-      <!-- ======================================================== -->
-      <aside class="lg:col-span-4 space-y-6">
-        <!-- 1. Customer Information Card -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 space-y-3.5">
-          <!-- Customer Name -->
-          <h3 class="text-base sm:text-lg font-bold text-slate-900">
-            {{ ord.customerName }}
-          </h3>
-
-          <!-- Address Box -->
-          <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3.5 space-y-1">
-            <span class="text-[11px] font-medium text-slate-400 block">العنوان المسجل</span>
-            <p class="text-xs sm:text-sm font-semibold text-slate-700 leading-relaxed">
-              {{ ord.customerAddress }}
-            </p>
-          </div>
-
-          <!-- Phone Box -->
-          <div class="bg-slate-50/70 border border-slate-100 rounded-xl p-3 text-center">
-            <a
-              [href]="'tel:' + ord.customerPhone"
-              class="text-sm font-bold text-slate-800 tracking-wider block"
-              dir="ltr"
-            >
-              {{ ord.customerPhone }}
-            </a>
-          </div>
-        </div>
-
-        <!-- 2. Final Total Card (الإجمالي النهائي) -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 flex items-center justify-between gap-4">
-          <div>
-            <h4 class="text-base font-bold text-slate-900">
-              الإجمالي النهائي
-            </h4>
-            <p class="text-xs text-slate-400 mt-0.5">
-              شامل الضريبة والخدمة
-            </p>
-          </div>
-
-          <!-- Large Bold Orange Price (120 ج.م) -->
-          <div class="flex items-baseline gap-1 text-orange-500 font-extrabold">
-            <span class="text-3xl sm:text-4xl font-black">
-              {{ ord.totalPrice | number:'1.0-2' }}
-            </span>
-            <span class="text-sm font-bold">
-              {{ ord.currency }}
-            </span>
-          </div>
-        </div>
-      </aside>
-    </div>
+  <!-- Accept Order Modal -->
+  @if (selectedOrderForAccept(); as ord) {
+    <app-accept-order-modal
+      [orderNumber]="ord.orderNumber"
+      [customerName]="ord.customerName"
+      (confirm)="confirmAccept($event)"
+      (close)="closeAcceptModal()" />
   }
+
+  <!-- Reject Order Modal -->
+  @if (selectedOrderForReject(); as ord) {
+    <app-reject-order-modal
+      [orderNumber]="ord.orderNumber"
+      [customerName]="ord.customerName"
+      (confirm)="confirmReject($event)"
+      (close)="closeRejectModal()" />
+  }
+
 </div>
-

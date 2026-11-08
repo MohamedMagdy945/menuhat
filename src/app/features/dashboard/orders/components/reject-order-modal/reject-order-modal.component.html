@@ -1,0 +1,77 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4" dir="rtl">
+  <!-- Modal Card -->
+  <div class="relative w-full max-w-md rounded-3xl bg-white p-6 sm:p-7 shadow-2xl border border-gray-100 flex flex-col items-center text-center select-none">
+    
+    <!-- Close Button (Top Left in RTL) -->
+    <button
+      type="button"
+      (click)="close.emit()"
+      class="absolute top-4.5 left-4.5 text-slate-400 text-xl cursor-pointer w-8 h-8 rounded-full flex items-center justify-center"
+      aria-label="إغلاق">
+      ✕
+    </button>
+
+    <!-- Danger / Red Cancel Icon -->
+    <div class="w-14 h-14 rounded-full bg-red-50 border border-red-100 flex items-center justify-center text-red-500 mb-3.5 shrink-0">
+      <span class="material-symbols-sharp text-3xl leading-none">cancel</span>
+    </div>
+
+    <!-- Title -->
+    <h3 class="font-bold text-lg sm:text-xl text-slate-900 leading-snug">
+      تأكيد رفض أو إلغاء الطلب
+    </h3>
+
+    <!-- Description -->
+    <p class="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed">
+      هل أنت متأكد من رفض الطلب رقم <span class="font-bold text-slate-900">{{ orderNumber() }}</span> للعميل <span class="font-bold text-slate-900">{{ customerName() }}</span>؟ يرجى تحديد سبب الرفض.
+    </p>
+
+    <!-- Reason Input Section -->
+    <div class="w-full text-right mt-4">
+      <label class="block text-xs font-bold text-slate-800 mb-1.5">
+        سبب الرفض <span class="text-red-500">*</span>
+      </label>
+
+      <textarea
+        [value]="reason()"
+        (input)="onReasonInput($any($event.target).value)"
+        rows="3"
+        placeholder="اكتب سبب الرفض بالتفصيل هنا..."
+        class="w-full bg-white border rounded-2xl p-3.5 text-sm text-slate-800 placeholder-slate-400 focus:outline-none resize-none shadow-xs"
+        [class.border-red-400]="errorMessage()"
+        [class.border-gray-200]="!errorMessage()">
+      </textarea>
+
+      @if (errorMessage()) {
+        <p class="text-xs text-red-500 mt-1 font-semibold">{{ errorMessage() }}</p>
+      }
+
+      <!-- Helper Text -->
+      <p class="text-[11px] text-slate-400 mt-1.5">
+        سيتم إشعار العميل وشركة التوصيل بهذا السبب تلقائياً.
+      </p>
+    </div>
+
+    <!-- Action Buttons (تراجع / تأكيد) -->
+    <div class="flex items-center gap-3 w-full mt-6">
+      <!-- Cancel Button -->
+      <button
+        type="button"
+        (click)="close.emit()"
+        class="flex-1 py-3 px-4 rounded-2xl border border-gray-200 bg-white text-slate-600 font-bold text-sm text-center cursor-pointer">
+        تراجع
+      </button>
+
+      <!-- Confirm Reject Button -->
+      <button
+        type="button"
+        (click)="submit()"
+        class="flex-1 py-3 px-4 rounded-2xl bg-red-600 text-white font-bold text-sm text-center cursor-pointer flex items-center justify-center gap-1.5 shadow-xs">
+        <span class="material-symbols-sharp text-base leading-none">delete</span>
+        <span>تأكيد</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+

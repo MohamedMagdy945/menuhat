@@ -1,0 +1,42 @@
+<div
+  class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs flex flex-col gap-3 cursor-pointer select-none"
+  [routerLink]="['/dashboard/orders', order().id]">
+
+  <!-- Top Row: Customer Name on Right (in RTL), Status Pill on Left -->
+  <div class="flex items-start justify-between gap-3">
+    <!-- Customer Info -->
+    <div class="text-right max-w-[200px]">
+      <h3
+        class="text-base font-bold text-slate-800 leading-snug truncate"
+        [title]="order().customerName">
+        {{ order().customerName }}
+      </h3>
+      @if (order().orderNumber) {
+      <p class="text-xs text-slate-400 font-medium mt-0.5 truncate" dir="ltr">
+        {{ order().orderNumber }}
+      </p>
+      }
+    </div>
+
+    <!-- Status Badge Pill -->
+    <span
+      class="px-3.5 py-1 rounded-full text-xs font-semibold shrink-0 {{ order().statusColor }}">
+      {{ order().statusLabel }}
+    </span>
+  </div>
+
+  <!-- Bottom Row: Date & Time with Clock on Right (in RTL), Price on Left -->
+  <div class="flex items-center justify-between gap-3 pt-2 border-t border-slate-50 text-xs">
+    <!-- Date & Time with Clock Icon -->
+    <div class="flex items-center gap-1.5 text-slate-400 font-medium">
+      <span class="material-symbols-sharp text-sm text-slate-400 select-none">schedule</span>
+      <span>{{ order().time }}</span>
+    </div>
+
+    <!-- Price -->
+    <div class="font-bold text-orange-500 text-sm sm:text-base">
+      {{ order().formattedPrice || order().price }} ج.م
+    </div>
+  </div>
+</div>
+

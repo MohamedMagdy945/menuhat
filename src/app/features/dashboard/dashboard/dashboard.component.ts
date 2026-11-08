@@ -3,11 +3,12 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { environment } from '../../../core/environments/environment';
+import { DashboardOrderSectionComponent } from '../components/dashboard-order-section/dashboard-order-section.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, DashboardOrderSectionComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,23 +25,10 @@ export class DashboardComponent implements OnInit {
   }
 
   resolveImageUrl(url: string | null | undefined): string {
-    if (!url || typeof url !== 'string') return '';
-    const trimmed = url.trim();
-    if (!trimmed) return '';
-    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:')) {
-      return trimmed;
-    }
-    const cleanBase = environment.filesUrl.replace(/\/+$/, '');
-    if (trimmed.startsWith('/UploadedFiles')) {
-      const origin = cleanBase.replace(/\/UploadedFiles$/, '');
-      return `${origin}${trimmed}`;
-    }
-    if (trimmed.startsWith('UploadedFiles')) {
-      const origin = cleanBase.replace(/\/UploadedFiles$/, '');
-      return `${origin}/${trimmed}`;
-    }
-    const path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
-    return `${cleanBase}${path}`;
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const path = url.startsWith('/') ? url : `/${url}`;
+    return `${environment.filesUrl}${path}`;
   }
 
   readonly restaurant = computed(() => {
@@ -56,6 +44,7 @@ export class DashboardComponent implements OnInit {
         coverUrl: this.resolveImageUrl(data.restaurant.coverUrl),
         profileUrl: this.resolveImageUrl(data.restaurant.profileUrl),
         visitsCount: data.restaurant.visitsCount || 0,
+        backgroundColor: (data.restaurant as any)?.backgroundColor || (data.restaurant as any)?.bgColor || null,
       };
     }
     return {
@@ -68,6 +57,7 @@ export class DashboardComponent implements OnInit {
       coverUrl: '',
       profileUrl: '',
       visitsCount: 0,
+      backgroundColor: null,
     };
   });
 
@@ -79,7 +69,7 @@ export class DashboardComponent implements OnInit {
         id: 'total',
         title: 'إجمالي الطلبات',
         value: st?.totalOrders?.toString() ?? '0',
-        badge: st?.salesGrowthPercentage ? `+${st.salesGrowthPercentage}%` : null,
+        badge: st?.salesGrowthPercentage ? `+${st.salesGrowthPercentage}%` : '0.0%',
         badgeVariant: 'success',
         icon: 'receipt_long',
         iconBg: 'bg-orange-50 text-orange-500',
@@ -88,44 +78,33 @@ export class DashboardComponent implements OnInit {
         id: 'new',
         title: 'طلبات جديدة',
         value: st?.newOrders?.toString() ?? '0',
-        badge: (st?.newOrders ?? 0) > 0 ? 'جديد' : null,
+        badge: 'جديد',
         badgeVariant: 'warning',
         icon: 'notifications_active',
-        iconBg: 'bg-amber-50 text-amber-500',
+        iconBg: 'bg-orange-50 text-orange-500',
       },
       {
         id: 'preparing',
         title: 'قيد التجهيز',
         value: st?.preparingOrders?.toString() ?? '0',
         badge: null,
+        badgeVariant: 'default',
         icon: 'soup_kitchen',
-        iconBg: 'bg-blue-50 text-blue-500',
+        iconBg: 'bg-slate-100 text-slate-600',
       },
       {
         id: 'completed',
         title: 'مكتملة',
         value: st?.completedOrders?.toString() ?? '0',
         badge: null,
+        badgeVariant: 'default',
         icon: 'check_circle',
-        iconBg: 'bg-emerald-50 text-emerald-500',
+        iconBg: 'bg-emerald-50 text-emerald-600',
       },
     ];
   });
 
-  readonly orders = computed(() => {
-    const data = this.dashboardData();
-    const list = data?.currentOrders ?? [];
-    return list.map((order: any, index: number) => ({
-      id: order.id ?? (index + 1).toString(),
-      orderNumber: order.orderNumber ?? order.number ?? `#${order.id ?? index + 100}`,
-      customerName: order.customerName ?? order.clientName ?? order.name ?? 'عميل',
-      time: order.time ?? order.createdAt ?? 'الآن',
-      price: order.price ?? order.total ?? order.amount ?? 0,
-      status: order.status ?? 'new',
-      statusLabel: order.statusLabel ?? order.status ?? 'جديد',
-      statusColor: order.statusColor ?? 'bg-sky-50 text-sky-600 border border-sky-100',
-    }));
-  });
+  readonly orders = this.dashboardService.orders;
 
   toggleStatus(): void {
     this.dashboardService.toggleRestaurantStatus();

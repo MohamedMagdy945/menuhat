@@ -1,20 +1,11 @@
 import { Component, ChangeDetectionStrategy, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MenuCategoriesService } from '../../../core/services/menu-categories.service';
+import { RouterLink } from '@angular/router';
+import { DashboardService } from '../../../core/services/dashboard.service';
+import { MenuCategoriesService, MenuMainCategory, MenuSubCategory } from '../../../core/services/menu-categories.service';
 
-export interface DashboardMenuItem {
-  id: string;
-  name: string;
-  nameEn?: string;
-  category: string;
-  categoryId: string;
-  price: number;
-  description: string;
-  image: string;
-  isAvailable: boolean;
-  ordersCount: number;
-}
+export type MenuViewMode = 'card' | 'settings' | 'categories' | 'subcategories';
 
 @Component({
   selector: 'app-dashboard-menus',
@@ -25,132 +16,163 @@ export interface DashboardMenuItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenusComponent implements OnInit {
+  protected readonly dashboardService = inject(DashboardService);
   protected readonly menuCategoriesService = inject(MenuCategoriesService);
 
-  readonly searchQuery = signal<string>('');
-  readonly selectedCategoryId = signal<string>('all');
+  readonly viewMode = signal<MenuViewMode>('card');
 
-  readonly defaultCategories = [
-    { id: 'all', name: 'الكل' },
-    { id: 'mandi', name: 'وجبات مندي' },
-    { id: 'grills', name: 'مشويات وكباب' },
-    { id: 'appetizers', name: 'مقبلات وسلطات' },
-    { id: 'drinks', name: 'مشروبات' },
-    { id: 'desserts', name: 'حلويات' },
-  ];
+  // Toggle Switches matching screenshot 2
+  readonly isMenuClosed = signal<boolean>(false);
+  readonly isMenuHidden = signal<boolean>(true);
 
-  readonly categories = computed(() => {
-    const apiCats = this.menuCategoriesService.mainCategories();
-    if (apiCats && apiCats.length > 0) {
-      return [
-        { id: 'all', name: 'الكل' },
-        ...apiCats.map((c) => ({ id: String(c.id), name: c.name })),
-      ];
-    }
-    return this.defaultCategories;
+  // Modals state
+  readonly showQrModal = signal<boolean>(false);
+  readonly showDeletePdfModal = signal<boolean>(false);
+  readonly showEditInfoModal = signal<boolean>(false);
+  readonly showAddCategoryModal = signal<boolean>(false);
+  readonly showAddSubCategoryModal = signal<boolean>(false);
+
+  // Form inputs
+  readonly editName = signal<string>('');
+  readonly editLocation = signal<string>('');
+  readonly newCategoryName = signal<string>('');
+  readonly newSubCategoryName = signal<string>('');
+  readonly selectedMainCatId = signal<number>(1);
+
+  // Categories from service
+  readonly mainCategories = this.menuCategoriesService.mainCategories;
+  readonly subCategories = this.menuCategoriesService.subCategories;
+  readonly isLoadingCategories = this.menuCategoriesService.isLoading;
+
+  readonly restaurant = computed(() => {
+    const data = this.dashboardService.dashboardData();
+    const rest = data?.restaurant;
+    return {
+      id: rest?.id ?? 0,
+      name: rest?.name || 'كومبو سفن فودز',
+      location: rest?.location || 'السادس من أكتوبر، القاهرة',
+      isOpen: !this.isMenuClosed(),
+      isVisible: !this.isMenuHidden(),
+      coverUrl: rest?.coverUrl ? this.dashboardService.resolveImageUrl(rest.coverUrl) : 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&auto=format&fit=crop&q=80',
+      profileUrl: rest?.profileUrl ? this.dashboardService.resolveImageUrl(rest.profileUrl) : '',
+      pdfUrl: rest?.pdfUrl ? this.dashboardService.resolveImageUrl(rest.pdfUrl) : '',
+      qrCodeUrl: rest?.qrCodeUrl ? this.dashboardService.resolveImageUrl(rest.qrCodeUrl) : '',
+      visitsCount: rest?.visitsCount || 6714,
+    };
   });
-
-  readonly menuItems = signal<DashboardMenuItem[]>([
-    {
-      id: '1',
-      name: 'نصف تيس مندي فاخر',
-      nameEn: 'Half Mandi Goat',
-      category: 'وجبات مندي',
-      categoryId: 'mandi',
-      price: 650,
-      description: 'لحم بلدي طازج مطهو على الحطب مع أرز بسمتي بالزعفران والمكسرات والخلطة السرية',
-      image: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=500&auto=format&fit=crop&q=80',
-      isAvailable: true,
-      ordersCount: 320,
-    },
-    {
-      id: '2',
-      name: 'وجبة نصف دجاجة مندي',
-      nameEn: 'Half Chicken Mandi',
-      category: 'وجبات مندي',
-      categoryId: 'mandi',
-      price: 130,
-      description: 'نصف دجاجة مندي طازجة مع أرز مندي مبهر، دقوس حار، وطحينة',
-      image: 'https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=500&auto=format&fit=crop&q=80',
-      isAvailable: true,
-      ordersCount: 480,
-    },
-    {
-      id: '3',
-      name: 'كيلو كباب ضأن مشوي',
-      nameEn: 'Lamb Kebab 1KG',
-      category: 'مشويات وكباب',
-      categoryId: 'grills',
-      price: 490,
-      description: 'كباب لحم ضأن طازج مفروم مع التوابل الشرقية مشوي على الفحم',
-      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&auto=format&fit=crop&q=80',
-      isAvailable: true,
-      ordersCount: 215,
-    },
-    {
-      id: '4',
-      name: 'متبل باذنجان مدخن',
-      nameEn: 'Smoked Mutabbal',
-      category: 'مقبلات وسلطات',
-      categoryId: 'appetizers',
-      price: 45,
-      description: 'باذنجان مشوي على الفحم مع الطحينة، الليمون، وزيت الزيتون البكر',
-      image: 'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?w=500&auto=format&fit=crop&q=80',
-      isAvailable: true,
-      ordersCount: 160,
-    },
-    {
-      id: '5',
-      name: 'كنافة نابلسية بالجبنة',
-      nameEn: 'Cheese Kunafa',
-      category: 'حلويات',
-      categoryId: 'desserts',
-      price: 70,
-      description: 'كنافة ساخنة بالجبنة العكاوية مع الشيرة والفستق الحلبي',
-      image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500&auto=format&fit=crop&q=80',
-      isAvailable: false,
-      ordersCount: 95,
-    },
-    {
-      id: '6',
-      name: 'عصير برتقال طازج',
-      nameEn: 'Fresh Orange Juice',
-      category: 'مشروبات',
-      categoryId: 'drinks',
-      price: 35,
-      description: 'عصير برتقال طبيعي معصور طازجاً بدون إضافة سكر',
-      image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=500&auto=format&fit=crop&q=80',
-      isAvailable: true,
-      ordersCount: 140,
-    },
-  ]);
 
   ngOnInit(): void {
-    // Fetch categories from Swagger API: /MenuMainCategories/GetAll
+    if (!this.dashboardService.dashboardData()) {
+      this.dashboardService.loadDashboard();
+    }
     this.menuCategoriesService.getAllMainCategories().subscribe();
+    this.menuCategoriesService.getAllSubCategories().subscribe();
+
+    const data = this.dashboardService.dashboardData();
+    if (data?.restaurant) {
+      this.isMenuClosed.set(data.restaurant.isOpen === false);
+      this.isMenuHidden.set(data.restaurant.isVisible === false);
+      this.editName.set(data.restaurant.name || '');
+      this.editLocation.set(data.restaurant.location || '');
+    }
   }
 
-  readonly filteredItems = computed(() => {
-    const q = this.searchQuery().trim().toLowerCase();
-    const cat = this.selectedCategoryId();
+  setViewMode(mode: MenuViewMode): void {
+    this.viewMode.set(mode);
+  }
 
-    return this.menuItems().filter((item) => {
-      const matchesCategory = cat === 'all' || item.categoryId === cat;
-      const matchesSearch =
-        !q ||
-        item.name.toLowerCase().includes(q) ||
-        (item.nameEn && item.nameEn.toLowerCase().includes(q));
-      return matchesCategory && matchesSearch;
+  toggleCloseMenu(): void {
+    const nextState = !this.isMenuClosed();
+    this.isMenuClosed.set(nextState);
+    this.dashboardService.toggleRestaurantStatus();
+  }
+
+  toggleHideMenu(): void {
+    this.isMenuHidden.update((v) => !v);
+  }
+
+  openElectronicMenu(): void {
+    const id = this.restaurant().id;
+    const url = id ? `/restaurants/${id}` : '/restaurants';
+    window.open(url, '_blank');
+  }
+
+  openPaperMenu(): void {
+    const pdf = this.restaurant().pdfUrl;
+    if (pdf) {
+      window.open(pdf, '_blank');
+    } else {
+      alert('لم يتم رفع منيو ورقي (PDF) لهذا المطعم بعد.');
+    }
+  }
+
+  openQrModal(): void {
+    this.showQrModal.set(true);
+  }
+
+  closeQrModal(): void {
+    this.showQrModal.set(false);
+  }
+
+  openEditInfo(): void {
+    this.editName.set(this.restaurant().name);
+    this.editLocation.set(this.restaurant().location);
+    this.showEditInfoModal.set(true);
+  }
+
+  saveEditInfo(): void {
+    const data = this.dashboardService.dashboardData();
+    if (data?.restaurant) {
+      data.restaurant.name = this.editName().trim() || data.restaurant.name;
+      data.restaurant.location = this.editLocation().trim() || data.restaurant.location;
+      this.dashboardService.dashboardData.set({ ...data });
+    }
+    this.showEditInfoModal.set(false);
+  }
+
+  openDeletePdfModal(): void {
+    this.showDeletePdfModal.set(true);
+  }
+
+  confirmDeletePdf(): void {
+    const data = this.dashboardService.dashboardData();
+    if (data?.restaurant) {
+      data.restaurant.pdfUrl = '';
+      this.dashboardService.dashboardData.set({ ...data });
+    }
+    this.showDeletePdfModal.set(false);
+  }
+
+  createCategory(): void {
+    const name = this.newCategoryName().trim();
+    if (!name) return;
+    this.menuCategoriesService.createMainCategory({ name }).subscribe({
+      next: () => {
+        this.newCategoryName.set('');
+        this.showAddCategoryModal.set(false);
+      },
     });
-  });
-
-  selectCategory(id: string): void {
-    this.selectedCategoryId.set(id);
   }
 
-  toggleAvailability(item: DashboardMenuItem): void {
-    this.menuItems.update((items) =>
-      items.map((i) => (i.id === item.id ? { ...i, isAvailable: !i.isAvailable } : i))
-    );
+  deleteCategory(cat: MenuMainCategory): void {
+    if (!confirm(`هل أنت متأكد من حذف قسم "${cat.name}"؟`)) return;
+    this.menuCategoriesService.deleteMainCategory(cat.id).subscribe();
+  }
+
+  createSubCategory(): void {
+    const name = this.newSubCategoryName().trim();
+    const catId = this.selectedMainCatId();
+    if (!name || !catId) return;
+    this.menuCategoriesService.createSubCategory({ name, menuMainCategoryId: catId }).subscribe({
+      next: () => {
+        this.newSubCategoryName.set('');
+        this.showAddSubCategoryModal.set(false);
+      },
+    });
+  }
+
+  deleteSubCategory(sub: MenuSubCategory): void {
+    if (!confirm(`هل أنت متأكد من حذف القسم الفرعي "${sub.name}"؟`)) return;
+    this.menuCategoriesService.deleteSubCategory(sub.id).subscribe();
   }
 }

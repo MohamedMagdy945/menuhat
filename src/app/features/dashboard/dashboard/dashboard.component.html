@@ -1,197 +1,132 @@
-<div class="space-y-12">
-  <!-- Top Restaurant Banner (Profile / Home Exact Style) -->
+<div class="space-y-8 sm:space-y-10">
+  <!-- Top Restaurant Banner -->
   <div
-    class="relative rounded-2xl h-44 sm:h-50 md:h-60 overflow-hidden bg-linear-to-r from-[#FFCB55] via-[#FFA52F] to-[#F47716] shadow-sm"
-  >
-    <!-- Soft Radial Glow Overlay (Pristine original background) -->
-    <div
-      class="absolute inset-0 bg-[radial-gradient(circle_at_35%_45%,rgba(255,220,110,0.45),transparent_45%)] pointer-events-none"
-    ></div>
+    class="relative rounded-2xl min-h-45 sm:min-h-53 md:h-60 overflow-hidden shadow-xs select-none">
 
-    <!-- Food / Cart Illustration (Left in RTL) -->
-    <div class="absolute left-4 sm:left-8 md:left-14 bottom-0 h-full flex items-end pointer-events-none z-10">
-      <img
-        src="/images/banner-3.png"
-        alt="Illustration"
-        class="h-40 sm:h-52 md:h-53 object-contain drop-shadow-xl"
-        style="transform: scale(1.25); transform-origin: bottom left;"
-      />
+    <!-- 1. Background Cover (if restaurant has cover image) -->
+    @if (restaurant().coverUrl) {
+    <img [src]="restaurant().coverUrl" alt="Cover" class="absolute inset-0 w-full h-full object-cover" />
+    <!-- Dark overlay on cover image for readability -->
+    <div class="absolute inset-0 bg-linear-to-l from-black/50 via-black/60 to-black/70 pointer-events-none"></div>
+    } @else {
+    <!-- Same as Home Banner 2 exact colors --> 
+    <div class="absolute inset-0 bg-linear-to-r from-[#F47716] via-[#FFA52F] to-[#FFCB55] opacity-90 pointer-events-none"></div>
+
+    <!-- Dark slice on top to get the mobile darker look -->
+    <div class="absolute inset-0 bg-black/20 pointer-events-none"></div>
+
+    <!-- Food / 3D Cart Illustration (Only shown if NO cover image exists) -->
+    <div class="absolute left-2 sm:left-6 md:left-14 bottom-0 h-full flex items-end pointer-events-none z-0">
+      <img src="/images/banner-3.png" alt="Illustration"
+        class="h-36 sm:h-48 md:h-60 object-contain" />
     </div>
-    <!-- Top Pill Badge -->
-      <span
-        class="inline-flex m-4 items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white mb-2 border border-white/25 shadow-xs bg-black/25 backdrop-blur-md"
-      >
-        <span class="material-symbols-sharp text-[14px]">storefront</span>
-        <span>منيوحات - لوحة الإدارة</span>
-      </span>
-    <!-- Banner Content (Right in RTL) -->
-    <div
-      class="relative z-10 h-full flex flex-col justify-center items-start text-right px-6 sm:px-10 md:px-14 text-white max-w-sm sm:max-w-md md:max-w-xl"
-    >
-  
+    }
 
-      <!-- Restaurant Name (High visibility) -->
-      <h1 class="text-3xl sm:text-4xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] leading-tight tracking-wide">
-        {{ restaurant().name }}
-      </h1>
+    <!-- Banner Content (Layered above illustration) -->
+    <div class="relative z-10 h-full flex flex-col justify-between p-5 sm:p-7 md:p-8">
+      <!-- Top Row: Admin Badge & iOS-Style Status Toggle -->
+      <div class="flex items-center justify-between w-full gap-3 flex-wrap">
+        <!-- Top Pill Badge -->
+        <span
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-orange-100 bg-black/35 backdrop-blur-md border border-white/10 shadow-xs">
+          <span class="material-symbols-sharp text-[15px]">storefront</span>
+          <span>منيوحات - لوحة الإدارة</span>
+        </span>
 
-      <!-- Location, Rating & Status Details Row (Clear Pills) -->
-      <div class="flex flex-wrap items-center gap-2 mt-2.5 text-white text-xs sm:text-sm font-semibold">
-        <!-- Location Pill -->
-        @if (restaurant().branch) {
-          <div class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold text-white border border-white/20 shadow-xs bg-black/25 backdrop-blur-md">
-            <span class="material-symbols-sharp text-sm text-amber-300 select-none">location_on</span>
+        <!-- iOS-Style Toggle Switch (مفتوح الآن / مغلق مؤقتاً) -->
+        <button type="button" (click)="toggleStatus()"
+          class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-black/35 backdrop-blur-md border border-white/15 cursor-pointer"
+          title="تغيير حالة المطعم">
+          <!-- Toggle Pill -->
+          <div class="w-11 h-6 rounded-full p-0.5 flex items-center transition-colors"
+            [class.bg-emerald-500]="isRestaurantOpen()"
+            [class.justify-end]="isRestaurantOpen()"
+            [class.bg-slate-500]="!isRestaurantOpen()"
+            [class.justify-start]="!isRestaurantOpen()">
+            <span class="w-5 h-5 rounded-full bg-white shadow-sm inline-block"></span>
+          </div>
+
+          <!-- Status Label & Indicator Dot -->
+          <span class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5">
+            <span>{{ isRestaurantOpen() ? 'مفتوح الآن' : 'مغلق مؤقتاً' }}</span>
+            <span class="w-2 h-2 rounded-full"
+              [class.bg-emerald-400]="isRestaurantOpen()"
+              [class.bg-rose-400]="!isRestaurantOpen()"></span>
+          </span>
+        </button>
+      </div>
+
+      <!-- Main Restaurant Info (Name, Location, Rating) -->
+      <div class="mt-4 sm:mt-auto text-right max-w-sm sm:max-w-md md:max-w-xl">
+        <!-- Restaurant Name (High contrast crisp white) -->
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight tracking-wide drop-shadow-sm">
+          {{ restaurant().name }}
+        </h1>
+
+        <!-- Location & Rating Details Row -->
+        <div class="flex flex-wrap items-center gap-3 sm:gap-4 mt-2 text-xs sm:text-sm font-semibold">
+          <!-- Location -->
+          @if (restaurant().branch) {
+          <div class="flex items-center gap-1.5 text-slate-200">
+            <span class="material-symbols-sharp text-sm sm:text-base text-orange-400 select-none">location_on</span>
             <span>{{ restaurant().branch }}</span>
           </div>
-        }
+          }
 
-        <!-- Rating Pill Badge -->
-        <div
-          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold text-white border border-white/20 shadow-xs bg-black/25 backdrop-blur-md"
-        >
-          <span class="text-amber-300 text-xs select-none">★</span>
-          <span>{{ restaurant().rating }}</span>
-          <span class="text-white/80 font-normal">({{ restaurant().reviewsCount }})</span>
+          <!-- Rating -->
+          <div class="flex items-center gap-1.5 text-slate-200">
+            <span class="text-orange-400 text-sm select-none">★</span>
+            <span class="font-bold text-white">{{ restaurant().rating }}</span>
+            <span class="text-slate-300 font-normal">({{ restaurant().reviewsCount }})</span>
+          </div>
         </div>
-
-        <!-- Status Toggle Button -->
-        <button
-          type="button"
-          (click)="toggleStatus()"
-          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold text-white cursor-pointer border border-white/20 shadow-xs bg-black/30 backdrop-blur-md"
-          title="تغيير حالة المطعم"
-        >
-          <span
-            class="w-2 h-2 rounded-full"
-            [class.bg-emerald-400]="isRestaurantOpen()"
-            [class.bg-rose-400]="!isRestaurantOpen()"
-          ></span>
-          <span>{{ isRestaurantOpen() ? 'مفتوح الآن' : 'مغلق مؤقتاً' }}</span>
-        </button>
       </div>
     </div>
   </div>
 
-  <!-- Stat Summary Cards Row (4 Cards) -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <!-- Stat Summary Cards (2x2 on Mobile, 4 Cols on Desktop - Matching Mobile App Screenshot) -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
     @for (stat of stats(); track stat.id) {
-      <div
-        class="bg-white rounded-2xl p-5 border border-gray-100 shadow-xs flex items-center gap-4"
-      >
-        <!-- Icon -->
-        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 {{ stat.iconBg }}">
+    <div
+      class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-100 shadow-xs flex flex-col justify-between min-h-[125px] sm:min-h-[135px]">
+      <!-- Top Row: Icon on Right, Badge on Left (in RTL) -->
+      <div class="flex items-start justify-between w-full">
+        <!-- Icon Square -->
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 {{ stat.iconBg }}">
           <span class="material-symbols-sharp text-2xl">{{ stat.icon }}</span>
         </div>
 
-        <!-- Word (Title) & Number (Value) directly next to icon -->
-        <div class="space-y-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <p class="text-sm text-slate-400 font-medium truncate">{{ stat.title }}</p>
-            @if (stat.badge) {
-              <span
-                class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0"
-                [class.bg-emerald-50]="stat.badgeVariant === 'success'"
-                [class.text-emerald-600]="stat.badgeVariant === 'success'"
-                [class.border]="stat.badgeVariant === 'success'"
-                [class.border-emerald-200]="stat.badgeVariant === 'success'"
-                [class.bg-orange-50]="stat.badgeVariant === 'warning'"
-                [class.text-orange-600]="stat.badgeVariant === 'warning'"
-                [class.border-orange-200]="stat.badgeVariant === 'warning'"
-              >
-                {{ stat.badge }}
-              </span>
-            }
-          </div>
-          <p class="text-2xl sm:text-3xl font-semibold text-slate-900">
-            {{ stat.value }}
-          </p>
-        </div>
+        <!-- Badge (if present) -->
+        @if (stat.badge) {
+        <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-lg text-xs font-bold shrink-0"
+          [class.bg-emerald-50]="stat.badgeVariant === 'success'"
+          [class.text-emerald-600]="stat.badgeVariant === 'success'"
+          [class.border]="stat.badgeVariant === 'success'"
+          [class.border-emerald-100]="stat.badgeVariant === 'success'"
+          [class.bg-orange-50]="stat.badgeVariant === 'warning'"
+          [class.text-orange-600]="stat.badgeVariant === 'warning'"
+          [class.border]="stat.badgeVariant === 'warning'"
+          [class.border-orange-100]="stat.badgeVariant === 'warning'">
+          {{ stat.badge }}
+          @if (stat.badgeVariant === 'success') {
+          <span class="material-symbols-sharp text-xs leading-none">arrow_outward</span>
+          }
+        </span>
+        }
       </div>
+
+      <!-- Bottom Row: Title & Value -->
+      <div class="mt-3 text-right">
+        <p class="text-xs sm:text-sm font-medium text-slate-500 truncate">{{ stat.title }}</p>
+        <p class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-0.5">
+          {{ stat.value }}
+        </p>
+      </div>
+    </div>
     }
   </div>
 
-  <!-- Current Orders Section (الطلبات الحالية) -->
-  <div class="space-y-4">
-    <!-- Section Header -->
-    <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-lg font-bold text-slate-900">
-          الطلبات الحالية
-        </h2>
-        <p class="text-sm text-slate-400">متابعة أحدث طلبات الزبائن الواردة</p>
-      </div>
+  <!-- Current Orders Section -->
+  <app-dashboard-order-section [orders]="orders()" />
 
-      <a
-        routerLink="/dashboard/orders"
-        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs px-3.5 py-2 rounded-xl cursor-pointer flex items-center gap-1"
-      >
-        <span>عرض الكل</span>
-        <span class="material-symbols-sharp text-sm">arrow_back</span>
-      </a>
-    </div>
-
-    <!-- Orders Cards List -->
-    <div class="space-y-2.5">
-      @for (order of orders(); track order.id) {
-        <div
-          class="bg-white rounded-2xl p-4 sm:px-6 border border-gray-100 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-        >
-          <!-- Right: Customer Info & Order Number -->
-          <div class="flex items-center gap-3">
-            <div
-              class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-sm shrink-0"
-            >
-              {{ order.customerName.charAt(0) }}
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="font-bold text-sm text-slate-900">
-                  {{ order.customerName }}
-                </span>
-                <span class="text-xs font-semibold text-slate-400">
-                  {{ order.orderNumber }}
-                </span>
-              </div>
-              <div class="flex items-center gap-1 text-xs text-slate-400 mt-0.5">
-                <span class="material-symbols-sharp text-xs">schedule</span>
-                <span>{{ order.time }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Center: Status Badge -->
-          <div class="sm:self-center">
-            <span
-              class="px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 {{ order.statusColor }}"
-            >
-              <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
-              {{ order.statusLabel }}
-            </span>
-          </div>
-
-          <!-- Left: Price & Details Action -->
-          <div class="flex items-center justify-between sm:justify-end gap-4">
-            <span class="text-base font-bold text-orange-500">
-              {{ order.price }} ج.م
-            </span>
-
-            <button
-              type="button"
-              class="w-8 h-8 rounded-lg bg-slate-50 border border-gray-200 text-slate-500 flex items-center justify-center cursor-pointer"
-              title="عرض تفاصيل الطلب"
-              [routerLink]="['/dashboard/orders', order.id]"
-            >
-              <span class="material-symbols-sharp text-lg">chevron_left</span>
-            </button>
-          </div>
-        </div>
-      } @empty {
-        <div class="p-8 text-center bg-white rounded-2xl border border-gray-100 shadow-sm">
-          <span class="material-symbols-sharp text-4xl text-slate-300">receipt_long</span>
-          <p class="text-sm font-bold text-slate-700 mt-2">لا توجد طلبات واردة حالياً</p>
-          <p class="text-xs text-slate-400 mt-0.5">ستظهر الطلبات الجديدة هنا فور قيام العملاء بالطلب</p>
-        </div>
-      }
-    </div>
-  </div>
 </div>
