@@ -382,8 +382,19 @@ export const routes: Routes = [
                         .then(m => m.MenusComponent)
             },
             {
+                path: 'menu/add-item',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/add-menu-item/add-menu-item.component')
+                        .then(m => m.AddMenuItemComponent)
+            },
+            {
                 path: 'menus',
                 redirectTo: 'menu',
+                pathMatch: 'full'
+            },
+            {
+                path: 'add-item',
+                redirectTo: 'menu/add-item',
                 pathMatch: 'full'
             },
             {

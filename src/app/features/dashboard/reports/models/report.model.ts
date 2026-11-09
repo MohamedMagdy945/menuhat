@@ -12,6 +12,50 @@ export type ReportGroupBy = 'Daily' | 'Weekly' | 'Monthly';
 
 export type ReportFilterPeriod = 'all' | 'today' | 'yesterday' | 'week';
 
+export type DateFilterType =
+  | 'None'
+  | 'CurrentDate'
+  | 'Yesterday'
+  | 'LastSevenDays'
+  | 'LastThirtyDays'
+  | 'ThisMonth'
+  | 'LastMonth';
+
+export interface DailyMenuOrdersParams {
+  PageNumber?: number;
+  PageSize?: number;
+  SearchValue?: string;
+  SortField?: string;
+  SortDirection?: string;
+  StartDate?: string;
+  EndDate?: string;
+  Serial?: string;
+  DateFilter?: DateFilterType | string;
+  ExportAsExcel?: boolean;
+}
+
+export interface DailyMenuOrderItem {
+  id: number;
+  orderDay: string;
+  menuId: number;
+  menuName: string;
+  menuName_En: string | null;
+  orderCount: number;
+  totalAmount: number;
+  customerCount: number;
+  topItemId: number;
+  topItemName: string;
+  topItemName_En: string | null;
+  topItemCount: number;
+  peakHour: number;
+}
+
+export interface DailyMenuOrdersResponse {
+  items: DailyMenuOrderItem[];
+  itemsCount: number;
+  totalPages: number;
+}
+
 export interface ReportParams {
   StartDay?: string;
   EndDay?: string;
@@ -50,6 +94,9 @@ export interface ReportDailyItem {
   ordersCount: number;
   price?: number;
   revenue?: number;
+  date?: string;
+  totalDayOrders?: number;
+  peakHour?: number;
 }
 
 export interface ReportKpis {

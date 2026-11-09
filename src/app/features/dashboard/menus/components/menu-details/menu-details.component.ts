@@ -1,11 +1,12 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { MenuRestaurantCardData } from '../menu-card/menu-card.component';
 
 @Component({
   selector: 'app-menu-details',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './menu-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

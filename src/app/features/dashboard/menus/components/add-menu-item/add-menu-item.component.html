@@ -1,0 +1,390 @@
+<div class="space-y-6 w-full max-w-4xl pb-10" dir="rtl">
+
+  <!-- ======================================================== -->
+  <!-- 0. PAGE HEADER (Standard Dashboard Header)               -->
+  <!-- ======================================================== -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+    <div class="flex items-center gap-3.5">
+      <div
+        class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs">
+        <span class="material-symbols-sharp text-2xl text-orange-500">restaurant_menu</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            إضافة صنف جديد
+          </h1>
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100 shrink-0">
+            قائمة الطعام
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+          إضافة طبق أو منتج جديد إلى قائمة الطعام وتحديد الأسعار والأحجام
+        </p>
+      </div>
+    </div>
+
+    <button type="button" (click)="cancel()"
+      class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs w-fit">
+      <span class="material-symbols-sharp text-base text-slate-500">arrow_forward</span>
+      <span>العودة للمنيو</span>
+    </button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 1. CARD 1: البيانات الأساسية (Matching Screenshot)         -->
+  <!-- ======================================================== -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-7 space-y-6">
+
+    <!-- Card Top Header -->
+    <div class="flex items-center justify-between pb-2 border-b border-gray-100/80">
+      <!-- Right Side: Cutlery Icon + Section Title -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+          <span class="material-symbols-sharp text-lg text-orange-500">restaurant</span>
+        </div>
+        <h2 class="font-bold text-base text-slate-800">البيانات الأساسية</h2>
+      </div>
+
+      <!-- Left Side: Image Badge with Subtitle -->
+      <div class="flex items-center gap-2.5">
+        <div class="text-left">
+          <span class="font-bold text-xs sm:text-sm text-slate-700 block">صورة الصنف</span>
+          <span class="text-[11px] text-slate-400 block">الواجهة المرئية لطلب العميل</span>
+        </div>
+        <div class="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+          <span class="material-symbols-sharp text-lg text-orange-500">image</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content: Image Dropzone on Left, Inputs on Right -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- Left in RTL (4 cols): Image Upload Dropzone -->
+      <div class="lg:col-span-4 order-2 lg:order-1">
+        <div class="relative">
+          @if (!imagePreview()) {
+            <label
+              class="border-2 border-dashed border-sky-200 bg-sky-50/20 rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer min-h-[220px]"
+            >
+              <!-- Cloud Upload Icon in circular badge -->
+              <div class="w-12 h-12 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shadow-xs">
+                <span class="material-symbols-sharp text-2xl">cloud_upload</span>
+              </div>
+
+              <span class="font-bold text-xs sm:text-sm text-slate-800 mt-3 block">
+                إضافة صورة للصنف
+              </span>
+              <span class="text-[11px] text-slate-400 mt-1 max-w-[170px] leading-relaxed block">
+                اسحب الصورة إلى هنا أو تصفح ملفاتك
+              </span>
+
+              <input
+                type="file"
+                accept="image/*"
+                (change)="onFileSelected($event)"
+                class="hidden"
+              />
+            </label>
+          } @else {
+            <div class="relative rounded-2xl overflow-hidden border border-gray-200 shadow-xs h-[220px] bg-slate-50">
+              <img
+                [src]="imagePreview()"
+                alt="Preview"
+                class="w-full h-full object-cover"
+              />
+              <button
+                type="button"
+                (click)="removeImage()"
+                class="absolute top-2 left-2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center cursor-pointer"
+                title="إزالة الصورة"
+              >
+                <span class="material-symbols-sharp text-base">close</span>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Right in RTL (8 cols): Name & Arabic Description -->
+      <div class="lg:col-span-8 order-1 lg:order-2 space-y-4">
+        <!-- Names Row (Arabic & English) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Item Name (Arabic) -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+              <span>اسم الصنف (بالعربية)</span>
+              <span class="text-orange-500 mr-1">*</span>
+            </label>
+            <input
+              type="text"
+              [value]="nameAr()"
+              (input)="nameAr.set($any($event.target).value)"
+              placeholder="مثال: مندي لحم تيس بلدي"
+              class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs"
+            />
+          </div>
+
+          <!-- Item Name (English) -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5 text-left" dir="ltr">
+              <span>Item Name (English)</span>
+              <span class="text-orange-500 ml-1">*</span>
+            </label>
+            <input
+              type="text"
+              [value]="nameEn()"
+              (input)="nameEn.set($any($event.target).value)"
+              placeholder="e.g. Traditional Mandi Goat"
+              dir="ltr"
+              class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs text-left"
+            />
+          </div>
+        </div>
+
+        <!-- Description (Arabic) -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+            <span>وصف الصنف (بالعربية)</span>
+            <span class="text-orange-500 mr-1">*</span>
+          </label>
+          <textarea
+            [value]="descriptionAr()"
+            (input)="descriptionAr.set($any($event.target).value)"
+            rows="3"
+            placeholder="أدخل وصفاً تفصيلياً للمكونات وطريقة الطهي والمحتويات المرفقة..."
+            class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs resize-none"
+          ></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Full Width: Description (English) -->
+    <div>
+      <label class="block text-xs font-semibold text-slate-700 mb-1.5 text-left" dir="ltr">
+        <span>Item Description (English)</span>
+        <span class="text-orange-500 ml-1">*</span>
+      </label>
+      <textarea
+        [value]="descriptionEn()"
+        (input)="descriptionEn.set($any($event.target).value)"
+        rows="3"
+        dir="ltr"
+        placeholder="Enter detailed ingredients, preparation style, and sides..."
+        class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs text-left resize-none"
+      ></textarea>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 2. CARD 2: التسعير والأحجام (Matching Screenshot)         -->
+  <!-- ======================================================== -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-7 space-y-6">
+
+    <!-- Card Top Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100/80">
+      <!-- Right Side: Pricing Icon + Section Title -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+          <span class="material-symbols-sharp text-lg text-orange-500">payments</span>
+        </div>
+        <h2 class="font-bold text-base text-slate-800">التسعير</h2>
+      </div>
+
+      <!-- Left Side: Radio Options Pill (Matching Screenshot) -->
+      <div class="bg-slate-100 rounded-full px-3.5 py-1.5 flex items-center gap-4">
+        <!-- أكثر من سعر (Active in Screenshot with blue radio) -->
+        <label
+          (click)="setPricingMode('multiple')"
+          class="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800 cursor-pointer select-none"
+        >
+          <span
+            class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+            [class.border-blue-600]="pricingMode() === 'multiple'"
+            [class.border-slate-400]="pricingMode() !== 'multiple'"
+          >
+            @if (pricingMode() === 'multiple') {
+              <span class="w-2 h-2 rounded-full bg-blue-600 inline-block"></span>
+            }
+          </span>
+          <span>أكثر من سعر</span>
+        </label>
+
+        <!-- سعر واحد -->
+        <label
+          (click)="setPricingMode('single')"
+          class="flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-600 cursor-pointer select-none"
+        >
+          <span
+            class="w-4 h-4 rounded-full border-2 flex items-center justify-center"
+            [class.border-blue-600]="pricingMode() === 'single'"
+            [class.border-slate-400]="pricingMode() !== 'single'"
+          >
+            @if (pricingMode() === 'single') {
+              <span class="w-2 h-2 rounded-full bg-blue-600 inline-block"></span>
+            }
+          </span>
+          <span>سعر واحد</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Sub-heading Row -->
+    <div class="flex items-center justify-between">
+      <h3 class="font-bold text-sm sm:text-base text-slate-800">
+        {{ pricingMode() === 'multiple' ? 'الأحجام والأسعار' : 'تحديد السعر' }}
+      </h3>
+      @if (pricingMode() === 'multiple') {
+        <span class="text-xs font-semibold text-slate-500">
+          أحجام نشطة حالياً: <strong class="text-slate-800">{{ sizes().length }}</strong>
+        </span>
+      }
+    </div>
+
+    <!-- SECTION: When Multiple Sizes is Active -->
+    @if (pricingMode() === 'multiple') {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+        @for (size of sizes(); track size.id; let i = $index) {
+          <!-- Size Card (Exact design matching screenshot) -->
+          <div class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 space-y-4 shadow-xs relative">
+            <!-- Top Row: Badge + Delete Button -->
+            <div class="flex items-center justify-between">
+              <!-- Orange Size Badge -->
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
+                <span class="material-symbols-sharp text-sm">straighten</span>
+                <span>الحجم {{ getSizeOrdinalArabic(i) }}</span>
+              </span>
+
+              <!-- Red Delete Button -->
+              @if (sizes().length > 1) {
+                <button
+                  type="button"
+                  (click)="removeSize(size.id)"
+                  class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center cursor-pointer"
+                  title="حذف هذا الحجم"
+                >
+                  <span class="material-symbols-sharp text-base">delete</span>
+                </button>
+              }
+            </div>
+
+            <!-- Size Names (Arabic & English) -->
+            <div class="grid grid-cols-2 gap-3">
+              <!-- الحجم (بالعربية) -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">
+                  الحجم (بالعربية)
+                </label>
+                <input
+                  type="text"
+                  [value]="size.nameAr"
+                  (input)="updateSizeField(size.id, 'nameAr', $any($event.target).value)"
+                  placeholder="مثال: صغير، وسط"
+                  class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500"
+                />
+              </div>
+
+              <!-- الحجم (بالإنجليزية) -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1 text-left" dir="ltr">
+                  الحجم (بالإنجليزية)
+                </label>
+                <input
+                  type="text"
+                  [value]="size.nameEn"
+                  (input)="updateSizeField(size.id, 'nameEn', $any($event.target).value)"
+                  placeholder="Small, Medium"
+                  dir="ltr"
+                  class="w-full bg-white border border-gray-200 rounded-xl px-3 py-2 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 text-left"
+                />
+              </div>
+            </div>
+
+            <!-- Price Input with Suffix (ج.م) -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">
+                السعر
+              </label>
+              <div class="relative">
+                <input
+                  type="number"
+                  [value]="size.price"
+                  (input)="updateSizeField(size.id, 'price', +$any($event.target).value)"
+                  placeholder="0.0"
+                  class="w-full bg-white border border-gray-200 rounded-xl py-2 pr-4 pl-12 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500"
+                />
+                <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">
+                  ج.م
+                </span>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Add Size Button (+ إضافة حجم إضافي) -->
+      <div class="pt-2 text-center">
+        <button
+          type="button"
+          (click)="addSize()"
+          class="inline-flex items-center gap-1.5 text-slate-700 font-bold text-sm cursor-pointer"
+        >
+          <span class="material-symbols-sharp text-lg text-slate-500">add_circle</span>
+          <span>إضافة حجم إضافي</span>
+        </button>
+      </div>
+    }
+
+    <!-- SECTION: When Single Price is Active -->
+    @if (pricingMode() === 'single') {
+      <div class="max-w-xs">
+        <label class="block text-xs font-semibold text-slate-700 mb-1.5">
+          <span>سعر الصنف</span>
+          <span class="text-orange-500 mr-1">*</span>
+        </label>
+        <div class="relative">
+          <input
+            type="number"
+            [value]="singlePrice()"
+            (input)="singlePrice.set(+$any($event.target).value)"
+            placeholder="مثال: 85"
+            class="w-full bg-white border border-gray-200 rounded-xl py-2.5 pr-4 pl-12 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 shadow-xs"
+          />
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">
+            ج.م
+          </span>
+        </div>
+      </div>
+    }
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 3. BOTTOM ACTIONS (حفظ / إلغاء - Matching Screenshot)     -->
+  <!-- ======================================================== -->
+  <div class="flex items-center gap-3 pt-2">
+    <!-- حفظ Button -->
+    <button
+      type="button"
+      (click)="save()"
+      [disabled]="isSubmitting()"
+      class="bg-orange-500 text-white font-bold text-sm px-8 py-2.5 rounded-xl cursor-pointer shadow-xs disabled:opacity-50"
+    >
+      {{ isSubmitting() ? 'جاري الحفظ...' : 'حفظ' }}
+    </button>
+
+    <!-- إلغاء Button -->
+    <button
+      type="button"
+      (click)="cancel()"
+      class="bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-8 py-2.5 rounded-xl cursor-pointer shadow-xs"
+    >
+      إلغاء
+    </button>
+  </div>
+
+</div>
+

@@ -7,7 +7,7 @@
       (click)="onRightArrowClick()"
       [class.invisible]="totalPages() <= 1 && !moreComing()"
       [class.pointer-events-none]="totalPages() <= 1 && !moreComing()"
-      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-900 transition-colors disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none">
+      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400 disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none">
       <span class="material-symbols-sharp select-none text-[26px] leading-none">chevron_right</span>
     </button>
     }
@@ -27,25 +27,9 @@
       (click)="onLeftArrowClick()"
       [class.invisible]="totalPages() <= 1 && !moreComing()"
       [class.pointer-events-none]="totalPages() <= 1 && !moreComing()"
-      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400 hover:bg-gray-300 hover:text-gray-900 transition-colors disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none">
+      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400 disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none">
       <span class="material-symbols-sharp select-none text-[26px] leading-none">chevron_left</span>
     </button>
     }
   </div>
-
-  <!-- Bottom-Center Pagination Indicators (Dots) -->
-  @if (showDots()) {
-  <div class="hidden md:flex w-full items-center justify-center gap-1.5 py-1 min-h-[14px]"
-    [class.invisible]="totalPages() <= 1">
-    @if (totalPages() > 1) {
-      @for (page of pages(); track page) {
-      <button type="button" [attr.aria-label]="'صفحة ' + (page + 1)" (click)="goToPage(page)"
-        class="h-1 rounded-full transition-all duration-200 cursor-pointer focus:outline-none"
-        [class.w-2]="currentPage() === page" [class.bg-gray-400]="currentPage() === page"
-        [class.w-1]="currentPage() !== page" [class.bg-gray-200]="currentPage() !== page"
-        [class.hover:bg-gray-200]="currentPage() !== page"></button>
-      }
-    }
-  </div>
-  }
 </div>

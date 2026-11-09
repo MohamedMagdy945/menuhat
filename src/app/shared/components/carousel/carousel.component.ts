@@ -88,7 +88,6 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
   readonly isLoading = input(false);
   readonly hasMore = input(false);
   readonly showArrows = input(true);
-  readonly showDots = input(true);
   readonly loadMore = output<void>();
 
   private readonly effectiveItems = computed(
@@ -122,9 +121,6 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
   readonly isRtl = signal(true);
   readonly totalPages = signal(1);
   readonly currentPage = signal(0);
-  readonly pages = computed(() =>
-    Array.from({ length: this.totalPages() }, (_, i) => i),
-  );
 
   // Additional data pending
   readonly moreComing = computed(
