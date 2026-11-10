@@ -1,9 +1,9 @@
-<div class="space-y-6 w-full pb-10" dir="rtl">
+<div class="space-y-6 w-full ">
 
   <!-- ======================================================== -->
   <!-- 1. TOP FILTER BAR (الكل / اليوم / أمس / آخر 7 أيام)      -->
   <!-- ======================================================== -->
-  <div class="bg-white rounded-2xl border border-gray-100 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  <div class="bg-white rounded-2xl border border-gray-100 p-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 
     <!-- Right Side in RTL: Segmented Tabs (الكل / اليوم / أمس / آخر 7 أيام) -->
     <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
@@ -201,40 +201,6 @@
           {{ showAll() ? 'expand_less' : 'expand_more' }}
         </span>
       </button>
-    </div>
-
-    <!-- Categories Pills & Search Input -->
-    <div class="bg-white rounded-2xl border border-gray-100 p-3 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <!-- Categories Pills -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-        @for (cat of categories(); track cat) {
-          <button
-            type="button"
-            (click)="setCategory(cat)"
-            class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold cursor-pointer whitespace-nowrap transition-none"
-            [class.bg-orange-500]="selectedCategory() === cat"
-            [class.text-white]="selectedCategory() === cat"
-            [class.bg-transparent]="selectedCategory() !== cat"
-            [class.text-slate-600]="selectedCategory() !== cat"
-          >
-            {{ cat === 'all' ? 'جميع الأقسام' : cat }}
-          </button>
-        }
-      </div>
-
-      <!-- Search Input -->
-      <div class="relative w-full md:w-72">
-        <input
-          type="text"
-          [ngModel]="searchQuery()"
-          (ngModelChange)="searchQuery.set($event)"
-          placeholder="ابحث باسم الوجبة أو الحجم..."
-          class="w-full bg-slate-50 border border-gray-200 rounded-xl pr-10 pl-4 py-2 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs"
-        />
-        <span class="material-symbols-sharp absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none select-none">
-          search
-        </span>
-      </div>
     </div>
 
     <!-- Loading State -->

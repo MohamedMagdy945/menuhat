@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { DashboardService } from '../../../../core/services/dashboard.service';
+import { DashboardService } from '../../../../features/dashboard/dashboard/dashboard.service';
 
 export interface SidebarNavItem {
   id: string;
@@ -27,8 +27,8 @@ export interface SidebarNavItem {
 export class DashboardSidebarComponent {
   protected readonly dashboardService = inject(DashboardService);
 
-  readonly isCollapsed = this.dashboardService.isCollapsed;
   readonly isMobileOpen = this.dashboardService.isMobileOpen;
+  readonly isCollapsed = this.dashboardService.isCollapsed;
   readonly restaurantName = computed(() => this.dashboardService.dashboardData()?.restaurant?.name || 'مطعمي');
 
   readonly userProfile = {
@@ -74,6 +74,12 @@ export class DashboardSidebarComponent {
       label: 'التقارير اليومية والشهرية',
       icon: 'bar_chart',
       route: '/dashboard/reports',
+    },
+    {
+      id: 'support',
+      label: 'الدعم الفني',
+      icon: 'headset_mic',
+      route: '/dashboard/support',
     },
   ];
 

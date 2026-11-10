@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed } 
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OwnerReportsService } from './owner-reports.service';
-import { DashboardService } from '../../../core/services/dashboard.service';
 import {
   ReportFilterPeriod,
   ReportKpis,
@@ -11,6 +10,7 @@ import {
   DateFilterType,
 } from './models';
 import { ReportItemCardComponent } from './components/report-item-card/report-item-card.component';
+import { DashboardService } from '../dashboard/dashboard.service';
 
 @Component({
   selector: 'app-dashboard-reports',

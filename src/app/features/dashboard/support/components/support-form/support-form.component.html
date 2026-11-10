@@ -1,0 +1,167 @@
+<div class="w-full flex justify-center py-2" dir="rtl">
+  <div class="bg-white rounded-3xl border border-gray-100 shadow-sm p-6 sm:p-10 w-full max-w-2xl select-none">
+
+    <!-- Card Internal Header -->
+    <div class="flex items-center gap-3.5 mb-8">
+      <div class="w-12 h-12 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
+        <span class="material-symbols-sharp text-2xl text-orange-500 select-none">headset_mic</span>
+      </div>
+      <div class="space-y-0.5">
+        <h3 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+          تواصل معنا
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-400">
+          أرسل لنا تفاصيل المشكلة وسنعمل على مساعدتك.
+        </p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="supportForm" (ngSubmit)="onSubmit()" class="space-y-5">
+
+      <!-- Row 1: البريد الإلكتروني & رقم الموبايل (2 Columns) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <!-- البريد الإلكتروني -->
+        <div>
+          <label for="email" class="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+            <span class="material-symbols-sharp text-sm text-orange-500 select-none">mail</span>
+            <span>البريد الإلكتروني</span>
+            <span class="text-orange-500 font-bold">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            dir="ltr"
+            placeholder="example@domain.com"
+            class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs text-left"
+          />
+          @if (supportForm.get('email')?.touched && supportForm.get('email')?.invalid) {
+            <p class="text-[11px] text-red-500 mt-1 font-semibold">يرجى إدخال بريد إلكتروني صحيح</p>
+          }
+        </div>
+
+        <!-- رقم الموبايل -->
+        <div>
+          <label for="phone" class="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+            <span class="material-symbols-sharp text-sm text-orange-500 select-none">phone_iphone</span>
+            <span>رقم الموبايل</span>
+            <span class="text-orange-500 font-bold">*</span>
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            formControlName="phone"
+            dir="ltr"
+            placeholder="05xxxxxxxxx"
+            class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs text-left"
+          />
+          @if (supportForm.get('phone')?.touched && supportForm.get('phone')?.invalid) {
+            <p class="text-[11px] text-red-500 mt-1 font-semibold">يرجى إدخال رقم هاتف صحيح</p>
+          }
+        </div>
+
+      </div>
+
+      <!-- Row 2: عنوان المشكلة -->
+      <div>
+        <label for="title" class="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+          <span class="material-symbols-sharp text-sm text-orange-500 select-none">bookmark</span>
+          <span>عنوان المشكلة</span>
+          <span class="text-orange-500 font-bold">*</span>
+        </label>
+        <input
+          type="text"
+          id="title"
+          formControlName="title"
+          placeholder="اكتب عنواناً مختصراً للمشكلة (مثال: خطأ في تحديث الطلبات)"
+          class="w-full bg-white border border-gray-200 rounded-2xl px-4 py-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs"
+        />
+        @if (supportForm.get('title')?.touched && supportForm.get('title')?.invalid) {
+          <p class="text-[11px] text-red-500 mt-1 font-semibold">عنوان المشكلة مطلوب (3 أحرف على الأقل)</p>
+        }
+      </div>
+
+      <!-- Row 3: تفاصيل المشكلة -->
+      <div>
+        <label for="discription" class="flex items-center gap-1.5 text-xs font-bold text-slate-700 mb-2">
+          <span class="material-symbols-sharp text-sm text-orange-500 select-none">format_align_right</span>
+          <span>تفاصيل المشكلة</span>
+          <span class="text-orange-500 font-bold">*</span>
+        </label>
+        <textarea
+          id="discription"
+          rows="4"
+          formControlName="discription"
+          placeholder="اشرح المشكلة بالتفصيل لمساعدتنا على حلها بأسرع وقت..."
+          class="w-full bg-white border border-gray-200 rounded-2xl p-4 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-orange-500 shadow-xs resize-none"
+        ></textarea>
+        @if (supportForm.get('discription')?.touched && supportForm.get('discription')?.invalid) {
+          <p class="text-[11px] text-red-500 mt-1 font-semibold">تفاصيل المشكلة مطلوبة لتتم مساعدتك بدقة</p>
+        }
+      </div>
+
+      <!-- Row 4: إرفاق صورة توضح المشكلة (اختياري) -->
+      <div>
+        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+          إرفاق صورة توضح المشكلة (اختياري)
+        </label>
+
+        <div
+          (click)="fileInput.click()"
+          class="border-2 border-dashed border-slate-200 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer bg-slate-50/40 relative overflow-hidden"
+        >
+          <input
+            #fileInput
+            type="file"
+            accept="image/png, image/jpeg, image/jpg"
+            (change)="onFileSelected($event)"
+            class="hidden"
+          />
+
+          @if (!previewUrl()) {
+            <div class="w-11 h-11 rounded-full bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-500 shrink-0">
+              <span class="material-symbols-sharp text-xl select-none">cloud_upload</span>
+            </div>
+            <p class="text-xs font-bold text-slate-700">اضغط لرفع صورة أو اسحب الملف هنا</p>
+            <p class="text-[11px] text-slate-400 font-medium">JPG أو PNG</p>
+          } @else {
+            <div class="flex items-center gap-3 w-full bg-white rounded-xl p-3 border border-gray-100 shadow-xs">
+              <img [src]="previewUrl()" alt="معاينة المرفق" class="w-14 h-14 rounded-lg object-cover border border-gray-200 shrink-0" />
+              <div class="flex-1 min-w-0 text-right">
+                <p class="text-xs font-bold text-slate-800 truncate">{{ selectedFile()?.name }}</p>
+                <p class="text-[11px] text-slate-400">{{ (selectedFile()?.size || 0) / 1024 | number:'1.0-1' }} كيلوبايت</p>
+              </div>
+              <button
+                type="button"
+                (click)="removeFile($event)"
+                class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0 cursor-pointer"
+                title="إزالة الصورة"
+              >
+                <span class="material-symbols-sharp text-base">close</span>
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Row 5: زر الإرسال -->
+      <div class="pt-4 flex justify-center">
+        <button
+          type="submit"
+          [disabled]="supportForm.invalid || isLoading()"
+          class="bg-orange-500 text-white font-bold text-sm sm:text-base px-12 py-3 rounded-2xl cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          @if (isLoading()) {
+            <span class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          }
+          <span>إرسال الشكوى</span>
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+

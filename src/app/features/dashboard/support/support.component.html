@@ -1,0 +1,49 @@
+<div class="space-y-6 w-full pb-10" dir="rtl">
+
+  <!-- ======================================================== -->
+  <!-- 1. STANDARD DASHBOARD HEADER                             -->
+  <!-- ======================================================== -->
+  <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <!-- Right side (in RTL): Title + Icon Badge + Description -->
+    <div class="flex items-center gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs">
+        <span class="material-symbols-sharp text-2xl text-orange-500 select-none">headset_mic</span>
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            الدعم الفني
+          </h2>
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100 shrink-0">
+            خدمة العملاء
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">
+          أرسل لنا تفاصيل المشكلة أو تابع حالة الشكاوى والتذاكر السابقة
+        </p>
+      </div>
+    </div>
+
+    <!-- Left side (in RTL): Action Button (تتبع الشكاوي بتاعتي / تقديم شكوى) -->
+    <button
+      type="button"
+      (click)="toggleView()"
+      class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-2 shadow-xs w-fit transition-none"
+    >
+      <span class="material-symbols-sharp text-lg text-orange-500 select-none">
+        {{ activeTab() === 'new' ? 'receipt_long' : 'add_circle' }}
+      </span>
+      <span>{{ activeTab() === 'new' ? 'تتبع الشكاوي بتاعتي' : 'تقديم شكوى جديدة' }}</span>
+    </button>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 2. MAIN VIEW (Form Component OR Tracking Table)          -->
+  <!-- ======================================================== -->
+  @if (activeTab() === 'new') {
+    <app-support-form (complaintSubmitted)="onComplaintSubmitted()" />
+  } @else {
+    <app-support-tracking />
+  }
+
+</div>

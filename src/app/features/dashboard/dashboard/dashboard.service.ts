@@ -1,9 +1,9 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap, map, catchError, of } from 'rxjs';
-import { environment } from '../environments/environment';
-import { DASHBOARD_API_ENDPOINTS } from '../constants/dashboard-api.constants';
-import { UserDataService } from './userData.service';
+import { UserDataService } from '../../auth/services/user-storage.service';
+import { DASHBOARD_API_ENDPOINTS } from '../../../core/constants/dashboard-api.constants';
+import { environment } from '../../../core/environments/environment';
 
 export interface DashboardRestaurant {
   id: number;

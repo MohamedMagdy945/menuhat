@@ -420,6 +420,17 @@ export const routes: Routes = [
                 loadComponent: () =>
                     import('./features/dashboard/reports/reports.component')
                         .then(m => m.ReportsComponent)
+            },
+            {
+                path: 'support',
+                loadComponent: () =>
+                    import('./features/dashboard/support/support.component')
+                        .then(m => m.SupportComponent)
+            },
+            {
+                path: 'technical-support',
+                redirectTo: 'support',
+                pathMatch: 'full'
             }
         ]
     },

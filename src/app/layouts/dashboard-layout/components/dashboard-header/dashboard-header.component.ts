@@ -1,6 +1,6 @@
 import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DashboardService } from '../../../../core/services/dashboard.service';
+import { DashboardService } from '../../../../features/dashboard/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-dashboard-header',

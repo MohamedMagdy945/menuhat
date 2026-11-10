@@ -1,9 +1,9 @@
 import { Component, inject, ChangeDetectionStrategy, OnInit, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DashboardService } from '../../../core/services/dashboard.service';
+import { DashboardOrderSectionComponent } from './components/dashboard-order-section/dashboard-order-section.component';
+import { DashboardService } from './dashboard.service';
 import { environment } from '../../../core/environments/environment';
-import { DashboardOrderSectionComponent } from '../components/dashboard-order-section/dashboard-order-section.component';
 
 @Component({
   selector: 'app-dashboard',

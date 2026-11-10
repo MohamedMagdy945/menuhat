@@ -10,7 +10,7 @@ import { LoadingButtonComponent } from '../../../../shared/components/loading-bu
 import { CommonDateService } from '../../../../core/common-data/common-date';
 import { ClientsMenuService, CreateRestaurantRequest } from '../../../restaurants/services/clients-menu.service';
 import { ToastService } from '../../../../core/services/toast.service';
-import { DashboardService } from '../../../../core/services/dashboard.service';
+import { DashboardService } from '../../dashboard/dashboard.service';
 
 @Component({
   selector: 'app-create-restaurant',

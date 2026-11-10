@@ -1,7 +1,7 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { DashboardSidebarComponent } from './components/dashboard-sidebar/dashboard-sidebar.component';
-import { DashboardService } from '../../core/services/dashboard.service';
+import { DashboardService } from '../../features/dashboard/dashboard/dashboard.service';
 
 @Component({
   selector: 'app-dashboard-layout',

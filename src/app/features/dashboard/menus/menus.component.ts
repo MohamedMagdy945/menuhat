@@ -2,10 +2,10 @@ import { Component, ChangeDetectionStrategy, signal, computed, inject, OnInit } 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { DashboardService } from '../../../core/services/dashboard.service';
 import { MenuCategoriesService, MenuMainCategory, MenuSubCategory } from '../../../core/services/menu-categories.service';
 import { MenuCardComponent, MenuRestaurantCardData } from './components/menu-card/menu-card.component';
 import { MenuDetailsComponent } from './components/menu-details/menu-details.component';
+import { DashboardService } from '../dashboard/dashboard.service';
 
 export type MenuViewSubSection = 'none' | 'categories' | 'subcategories';
 
