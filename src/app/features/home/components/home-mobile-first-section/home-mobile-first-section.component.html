@@ -1,0 +1,201 @@
+<!-- Mobile Hero (First Section) -->
+<section class="w-full block md:hidden select-none">
+  <!-- Top Orange Gradient Card -->
+  <div
+    class="relative w-full bg-gradient-to-b from-[#FFA73A] via-[#F88220] to-[#F16421] rounded-b-[38px] shadow-md px-4 pt-3 pb-2 text-white overflow-hidden"
+  >
+    <!-- Top Bar: Greeting & Actions -->
+    <header class="flex items-center justify-between pb-2">
+      <!-- Right: User Avatar & Greeting -->
+      <a
+        routerLink="/profile"
+        class="flex items-center gap-2.5 cursor-pointer select-none"
+      >
+        <div
+          class="w-9 h-9 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white shrink-0 shadow-sm"
+        >
+          <svg
+            class="w-5 h-5 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            />
+          </svg>
+        </div>
+
+        <div class="flex flex-col text-right leading-tight">
+          <span class="text-[11px] text-white/80 font-normal">مرحبا</span>
+          <span class="text-sm font-bold text-white tracking-wide">
+            {{ userName() }}
+          </span>
+        </div>
+      </a>
+
+      <!-- Left: Action Buttons (Cart, Favorites, Notifications) -->
+      <div class="flex items-center gap-2">
+        <!-- Cart -->
+        <a
+          routerLink="/cart"
+          aria-label="السلة"
+          class="w-9 h-9 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
+        >
+          <svg
+            class="w-4 h-4 text-white"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M15 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M17 17h-11v-14h-2" />
+            <path d="M6 5l14 1l-1 7h-13" />
+          </svg>
+        </a>
+
+        <!-- Favorites -->
+        <a
+          routerLink="/favorites"
+          aria-label="المفضلة"
+          class="w-9 h-9 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
+        >
+          <svg
+            class="w-4 h-4 text-white"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+        </a>
+
+        <!-- Notifications -->
+        <a
+          routerLink="/notifications"
+          aria-label="الإشعارات"
+          class="relative w-9 h-9 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
+        >
+          <svg
+            class="w-4 h-4 text-white"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+          </svg>
+          <span
+            class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-white rounded-full shadow-xs"
+          ></span>
+        </a>
+      </div>
+    </header>
+
+    <!-- Banner Content: 3D Shopping Cart & Menuhat Logo -->
+    <div class="relative flex items-center justify-between px-1 py-1">
+      <!-- Left (in RTL): 3D Cart with Food & Menus -->
+      <div class="w-1/2 flex items-center justify-center">
+        <img
+          src="/images/banner-3.png"
+          alt="Shopping Cart"
+          class="w-full max-w-[170px] h-36 object-contain drop-shadow-md select-none pointer-events-none"
+        />
+      </div>
+
+      <!-- Right (in RTL): Menuhat Logo -->
+      <div class="w-1/2 flex flex-col items-center justify-center text-center pr-2">
+        <img
+          src="/icons/menuhat-logo.svg"
+          alt="Menuhat"
+          class="w-full max-w-[155px] h-auto object-contain drop-shadow-sm select-none"
+        />
+      </div>
+    </div>
+
+    <!-- Pagination Dots -->
+    <div class="flex items-center justify-center gap-1.5 pt-1 pb-8">
+      <span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+      <span class="w-4 h-1.5 rounded-full bg-white shadow-xs"></span>
+      <span class="w-1.5 h-1.5 rounded-full bg-white/50"></span>
+    </div>
+  </div>
+
+  <!-- Search & Filter Bar (Overlapping bottom curve) -->
+  <div class="relative -mt-6 z-20 px-4 mb-4 flex items-center gap-2.5">
+    <!-- Filter Button (Left in RTL) -->
+    <button
+      type="button"
+      aria-label="تصفية"
+      class="w-12 h-12 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center text-orange-500 shrink-0 cursor-pointer"
+    >
+      <svg
+        class="w-5 h-5 text-orange-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="4" y1="21" x2="4" y2="14"></line>
+        <line x1="4" y1="10" x2="4" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12" y2="3"></line>
+        <line x1="20" y1="21" x2="20" y2="16"></line>
+        <line x1="20" y1="12" x2="20" y2="3"></line>
+        <line x1="1" y1="14" x2="7" y2="14"></line>
+        <line x1="9" y1="8" x2="15" y2="8"></line>
+        <line x1="17" y1="16" x2="23" y2="16"></line>
+      </svg>
+    </button>
+
+    <!-- Search Input (Right in RTL) -->
+    <div class="flex-1 relative flex items-center">
+      <input
+        type="text"
+        placeholder="بحث"
+        [value]="searchQuery()"
+        (input)="searchQuery.set($any($event.target).value)"
+        (keydown.enter)="onSearch($event)"
+        class="w-full h-12 pr-11 pl-4 rounded-full bg-white shadow-sm border border-gray-100 text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none"
+      />
+      <div
+        class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-slate-400"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-5 h-5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607z"
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+

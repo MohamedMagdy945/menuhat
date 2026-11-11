@@ -1,6 +1,5 @@
 import {
   Component,
-  CUSTOM_ELEMENTS_SCHEMA,
   inject,
   OnInit,
 } from '@angular/core';
@@ -12,6 +11,8 @@ import { RestaurantsService } from '../restaurants/services/restaurants.service'
 
 import { HomeRestaurantsComponent } from './components/home-restaurants/home-restaurants.component';
 import { HomeMenuItemsComponent } from './components/home-menu-items/home-menu-items.component';
+import { HomeMobileFirstSection } from './components/home-mobile-first-section/home-mobile-first-section.component';
+import { HomeDesktopFirstSection } from './components/home-desktop-first-section/home-desktop-first-section.component';
 import { MenuItemService } from '../menu-items/menu-item.service';
 
 @Component({
@@ -19,8 +20,9 @@ import { MenuItemService } from '../menu-items/menu-item.service';
   imports: [
     HomeMenuItemsComponent,
     HomeRestaurantsComponent,
+    HomeMobileFirstSection,
+    HomeDesktopFirstSection,
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -125,5 +127,4 @@ export class HomeComponent implements OnInit {
       }
     }
   }
-
 }

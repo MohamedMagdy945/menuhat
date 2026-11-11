@@ -1,122 +1,201 @@
-<nav class="fixed bottom-2 left-4 right-4 z-50 rounded-full bg-white shadow-lg md:hidden">
-    <ul class="flex flex-row-reverse items-center justify-between px-3 py-2">
+<nav
+  dir="rtl"
+  class="fixed bottom-3 inset-x-4 max-w-md mx-auto z-50 bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-gray-100 md:hidden"
+>
+  <ul class="flex items-center justify-between px-3 py-2">
+    <!-- 1. الرئيسية (Home) -->
+    <li>
+      <a
+        routerLink="/"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive
+        #home="routerLinkActive"
+        [class.bg-[#FFF3E8]]="home.isActive"
+        [class.text-orange-500]="home.isActive"
+        [class.px-3.5]="home.isActive"
+        [class.py-1.5]="home.isActive"
+        [class.gap-1.5]="home.isActive"
+        [class.text-slate-400]="!home.isActive"
+        [class.p-2]="!home.isActive"
+        [class.gap-0]="!home.isActive"
+        class="flex items-center rounded-full transition-all duration-300 ease-in-out cursor-pointer select-none"
+      >
+        <span class="shrink-0 flex items-center justify-center">
+          @if (home.isActive) {
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.47 1.523a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 0 1-.53 1.287H19.5v8.25A1.25 1.25 0 0 1 18.25 21H14a.75.75 0 0 1-.75-.75v-5a.75.75 0 0 0-.75-.75h-2.5a.75.75 0 0 0-.75.75v5A.75.75 0 0 1 9.25 21H5.75A1.25 1.25 0 0 1 4.5 19.75v-8.25H3.28a.75.75 0 0 1-.53-1.287l8.69-8.69H11.47Z"/>
+            </svg>
+          } @else {
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+          }
+        </span>
 
-        <!-- Home -->
-        <li>
-            <a routerLink="/" routerLinkActive="bg-primary-hover text-primary"
-                [routerLinkActiveOptions]="{ exact: true }" #home="routerLinkActive"
-                class="flex items-center gap-1 rounded-full px-2 py-2 text-gray-400 transition-all duration-700 ease-in-out">
+        <span
+          class="overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out font-bold text-xs"
+          [class.max-w-0]="!home.isActive"
+          [class.max-w-24]="home.isActive"
+          [class.opacity-0]="!home.isActive"
+          [class.opacity-100]="home.isActive"
+        >
+          الرئيسية
+        </span>
+      </a>
+    </li>
 
-                <span class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-in-out"
-                    [class.max-w-0]="!home.isActive" [class.max-w-20]="home.isActive" [class.opacity-0]="!home.isActive"
-                    [class.opacity-100]="home.isActive">
-                    الرئيسية
-                </span>
+    <!-- 2. السلة (Cart) -->
+    <li>
+      <a
+        routerLink="/cart"
+        routerLinkActive
+        #cart="routerLinkActive"
+        [class.bg-[#FFF3E8]]="cart.isActive"
+        [class.text-orange-500]="cart.isActive"
+        [class.px-3.5]="cart.isActive"
+        [class.py-1.5]="cart.isActive"
+        [class.gap-1.5]="cart.isActive"
+        [class.text-slate-400]="!cart.isActive"
+        [class.p-2]="!cart.isActive"
+        [class.gap-0]="!cart.isActive"
+        class="flex items-center rounded-full transition-all duration-300 ease-in-out cursor-pointer select-none"
+      >
+        <span class="shrink-0 flex items-center justify-center">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M4 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M15 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+            <path d="M17 17h-11v-14h-2" />
+            <path d="M6 5l14 1l-1 7h-13" />
+          </svg>
+        </span>
 
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
-                        <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-                        <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
-                    </svg>
-                </span>
-            </a>
-        </li>
+        <span
+          class="overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out font-bold text-xs"
+          [class.max-w-0]="!cart.isActive"
+          [class.max-w-24]="cart.isActive"
+          [class.opacity-0]="!cart.isActive"
+          [class.opacity-100]="cart.isActive"
+        >
+          السلة
+        </span>
+      </a>
+    </li>
 
-        <!-- Cart -->
-        <li>
-            <a routerLink="/cart" routerLinkActive="bg-primary-hover text-primary" #cart="routerLinkActive"
-                class="flex items-center gap-1 rounded-full px-2 py-2 text-gray-400 transition-all duration-700 ease-in-out">
+    <!-- 3. المفضلة (Favorites - Star) -->
+    <li>
+      <a
+        routerLink="/favorites"
+        routerLinkActive
+        #favorites="routerLinkActive"
+        [class.bg-[#FFF3E8]]="favorites.isActive"
+        [class.text-orange-500]="favorites.isActive"
+        [class.px-3.5]="favorites.isActive"
+        [class.py-1.5]="favorites.isActive"
+        [class.gap-1.5]="favorites.isActive"
+        [class.text-slate-400]="!favorites.isActive"
+        [class.p-2]="!favorites.isActive"
+        [class.gap-0]="!favorites.isActive"
+        class="flex items-center rounded-full transition-all duration-300 ease-in-out cursor-pointer select-none"
+      >
+        <span class="shrink-0 flex items-center justify-center">
+          @if (favorites.isActive) {
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          } @else {
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          }
+        </span>
 
-                <span class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-in-out"
-                    [class.max-w-0]="!cart.isActive" [class.max-w-20]="cart.isActive" [class.opacity-0]="!cart.isActive"
-                    [class.opacity-100]="cart.isActive">
-                    الطلبات
-                </span>
+        <span
+          class="overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out font-bold text-xs"
+          [class.max-w-0]="!favorites.isActive"
+          [class.max-w-24]="favorites.isActive"
+          [class.opacity-0]="!favorites.isActive"
+          [class.opacity-100]="favorites.isActive"
+        >
+          المفضلة
+        </span>
+      </a>
+    </li>
 
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M4 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                        <path d="M15 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-                        <path d="M17 17h-11v-14h-2" />
-                        <path d="M6 5l14 1l-1 7h-13" />
-                    </svg>
-                </span>
-            </a>
-        </li>
+    <!-- 4. العروض (Offers - %) -->
+    <li>
+      <a
+        routerLink="/offers"
+        routerLinkActive
+        #offers="routerLinkActive"
+        [class.bg-[#FFF3E8]]="offers.isActive"
+        [class.text-orange-500]="offers.isActive"
+        [class.px-3.5]="offers.isActive"
+        [class.py-1.5]="offers.isActive"
+        [class.gap-1.5]="offers.isActive"
+        [class.text-slate-400]="!offers.isActive"
+        [class.p-2]="!offers.isActive"
+        [class.gap-0]="!offers.isActive"
+        class="flex items-center rounded-full transition-all duration-300 ease-in-out cursor-pointer select-none"
+      >
+        <span class="shrink-0 flex items-center justify-center">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M16 17a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+            <path d="M6 7a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+            <path d="M6 18l12 -12" />
+          </svg>
+        </span>
 
-        <!-- Favorites -->
-        <li>
-            <a routerLink="/favorites" routerLinkActive="bg-primary-hover text-primary" #favorites="routerLinkActive"
-                class="flex items-center gap-1 rounded-full px-2 py-2 text-gray-400 transition-all duration-700 ease-in-out">
+        <span
+          class="overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out font-bold text-xs"
+          [class.max-w-0]="!offers.isActive"
+          [class.max-w-24]="offers.isActive"
+          [class.opacity-0]="!offers.isActive"
+          [class.opacity-100]="offers.isActive"
+        >
+          العروض
+        </span>
+      </a>
+    </li>
 
-                <span class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-in-out"
-                    [class.max-w-0]="!favorites.isActive" [class.max-w-20]="favorites.isActive"
-                    [class.opacity-0]="!favorites.isActive" [class.opacity-100]="favorites.isActive">
-                    المفضلة
-                </span>
+    <!-- 5. الحساب (Profile) -->
+    <li>
+      <a
+        routerLink="/profile"
+        routerLinkActive
+        #profile="routerLinkActive"
+        [class.bg-[#FFF3E8]]="profile.isActive"
+        [class.text-orange-500]="profile.isActive"
+        [class.px-3.5]="profile.isActive"
+        [class.py-1.5]="profile.isActive"
+        [class.gap-1.5]="profile.isActive"
+        [class.text-slate-400]="!profile.isActive"
+        [class.p-2]="!profile.isActive"
+        [class.gap-0]="!profile.isActive"
+        class="flex items-center rounded-full transition-all duration-300 ease-in-out cursor-pointer select-none"
+      >
+        <span class="shrink-0 flex items-center justify-center">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+            <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+          </svg>
+        </span>
 
-                <span>
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                        />
-                    </svg>
-                </span>
-            </a>
-        </li>
-
-        <!-- Offers -->
-        <li>
-            <a routerLink="/offers" routerLinkActive="bg-primary-hover text-primary" #offers="routerLinkActive"
-                class="flex items-center gap-1 rounded-full px-2 py-2 text-gray-400 transition-all duration-700 ease-in-out">
-
-                <span class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-in-out"
-                    [class.max-w-0]="!offers.isActive" [class.max-w-20]="offers.isActive"
-                    [class.opacity-0]="!offers.isActive" [class.opacity-100]="offers.isActive">
-                    العروض
-                </span>
-
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M16 17a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                        <path d="M6 7a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-                        <path d="M6 18l12 -12" />
-                    </svg>
-                </span>
-            </a>
-        </li>
-
-        <!-- Profile -->
-        <li>
-            <a routerLink="/profile" routerLinkActive="bg-primary-hover text-primary" #profile="routerLinkActive"
-                class="flex items-center gap-1 rounded-full px-2 py-2 text-gray-400 transition-all duration-700 ease-in-out">
-
-                <span class="overflow-hidden whitespace-nowrap transition-all duration-700 ease-in-out"
-                    [class.max-w-0]="!profile.isActive" [class.max-w-20]="profile.isActive"
-                    [class.opacity-0]="!profile.isActive" [class.opacity-100]="profile.isActive">
-                    الحساب
-                </span>
-
-                <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                    </svg>
-                </span>
-            </a>
-        </li>
-
-    </ul>
+        <span
+          class="overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out font-bold text-xs"
+          [class.max-w-0]="!profile.isActive"
+          [class.max-w-24]="profile.isActive"
+          [class.opacity-0]="!profile.isActive"
+          [class.opacity-100]="profile.isActive"
+        >
+          الحساب
+        </span>
+      </a>
+    </li>
+  </ul>
 </nav>

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
-  imports: [RouterLink, RouterLinkActive],
   selector: 'app-mobile-navbar',
-  styleUrl: './mobile-navbar.component.css',
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './mobile-navbar.component.html',
+  styleUrl: './mobile-navbar.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MobileNavbar { }
+export class MobileNavbar {}
