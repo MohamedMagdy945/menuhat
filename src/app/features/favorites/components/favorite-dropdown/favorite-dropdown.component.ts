@@ -3,6 +3,7 @@ import {
   inject,
   signal,
   computed,
+  input,
   ElementRef,
   HostListener,
   ChangeDetectorRef,
@@ -36,6 +37,8 @@ export class FavoriteDropdownComponent implements OnInit {
   private readonly _elementRef = inject(ElementRef);
 
   readonly filesUrl = environment.filesUrl;
+
+  readonly variant = input<'desktop' | 'mobile-header'>('desktop');
 
   readonly isOpen = signal<boolean>(false);
   readonly favorites = this._favoritesService.favorites;

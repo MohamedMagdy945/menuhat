@@ -1,4 +1,4 @@
-<article class="w-full overflow-hidden rounded-2xl border border-soft shadow-xs bg-white">
+<article class="w-full overflow-hidden rounded-2xl border border-gray-100 shadow-xs bg-white">
 
   <!-- Image & Badges -->
   <div class="relative w-full overflow-hidden">
@@ -7,7 +7,7 @@
     <a [routerLink]="['/menu-items', itemId()]" [state]="{ item: menuItem() }" class="block h-full w-full"
       [attr.aria-label]="'عرض تفاصيل ' + menuItem().productName">
       <div class="bg-slate-100 h-26">
-        <div class="relative h-21 md:h-23 w-full ">
+        <div class="relative h-21 md:h-26 w-full ">
           <img [src]="menuItem().photoURL ? apiUrl + menuItem().photoURL : '/images/default-meal.png'"
             [alt]="menuItem().productName" class="h-full w-full object-contain p-1" loading="lazy" decoding="async"
             (error)="$any($event.target).src='/images/default-meal.png'" />

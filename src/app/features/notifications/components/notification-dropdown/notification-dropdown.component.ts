@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   signal,
+  input,
   ElementRef,
   HostListener,
   OnInit,
@@ -31,6 +32,8 @@ export class NotificationDropdownComponent implements OnInit {
   private readonly _cdr = inject(ChangeDetectorRef);
 
   readonly filesUrl = environment.filesUrl;
+
+  readonly variant = input<'desktop' | 'mobile-header'>('desktop');
 
   readonly isOpen = signal<boolean>(false);
   readonly notifications = this._notificationsService.notifications;

@@ -1,5 +1,4 @@
 <nav
-  dir="rtl"
   class="fixed bottom-3 inset-x-4 max-w-md mx-auto z-50 bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-gray-100 md:hidden"
 >
   <ul class="flex items-center justify-between px-3 py-2">
@@ -162,21 +161,21 @@
       </a>
     </li>
 
-    <!-- 5. الحساب (Profile) -->
-    <li>
-      <a
-        routerLink="/profile"
-        routerLinkActive
-        #profile="routerLinkActive"
-        [class.bg-[#FFF3E8]]="profile.isActive"
-        [class.text-orange-500]="profile.isActive"
-        [class.px-3.5]="profile.isActive"
-        [class.py-1.5]="profile.isActive"
-        [class.gap-1.5]="profile.isActive"
-        [class.text-slate-400]="!profile.isActive"
-        [class.p-2]="!profile.isActive"
-        [class.gap-0]="!profile.isActive"
+    <!-- 5. الحساب (Profile / Account Dropdown) -->
+    <li class="relative">
+      <button
+        type="button"
+        (click)="toggleAccountDropdown($event)"
+        [class.bg-[#FFF3E8]]="isAccountOpen() || isProfileActive()"
+        [class.text-orange-500]="isAccountOpen() || isProfileActive()"
+        [class.px-3.5]="isAccountOpen() || isProfileActive()"
+        [class.py-1.5]="isAccountOpen() || isProfileActive()"
+        [class.gap-1.5]="isAccountOpen() || isProfileActive()"
+        [class.text-slate-400]="!isAccountOpen() && !isProfileActive()"
+        [class.p-2]="!isAccountOpen() && !isProfileActive()"
+        [class.gap-0]="!isAccountOpen() && !isProfileActive()"
         class="flex items-center rounded-full transition-all duration-300 ease-in-out cursor-pointer select-none"
+        aria-label="حسابي"
       >
         <span class="shrink-0 flex items-center justify-center">
           <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -188,14 +187,159 @@
 
         <span
           class="overflow-hidden whitespace-nowrap transition-all duration-300 ease-in-out font-bold text-xs"
-          [class.max-w-0]="!profile.isActive"
-          [class.max-w-24]="profile.isActive"
-          [class.opacity-0]="!profile.isActive"
-          [class.opacity-100]="profile.isActive"
+          [class.max-w-0]="!isAccountOpen() && !isProfileActive()"
+          [class.max-w-24]="isAccountOpen() || isProfileActive()"
+          [class.opacity-0]="!isAccountOpen() && !isProfileActive()"
+          [class.opacity-100]="isAccountOpen() || isProfileActive()"
         >
           الحساب
         </span>
-      </a>
+      </button>
+
+      <!-- Dropdown Popup above the Mobile Navbar -->
+      @if (isAccountOpen()) {
+        <!-- Backdrop to close on tap outside -->
+        <div
+          class="fixed inset-0 z-40 bg-black/15 backdrop-blur-[1px]"
+          (click)="closeAccountDropdown()"
+        ></div>
+
+        <!-- Dropdown Menu Wrapper -->
+        <div
+          class="absolute left-0 bottom-[calc(100%+14px)] w-60 z-50 text-right animate-mobile-dropdown select-none"
+          dir="rtl"
+          (click)="$event.stopPropagation()"
+        >
+          <!-- Triangle Pointer down towards the icon -->
+          <div
+            class="absolute -bottom-1.5 left-5 w-3 h-3 bg-white rotate-45 border-b border-r border-gray-100 z-10"
+          ></div>
+
+          <!-- Card Panel -->
+          <div
+            class="relative bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden z-20"
+          >
+            <!-- Header (when logged in) -->
+            @if (isAuthenticated()) {
+              <div class="flex items-center gap-3 px-4 py-3 border-b border-gray-100 bg-gray-50/80">
+                <div
+                  class="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm text-sm font-bold"
+                >
+                  {{ userInitial() }}
+                </div>
+                <div class="flex flex-col min-w-0 text-right">
+                  <span class="text-sm font-bold text-slate-800 truncate">{{ userName() }}</span>
+                  <span class="text-xs text-slate-400">مرحباً بك 👋</span>
+                </div>
+              </div>
+            }
+
+            <!-- Dropdown List Items -->
+            <ul class="py-1.5 space-y-0.5">
+              @if (isAuthenticated()) {
+                <!-- My Profile -->
+                <li>
+                  <button
+                    type="button"
+                    (click)="navigateToProfile($event)"
+                    class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 text-right cursor-pointer"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0"
+                    >
+                      <span class="material-symbols-sharp text-[18px]">person</span>
+                    </span>
+                    <span class="font-semibold text-slate-800">ملفي الشخصي</span>
+                  </button>
+                </li>
+
+                <!-- My Orders -->
+                <li>
+                  <button
+                    type="button"
+                    (click)="navigateToOrders($event)"
+                    class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 text-right cursor-pointer"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shrink-0"
+                    >
+                      <span class="material-symbols-sharp text-[18px]">receipt_long</span>
+                    </span>
+                    <span class="font-medium text-slate-700">طلباتي</span>
+                  </button>
+                </li>
+
+                <!-- Favorites -->
+                <li>
+                  <button
+                    type="button"
+                    (click)="navigateToFavorites($event)"
+                    class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 text-right cursor-pointer"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center shrink-0"
+                    >
+                      <span class="material-symbols-sharp text-[18px]">favorite</span>
+                    </span>
+                    <span class="font-medium text-slate-700">المفضلة</span>
+                  </button>
+                </li>
+
+                <!-- Divider -->
+                <li class="mx-3 my-1 border-t border-gray-100"></li>
+
+                <!-- Logout -->
+                <li>
+                  <button
+                    type="button"
+                    (click)="logout($event)"
+                    class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 text-right cursor-pointer"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center shrink-0"
+                    >
+                      <span class="material-symbols-sharp text-[18px]">logout</span>
+                    </span>
+                    <span class="font-semibold text-red-500">تسجيل الخروج</span>
+                  </button>
+                </li>
+              } @else {
+                <!-- Profile (view profile state) -->
+                <li>
+                  <button
+                    type="button"
+                    (click)="navigateToProfile($event)"
+                    class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 text-right cursor-pointer"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0"
+                    >
+                      <span class="material-symbols-sharp text-[18px]">person</span>
+                    </span>
+                    <span class="font-semibold text-slate-800">الملف الشخصي</span>
+                  </button>
+                </li>
+
+                <!-- Login -->
+                <li>
+                  <button
+                    type="button"
+                    (click)="navigateToLogin($event)"
+                    class="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-orange-600 text-right cursor-pointer"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0"
+                    >
+                      <span class="material-symbols-sharp text-[18px]">login</span>
+                    </span>
+                    <span class="font-semibold text-orange-600">تسجيل الدخول</span>
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
     </li>
   </ul>
 </nav>

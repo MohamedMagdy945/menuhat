@@ -16,54 +16,73 @@
   display: flex;
   width: max-content;
   align-items: stretch;
-  --current-gap: var(--carousel-gap, 12px);
+  gap: var(--carousel-gap, 16px);
+}
+
+/* ============================================================
+   Free-Scroll Mode with Tailwind Widths:
+   - flex-shrink: 0 ensures NO card will ever shrink.
+   - Each card uses its Tailwind width class (e.g. w-52, w-64, w-72).
+   ============================================================ */
+:host ::ng-deep .carousel-track > * {
+  display: block;
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  scroll-snap-align: start;
+  height: auto;
+  box-sizing: border-box;
+}
+
+/* If itemWidth was provided via input */
+:host.has-item-width ::ng-deep .carousel-track > * {
+  flex: 0 0 var(--carousel-item-width) !important;
+  width: var(--carousel-item-width) !important;
+  min-width: var(--carousel-item-width) !important;
+  max-width: var(--carousel-item-width) !important;
+}
+
+/* ============================================================
+   Grid Mode (Backwards compatibility when items/cols is passed)
+   ============================================================ */
+:host ::ng-deep .carousel-track.has-grid {
+  --current-gap: var(--carousel-gap, 16px);
   --current-items: var(--carousel-items, 2);
   gap: var(--current-gap);
 }
 
-/* Base (Mobile) */
-:host ::ng-deep .carousel-track > * {
-  display: block;
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  height: auto;
-  min-width: 0;
-  width: var(
-    --carousel-item-width,
-    calc((100cqw - (var(--current-items) - 1) * var(--current-gap)) / var(--current-items))
-  );
+:host ::ng-deep .carousel-track.has-grid > * {
+  flex: 0 0 calc((100cqw - (var(--current-items) - 1) * var(--current-gap)) / var(--current-items)) !important;
+  width: calc((100cqw - (var(--current-items) - 1) * var(--current-gap)) / var(--current-items)) !important;
+  min-width: calc((100cqw - (var(--current-items) - 1) * var(--current-gap)) / var(--current-items)) !important;
+  max-width: calc((100cqw - (var(--current-items) - 1) * var(--current-gap)) / var(--current-items)) !important;
 }
 
-/* sm (>= 640px) */
 @media (min-width: 640px) {
-  .carousel-track {
-    --current-gap: var(--carousel-gap-sm, var(--carousel-gap, 12px));
+  :host ::ng-deep .carousel-track.has-grid {
+    --current-gap: var(--carousel-gap-sm, var(--carousel-gap, 16px));
     --current-items: var(--carousel-items-sm, var(--carousel-items, 3));
     gap: var(--current-gap);
   }
 }
 
-/* md (>= 768px) */
 @media (min-width: 768px) {
-  .carousel-track {
-    --current-gap: var(--carousel-gap-md, var(--carousel-gap-sm, var(--carousel-gap, 12px)));
+  :host ::ng-deep .carousel-track.has-grid {
+    --current-gap: var(--carousel-gap-md, var(--carousel-gap-sm, var(--carousel-gap, 16px)));
     --current-items: var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 4)));
     gap: var(--current-gap);
   }
 }
 
-/* lg (>= 1024px) */
 @media (min-width: 1024px) {
-  .carousel-track {
+  :host ::ng-deep .carousel-track.has-grid {
     --current-gap: var(--carousel-gap-lg, var(--carousel-gap, 16px));
     --current-items: var(--carousel-items-lg, var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 5))));
     gap: var(--current-gap);
   }
 }
 
-/* xl (>= 1280px) */
 @media (min-width: 1280px) {
-  .carousel-track {
+  :host ::ng-deep .carousel-track.has-grid {
     --current-gap: var(--carousel-gap-xl, var(--carousel-gap-lg, var(--carousel-gap, 16px)));
     --current-items: var(--carousel-items-xl, var(--carousel-items-lg, var(--carousel-items-md, var(--carousel-items-sm, var(--carousel-items, 6)))));
     gap: var(--current-gap);

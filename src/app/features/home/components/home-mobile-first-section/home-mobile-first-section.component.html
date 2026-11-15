@@ -2,7 +2,7 @@
 <section class="w-full block md:hidden select-none">
   <!-- Top Orange Gradient Card -->
   <div
-    class="relative w-full bg-gradient-to-b from-[#FFA73A] via-[#F88220] to-[#F16421] rounded-b-[38px] shadow-md px-4 pt-3 pb-2 text-white overflow-hidden"
+    class="relative w-full bg-linear-to-b from-[#FFA73A] via-[#F88220] to-[#F16421] rounded-b-[38px] shadow-md px-4 pt-3 pb-2 text-white"
   >
     <!-- Top Bar: Greeting & Actions -->
     <header class="flex items-center justify-between pb-2">
@@ -12,10 +12,10 @@
         class="flex items-center gap-2.5 cursor-pointer select-none"
       >
         <div
-          class="w-9 h-9 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white shrink-0 shadow-sm"
+          class="w-10 h-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white shrink-0 shadow-sm"
         >
           <svg
-            class="w-5 h-5 text-white"
+            class="w-6 h-6 text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -37,95 +37,36 @@
         </div>
       </a>
 
-      <!-- Left: Action Buttons (Cart, Favorites, Notifications) -->
+      <!-- Left: Action Dropdowns (Cart, Favorites, Notifications) -->
       <div class="flex items-center gap-2">
-        <!-- Cart -->
-        <a
-          routerLink="/cart"
-          aria-label="السلة"
-          class="w-9 h-9 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
-        >
-          <svg
-            class="w-4 h-4 text-white"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M4 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-            <path d="M15 19a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-            <path d="M17 17h-11v-14h-2" />
-            <path d="M6 5l14 1l-1 7h-13" />
-          </svg>
-        </a>
+        <!-- Cart Dropdown -->
+        <app-cart-dropdown variant="mobile-header"></app-cart-dropdown>
 
-        <!-- Favorites -->
-        <a
-          routerLink="/favorites"
-          aria-label="المفضلة"
-          class="w-9 h-9 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
-        >
-          <svg
-            class="w-4 h-4 text-white"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            />
-          </svg>
-        </a>
+        <!-- Favorites Dropdown -->
+        <app-favorite-dropdown variant="mobile-header"></app-favorite-dropdown>
 
-        <!-- Notifications -->
-        <a
-          routerLink="/notifications"
-          aria-label="الإشعارات"
-          class="relative w-9 h-9 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
-        >
-          <svg
-            class="w-4 h-4 text-white"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-          <span
-            class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-white rounded-full shadow-xs"
-          ></span>
-        </a>
+        <!-- Notifications Dropdown -->
+        <app-notification-dropdown variant="mobile-header"></app-notification-dropdown>
       </div>
     </header>
 
     <!-- Banner Content: 3D Shopping Cart & Menuhat Logo -->
-    <div class="relative flex items-center justify-between px-1 py-1">
-      <!-- Left (in RTL): 3D Cart with Food & Menus -->
-      <div class="w-1/2 flex items-center justify-center">
-        <img
-          src="/images/banner-3.png"
-          alt="Shopping Cart"
-          class="w-full max-w-[170px] h-36 object-contain drop-shadow-md select-none pointer-events-none"
-        />
-      </div>
-
-      <!-- Right (in RTL): Menuhat Logo -->
-      <div class="w-1/2 flex flex-col items-center justify-center text-center pr-2">
+    <div class="relative flex items-center justify-between px-2 py-1">
+      <!-- Right (in RTL): Menuhat Logo (Smaller Column: ~35% - 40%) -->
+      <div class="w-[35%] flex flex-col items-center justify-center text-center pr-1">
         <img
           src="/icons/menuhat-logo.svg"
           alt="Menuhat"
-          class="w-full max-w-[155px] h-auto object-contain drop-shadow-sm select-none"
+          class="w-full max-w-32 h-auto object-contain drop-shadow-sm select-none"
+        />
+      </div>
+
+      <!-- Left (in RTL): 3D Cart with Food & Menus (Bigger Hero Column: ~60% - 65%) -->
+      <div class="w-[65%] flex items-center justify-center pl-1">
+        <img
+          src="/images/banner-3.png"
+          alt="Shopping Cart"
+          class=" w-75 h-45 object-contain drop-shadow-lg select-none pointer-events-none"
         />
       </div>
     </div>

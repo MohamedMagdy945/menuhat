@@ -3,31 +3,51 @@
   <div class="flex items-center w-full gap-0 md:gap-2">
     <!-- Right Arrow Button (>) -->
     @if (showArrows()) {
-    <button type="button" [attr.aria-label]="isRtl() ? 'الصفحة السابقة' : 'الصفحة التالية'" [disabled]="rightDisabled()"
+    <button
+      type="button"
+      [attr.aria-label]="isRtl() ? 'السابق' : 'التالي'"
+      [disabled]="rightDisabled()"
       (click)="onRightArrowClick()"
-      [class.invisible]="totalPages() <= 1 && !moreComing()"
-      [class.pointer-events-none]="totalPages() <= 1 && !moreComing()"
-      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400 disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none">
+      [class.invisible]="!canScroll() && !moreComing()"
+      [class.pointer-events-none]="!canScroll() && !moreComing()"
+      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-600 disabled:opacity-20 disabled:pointer-events-none cursor-pointer focus:outline-none transition-opacity"
+    >
       <span class="material-symbols-sharp select-none text-[26px] leading-none">chevron_right</span>
     </button>
     }
 
     <!-- Scrollable Content Container -->
-    <div #scrollContainer
-      class="@container scrollbar-hide flex-1 min-w-0 flex overflow-x-auto scroll-smooth snap-x snap-mandatory py-2"
-      style="overflow-anchor: none; container-type: inline-size" [dir]="isRtl() ? 'rtl' : 'ltr'" (scroll)="onScroll()">
-      <div class="carousel-track" [style]="trackStyle()">
+    <div
+      #scrollContainer
+      class="@container scrollbar-hide flex-1 min-w-0 flex overflow-x-auto scroll-smooth snap-x snap-proximity py-2 select-none"
+      style="overflow-anchor: none; container-type: inline-size; -webkit-overflow-scrolling: touch"
+      [dir]="isRtl() ? 'rtl' : 'ltr'"
+      (scroll)="onScroll()"
+      (mousedown)="onMouseDown($event)"
+      (mousemove)="onMouseMove($event)"
+      (mouseup)="onMouseUp()"
+      (mouseleave)="onMouseUp()"
+    >
+      <div
+        class="carousel-track"
+        [class.has-grid]="hasExplicitItems()"
+        [style]="trackStyle()"
+      >
         <ng-content />
       </div>
     </div>
 
     <!-- Left Arrow Button (<) -->
     @if (showArrows()) {
-    <button type="button" [attr.aria-label]="isRtl() ? 'الصفحة التالية' : 'الصفحة السابقة'" [disabled]="leftDisabled()"
+    <button
+      type="button"
+      [attr.aria-label]="isRtl() ? 'التالي' : 'السابق'"
+      [disabled]="leftDisabled()"
       (click)="onLeftArrowClick()"
-      [class.invisible]="totalPages() <= 1 && !moreComing()"
-      [class.pointer-events-none]="totalPages() <= 1 && !moreComing()"
-      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-400 disabled:opacity-25 disabled:pointer-events-none cursor-pointer focus:outline-none">
+      [class.invisible]="!canScroll() && !moreComing()"
+      [class.pointer-events-none]="!canScroll() && !moreComing()"
+      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-600 disabled:opacity-20 disabled:pointer-events-none cursor-pointer focus:outline-none transition-opacity"
+    >
       <span class="material-symbols-sharp select-none text-[26px] leading-none">chevron_left</span>
     </button>
     }

@@ -8,16 +8,21 @@
     </h2>
 
     <!-- View All -->
-    <button type="button"
-      class="text-sm font-semibold text-orange-500 transition-colors duration-200 hover:text-orange-600">
+    <button
+      type="button"
+      class="text-sm font-semibold text-orange-500 cursor-pointer"
+    >
       عرض الكل
     </button>
   </div>
 
-  <!-- Horizontal Scroll (Configured internally for optimal restaurant card sizes) -->
-  <app-carousel class="mt-1 block w-full" gap="18" items="2 sm:3 md:4 lg:5 xl:6">
+  <!-- Free Horizontal Scroll with Tailwind Widths (w-64 on mobile, w-72 on sm, w-80 on md) -->
+  <app-carousel class="mt-1 block w-full" gap="16">
     @for (restaurant of restaurants(); track restaurant.id) {
-    <app-home-restaurant-card [restaurant]="restaurant" class="w-full" />
+      <app-home-restaurant-card
+        [restaurant]="restaurant"
+        class="w-58 md:w-60"
+      />
     }
   </app-carousel>
 </section>

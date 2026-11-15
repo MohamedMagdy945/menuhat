@@ -1,36 +1,78 @@
-<div class="relative inline-block text-right" dir="rtl">
-  <!-- Trigger Button (Heart Icon in Navbar) -->
-  <button
-    type="button"
-    (click)="toggleDropdown($event)"
-    aria-label="قائمة المفضلة"
-    class="relative w-11 h-11 sm:w-11 sm:h-11 border border-gray-200 rounded-full bg-white flex items-center justify-center shadow-sm cursor-pointer select-none"
-    [class.ring-2]="isOpen()"
-    [class.ring-rose-400]="isOpen()"
-    title="المفضلة"
-  >
-    <div class="flex items-center justify-center transition-colors text-lg">
-      <span
-        class="material-symbols-sharp select-none leading-none"
-        [class.text-rose-500]="isOpen()"
-        [class.text-gray-600]="!isOpen()"
-      >favorite</span>
-    </div>
-
-    <!-- Badge Count -->
-    @if (favoritesCount() > 0) {
-      <span
-        class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-rose-500 to-red-600 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xs border-2 border-white"
+<div class="relative inline-block text-right">
+  @if (variant() === 'mobile-header') {
+    <!-- Mobile Header Trigger Button -->
+    <button
+      type="button"
+      (click)="toggleDropdown($event)"
+      aria-label="المفضلة"
+      class="relative w-10 h-10 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
+      [class.ring-2]="isOpen()"
+      [class.ring-white/50]="isOpen()"
+      title="المفضلة"
+    >
+      <svg
+        class="w-5.5 h-5.5 text-white"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       >
-        {{ favoritesCount() > 99 ? '+99' : favoritesCount() }}
-      </span>
-    }
-  </button>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        />
+      </svg>
+      @if (favoritesCount() > 0) {
+        <span
+          class="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 bg-white text-rose-600 text-[10px] font-extrabold rounded-full flex items-center justify-center shadow-xs"
+        >
+          {{ favoritesCount() > 99 ? '+99' : favoritesCount() }}
+        </span>
+      }
+    </button>
+  } @else {
+    <!-- Desktop Trigger Button -->
+    <button
+      type="button"
+      (click)="toggleDropdown($event)"
+      aria-label="قائمة المفضلة"
+      class="relative w-11 h-11 sm:w-11 sm:h-11 border border-gray-200 rounded-full bg-white flex items-center justify-center shadow-lg cursor-pointer select-none"
+      [class.ring-2]="isOpen()"
+      [class.ring-rose-400]="isOpen()"
+      title="المفضلة"
+    >
+      <div class="flex items-center justify-center transition-colors text-lg">
+        <span
+          class="material-symbols-sharp select-none leading-none"
+          [class.text-rose-500]="isOpen()"
+          [class.text-gray-600]="!isOpen()"
+        >favorite</span>
+      </div>
+
+      <!-- Badge Count -->
+      @if (favoritesCount() > 0) {
+        <span
+          class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-rose-500 to-red-600 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xs border-2 border-white"
+        >
+          {{ favoritesCount() > 99 ? '+99' : favoritesCount() }}
+        </span>
+      }
+    </button>
+  }
 
   <!-- Dropdown Panel -->
   @if (isOpen()) {
+    <!-- Backdrop for mobile -->
     <div
-      class="favorite-dropdown-panel absolute left-0 mt-2 w-84 sm:w-96 rounded-2xl bg-white shadow-xl border border-gray-100 z-50 overflow-hidden"
+      class="fixed inset-0 z-40 bg-black/20 sm:hidden"
+      (click)="closeDropdown()"
+    ></div>
+
+    <div
+      class="favorite-dropdown-panel fixed sm:absolute inset-x-3 sm:inset-x-auto top-16 sm:top-full left-3 sm:left-0 right-3 sm:right-auto sm:mt-2 w-auto sm:w-96 rounded-2xl bg-white shadow-xl border border-gray-100 z-50 overflow-hidden text-right"
     >
       <!-- Dropdown Header -->
       <div class="flex items-center justify-between px-4 py-3 bg-slate-50/90 border-b border-gray-100">

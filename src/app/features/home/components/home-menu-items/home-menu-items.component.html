@@ -16,10 +16,13 @@
     </a>
   </div>
 
-  <!-- Horizontal Scroll (Configured internally for optimal menu card sizes) -->
-  <app-carousel class="mt-2 block w-full" gap="18" items="2 sm:3 md:4 lg:6 xl:7">
+  <!-- Free Horizontal Scroll with Tailwind Widths (w-52 on mobile, w-56 on sm, w-60 on md) -->
+  <app-carousel class="mt-2 block w-full" gap="14">
     @for (item of items(); track item.mostrequestesId) {
-      <app-home-menu-item-card [menuItem]="item" class="w-full" />
+      <app-home-menu-item-card
+        [menuItem]="item"
+        class="w-49 md:w-50 shrink-0"
+      />
     }
   </app-carousel>
 </section>

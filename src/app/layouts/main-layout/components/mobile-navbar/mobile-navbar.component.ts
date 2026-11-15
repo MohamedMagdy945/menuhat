@@ -1,5 +1,16 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  HostListener,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { UserDataService } from '../../../../core/services/userData.service';
 
 @Component({
   selector: 'app-mobile-navbar',
@@ -8,4 +19,100 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './mobile-navbar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MobileNavbar {}
+export class MobileNavbar {
+  private readonly _userDataService = inject(UserDataService);
+  private readonly _router = inject(Router);
+  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _elementRef = inject(ElementRef);
+
+  readonly isAccountOpen = signal<boolean>(false);
+  readonly isAuthenticated = this._userDataService.isAuthenticated;
+  readonly currentUser = this._userDataService.currentUser;
+
+  readonly userName = computed<string>(() => {
+    return this._userDataService.getUserFullName() || 'حسابي';
+  });
+
+  readonly userInitial = computed<string>(() => {
+    const name = this.userName().trim();
+    return name ? name.charAt(0) : 'ح';
+  });
+
+  readonly currentUrl = signal<string>(this._router.url);
+
+  readonly isProfileActive = computed<boolean>(() => {
+    const url = this.currentUrl();
+    return url.startsWith('/profile');
+  });
+
+  constructor() {
+    this._router.events
+      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .subscribe((event) => {
+        this.currentUrl.set(event.urlAfterRedirects);
+        this.isAccountOpen.set(false);
+        this._cdr.markForCheck();
+      });
+  }
+
+  toggleAccountDropdown(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.isAccountOpen.update((open) => !open);
+  }
+
+  closeAccountDropdown(): void {
+    this.isAccountOpen.set(false);
+    this._cdr.markForCheck();
+  }
+
+  navigateToProfile(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isAccountOpen.set(false);
+    this._router.navigate(['/profile']);
+  }
+
+  navigateToOrders(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isAccountOpen.set(false);
+    this._router.navigate(['/my-orders']);
+  }
+
+  navigateToFavorites(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isAccountOpen.set(false);
+    this._router.navigate(['/favorites']);
+  }
+
+  navigateToLogin(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isAccountOpen.set(false);
+    this._router.navigate(['/login']);
+  }
+
+  logout(event?: Event): void {
+    if (event) event.stopPropagation();
+    this.isAccountOpen.set(false);
+    this._userDataService.clearUserData();
+    this._router.navigate(['/login']);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!this.isAccountOpen()) return;
+    const target = event.target as HTMLElement;
+    if (!this._elementRef.nativeElement.contains(target)) {
+      this.isAccountOpen.set(false);
+      this._cdr.markForCheck();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.isAccountOpen()) {
+      this.isAccountOpen.set(false);
+      this._cdr.markForCheck();
+    }
+  }
+}

@@ -21,9 +21,9 @@ export type ResponsiveItems = {
 };
 export type ResponsiveCols = ResponsiveItems;
 
-function parseItems(value: string | number | ResponsiveItems | null | undefined): ResponsiveItems {
+function parseItems(value: string | number | ResponsiveItems | null | undefined): ResponsiveItems | null {
   if (value === undefined || value === null || value === '') {
-    return { base: 2, sm: 3, md: 4, lg: 5, xl: 6 };
+    return null;
   }
   if (typeof value === 'number') {
     return { base: value };
@@ -38,7 +38,6 @@ function parseItems(value: string | number | ResponsiveItems | null | undefined)
       return { base: num };
     }
     const result: ResponsiveItems = {};
-    // Normalize any "grid-cols-", "grid-", "cols-" prefixes
     const normalized = trimmed
       .replace(/grid-cols-/gi, '')
       .replace(/grid-/gi, '')
@@ -63,9 +62,9 @@ function parseItems(value: string | number | ResponsiveItems | null | undefined)
         }
       }
     }
-    return result;
+    return Object.keys(result).length > 0 ? result : null;
   }
-  return { base: 2, sm: 3, md: 4, lg: 5, xl: 6 };
+  return null;
 }
 
 @Component({
@@ -74,6 +73,9 @@ function parseItems(value: string | number | ResponsiveItems | null | undefined)
   templateUrl: './carousel.component.html',
   styleUrl: './carousel.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.has-item-width]': 'hasItemWidth()',
+  },
 })
 export class CarouselComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollContainer')
@@ -90,78 +92,96 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
   readonly showArrows = input(true);
   readonly loadMore = output<void>();
 
-  private readonly effectiveItems = computed(
-    () => this.grid() ?? this.items() ?? this.cols() ?? '2 sm:3 md:4 lg:5 xl:6',
-  );
+  // Check if caller explicitly requested a rigid grid columns definition
+  readonly hasExplicitItems = computed(() => {
+    return (
+      (this.grid() !== null && this.grid() !== undefined && this.grid() !== '') ||
+      (this.items() !== null && this.items() !== undefined && this.items() !== '') ||
+      (this.cols() !== null && this.cols() !== undefined && this.cols() !== '')
+    );
+  });
+
+  readonly hasItemWidth = computed(() => {
+    return this.itemWidth() !== null && this.itemWidth() !== undefined && this.itemWidth() !== '';
+  });
+
+  private readonly effectiveItems = computed(() => {
+    return this.grid() ?? this.items() ?? this.cols() ?? null;
+  });
 
   readonly parsedItems = computed(() => parseItems(this.effectiveItems()));
 
   readonly trackStyle = computed(() => {
-    const c = this.parsedItems();
     const styles: string[] = [];
-    if (c.base !== undefined) styles.push(`--carousel-items: ${c.base}`);
-    if (c.sm !== undefined) styles.push(`--carousel-items-sm: ${c.sm}`);
-    if (c.md !== undefined) styles.push(`--carousel-items-md: ${c.md}`);
-    if (c.lg !== undefined) styles.push(`--carousel-items-lg: ${c.lg}`);
-    if (c.xl !== undefined) styles.push(`--carousel-items-xl: ${c.xl}`);
+    const c = this.parsedItems();
+
+    if (c) {
+      if (c.base !== undefined) styles.push(`--carousel-items: ${c.base}`);
+      if (c.sm !== undefined) styles.push(`--carousel-items-sm: ${c.sm}`);
+      if (c.md !== undefined) styles.push(`--carousel-items-md: ${c.md}`);
+      if (c.lg !== undefined) styles.push(`--carousel-items-lg: ${c.lg}`);
+      if (c.xl !== undefined) styles.push(`--carousel-items-xl: ${c.xl}`);
+    }
+
     if (this.gap() !== null && this.gap() !== undefined && this.gap() !== '') {
       const rawGap = String(this.gap()).trim();
       const g = /^\d+$/.test(rawGap) ? `${rawGap}px` : rawGap;
       styles.push(`--carousel-gap: ${g}`);
     }
+
     if (this.itemWidth() !== null && this.itemWidth() !== undefined && this.itemWidth() !== '') {
       const rawWidth = String(this.itemWidth()).trim();
       const w = /^\d+$/.test(rawWidth) ? `${rawWidth}px` : rawWidth;
       styles.push(`--carousel-item-width: ${w}`);
     }
+
     return styles.join('; ');
   });
 
   // State Signals
   readonly isRtl = signal(true);
-  readonly totalPages = signal(1);
-  readonly currentPage = signal(0);
+  readonly isAtStart = signal(true);
+  readonly isAtEnd = signal(false);
+  readonly canScroll = signal(false);
 
   // Additional data pending
-  readonly moreComing = computed(
-    () => this.hasMore() || this.isLoading(),
-  );
+  readonly moreComing = computed(() => this.hasMore() || this.isLoading());
 
   // Boundary disabled states
   readonly leftDisabled = computed(() => {
     if (this.isRtl()) {
-      return this.currentPage() >= this.totalPages() - 1 && !this.moreComing();
+      return this.isAtEnd() && !this.moreComing();
     }
-    return this.currentPage() <= 0;
+    return this.isAtStart();
   });
 
   readonly rightDisabled = computed(() => {
     if (this.isRtl()) {
-      return this.currentPage() <= 0;
+      return this.isAtStart();
     }
-    return this.currentPage() >= this.totalPages() - 1 && !this.moreComing();
+    return this.isAtEnd() && !this.moreComing();
   });
 
-  // Animation & Observer references
-  private readonly animationDuration = 400;
-  private readonly threshold = 50;
-
-  private animationFrame?: number;
+  private readonly threshold = 60;
   private scrollFrame?: number;
   private loadRequested = false;
   private resizeObserver?: ResizeObserver;
   private mutationObserver?: MutationObserver;
+
+  // Mouse drag state for desktop
+  private isMouseDown = false;
+  private startX = 0;
+  private startScrollLeft = 0;
+  private hasDragged = false;
 
   constructor() {
     effect(() => {
       if (this.isLoading()) {
         return;
       }
-
       this.loadRequested = false;
-
       requestAnimationFrame(() => {
-        this.updateLayout();
+        this.updateScrollState();
       });
     });
   }
@@ -172,12 +192,12 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
 
     this.resizeObserver = new ResizeObserver(() => {
       this.detectDirection();
-      this.updateLayout();
+      this.updateScrollState();
     });
     this.resizeObserver.observe(container);
 
     this.mutationObserver = new MutationObserver(() => {
-      this.updateLayout();
+      this.updateScrollState();
     });
     this.mutationObserver.observe(container, {
       childList: true,
@@ -186,7 +206,7 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
 
     requestAnimationFrame(() => {
       this.detectDirection();
-      this.updateLayout();
+      this.updateScrollState();
       this.fillIfNeeded();
     });
   }
@@ -198,10 +218,6 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     if (this.scrollFrame !== undefined) {
       cancelAnimationFrame(this.scrollFrame);
     }
-
-    if (this.animationFrame !== undefined) {
-      cancelAnimationFrame(this.animationFrame);
-    }
   }
 
   onScroll(): void {
@@ -211,7 +227,7 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
 
     this.scrollFrame = requestAnimationFrame(() => {
       this.scrollFrame = undefined;
-      this.updateCurrentPageFromScroll();
+      this.updateScrollState();
       this.checkLoadMore();
     });
   }
@@ -220,11 +236,10 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     if (this.leftDisabled()) {
       return;
     }
-
     if (this.isRtl()) {
-      this.nextPage();
+      this.scrollByStep('next');
     } else {
-      this.prevPage();
+      this.scrollByStep('prev');
     }
   }
 
@@ -232,126 +247,115 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     if (this.rightDisabled()) {
       return;
     }
-
     if (this.isRtl()) {
-      this.prevPage();
+      this.scrollByStep('prev');
     } else {
-      this.nextPage();
+      this.scrollByStep('next');
     }
   }
 
-  nextPage(): void {
-    const current = this.currentPage();
-    const total = this.totalPages();
-
-    if (current < total - 1) {
-      this.goToPage(current + 1);
-    } else if (this.moreComing()) {
-      this.requestMore();
-    }
-  }
-
-  prevPage(): void {
-    const current = this.currentPage();
-    if (current > 0) {
-      this.goToPage(current - 1);
-    }
-  }
-
-  goToPage(pageIndex: number): void {
+  scrollByStep(direction: 'next' | 'prev'): void {
     const container = this.scrollContainer?.nativeElement;
     if (!container) return;
 
-    const clientWidth = container.clientWidth;
-    const maxScroll = Math.max(0, container.scrollWidth - clientWidth);
-    const targetPage = Math.max(0, Math.min(pageIndex, this.totalPages() - 1));
+    const step = this.getScrollStep();
+    const isRTL = this.isRtl();
 
-    const targetOffset = Math.min(targetPage * clientWidth, maxScroll);
-    const targetScrollLeft = this.isRtl() ? -targetOffset : targetOffset;
-
-    this.animateScrollTo(targetScrollLeft, targetPage);
-  }
-
-  private animateScrollTo(targetScrollLeft: number, targetPage: number): void {
-    if (this.animationFrame !== undefined) {
-      cancelAnimationFrame(this.animationFrame);
+    let delta = 0;
+    if (direction === 'next') {
+      delta = isRTL ? -step : step;
+    } else {
+      delta = isRTL ? step : -step;
     }
 
-    const container = this.scrollContainer.nativeElement;
-    const start = container.scrollLeft;
-    const target = targetScrollLeft;
-    const startTime = performance.now();
+    container.scrollBy({ left: delta, behavior: 'smooth' });
 
-    const animate = (currentTime: number): void => {
-      const progress = Math.min(
-        (currentTime - startTime) / this.animationDuration,
-        1,
-      );
-
-      // Smooth cubic ease-out
-      const eased = 1 - Math.pow(1 - progress, 3);
-      container.scrollLeft = start + (target - start) * eased;
-
-      if (progress < 1) {
-        this.animationFrame = requestAnimationFrame(animate);
-        return;
-      }
-
-      this.animationFrame = undefined;
-      this.currentPage.set(targetPage);
+    requestAnimationFrame(() => {
       this.checkLoadMore();
-    };
-
-    this.animationFrame = requestAnimationFrame(animate);
+    });
   }
 
-  private updateLayout(): void {
+  private getScrollStep(): number {
+    const container = this.scrollContainer?.nativeElement;
+    if (!container) return 300;
+
+    const firstItem = container.querySelector('.carousel-track > *') as HTMLElement | null;
+    if (firstItem && firstItem.offsetWidth > 0) {
+      const itemWidth = firstItem.offsetWidth;
+      const gap = this.getGapValue();
+      const stride = itemWidth + gap;
+
+      const visibleCount = Math.floor(container.clientWidth / stride);
+      const stepCount = Math.max(1, visibleCount > 1 ? visibleCount - 1 : 1);
+      return stepCount * stride;
+    }
+
+    return Math.round(container.clientWidth * 0.75);
+  }
+
+  private getGapValue(): number {
+    const raw = this.gap();
+    if (raw !== null && raw !== undefined && raw !== '') {
+      const num = parseFloat(String(raw));
+      if (!isNaN(num) && num > 0) return num;
+    }
+    return 16;
+  }
+
+  // ============================================
+  // Mouse Drag to Scroll (Desktop support)
+  // ============================================
+
+  onMouseDown(e: MouseEvent): void {
+    if (e.button !== 0) return;
     const container = this.scrollContainer?.nativeElement;
     if (!container) return;
 
-    const clientWidth = container.clientWidth;
+    this.isMouseDown = true;
+    this.hasDragged = false;
+    this.startX = e.pageX - container.offsetLeft;
+    this.startScrollLeft = container.scrollLeft;
+  }
+
+  onMouseMove(e: MouseEvent): void {
+    if (!this.isMouseDown) return;
+    const container = this.scrollContainer?.nativeElement;
+    if (!container) return;
+
+    const x = e.pageX - container.offsetLeft;
+    const distance = x - this.startX;
+
+    if (Math.abs(distance) > 5) {
+      this.hasDragged = true;
+    }
+
+    container.scrollLeft = this.startScrollLeft - distance;
+  }
+
+  onMouseUp(): void {
+    this.isMouseDown = false;
+  }
+
+  private updateScrollState(): void {
+    const container = this.scrollContainer?.nativeElement;
+    if (!container) return;
+
     const scrollWidth = container.scrollWidth;
+    const clientWidth = container.clientWidth;
     const maxScroll = Math.max(0, scrollWidth - clientWidth);
 
-    if (maxScroll <= 5 || clientWidth <= 0) {
-      this.totalPages.set(1);
-      this.currentPage.set(0);
+    if (maxScroll <= 5) {
+      this.canScroll.set(false);
+      this.isAtStart.set(true);
+      this.isAtEnd.set(true);
       return;
     }
 
-    // Number of full-page steps
-    const pagesCount = Math.ceil(maxScroll / clientWidth) + 1;
-    this.totalPages.set(Math.max(1, pagesCount));
+    this.canScroll.set(true);
+    const scrollLeft = Math.abs(container.scrollLeft);
 
-    this.updateCurrentPageFromScroll();
-  }
-
-  private updateCurrentPageFromScroll(): void {
-    const container = this.scrollContainer?.nativeElement;
-    if (!container) return;
-
-    const clientWidth = container.clientWidth;
-    const maxScroll = Math.max(0, container.scrollWidth - clientWidth);
-    const total = this.totalPages();
-
-    if (maxScroll <= 5 || clientWidth <= 0 || total <= 1) {
-      this.currentPage.set(0);
-      return;
-    }
-
-    const scrolled = Math.abs(container.scrollLeft);
-
-    if (scrolled <= 5) {
-      this.currentPage.set(0);
-    } else if (maxScroll - scrolled <= 15) {
-      this.currentPage.set(total - 1);
-    } else {
-      const calculatedPage = Math.min(
-        total - 1,
-        Math.max(0, Math.round(scrolled / clientWidth)),
-      );
-      this.currentPage.set(calculatedPage);
-    }
+    this.isAtStart.set(scrollLeft <= 5);
+    this.isAtEnd.set(maxScroll - scrollLeft <= 10);
   }
 
   private detectDirection(): void {
@@ -372,7 +376,9 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const container = this.scrollContainer.nativeElement;
+    const container = this.scrollContainer?.nativeElement;
+    if (!container) return;
+
     const max = Math.max(container.scrollWidth - container.clientWidth, 0);
     const distanceToEnd = max - Math.abs(container.scrollLeft);
 

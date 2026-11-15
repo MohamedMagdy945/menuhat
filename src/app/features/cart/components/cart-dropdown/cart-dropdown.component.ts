@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   signal,
+  input,
   ElementRef,
   HostListener,
   ChangeDetectorRef,
@@ -32,6 +33,8 @@ export class CartDropdownComponent implements OnInit {
 
   readonly apiUrl = environment.apiUrl;
   readonly filesUrl = environment.filesUrl;
+
+  readonly variant = input<'desktop' | 'mobile-header'>('desktop');
 
   readonly isOpen = signal<boolean>(false);
   readonly cartItems = this._cartService.cartItems;
