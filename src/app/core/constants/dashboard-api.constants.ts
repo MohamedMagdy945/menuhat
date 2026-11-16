@@ -16,6 +16,7 @@ export const DASHBOARD_API_ENDPOINTS = {
   menuMainCategoriesGetAll: `${environment.apiUrl}/MenuMainCategories/GetAll`,
   menuSubCategories: `${environment.apiUrl}/MenuSubCategories`,
   menuSubCategoriesGetAll: `${environment.apiUrl}/MenuSubCategories/GetAll`,
+  menuProducts: `${environment.apiUrl}/MenuProducts`,
 
   // Dashboard & Reports Endpoints
   ownerDashboard: `${environment.apiUrl}/Dashboard`,

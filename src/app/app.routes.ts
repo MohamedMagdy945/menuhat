@@ -382,6 +382,59 @@ export const routes: Routes = [
                         .then(m => m.MenusComponent)
             },
             {
+                path: 'menu/details',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/menu-details-page/menu-details-page.component')
+                        .then(m => m.MenuDetailsPageComponent)
+            },
+            {
+                path: 'menu/details/:id',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/menu-details-page/menu-details-page.component')
+                        .then(m => m.MenuDetailsPageComponent)
+            },
+            {
+                path: 'menu/categories',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/menu-categories-page/menu-categories-page.component')
+                        .then(m => m.MenuCategoriesPageComponent)
+            },
+            {
+                path: 'menu/categories/:id',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/menu-categories-page/menu-categories-page.component')
+                        .then(m => m.MenuCategoriesPageComponent)
+            },
+            {
+                path: 'menu/subcategories',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/menu-sub-categories-page/menu-sub-categories-page.component')
+                        .then(m => m.MenuSubCategoriesPageComponent)
+            },
+            {
+                path: 'menu/subcategories/:id',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/menu-sub-categories-page/menu-sub-categories-page.component')
+                        .then(m => m.MenuSubCategoriesPageComponent)
+            },
+            {
+                path: 'menu/subcategories/:id/products',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/menu-products-page/menu-products-page.component')
+                        .then(m => m.MenuProductsPageComponent)
+            },
+            {
+                path: 'menu/products',
+                loadComponent: () =>
+                    import('./features/dashboard/menus/components/menu-products-page/menu-products-page.component')
+                        .then(m => m.MenuProductsPageComponent)
+            },
+            {
+                path: 'menu/sub-categories',
+                redirectTo: 'menu/subcategories',
+                pathMatch: 'full'
+            },
+            {
                 path: 'menu/add-item',
                 loadComponent: () =>
                     import('./features/dashboard/menus/components/add-menu-item/add-menu-item.component')

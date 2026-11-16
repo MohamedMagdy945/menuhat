@@ -2,18 +2,19 @@ import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-export interface MenuItemSize {
-  id: string;
-  nameAr: string;
-  nameEn: string;
-  price: number | null;
-}
+import { MenuItemSize } from '../../models/menu-item-size.model';
+import { FormInputComponent } from '../../../../../shared/components/form-input/form-input.component';
+import { LoadingButtonComponent } from '../../../../../shared/components/loading-button/loading-button.component';
 
 @Component({
   selector: 'app-add-menu-item',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    FormInputComponent,
+    LoadingButtonComponent,
+  ],
   templateUrl: './add-menu-item.component.html',
   styleUrl: './add-menu-item.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -144,4 +145,3 @@ export class AddMenuItemComponent {
     this.router.navigate(['/dashboard/menu']);
   }
 }
-

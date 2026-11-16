@@ -5,7 +5,18 @@ import { DASHBOARD_API_ENDPOINTS } from '../constants/dashboard-api.constants';
 
 export interface MenuMainCategory {
   id: number;
-  name: string;
+  rowNo?: number;
+  no?: number;
+  menuId?: number;
+  clientName?: string;
+  clientName_En?: string;
+  menuMainCategoryName: string;
+  menuMainCategoryName_En?: string;
+  photoURL?: string | null;
+  description?: string | null;
+  description_En?: string | null;
+  catOrder?: number | null;
+  name?: string;
   name_En?: string;
   notes?: string;
   isActive?: boolean;
@@ -43,8 +54,15 @@ export class MenuCategoriesService {
     this.isLoading.set(true);
     return this.http.get<any>(DASHBOARD_API_ENDPOINTS.menuMainCategoriesGetAll).pipe(
       map((res) => {
-        const raw = res?.result ?? res?.data ?? (Array.isArray(res) ? res : []);
-        return Array.isArray(raw) ? raw : [];
+        const raw = res?.data ?? res?.result ?? (Array.isArray(res) ? res : []);
+        const list = Array.isArray(raw) ? raw : [];
+        return list.map((item: any) => ({
+          ...item,
+          name: (item.menuMainCategoryName ?? item.name ?? '').trim(),
+          name_En: (item.menuMainCategoryName_En ?? item.name_En ?? '').trim(),
+          menuMainCategoryName: (item.menuMainCategoryName ?? item.name ?? '').trim(),
+          menuMainCategoryName_En: (item.menuMainCategoryName_En ?? item.name_En ?? '').trim(),
+        }));
       }),
       tap({
         next: (items) => {
