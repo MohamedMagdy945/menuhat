@@ -17,6 +17,8 @@ export const DASHBOARD_API_ENDPOINTS = {
   menuSubCategories: `${environment.apiUrl}/MenuSubCategories`,
   menuSubCategoriesGetAll: `${environment.apiUrl}/MenuSubCategories/GetAll`,
   menuProducts: `${environment.apiUrl}/MenuProducts`,
+  products: `${environment.apiUrl}/Products`,
+  suggestSystemImages: `${environment.apiUrl}/Products/SuggestSystemImages`,
 
   // Dashboard & Reports Endpoints
   ownerDashboard: `${environment.apiUrl}/Dashboard`,
@@ -30,6 +32,10 @@ export const DASHBOARD_API_ENDPOINTS = {
   baseAlbums: `${environment.apiUrl}/Albums`,
   selectProfilePicture: `${environment.apiUrl}/ClientsMenus/profile/select`,
   selectCoverPicture: `${environment.apiUrl}/ClientsMenus/cover/select`,
+
+  // Support & Complaints Endpoints
+  complaints: `${environment.apiUrl}/Complaints`,
+  complaintsGetAll: `${environment.apiUrl}/Complaints/GetAll`,
 } as const;
 
 export type DashboardApiEndpointKey = keyof typeof DASHBOARD_API_ENDPOINTS;

@@ -226,14 +226,6 @@ export const routes: Routes = [
                         .then(m => m.Offers)
             },
 
-            {
-                path: 'test',
-                loadComponent: () =>
-                    import('./features/testing/testing')
-                        .then(m => m.TestLoadingComponent)
-            },
-
-
             // =================================================
             // Restaurants
             // =================================================
@@ -333,19 +325,6 @@ export const routes: Routes = [
                     import('./features/my-orders/my-orders.component')
                         .then(m => m.MyOrdersComponent)
             },
-
-
-            // =================================================
-            // Support
-            // =================================================
-
-            {
-                path: 'support',
-                loadComponent: () =>
-                    import('./features/technical-support/components/technical-support/technical-support.component')
-                        .then(m => m.TechnicalSupportComponent)
-            },
-
 
             // =================================================
             // Notifications

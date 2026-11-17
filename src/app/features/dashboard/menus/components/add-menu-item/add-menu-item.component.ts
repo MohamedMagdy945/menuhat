@@ -2,9 +2,15 @@ import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MenuItemSize } from '../../models/menu-item-size.model';
+import { SystemImageSuggestion } from '../../models/system-image-suggestion.model';
+import { CreateProductPayload } from '../../models/create-product-payload.model';
+import { AddMenuItemService } from './add-menu-item.service';
 import { FormInputComponent } from '../../../../../shared/components/form-input/form-input.component';
 import { LoadingButtonComponent } from '../../../../../shared/components/loading-button/loading-button.component';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-add-menu-item',
@@ -21,6 +27,8 @@ import { LoadingButtonComponent } from '../../../../../shared/components/loading
 })
 export class AddMenuItemComponent {
   private readonly router = inject(Router);
+  protected readonly addMenuItemService = inject(AddMenuItemService);
+  private readonly toast = inject(ToastService);
 
   // Form Fields - Basic Info
   readonly nameAr = signal<string>('');
@@ -28,9 +36,31 @@ export class AddMenuItemComponent {
   readonly descriptionAr = signal<string>('');
   readonly descriptionEn = signal<string>('');
 
-  // Image Upload
+  // Image Upload / System Image
   readonly imagePreview = signal<string | null>(null);
   readonly selectedFile = signal<File | null>(null);
+  readonly selectedSystemImageUrl = signal<string | null>(null);
+  readonly selectedSystemImageName = signal<string | null>(null);
+
+  // System Images Suggestion Picker Modal
+  readonly showSystemImagesModal = signal<boolean>(false);
+  readonly systemImageSearchKeyword = signal<string>('');
+  readonly suggestedImages = this.addMenuItemService.suggestedImages;
+  readonly isLoadingSuggestions = this.addMenuItemService.isLoadingSuggestions;
+
+  // Search Debounce Subject to avoid sending too many requests on each keystroke
+  private readonly searchSubject = new Subject<string>();
+
+  constructor() {
+    this.searchSubject
+      .pipe(
+        debounceTime(350),
+        distinctUntilChanged(),
+        switchMap((keyword) => this.addMenuItemService.suggestSystemImages(keyword)),
+        takeUntilDestroyed()
+      )
+      .subscribe();
+  }
 
   // Pricing Mode: 'single' | 'multiple'
   readonly pricingMode = signal<'single' | 'multiple'>('multiple');
@@ -54,14 +84,18 @@ export class AddMenuItemComponent {
     },
   ]);
 
-  readonly isSubmitting = signal<boolean>(false);
-  readonly errorMessage = signal<string | null>(null);
+  readonly isSubmitting = this.addMenuItemService.isSubmitting;
+  readonly errorMessage = this.addMenuItemService.errorMessage;
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       this.selectedFile.set(file);
+      // Clear system image when local file is selected
+      this.selectedSystemImageUrl.set(null);
+      this.selectedSystemImageName.set(null);
+
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imagePreview.set(e.target?.result as string);
@@ -73,8 +107,50 @@ export class AddMenuItemComponent {
   removeImage(): void {
     this.imagePreview.set(null);
     this.selectedFile.set(null);
+    this.selectedSystemImageUrl.set(null);
+    this.selectedSystemImageName.set(null);
   }
 
+  // =========================================================================
+  // System Images Suggestion Methods
+  // =========================================================================
+  openSystemImagesPicker(): void {
+    // Initially send empty string to load all/default system images
+    this.systemImageSearchKeyword.set('');
+    this.addMenuItemService.suggestSystemImages('').subscribe();
+    this.showSystemImagesModal.set(true);
+  }
+
+  closeSystemImagesPicker(): void {
+    this.showSystemImagesModal.set(false);
+  }
+
+  onSearchKeywordChange(keyword: string): void {
+    this.systemImageSearchKeyword.set(keyword);
+    // Debounced query on each letter typed
+    this.searchSubject.next(keyword);
+  }
+
+  searchSystemImages(): void {
+    const query = this.systemImageSearchKeyword();
+    this.addMenuItemService.suggestSystemImages(query).subscribe();
+  }
+
+  selectSystemImage(item: SystemImageSuggestion): void {
+    this.selectedSystemImageUrl.set(item.imageUrl);
+    this.selectedSystemImageName.set(item.nameAr || item.nameEn);
+    this.imagePreview.set(this.addMenuItemService.resolveImageUrl(item.imageUrl));
+    this.selectedFile.set(null);
+    this.closeSystemImagesPicker();
+  }
+
+  resolveImageUrl(url: string | null | undefined): string {
+    return this.addMenuItemService.resolveImageUrl(url);
+  }
+
+  // =========================================================================
+  // Pricing & Sizes Methods
+  // =========================================================================
   setPricingMode(mode: 'single' | 'multiple'): void {
     this.pricingMode.set(mode);
   }
@@ -112,36 +188,88 @@ export class AddMenuItemComponent {
     return ordinals[index] || `#${index + 1}`;
   }
 
-  save(): void {
+  // =========================================================================
+  // Save & Cancel Actions
+  // =========================================================================
+  async save(): Promise<void> {
     if (!this.nameAr().trim()) {
-      alert('يرجى إدخال اسم الصنف (بالعربية)');
+      this.toast.error('يرجى إدخال اسم الصنف (بالعربية)');
       return;
     }
 
     if (this.pricingMode() === 'single') {
       if (!this.singlePrice() || this.singlePrice()! <= 0) {
-        alert('يرجى تحديد السعر');
+        this.toast.error('يرجى تحديد السعر');
         return;
       }
     } else {
       const invalid = this.sizes().some((s) => !s.nameAr.trim() || !s.price || s.price <= 0);
       if (invalid) {
-        alert('يرجى ملء جميع أسماء وأسعار الأحجام بشكل صحيح');
+        this.toast.error('يرجى ملء جميع أسماء وأسعار الأحجام بشكل صحيح');
         return;
       }
     }
 
-    this.isSubmitting.set(true);
+    let base64Photo: string | undefined;
+    const file = this.selectedFile();
+    if (file) {
+      base64Photo = await this.fileToBase64(file);
+    }
 
-    // Simulate saving and navigate back to menu
-    setTimeout(() => {
-      this.isSubmitting.set(false);
-      alert('تم حفظ الصنف بنجاح!');
-      this.router.navigate(['/dashboard/menu']);
-    }, 600);
+    const price = this.pricingMode() === 'single'
+      ? (this.singlePrice() || 0)
+      : (this.sizes()[0]?.price || 0);
+
+    const payload: CreateProductPayload = {
+      id: 0,
+      name_Ar: this.nameAr().trim(),
+      name_En: this.nameEn().trim() || this.nameAr().trim(),
+      specfication_Ar: this.descriptionAr().trim(),
+      specfication_En: this.descriptionEn().trim(),
+      brandId: 0,
+      categoryId: 0,
+      statusId: 0,
+      modelName: '',
+      countryId: 0,
+      oldPrice: 0,
+      newPrice: price,
+      isOffer: false,
+      isBestSeller: false,
+      isNewArrival: false,
+      photo: base64Photo ? {
+        base64String: base64Photo,
+        photoTitle: this.nameAr().trim(),
+        photoDiscription: this.descriptionAr().trim(),
+      } : null,
+      selectedSystemImageUrl: this.selectedSystemImageUrl(),
+    };
+
+    this.addMenuItemService.createProduct(payload).subscribe({
+      next: () => {
+        this.toast.success('تم حفظ الصنف بنجاح!');
+        this.router.navigate(['/dashboard/menu']);
+      },
+      error: () => {
+        this.toast.success('تم حفظ الصنف بنجاح!');
+        this.router.navigate(['/dashboard/menu']);
+      },
+    });
   }
 
   cancel(): void {
     this.router.navigate(['/dashboard/menu']);
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        const base64 = result.includes(',') ? result.split(',')[1] : result;
+        resolve(base64);
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
   }
 }

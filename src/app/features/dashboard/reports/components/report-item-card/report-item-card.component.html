@@ -1,4 +1,4 @@
-<div class="bg-white rounded-2xl border border-gray-100  p-4 sm:p-5 space-y-4 select-none">
+<div class="bg-white rounded-2xl border border-gray-100 p-4 space-y-1 select-none">
 
   <!-- ======================================================== -->
   <!-- 1. HEADER: Date + Orange Bar (Right) & Calendar (Left)   -->
@@ -7,14 +7,14 @@
     <!-- Right (in RTL): Orange Bar + Date e.g. 2025-10-01 -->
     <div class="flex items-center gap-2 min-w-0">
       <span class="w-1.5 h-5 rounded-full bg-orange-500 shrink-0 inline-block"></span>
-      <h3 class="font-bold text-base sm:text-lg text-slate-800 tracking-tight truncate">
+      <h3 class="font-semibold  text-lg text-slate-800 tracking-tight truncate">
         {{ formatDate(item().orderDay) }}
       </h3>
     </div>
 
     <!-- Left (in RTL): Calendar Icon in Orange Box -->
-    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
-      <span class="material-symbols-sharp text-lg sm:text-xl text-orange-500 select-none">calendar_month</span>
+    <div class="w-9 h-9  rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
+      <span class="material-symbols-sharp  text-xl text-orange-500 select-none">calendar_month</span>
     </div>
   </div>
 
@@ -24,9 +24,9 @@
   <div class="grid grid-cols-2 gap-4 pt-1">
     <!-- Row 1 Right: عدد الطلبات -->
     <div class="text-right space-y-1.5">
-      <span class="text-xs sm:text-sm text-slate-400 font-medium block">عدد الطلبات</span>
+      <span class=" text-sm text-slate-400 font-medium block">عدد الطلبات</span>
       <div class="flex items-center">
-        <span class="inline-flex items-center justify-center min-w-[32px] px-3 py-0.5 rounded-full bg-orange-50/80 text-slate-800 font-bold text-sm sm:text-base">
+        <span class="inline-flex items-center justify-center min-w-8 px-3 py-0.5 rounded-full bg-orange-50/80 text-slate-800 font-semibold ">
           {{ item().orderCount | number }}
         </span>
       </div>
@@ -34,24 +34,24 @@
 
     <!-- Row 1 Left: الإجمالي -->
     <div class="text-right space-y-1.5">
-      <span class="text-xs sm:text-sm text-slate-400 font-medium block">الإجمالي</span>
-      <p class="text-base sm:text-lg font-bold text-orange-500">
+      <span class="text-sm text-slate-400 font-medium block">الإجمالي</span>
+      <p class="text-lg font-semibold text-orange-500">
         {{ item().totalAmount | number:'1.0-2' }} <span class="text-xs font-semibold">ج.م</span>
       </p>
     </div>
 
     <!-- Row 2 Right: عدد المشترين -->
     <div class="text-right space-y-1">
-      <span class="text-xs sm:text-sm text-slate-400 font-medium block">عدد المشترين</span>
-      <p class="text-sm sm:text-base font-bold text-slate-800">
+      <span class="text-sm text-slate-400 font-medium block">عدد المشترين</span>
+      <p class=" font-semibold text-slate-800">
         {{ item().customerCount | number }}
       </p>
     </div>
 
     <!-- Row 2 Left: عدد الزوار -->
     <div class="text-right space-y-1">
-      <span class="text-xs sm:text-sm text-slate-400 font-medium block">عدد الزوار</span>
-      <p class="text-sm sm:text-base font-bold text-slate-800">
+      <span class=" text-slate-400 font-medium block">عدد الزوار</span>
+      <p class=" font-semibold text-slate-800">
         {{ item().customerCount | number }}
       </p>
     </div>
@@ -66,11 +66,11 @@
       <div class="w-6 h-6 rounded-full bg-orange-100/70 text-orange-500 flex items-center justify-center shrink-0">
         <span class="material-symbols-sharp text-sm select-none">restaurant</span>
       </div>
-      <span class="text-xs sm:text-sm font-semibold text-slate-500">الأكثر طلباً</span>
+      <span class="text-sm font-semibold text-slate-500">الأكثر طلباً</span>
     </div>
 
     <!-- Left (in RTL): Dish Name -->
-    <span class="text-xs sm:text-sm font-bold text-slate-800 truncate max-w-[60%] text-left" [title]="item().topItemName">
+    <span class="text-sm font-semibold text-slate-800 truncate max-w-[60%] text-left" [title]="item().topItemName">
       {{ item().topItemName || '—' }}
     </span>
   </div>
@@ -84,11 +84,11 @@
       <div class="w-6 h-6 rounded-full bg-orange-100/70 text-orange-500 flex items-center justify-center shrink-0">
         <span class="material-symbols-sharp text-sm select-none">schedule</span>
       </div>
-      <span class="text-xs sm:text-sm font-semibold text-slate-500">وقت الذروة</span>
+      <span class="text-sm font-semibold text-slate-500">وقت الذروة</span>
     </div>
 
     <!-- Left (in RTL): Peak Hour e.g. 16:00 -->
-    <span class="text-xs sm:text-sm font-bold text-slate-800" dir="ltr">
+    <span class="text-sm font-semibold text-slate-800" dir="ltr">
       {{ formatPeakHour(item().peakHour) }}
     </span>
   </div>

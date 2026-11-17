@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SupportService, ComplaintItem } from '../../../../technical-support/services/support-service';
+import { SupportService } from '../../services/support.service';
+import { ComplaintItem } from '../../models/complaint-item.model';
 
 @Component({
   selector: 'app-support-tracking',

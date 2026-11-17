@@ -1,4 +1,4 @@
-<div class="bg-white rounded-2xl border border-gray-100  p-4 sm:p-5 space-y-4 select-none">
+<div class="bg-white rounded-2xl border border-gray-100 p-4 space-y-1 select-none">
 
   <!-- ======================================================== -->
   <!-- 1. HEADER: Product Name + Accent Bar (Right) & Rank Badge -->
@@ -7,14 +7,14 @@
     <!-- Right (in RTL): Orange Bar + Product Name -->
     <div class="flex items-center gap-2 min-w-0">
       <span class="w-1.5 h-5 rounded-full bg-orange-500 shrink-0 inline-block"></span>
-      <h3 class="font-bold text-base sm:text-lg text-slate-800 tracking-tight truncate" [title]="product().name">
+      <h3 class="font-semibold  text-slate-800 tracking-tight truncate" [title]="product().name">
         {{ product().name }}
       </h3>
     </div>
 
     <!-- Left (in RTL): Rank Badge Box -->
     <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
-      <span class="font-black text-xs sm:text-sm text-orange-600 select-none">
+      <span class="font-semibold text-xs sm:text-sm text-orange-600 select-none">
         #{{ product().rowNo }}
       </span>
     </div>
@@ -28,7 +28,7 @@
     <div class="text-right space-y-1.5">
       <span class="text-xs sm:text-sm text-slate-400 font-medium block">عدد مرات الطلب</span>
       <div class="flex items-center">
-        <span class="inline-flex items-center justify-center min-w-[32px] px-3 py-0.5 rounded-full bg-orange-50/80 text-slate-800 font-bold text-sm sm:text-base">
+        <span class="inline-flex items-center justify-center min-w-8 px-3 py-0.5 rounded-full bg-orange-50/80 text-slate-800 font-semibold text-sm sm:text-base">
           {{ product().productCount | number }}
         </span>
       </div>
@@ -36,8 +36,8 @@
 
     <!-- Row 1 Left: الترتيب -->
     <div class="text-right space-y-1.5">
-      <span class="text-xs sm:text-sm text-slate-400 font-medium block">الترتيب</span>
-      <p class="text-base sm:text-lg font-bold text-orange-500">
+      <span class="text-sm text-slate-400 font-medium block">الترتيب</span>
+      <p class="font-semibold text-orange-500">
         المركز #{{ product().rowNo }}
       </p>
     </div>
@@ -45,7 +45,7 @@
     <!-- Row 2 Right: القسم الفرعي -->
     <div class="text-right space-y-1">
       <span class="text-xs sm:text-sm text-slate-400 font-medium block">القسم الفرعي</span>
-      <p class="text-sm sm:text-base font-bold text-slate-800 truncate" [title]="product().menuSubCategoryName">
+      <p class="text-sm sm:text-base font-semibold text-slate-800 truncate" [title]="product().menuSubCategoryName">
         {{ product().menuSubCategoryName || 'عام' }}
       </p>
     </div>
@@ -53,7 +53,7 @@
     <!-- Row 2 Left: الحجم -->
     <div class="text-right space-y-1">
       <span class="text-xs sm:text-sm text-slate-400 font-medium block">الحجم</span>
-      <p class="text-sm sm:text-base font-bold text-slate-800">
+      <p class="text-sm sm:text-base font-semibold text-slate-800">
         {{ product().title || 'افتراضي' }}
       </p>
     </div>
@@ -69,7 +69,7 @@
       </div>
       <span class="text-xs sm:text-sm font-semibold text-slate-500">القسم الرئيسي</span>
     </div>
-    <span class="text-xs sm:text-sm font-bold text-slate-800 truncate max-w-[60%] text-left" [title]="product().menuCategoryName">
+    <span class="text-xs sm:text-sm font-semibold text-slate-800 truncate max-w-[60%] text-left" [title]="product().menuCategoryName">
       {{ product().menuCategoryName || 'جميع الأقسام' }}
     </span>
   </div>
@@ -85,7 +85,7 @@
         </div>
         <span class="text-xs sm:text-sm font-semibold text-slate-500">معدل الإقبال</span>
       </div>
-      <span class="text-xs sm:text-sm font-bold text-orange-500" dir="ltr">
+      <span class="text-xs sm:text-sm font-semibold text-orange-500" dir="ltr">
         {{ percentage() }}%
       </span>
     </div>
@@ -95,4 +95,3 @@
   </div>
 
 </div>
-
