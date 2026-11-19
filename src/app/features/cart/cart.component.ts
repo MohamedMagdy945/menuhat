@@ -5,6 +5,7 @@ import { CartService } from './cart.service';
 import { AddCartItem, CartMenuItem } from './models/cart-item';
 import { environment } from '../../core/environments/environment';
 import { UserDataService } from '../../core/services/userData.service';
+import { ToastService } from '../../core/services/toast.service';
 import { CartItemCardComponent } from './components/cart-item-card/cart-item-card.component';
 import { OrderCheckoutComponent } from './components/order-checkout/order-checkout.component';
 
@@ -25,6 +26,7 @@ export class CartComponent implements OnInit {
   private readonly _cartService = inject(CartService);
   private readonly _userDataService = inject(UserDataService);
   private readonly _router = inject(Router);
+  private readonly _toast = inject(ToastService);
 
   readonly filesUrl = environment.filesUrl;
   readonly isLoading = this._cartService.isLoading;
@@ -110,11 +112,20 @@ export class CartComponent implements OnInit {
         productPriceId: it.productPriceId ?? null,
         quantity: isMatch(it) ? newQty : it.quantity, // update target qty
         serial: it.serial ?? '',
+        price: it.price ?? 0,
       }));
 
     this._cartService.AddItemsAndRefreshCart(payload).subscribe({
+      next: () => {
+        if (newQty > 0) {
+          this._toast.success(`تم تحديث كمية "${item.productName}" إلى ${newQty}`);
+        } else {
+          this._toast.success(`تم حذف "${item.productName}" من السلة`);
+        }
+      },
       error: (err) => {
         console.error('Error updating/deleting cart item:', err);
+        this._toast.error('تعذر تحديث السلة، يرجى المحاولة لاحقاً');
       },
     });
   }

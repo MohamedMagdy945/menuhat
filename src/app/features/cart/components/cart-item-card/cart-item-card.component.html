@@ -2,9 +2,9 @@
   <!-- Right Part: Image + Name + Unit Price -->
   <div class="flex items-center gap-3.5 min-w-0 flex-1">
     <!-- Product Image -->
-    <div class="w-16 h-16 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-100 flex items-center justify-center">
-      <img [src]="imageUrl()" (error)="$any($event.target).src = '/images/default-meal.png'"
-        [alt]="item().productName"
+    <div
+      class="w-16 h-16 sm:w-16 sm:h-16 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-100 flex items-center justify-center">
+      <img [src]="imageUrl()" (error)="$any($event.target).src = '/images/default-meal.png'" [alt]="item().productName"
         class="w-full h-full object-contain" />
     </div>
 
@@ -20,7 +20,8 @@
   </div>
 
   <!-- Left Part: Total Price + Quantity Control + Delete Button -->
-  <div class="flex items-center justify-between sm:justify-end gap-3.5 sm:gap-4 shrink-0  pt-2.5 sm:pt-0 border-slate-100">
+  <div
+    class="flex items-center justify-between sm:justify-end gap-3.5 sm:gap-4 shrink-0  pt-2.5 sm:pt-0 border-slate-100">
     <!-- Item Total Price -->
     <div class="text-right">
       <span class="text-[11px] text-slate-400 block font-medium">الإجمالي</span>
@@ -41,8 +42,7 @@
     <!-- Delete Button -->
     <button type="button" (click)="onDelete()"
       class="w-8 h-8 rounded-lg bg-rose-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0"
-      title="حذف العنصر"
-      aria-label="حذف العنصر">
+      title="حذف العنصر" aria-label="حذف العنصر">
       <span class="material-symbols-sharp text-[17px]">delete</span>
     </button>
   </div>

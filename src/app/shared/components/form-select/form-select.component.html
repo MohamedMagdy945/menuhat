@@ -1,33 +1,73 @@
-<div class="form-group" dir="rtl">
+<div class="mb-4.5 w-full text-right" dir="rtl">
   @if (label()) {
-    <label class="form-label">
+  <div class="mb-2.5 mr-3 flex items-center justify-between">
+    <label [for]="id() || null" class="m-0 block text-sm font-semibold text-slate-700">
       {{ label() }}
     </label>
+    <ng-content select="[label-extra]" />
+  </div>
   }
 
-  <div class="select-wrapper" [class.is-disabled]="disabled">
+  <div
+    class="group relative flex w-full items-center rounded-2xl border-[1.5px] transition-all duration-200 ease-out"
+    [ngClass]="
+      isInvalid
+        ? 'border-red-500 bg-red-50'
+        : 'border-slate-200 bg-slate-50 focus-within:border-orange-500 focus-within:bg-white'
+    "
+    [class.opacity-60]="disabled"
+    [class.cursor-not-allowed]="disabled"
+  >
+    <!-- Right Projected Icon (Optional) -->
+    <span
+      class="pointer-events-none absolute right-3.5 z-1 flex items-center justify-center transition-colors duration-200"
+      [ngClass]="isInvalid ? 'text-red-500' : 'text-slate-400 group-focus-within:text-orange-500'"
+    >
+      <ng-content select="[input-icon]" />
+    </span>
+
+    <!-- Native Select with custom styling & hidden browser default arrow -->
     <select
+      [id]="id() || null"
       [value]="value"
       [disabled]="disabled"
-      (change)="onSelect($event)"
+      (change)="onSelectChange($event)"
       (blur)="onBlur()"
-      class="form-select">
-
-      <option value="" disabled selected>
+      class="h-12 w-full appearance-none border-none bg-transparent text-sm text-slate-900 outline-none cursor-pointer pr-11 pl-10"
+    >
+      @if (placeholder()) {
+      <option value="" disabled [selected]="value === '' || value === null || value === undefined">
         {{ placeholder() }}
       </option>
+      }
 
-      @for (option of options(); track option.value) {
-        <option [value]="option.value">
-          {{ option.label }}
-        </option>
+      @for (option of options(); track (option.value ?? option.id)) {
+      <option
+        [value]="option.value ?? option.id"
+        [selected]="value == (option.value ?? option.id)"
+      >
+        {{ option.label ?? option.name ?? option.menuMainCategoryName ?? option.menuSubCategoryName }}
+      </option>
       }
     </select>
 
-    <span class="select-icon">
+    <!-- Left Custom Dropdown Chevron Icon -->
+    <span
+      class="pointer-events-none absolute left-3.5 z-1 flex items-center justify-center text-slate-400 group-focus-within:text-orange-500 transition-colors duration-200"
+    >
       <span class="material-symbols-sharp select-none leading-none text-[22px]">
         expand_more
       </span>
     </span>
   </div>
+
+  <!-- Single Validation Error Message -->
+  @if (isInvalid && resolvedError) {
+  <div class="mt-1.5 flex items-center gap-1.5 text-right text-xs font-medium text-red-500">
+    <span class="material-symbols-sharp select-none leading-none text-[16px] text-red-500 shrink-0">
+      error
+    </span>
+    <span>{{ resolvedError }}</span>
+  </div>
+  }
 </div>

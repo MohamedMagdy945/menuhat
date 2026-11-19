@@ -11,6 +11,7 @@ import {
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { UserDataService } from '../../../../core/services/userData.service';
+import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
 
 @Component({
   selector: 'app-mobile-navbar',
@@ -21,11 +22,13 @@ import { UserDataService } from '../../../../core/services/userData.service';
 })
 export class MobileNavbar {
   private readonly _userDataService = inject(UserDataService);
+  private readonly _dropdownState = inject(DropdownStateService);
   private readonly _router = inject(Router);
   private readonly _cdr = inject(ChangeDetectorRef);
   private readonly _elementRef = inject(ElementRef);
 
-  readonly isAccountOpen = signal<boolean>(false);
+  readonly dropdownId = 'mobile-account';
+  readonly isAccountOpen = computed(() => this._dropdownState.activeDropdown() === this.dropdownId);
   readonly isAuthenticated = this._userDataService.isAuthenticated;
   readonly currentUser = this._userDataService.currentUser;
 
@@ -50,7 +53,7 @@ export class MobileNavbar {
       .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
       .subscribe((event) => {
         this.currentUrl.set(event.urlAfterRedirects);
-        this.isAccountOpen.set(false);
+        this._dropdownState.close(this.dropdownId);
         this._cdr.markForCheck();
       });
   }
@@ -59,41 +62,41 @@ export class MobileNavbar {
     if (event) {
       event.stopPropagation();
     }
-    this.isAccountOpen.update((open) => !open);
+    this._dropdownState.toggle(this.dropdownId);
   }
 
   closeAccountDropdown(): void {
-    this.isAccountOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._cdr.markForCheck();
   }
 
   navigateToProfile(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isAccountOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._router.navigate(['/profile']);
   }
 
   navigateToOrders(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isAccountOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._router.navigate(['/my-orders']);
   }
 
   navigateToFavorites(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isAccountOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._router.navigate(['/favorites']);
   }
 
   navigateToLogin(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isAccountOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._router.navigate(['/login']);
   }
 
   logout(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isAccountOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._userDataService.clearUserData();
     this._router.navigate(['/login']);
   }
@@ -103,7 +106,7 @@ export class MobileNavbar {
     if (!this.isAccountOpen()) return;
     const target = event.target as HTMLElement;
     if (!this._elementRef.nativeElement.contains(target)) {
-      this.isAccountOpen.set(false);
+      this._dropdownState.close(this.dropdownId);
       this._cdr.markForCheck();
     }
   }
@@ -111,7 +114,7 @@ export class MobileNavbar {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.isAccountOpen()) {
-      this.isAccountOpen.set(false);
+      this._dropdownState.close(this.dropdownId);
       this._cdr.markForCheck();
     }
   }

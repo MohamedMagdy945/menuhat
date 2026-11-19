@@ -17,6 +17,22 @@ export class HomeMenuItemCardComponent {
   readonly apiUrl = environment.filesUrl;
   readonly Math = Math;
 
+  getItemImageUrl(photoURL: string | null | undefined): string {
+    if (!photoURL) {
+      return '/images/default-meal.png';
+    }
+    if (photoURL.startsWith('http')) {
+      return photoURL;
+    }
+    const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
+    const serverHost = environment.apiUrl.replace(/\/api\/?$/, '');
+
+    if (cleanPath.startsWith('/DefaultImages') || cleanPath.startsWith('/UploadedFiles')) {
+      return `${serverHost}${encodeURI(cleanPath)}`;
+    }
+    return `${environment.filesUrl}${encodeURI(cleanPath)}`;
+  }
+
   readonly itemId = computed(() => {
     const item = this.menuItem() as any;
     return item.id ?? item.menuProductId ?? item.mostrequestesId ?? item.productId ?? item.menuId;

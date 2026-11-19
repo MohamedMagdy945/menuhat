@@ -67,8 +67,15 @@
   @if (isOpen()) {
     <!-- Backdrop for mobile -->
     <div
-      class="fixed inset-0 z-40 bg-black/20 sm:hidden"
+      class="dropdown-backdrop fixed inset-0 z-40 bg-black/20 sm:hidden"
       (click)="closeDropdown()"
+    ></div>
+
+    <!-- Triangle Caret pointing to button -->
+    <div
+      class="dropdown-caret hidden sm:block"
+      [class.is-mobile-header]="variant() === 'mobile-header'"
+      aria-hidden="true"
     ></div>
 
     <div
@@ -118,8 +125,8 @@
               (click)="goToProduct(item.id, $event)"
               class="flex items-center gap-3 p-3.5 cursor-pointer bg-white"
             >
-              <!-- Item Image -->
-              <div class="w-14 h-14 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-gray-100">
+              <!-- Item Image (Prominent & Clear) -->
+              <div class="w-20 h-20 rounded-2xl overflow-hidden bg-slate-50 shrink-0 border border-gray-100 flex items-center justify-center">
                 <img
                   [src]="getItemImageUrl(item.photoURL)"
                   [alt]="item.productName"

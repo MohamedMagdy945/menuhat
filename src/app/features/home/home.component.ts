@@ -13,7 +13,7 @@ import { HomeRestaurantsComponent } from './components/home-restaurants/home-res
 import { HomeMenuItemsComponent } from './components/home-menu-items/home-menu-items.component';
 import { HomeMobileFirstSection } from './components/home-mobile-first-section/home-mobile-first-section.component';
 import { HomeDesktopFirstSection } from './components/home-desktop-first-section/home-desktop-first-section.component';
-import { MenuItemService } from '../menu-items/menu-item.service';
+import { MenuItemService } from '../menu-items/menu-items.service';
 
 @Component({
   selector: 'app-home',

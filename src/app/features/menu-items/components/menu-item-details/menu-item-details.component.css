@@ -49,11 +49,6 @@
   transition: all 0.2s ease-in-out;
 }
 
-.size-card:hover:not(.is-selected) {
-  border-color: #e5e7eb; /* gray-200 */
-  background-color: #fafafa;
-}
-
 .size-card.is-selected {
   border-color: #f97316; /* primary orange */
   background-color: #fff7ed; /* orange-50 */

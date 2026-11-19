@@ -259,7 +259,7 @@ export const routes: Routes = [
             {
                 path: 'most-ordered',
                 loadComponent: () =>
-                    import('./features/menu-items/menu-item.component')
+                    import('./features/menu-items/menu-items.component')
                         .then(m => m.MealsComponent)
             },
 

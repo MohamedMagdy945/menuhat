@@ -17,6 +17,7 @@ export const DASHBOARD_API_ENDPOINTS = {
   menuSubCategories: `${environment.apiUrl}/MenuSubCategories`,
   menuSubCategoriesGetAll: `${environment.apiUrl}/MenuSubCategories/GetAll`,
   menuProducts: `${environment.apiUrl}/MenuProducts`,
+  addMenuProduct: `${environment.apiUrl}/MenuProducts/AddMenuProduct`,
   products: `${environment.apiUrl}/Products`,
   suggestSystemImages: `${environment.apiUrl}/Products/SuggestSystemImages`,
 

@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   signal,
+  computed,
   input,
   ElementRef,
   HostListener,
@@ -14,6 +15,7 @@ import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from '../../services/notifications.service';
 import { AppNotification } from '../../models/notification.model';
 import { UserDataService } from '../../../../core/services/userData.service';
+import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
 import { environment } from '../../../../core/environments/environment';
 
 @Component({
@@ -27,6 +29,7 @@ import { environment } from '../../../../core/environments/environment';
 export class NotificationDropdownComponent implements OnInit {
   private readonly _notificationsService = inject(NotificationsService);
   private readonly _userDataService = inject(UserDataService);
+  private readonly _dropdownState = inject(DropdownStateService);
   private readonly _router = inject(Router);
   private readonly _elementRef = inject(ElementRef);
   private readonly _cdr = inject(ChangeDetectorRef);
@@ -35,7 +38,8 @@ export class NotificationDropdownComponent implements OnInit {
 
   readonly variant = input<'desktop' | 'mobile-header'>('desktop');
 
-  readonly isOpen = signal<boolean>(false);
+  readonly dropdownId = computed(() => `notification-${this.variant()}`);
+  readonly isOpen = computed(() => this._dropdownState.activeDropdown() === this.dropdownId());
   readonly notifications = this._notificationsService.notifications;
   readonly unreadCount = this._notificationsService.unreadCount;
   readonly totalCount = this._notificationsService.totalCount;
@@ -57,13 +61,12 @@ export class NotificationDropdownComponent implements OnInit {
     }
 
     if (!this.isUserLoggedIn()) {
-      this.isOpen.set(false);
+      this._dropdownState.close(this.dropdownId());
       this._router.navigate(['/login']);
       return;
     }
 
-    const nextState = !this.isOpen();
-    this.isOpen.set(nextState);
+    const nextState = this._dropdownState.toggle(this.dropdownId());
 
     if (nextState && this.notifications().length === 0) {
       this._notificationsService.loadNotifications(true);
@@ -71,14 +74,14 @@ export class NotificationDropdownComponent implements OnInit {
   }
 
   closeDropdown(): void {
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId());
   }
 
   goToNotifications(event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId());
     this._router.navigate(['/notifications']);
   }
 
@@ -116,7 +119,7 @@ export class NotificationDropdownComponent implements OnInit {
     }
 
     this._notificationsService.markAsRead(item.id);
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId());
 
     if (item.screenId === 4 || item.orderId || item.orderSerial || item.name === 'MyOrders') {
       this._router.navigate(['/my-orders']);
@@ -237,7 +240,7 @@ export class NotificationDropdownComponent implements OnInit {
     if (!this.isOpen()) return;
     const target = event.target as HTMLElement;
     if (!this._elementRef.nativeElement.contains(target)) {
-      this.isOpen.set(false);
+      this._dropdownState.close(this.dropdownId());
       this._cdr.markForCheck();
     }
   }
@@ -245,7 +248,7 @@ export class NotificationDropdownComponent implements OnInit {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.isOpen()) {
-      this.isOpen.set(false);
+      this._dropdownState.close(this.dropdownId());
       this._cdr.markForCheck();
     }
   }

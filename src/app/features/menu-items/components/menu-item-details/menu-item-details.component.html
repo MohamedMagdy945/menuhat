@@ -1,5 +1,5 @@
 @if (item(); as currentItem) {
-<div class="min-h-screen  pb-12 sm:pb-16 text-gray-900">
+<div class="sm:mb-6 text-gray-900">
 
   <!-- ========================================================================= -->
   <!-- Header / Navigation Bar                                                  -->
@@ -15,14 +15,6 @@
           class="material-symbols-sharp text-[20px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
         <span>الرجوع</span>
       </button>
-
-      <!-- Center Title -->
-      <div class="hidden max-w-xs truncate text-center md:block">
-        <span class="text-xl font-semibold text-gray-800">{{ currentItem.productName }}</span>
-        @if ($any(currentItem).clientName) {
-        <span class="block  text-gray-500 font-semibold truncate">{{ $any(currentItem).clientName }}</span>
-        }
-      </div>
 
       <!-- Action Buttons (Share & Favorite) -->
       <div class="flex items-center gap-2">
@@ -60,197 +52,149 @@
       <!-- ===================================================================== -->
       <!-- Details Column: Right side on Desktop (order-2 on mobile, order-1 on lg)-->
       <!-- ===================================================================== -->
-      <section class="order-2 flex flex-col gap-3 lg:order-1 lg:col-span-7">
+      <section class="order-2 lg:order-1 lg:col-span-7">
 
-        <!-- Card: Basic Information & Price -->
-        <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-xs text-start">
+        <!-- Unified Single Card Container -->
+        <div class="rounded-2xl border border-gray-100 bg-white p-5  text-start space-y-6">
 
-          <!-- Meta Tags (Restaurant & Category) -->
-          <div class="flex flex-wrap items-center gap-1">
-            @if ($any(currentItem).clientName) {
-            <div class="inline-flex gap-1 max-w-full items-center rounded-md bg-primary/8 px-3 py-1.5 text-primary">
-              <span class="material-symbols-sharp select-none text-[16px] leading-none">
-                storefront
-              </span>
-
-              <span class="truncate text-sm font-semibold leading-5">
-                {{ $any(currentItem).clientName }}
-              </span>
-            </div>
-
-            }
-
-            @if ($any(currentItem).menuCategoryName) {
-            <div class="inline-flex max-w-full items-center gap-1 rounded-md bg-slate-100 px-3 py-1.5 text-slate-600">
-              <span class="material-symbols-sharp select-none text-[16px] leading-none">
-                restaurant_menu
-              </span>
-
-              <span class="truncate text-sm font-semibold leading-5">
-                {{ $any(currentItem).menuCategoryName }}
-              </span>
-            </div>
-            }
-          </div>
-
-          <!-- Product Name -->
-          <h1 class="mt-3 text-xl font-semibold text-gray-900 ">
-            {{ currentItem.productName }}
-          </h1>
-
-          <!-- Description -->
-          <p class="mt-1 leading-relaxed text-gray-500 ">
-            {{ currentItem.description || 'وجبة مميزة مُعدة بأعلى معايير الجودة وبمكونات طازجة لتمنحك مذاقاً استثنائياً
-            وشهياً.' }}
-          </p>
-
-          <!-- Pricing Block -->
-          <div
-            class="mt-4 flex flex-wrap items-baseline justify-between gap-4 rounded-2xl bg-slate-50/80 p-4 border border-gray-100">
-            <div class="flex items-baseline gap-2">
-              <div class="flex items-baseline gap-1 text-2xl sm:text-3xl font-black text-orange-600">
-                <span>{{ currentItem.price | number:'1.2-2' }}</span>
-                <span class="text-sm font-bold text-gray-600">ج.م</span>
+          <!-- 1. Basic Information & Price -->
+          <div>
+            <!-- Meta Tags (Restaurant & Category) -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              @if ($any(currentItem).clientName) {
+              <div class="inline-flex gap-1.5 max-w-full items-center rounded-lg bg-orange-50 px-3 py-2 text-orange-600 font-semibold text-sm border border-orange-100">
+                <span class="material-symbols-sharp select-none text-[16px] leading-none">
+                  storefront
+                </span>
+                <span class="truncate">
+                  {{ $any(currentItem).clientName }}
+                </span>
               </div>
+              }
 
-              <!-- @if (currentItem.oldPrice > currentItem.price) {
-              <span class="text-sm font-semibold text-gray-400 line-through">
-                {{ currentItem.oldPrice | number:'1.2-2' }} ج.م
-              </span>
-              } -->
+              @if ($any(currentItem).menuCategoryName) {
+              <div class="inline-flex max-w-full items-center gap-1.5 rounded-lg bg-slate-50 px-3 py-2 text-slate-600 font-semibold text-sm border border-gray-100">
+                <span class="material-symbols-sharp select-none text-[16px] leading-none">
+                  restaurant_menu
+                </span>
+                <span class="truncate">
+                  {{ $any(currentItem).menuCategoryName }}
+                </span>
+              </div>
+              }
             </div>
 
-            @if (getSavings(currentItem) > 0) {
+            <!-- Product Name -->
+            <h1 class="mt-3 text-xl font-semibold text-gray-900">
+              {{ currentItem.productName || currentItem.name }}
+            </h1>
+
+            <!-- Description -->
+            <p class="mt-1.5 leading-relaxed text-sm text-slate-500 font-semibold">
+              {{ currentItem.description || 'وجبة مميزة مُعدة بأعلى معايير الجودة وبمكونات طازجة لتمنحك مذاقاً استثنائياً وشهياً.' }}
+            </p>
+
+            <!-- Pricing Block -->
             <div
-              class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
-              <span class="material-symbols-sharp text-[15px]">savings</span>
-              <span>توفير {{ getSavings(currentItem) | number:'1.2-2' }} ج.م</span>
-            </div>
-            }
-          </div>
-
-        </div>
-
-        <!-- Card: Sizes Selector -->
-        <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-xs text-start">
-          <div class="mb-4 flex items-center justify-between">
-            <div>
-              <h2 class="text-base font-bold text-gray-900 sm:text-lg">اختر الحجم</h2>
-              <p class="text-xs text-gray-400 font-medium">حدد الحجم المفضل لوجبتك</p>
-            </div>
-            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-bold text-gray-600">
-              إلزامي
-            </span>
-          </div>
-
-          <div class="grid grid-cols-3 gap-3">
-
-            <!-- Small Option -->
-            <button type="button" (click)="selectedSize.set('small')" class="size-card"
-              [class.is-selected]="selectedSize() === 'small'">
-              <div class="flex items-center gap-1">
-                <div class="size-radio">
-                  @if (selectedSize() === 'small') {
-                  <span class="size-radio-inner"></span>
-                  }
+              class="mt-4 flex flex-wrap items-baseline justify-between gap-4 rounded-2xl bg-slate-50/80 p-3 border border-gray-100">
+              <div class="flex items-baseline gap-2">
+                <div class="flex items-baseline gap-1 text-xl font-black text-orange-600">
+                  <span>{{ (currentPrice() ?? 0) | number:'1.1-2' }}</span>
+                  <span class="text-sm font-bold text-gray-600">ج.م</span>
                 </div>
-                <span class="size-name">صغير</span>
+
+                @if (currentOldPrice() && currentOldPrice()! > currentPrice()) {
+                <span class="text-sm font-semibold text-gray-400 line-through">
+                  {{ currentOldPrice() | number:'1.1-2' }} ج.م
+                </span>
+                }
               </div>
-              <span class="size-price">
-                {{ getSmallPrice(currentItem) | number:'1.2-2' }} ج.م
-              </span>
-            </button>
 
-            <!-- Medium Option (Default) -->
-            <button type="button" (click)="selectedSize.set('medium')" class="size-card"
-              [class.is-selected]="selectedSize() === 'medium'">
-              <span
-                class="absolute -top-2.5 rounded-full bg-orange-500 px-2 py-0.5 text-[9px] font-black text-white shadow-xs">
-                المعتاد
-              </span>
-              <div class="flex items-center gap-1">
-                <div class="size-radio">
-                  @if (selectedSize() === 'medium') {
-                  <span class="size-radio-inner"></span>
-                  }
-                </div>
-                <span class="size-name">وسط</span>
+              @if (savings() > 0) {
+              <div
+                class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+                <span class="material-symbols-sharp text-[15px]">savings</span>
+                <span>توفير {{ savings() | number:'1.1-2' }} ج.م</span>
               </div>
-              <span class="size-price">
-                {{ currentItem.price | number:'1.2-2' }} ج.م
-              </span>
-            </button>
-
-            <!-- Large Option -->
-            <button type="button" (click)="selectedSize.set('large')" class="size-card"
-              [class.is-selected]="selectedSize() === 'large'">
-              <div class="flex items-center gap-1.5">
-                <div class="size-radio">
-                  @if (selectedSize() === 'large') {
-                  <span class="size-radio-inner"></span>
-                  }
-                </div>
-                <span class="size-name">كبير (دبل)</span>
-              </div>
-              <span class="size-price">
-                {{ getLargePrice(currentItem) | number:'1.2-2' }} ج.م
-              </span>
-            </button>
-
-          </div>
-        </div>
-
-        <!-- Card: Addons & Extras -->
-        <!-- <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-xs text-start">
-          <div class="mb-4 flex items-center justify-between">
-            <div>
-              <h2 class="text-base font-bold text-gray-900 sm:text-lg">إضافات مقترحة</h2>
-              <p class="text-xs text-gray-400 font-medium">أضف مشروبات ومقبلات لذيذة لتكتمل وجبتك</p>
+              }
             </div>
-            <span class="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-bold text-gray-600">
-              اختياري
-            </span>
           </div>
 
-          <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            @for (addon of addons(); track addon.id) {
-            <div (click)="toggleAddon(addon.id)" class="addon-card" [class.is-selected]="addon.selected">
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="addon-checkbox">
-                  @if (addon.selected) {
-                  <span class="material-symbols-sharp text-[16px] text-white">check</span>
-                  }
+          <!-- 2. Sizes Selector (Dynamic from API details) -->
+          @if (currentItem.details && currentItem.details.length > 0) {
+          <div class="pt-5 border-t border-gray-100">
+            <!-- Header matching Image 2 style (icon in square + title only, no under-description) -->
+            <div class="mb-4 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100">
+                  <span class="material-symbols-sharp text-[20px]">straighten</span>
                 </div>
+                <h2 class="text-base font-bold text-gray-900">اختر الحجم</h2>
+              </div>
+              <span class="rounded-full bg-orange-50 text-orange-600 border border-orange-100 px-2.5 py-0.5 text-[11px] font-bold">
+                إلزامي
+              </span>
+            </div>
 
-                <div class="truncate">
-                  <span class="block truncate text-sm font-bold text-gray-900">{{ addon.name }}</span>
-                  <span class="block text-xs font-extrabold text-orange-600 mt-0.5">
-                    +{{ addon.price | number:'1.2-2' }} ج.م
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              @for (detail of currentItem.details; track detail.id) {
+              <button
+                type="button"
+                (click)="selectDetail(detail)"
+                class="size-card cursor-pointer"
+                [class.is-selected]="selectedDetail()?.id === detail.id"
+              >
+                @if (detail.discountPercentage) {
+                <span class="absolute -top-2.5 rounded-full bg-orange-500 px-2 py-0.5 text-[9px] font-black text-white">
+                  خصم {{ detail.discountPercentage }}%
+                </span>
+                }
+                <div class="flex items-center gap-1.5">
+                  <div class="size-radio">
+                    @if (selectedDetail()?.id === detail.id) {
+                    <span class="size-radio-inner"></span>
+                    }
+                  </div>
+                  <span class="size-name font-semibold text-slate-800">{{ detail.title }}</span>
+                </div>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <span class="size-price font-bold text-orange-500">
+                    {{ (detail.price ?? 0) | number:'1.1-2' }} ج.م
                   </span>
+                  @if (detail.oldPrice && detail.oldPrice > detail.price) {
+                  <span class="text-[10px] text-gray-400 line-through">
+                    {{ detail.oldPrice | number:'1.1-2' }}
+                  </span>
+                  }
                 </div>
-              </div>
-
-              <div class="h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-gray-100 border border-gray-100">
-                <img [src]="addon.image" [alt]="addon.name" class="h-full w-full object-cover transition-transform"
-                  onerror="this.src='/images/default-meal.png'" />
-              </div>
+              </button>
+              }
             </div>
-            }
           </div>
-        </div> -->
+          }
 
-        <!-- Card: Special Instructions Notes -->
-        <div class="rounded-xl border border-gray-100 bg-white p-4 shadow-xs text-start">
-          <div class="mb-3">
-            <h2 class="text-base font-bold text-gray-900 sm:text-lg">ملاحظات خاصة</h2>
-            <p class="text-xs text-gray-400 font-medium">أي تعليمات أو تفضيلات لتحضير طلبك؟ (اختياري)</p>
+          <!-- 3. Special Instructions Notes -->
+          <div class="pt-5 border-t border-gray-100">
+            <!-- Header matching Image 2 style (icon in square + title only, no under-description) -->
+            <div class="mb-3 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100">
+                  <span class="material-symbols-sharp text-[20px]">edit_note</span>
+                </div>
+                <h2 class="text-base font-bold text-gray-900">ملاحظات خاصة</h2>
+              </div>
+              <span class="rounded-full bg-gray-50 text-gray-500 border border-gray-200 px-2.5 py-0.5 text-[11px] font-medium">
+                اختياري
+              </span>
+            </div>
+
+            <div class="relative">
+              <textarea [ngModel]="specialNotes()" (ngModelChange)="specialNotes.set($event)" rows="3"
+                placeholder="مثال: بدون بصل، زيادة صوص، خبز محمص..."
+                class="w-full resize-none rounded-2xl border border-gray-200 bg-gray-50/50 p-3.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20"></textarea>
+            </div>
           </div>
 
-          <div class="relative">
-            <textarea [ngModel]="specialNotes()" (ngModelChange)="specialNotes.set($event)" rows="3"
-              placeholder="مثال: بدون بصل، زيادة صوص، خبز محمص..."
-              class="w-full resize-none rounded-2xl border border-gray-200 bg-gray-50/50 p-3.5 text-sm text-gray-800 placeholder-gray-400 outline-none transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-500/20"></textarea>
-          </div>
         </div>
 
       </section>
@@ -262,14 +206,14 @@
 
         <!-- Image Card (order-1: Top on mobile, 1st in column on desktop) -->
         <div
-          class="order-1 group relative overflow-hidden bg-transparent lg:rounded-xl lg:border lg:border-gray-100 lg:bg-white lg:p-3 lg:shadow-xs">
+          class="order-1 group relative overflow-hidden bg-transparent lg:rounded-xl lg:border lg:border-gray-100 lg:bg-white lg:p-3 ">
 
           <!-- Image Container (Mobile: small & centered with no bg | Desktop: full aspect card) -->
           <div
-            class="relative mx-auto flex h-36 w-36 sm:h-44 sm:w-44 lg:h-auto lg:w-full lg:aspect-square items-center justify-center bg-transparent lg:rounded-2xl lg:bg-gray-50">
-            <img [src]="currentItem.photoURL ? apiUrl + currentItem.photoURL : '/images/default-meal.png'"
+            class="relative mx-auto flex h-36 w-36 sm:h-44 sm:w-44 lg:h-auto lg:w-full lg:aspect-square items-center justify-center bg-transparent lg:rounded-2xl lg:bg-slate-100">
+            <img [src]="getItemImageUrl(currentItem.photoURL)"
               [alt]="currentItem.productName"
-              class="max-h-full max-w-full object-contain p-1 drop-shadow-md lg:p-2 lg:drop-shadow-none"
+              class="max-h-full max-w-full object-contain p-1  lg:p-2 lg:drop-shadow-none"
               onerror="this.src='/images/default-meal.png'" />
 
             <!-- Discount Badge (in start corner: right in RTL) -->
@@ -283,7 +227,7 @@
 
             <!-- Floating Rating Tag (in end corner: left in RTL) -->
             <div
-              class="absolute bottom-0 inset-e-0 lg:bottom-3 lg:inset-e-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-0.5 lg:px-3 lg:py-1 text-[11px] lg:text-xs font-bold text-gray-800 shadow-sm backdrop-blur-md">
+              class="absolute bottom-0 inset-e-0 lg:bottom-3 lg:inset-e-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-0.5 lg:px-3 lg:py-1 text-[11px] lg:text-xs font-bold text-gray-800 backdrop-blur-md">
               <span class="material-symbols-sharp icon-fill text-[13px] lg:text-[15px] text-amber-400">star</span>
               <span>4.9</span>
               <span class="text-gray-400 font-normal">(+1.2k)</span>
@@ -309,7 +253,7 @@
         </div>
 
         <!-- Card: Action Bar (Checkout / Add to Cart) - Bottom of Page on Mobile (order-3), Bottom of Image on Desktop -->
-        <div class="order-3 rounded-xl border border-gray-100 bg-white p-3  shadow-xs">
+        <div class="order-3 rounded-xl border border-gray-100 bg-white p-3 ">
           <div class="flex flex-col gap-4">
 
             <!-- Row: Quantity & Total Price -->
@@ -337,7 +281,7 @@
               <div class="text-start">
                 <span class="block text-[11px] font-semibold text-gray-400">الإجمالي النهائي</span>
                 <div class="flex items-baseline gap-1 text-xl sm:text-2xl font-black text-gray-900">
-                  <!-- <span>{{ getTotalPrice() | number:'1.2-2' }}</span> -->
+                  <span>{{ (totalPrice() ?? 0) | number:'1.1-2' }}</span>
                   <span class="text-xs font-bold text-orange-600">ج.م</span>
                 </div>
               </div>

@@ -15,6 +15,7 @@ import { Router, RouterModule } from '@angular/router';
 import { FavoritesService } from '../../favorites.service';
 import { FavoriteProduct } from '../../models';
 import { UserDataService } from '../../../../core/services/userData.service';
+import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
 import { CartService } from '../../../cart/cart.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { environment } from '../../../../core/environments/environment';
@@ -30,6 +31,7 @@ import { environment } from '../../../../core/environments/environment';
 export class FavoriteDropdownComponent implements OnInit {
   private readonly _favoritesService = inject(FavoritesService);
   private readonly _userDataService = inject(UserDataService);
+  private readonly _dropdownState = inject(DropdownStateService);
   private readonly _cartService = inject(CartService);
   private readonly _toastService = inject(ToastService);
   private readonly _router = inject(Router);
@@ -40,7 +42,8 @@ export class FavoriteDropdownComponent implements OnInit {
 
   readonly variant = input<'desktop' | 'mobile-header'>('desktop');
 
-  readonly isOpen = signal<boolean>(false);
+  readonly dropdownId = computed(() => `favorite-${this.variant()}`);
+  readonly isOpen = computed(() => this._dropdownState.activeDropdown() === this.dropdownId());
   readonly favorites = this._favoritesService.favorites;
   readonly favoritesCount = computed(() => this.favorites().length);
   readonly isLoading = this._favoritesService.isLoading;
@@ -61,13 +64,12 @@ export class FavoriteDropdownComponent implements OnInit {
     }
 
     if (!this.isUserLoggedIn()) {
-      this.isOpen.set(false);
+      this._dropdownState.close(this.dropdownId());
       this._router.navigate(['/login']);
       return;
     }
 
-    const nextState = !this.isOpen();
-    this.isOpen.set(nextState);
+    const nextState = this._dropdownState.toggle(this.dropdownId());
 
     if (nextState && this.favorites().length === 0) {
       this._favoritesService.loadFavorites(true);
@@ -75,14 +77,14 @@ export class FavoriteDropdownComponent implements OnInit {
   }
 
   closeDropdown(): void {
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId());
   }
 
   goToFavorites(event?: Event): void {
     if (event) {
       event.stopPropagation();
     }
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId());
     this._router.navigate(['/favorites']);
   }
 
@@ -111,7 +113,7 @@ export class FavoriteDropdownComponent implements OnInit {
     if (event) {
       event.stopPropagation();
     }
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId());
     this._router.navigate(['/menu-items', productId]);
   }
 
@@ -138,7 +140,12 @@ export class FavoriteDropdownComponent implements OnInit {
       return photoURL;
     }
     const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
-    return `${this.filesUrl}${cleanPath}`;
+    const serverHost = environment.apiUrl.replace(/\/api\/?$/, '');
+
+    if (cleanPath.startsWith('/DefaultImages') || cleanPath.startsWith('/UploadedFiles')) {
+      return `${serverHost}${encodeURI(cleanPath)}`;
+    }
+    return `${this.filesUrl}${encodeURI(cleanPath)}`;
   }
 
   @HostListener('document:click', ['$event'])
@@ -146,7 +153,7 @@ export class FavoriteDropdownComponent implements OnInit {
     if (!this.isOpen()) return;
     const target = event.target as HTMLElement;
     if (!this._elementRef.nativeElement.contains(target)) {
-      this.isOpen.set(false);
+      this._dropdownState.close(this.dropdownId());
       this._cdr.markForCheck();
     }
   }
@@ -154,7 +161,7 @@ export class FavoriteDropdownComponent implements OnInit {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.isOpen()) {
-      this.isOpen.set(false);
+      this._dropdownState.close(this.dropdownId());
       this._cdr.markForCheck();
     }
   }

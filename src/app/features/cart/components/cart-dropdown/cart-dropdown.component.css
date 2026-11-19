@@ -2,11 +2,59 @@
   display: inline-block;
 }
 
-.cart-dropdown-panel {
-  animation: dropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+.dropdown-caret {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 22px;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-left: 1px solid #e2e8f0;
+  border-top-left-radius: 2px;
+  z-index: 51;
+  pointer-events: none;
+  animation: caretSmoothIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes dropdownFadeIn {
+.dropdown-caret.is-mobile-header {
+  left: 20px;
+}
+
+.cart-dropdown-panel {
+  animation: dropdownSmoothIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: 22px top;
+  will-change: transform, opacity;
+}
+
+@keyframes dropdownSmoothIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes caretSmoothIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) rotate(45deg) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) rotate(45deg) translateY(0);
+  }
+}
+
+.dropdown-backdrop {
+  animation: backdropFadeIn 0.2s ease-out forwards;
+}
+
+@keyframes backdropFadeIn {
   from {
     opacity: 0;
   }

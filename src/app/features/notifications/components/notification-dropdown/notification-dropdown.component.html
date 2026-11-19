@@ -51,8 +51,15 @@
   @if (isOpen()) {
   <!-- Backdrop for mobile -->
   <div
-    class="fixed inset-0 z-40 bg-black/20 sm:hidden"
+    class="dropdown-backdrop fixed inset-0 z-40 bg-black/20 sm:hidden"
     (click)="closeDropdown()"
+  ></div>
+
+  <!-- Triangle Caret pointing to button -->
+  <div
+    class="dropdown-caret hidden sm:block"
+    [class.is-mobile-header]="variant() === 'mobile-header'"
+    aria-hidden="true"
   ></div>
 
   <div

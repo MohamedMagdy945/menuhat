@@ -1,0 +1,4 @@
+/* System Images Modal Styles */
+:host {
+  display: contents;
+}

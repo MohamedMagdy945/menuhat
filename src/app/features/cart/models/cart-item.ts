@@ -4,7 +4,7 @@ export interface CartMenuItem {
   userId: number;
   productId: number;
   productName: string;
-  isHidden: boolean;
+  isHidden: boolean | null;
   photoURL: string | null;
   description: string | null;
   productPriceId: number | null;
@@ -35,6 +35,7 @@ export interface AddCartItem {
   productPriceId: number | null;
   quantity: number;
   serial: string;
+  price?: number;
 }
 
 export interface AddCartResponse {

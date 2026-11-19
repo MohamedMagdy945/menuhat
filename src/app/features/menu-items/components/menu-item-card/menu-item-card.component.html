@@ -8,7 +8,7 @@
       [attr.aria-label]="'عرض تفاصيل ' + menuItem().productName">
       <div class="bg-slate-100 h-26">
         <div class="relative h-21 md:h-23 w-full ">
-          <img [src]="menuItem().photoURL ? apiUrl + menuItem().photoURL : '/images/default-meal.png'"
+          <img [src]="getItemImageUrl(menuItem().photoURL)"
             [alt]="menuItem().productName" class="h-full w-full object-contain p-1" loading="lazy" decoding="async"
             (error)="$any($event.target).src='/images/default-meal.png'" />
         </div>
@@ -43,7 +43,7 @@
 
           <!-- Price -->
           <div class="flex shrink-0 items-baseline gap-1 text-base font-bold text-orange-500">
-            <span>{{ menuItem().price }}</span>
+            <span>{{ menuItem().price ?? 0 }}</span>
             <span class="text-xs">ج.م</span>
           </div>
 

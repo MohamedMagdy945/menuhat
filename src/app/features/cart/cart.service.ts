@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
-import { Observable, of, switchMap, tap, finalize, shareReplay } from 'rxjs';
+import { inject, Injectable, signal, computed } from '@angular/core';
+import { Observable, switchMap, tap, finalize } from 'rxjs';
 import { environment } from '../../core/environments/environment';
 import { AddCartItem, AddCartResponse, CartMenuItem, CartMenuResponse } from './models/cart-item';
 import { MenuOrderDTO } from './models/order';
@@ -9,93 +9,48 @@ import { MenuOrderDTO } from './models/order';
   providedIn: 'root'
 })
 export class CartService {
-  private readonly _HttpClient = inject(HttpClient);
+  private readonly _http = inject(HttpClient);
 
+  // Reactive state management
   readonly cartData = signal<CartMenuResponse | null>(null);
-  readonly cartItems = signal<CartMenuItem[]>([]);
-  readonly cartCount = signal<number>(0);
-  readonly cartTotalPrice = signal<number>(0);
+  readonly cartItems = computed<CartMenuItem[]>(() => this.cartData()?.result ?? []);
+  readonly cartCount = computed<number>(() => this.cartData()?.totalCount ?? 0);
+  readonly cartTotalPrice = computed<number>(() => this.cartData()?.totalPrice ?? 0);
   readonly isLoading = signal<boolean>(false);
 
-  private _cartRequest$: Observable<CartMenuResponse> | null = null;
-
-  GetCartsByUserId(forceRefresh: boolean = false): Observable<CartMenuResponse> {
-    if (!forceRefresh && this.cartData()) {
-      return of(this.cartData()!);
-    }
-
-    if (!forceRefresh && this._cartRequest$) {
-      return this._cartRequest$;
-    }
-
+  /**
+   * Fetches user cart from the server.
+   * Authentication is handled automatically via JWT Bearer interceptor.
+   */
+  GetCartsByUserId(): Observable<CartMenuResponse> {
     this.isLoading.set(true);
-    this._cartRequest$ = this._HttpClient.get<CartMenuResponse>(
-      `${environment.apiUrl}/CartMenus/GetCartsByUserId`
-    ).pipe(
-      tap({
-        next: (res) => {
-          const rawItems = res?.result || [];
-          const dedupedItems = this._dedupeItems(rawItems);
-          const computedTotal = dedupedItems.reduce((acc, it) => acc + (it.total || ((it.price || 0) * (it.quantity || 1)) || 0), 0);
-          const computedCount = dedupedItems.reduce((acc, it) => acc + (it.quantity || 1), 0);
-
-          const normalizedRes: CartMenuResponse = {
-            ...res,
-            result: dedupedItems,
-            totalCount: computedCount,
-            totalPrice: computedTotal,
-          };
-
-          this.cartData.set(normalizedRes);
-          this.cartItems.set(dedupedItems);
-          this.cartCount.set(computedCount);
-          this.cartTotalPrice.set(computedTotal);
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        }
-      }),
-      shareReplay({ bufferSize: 1, refCount: false }),
-      finalize(() => {
-        this._cartRequest$ = null;
-      })
-    );
-
-    return this._cartRequest$;
-  }
-
-  private _dedupeItems(items: CartMenuItem[]): CartMenuItem[] {
-    if (!items || items.length === 0) return [];
-    const map = new Map<string, CartMenuItem>();
-
-    for (const item of items) {
-      const key = item.productId
-        ? `${item.productId}_${item.productPriceId ?? 'default'}`
-        : `${item.id}`;
-
-      if (map.has(key)) {
-        const existing = map.get(key)!;
-        if (item.id && existing.id && item.id === existing.id) {
-          continue;
-        }
-        existing.quantity = (existing.quantity || 1) + (item.quantity || 1);
-        existing.total = (existing.total || 0) + (item.total || ((item.price || 0) * (item.quantity || 1)));
-      } else {
-        map.set(key, { ...item });
-      }
-    }
-    return Array.from(map.values());
+    return this._http
+      .get<CartMenuResponse>(`${environment.apiUrl}/CartMenus/GetCartsByUserId`)
+      .pipe(
+        tap({
+          next: (res) => this.cartData.set(res),
+          error: (err) => console.error('Error fetching cart:', err),
+        }),
+        finalize(() => this.isLoading.set(false))
+      );
   }
 
   AddItemsToCart(items: AddCartItem[]): Observable<AddCartResponse> {
-    return this._HttpClient
-      .post<AddCartResponse>(`${environment.apiUrl}/CartMenus/AddItemsToCart`, items);
+    const sanitizedItems = items.map((it) => ({
+      ...it,
+      price: it.price ?? 0,
+      productPriceId: it.productPriceId ?? null,
+      serial: it.serial ?? '',
+    }));
+    return this._http.post<AddCartResponse>(
+      `${environment.apiUrl}/CartMenus/AddItemsToCart`,
+      sanitizedItems
+    );
   }
 
   AddItemsAndRefreshCart(items: AddCartItem[]): Observable<CartMenuResponse> {
     return this.AddItemsToCart(items).pipe(
-      switchMap(() => this.GetCartsByUserId(true))
+      switchMap(() => this.GetCartsByUserId())
     );
   }
 
@@ -125,9 +80,10 @@ export class CartService {
       })
       .map((it) => ({
         productId: it.productId,
-        productPriceId: it.productPriceId,
+        productPriceId: it.productPriceId ?? null,
         quantity: it.quantity,
-        serial: it.serial,
+        serial: it.serial ?? '',
+        price: it.price ?? 0,
       }));
 
     // If deleting the last item in the cart, send quantity: 0 so API accepts the payload
@@ -137,6 +93,7 @@ export class CartService {
         productPriceId: item.productPriceId ?? null,
         quantity: 0,
         serial: item.serial ?? '',
+        price: 0,
       }];
     }
 
@@ -144,39 +101,46 @@ export class CartService {
   }
 
   private _mergeItemIntoPayload(existing: CartMenuItem[], newItem: AddCartItem): AddCartItem[] {
-    const alreadyInCart = existing.some((it) => it.productId === newItem.productId);
+    const isMatching = (it: CartMenuItem) =>
+      it.productId === newItem.productId &&
+      ((!it.productPriceId && !newItem.productPriceId) || it.productPriceId === newItem.productPriceId);
+
+    const alreadyInCart = existing.some(isMatching);
+
     return [
       ...existing.map((it) => ({
         productId: it.productId,
-        productPriceId: it.productPriceId,
-        quantity: it.productId === newItem.productId ? it.quantity + (newItem.quantity || 1) : it.quantity,
-        serial: it.serial,
+        productPriceId: it.productPriceId ?? null,
+        quantity: isMatching(it) ? it.quantity + (newItem.quantity || 1) : it.quantity,
+        serial: it.serial ?? '',
+        price: it.price ?? 0,
       })),
       ...(!alreadyInCart ? [{
         productId: newItem.productId,
         productPriceId: newItem.productPriceId ?? null,
         quantity: newItem.quantity || 1,
         serial: newItem.serial ?? '',
+        price: newItem.price ?? 0,
       }] : []),
     ];
   }
 
   GetUserCart(): Observable<any> {
-    return this._HttpClient.get(
+    return this._http.get(
       `${environment.apiUrl}/EMHome/GetMyOrders?SortField=id`
     );
   }
 
   createMenuOrder(orderDto: MenuOrderDTO): Observable<any> {
-    return this._HttpClient.post(`${environment.apiUrl}/MenusOrders`, orderDto).pipe(
+    return this._http.post(`${environment.apiUrl}/MenusOrders`, orderDto).pipe(
       tap(() => {
         // Refresh cart state to empty after successful order
-        this.GetCartsByUserId(true).subscribe({ error: () => {} });
+        this.GetCartsByUserId().subscribe({ error: () => {} });
       })
     );
   }
 
   getUserAddresses(): Observable<any[]> {
-    return this._HttpClient.get<any[]>(`${environment.apiUrl}/Profile/GetAddressByUserId`);
+    return this._http.get<any[]>(`${environment.apiUrl}/Profile/GetAddressByUserId`);
   }
 }

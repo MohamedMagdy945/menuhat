@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   signal,
+  computed,
   ElementRef,
   HostListener,
   ChangeDetectorRef,
@@ -9,6 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { UserDataService } from '../../../../core/services/userData.service';
+import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
 
 @Component({
   selector: 'app-account-dropdown',
@@ -19,11 +21,13 @@ import { UserDataService } from '../../../../core/services/userData.service';
 })
 export class AccountDropdownComponent {
   private readonly _userDataService = inject(UserDataService);
+  private readonly _dropdownState = inject(DropdownStateService);
   private readonly _router = inject(Router);
   private readonly _cdr = inject(ChangeDetectorRef);
   private readonly _elementRef = inject(ElementRef);
 
-  readonly isOpen = signal<boolean>(false);
+  readonly dropdownId = 'account';
+  readonly isOpen = computed(() => this._dropdownState.activeDropdown() === this.dropdownId);
   readonly isAuthenticated = this._userDataService.isAuthenticated;
   readonly currentUser = this._userDataService.currentUser;
 
@@ -33,36 +37,36 @@ export class AccountDropdownComponent {
 
   toggleDropdown(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isOpen.update((v) => !v);
+    this._dropdownState.toggle(this.dropdownId);
   }
 
   navigateToProfile(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._router.navigate(['/profile']);
   }
 
   navigateToOrders(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._router.navigate(['/my-orders']);
   }
 
   navigateToFavorites(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._router.navigate(['/favorites']);
   }
 
   navigateToLogin(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._router.navigate(['/login']);
   }
 
   logout(event?: Event): void {
     if (event) event.stopPropagation();
-    this.isOpen.set(false);
+    this._dropdownState.close(this.dropdownId);
     this._userDataService.clearUserData();
     this._router.navigate(['/login']);
   }
@@ -72,7 +76,7 @@ export class AccountDropdownComponent {
     if (!this.isOpen()) return;
     const target = event.target as HTMLElement;
     if (!this._elementRef.nativeElement.contains(target)) {
-      this.isOpen.set(false);
+      this._dropdownState.close(this.dropdownId);
       this._cdr.detectChanges();
     }
   }
@@ -80,7 +84,7 @@ export class AccountDropdownComponent {
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.isOpen()) {
-      this.isOpen.set(false);
+      this._dropdownState.close(this.dropdownId);
       this._cdr.detectChanges();
     }
   }

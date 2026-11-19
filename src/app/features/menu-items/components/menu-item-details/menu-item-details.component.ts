@@ -1,53 +1,216 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule, DecimalPipe, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../core/environments/environment';
 import { CartService } from '../../../cart/cart.service';
-import { MenuItem } from '../../models';
+import { MenuItemService } from '../../menu-items.service';
 import { FavoritesService } from '../../../favorites/favorites.service';
+import { ToastService } from '../../../../core/services/toast.service';
+import { MenuProductDetails } from '../../models/menu-product-details';
+import { ProductDetailItem } from '../../models/product-detail-item';
 
 @Component({
   selector: 'app-menu-item-details',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DecimalPipe],
   templateUrl: './menu-item-details.component.html',
   styleUrl: './menu-item-details.component.css',
 })
 export class MenuItemDetailsComponent implements OnInit {
-  readonly apiUrl = environment.filesUrl;
-  readonly item = signal<MenuItem | null>(null);
-
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private location = inject(Location);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly location = inject(Location);
   private readonly _cartService = inject(CartService);
+  private readonly menuItemService = inject(MenuItemService);
   private readonly favoritesService = inject(FavoritesService);
-  readonly specialNotes = signal('');
-  readonly copiedShare = signal(false);
+  private readonly _toast = inject(ToastService);
 
-  goBack(): void {
-    if (window.history.length > 1) {
-      this.location.back();
+  readonly filesUrl = environment.filesUrl;
+  readonly item = signal<MenuProductDetails | null>(null);
+  readonly selectedDetail = signal<ProductDetailItem | null>(null);
+  readonly quantity = signal<number>(1);
+  readonly isLoadingDetails = signal<boolean>(false);
+  readonly isAddingToCart = signal<boolean>(false);
+  readonly _addedManually = signal<boolean>(false);
+  readonly specialNotes = signal<string>('');
+  readonly copiedShare = signal<boolean>(false);
+
+  // Computed pricing based on active selected size/detail or base product
+  readonly currentPrice = computed<number>(() => {
+    const detail = this.selectedDetail();
+    if (detail && detail.price !== null && detail.price !== undefined) {
+      return detail.price;
+    }
+    const current = this.item();
+    return current?.price ?? 0;
+  });
+
+  readonly currentOldPrice = computed<number | null>(() => {
+    const detail = this.selectedDetail();
+    if (detail) {
+      return detail.oldPrice ?? null;
+    }
+    return this.item()?.oldPrice ?? null;
+  });
+
+  readonly currentDiscount = computed<number>(() => {
+    const detail = this.selectedDetail();
+    if (detail?.discountPercentage) {
+      return detail.discountPercentage;
+    }
+    return this.item()?.discountPercentage ?? 0;
+  });
+
+  readonly totalPrice = computed<number>(() => {
+    return this.currentPrice() * this.quantity();
+  });
+
+  readonly savings = computed<number>(() => {
+    const oldP = this.currentOldPrice();
+    const curP = this.currentPrice();
+    return oldP && oldP > curP ? oldP - curP : 0;
+  });
+
+  readonly isFavorite = computed<boolean>(() => {
+    const id = this.getProductId();
+    return id ? this.favoritesService.isFavorite(id) : false;
+  });
+
+  readonly isAddedToCart = computed<boolean>(() => {
+    const prodId = this.getProductId();
+    if (!prodId) return false;
+    const detailId = this.selectedDetail()?.id ?? null;
+    return (
+      this._addedManually() ||
+      this._cartService.cartItems().some(
+        (it) => it.productId === prodId && ((!it.productPriceId && !detailId) || it.productPriceId === detailId)
+      )
+    );
+  });
+
+  ngOnInit(): void {
+    if (!this._cartService.cartData()) {
+      this._cartService.GetCartsByUserId().subscribe({ error: () => {} });
+    }
+
+    // 1. Initial seed from router state if available for instant rendering
+    const state = history.state;
+    if (state?.item) {
+      this._applyProductData(state.item);
+    }
+
+    // 2. Fetch fresh dynamic product details & sizes from API
+    this.route.paramMap.subscribe((params) => {
+      const id = Number(params.get('id'));
+      if (id) {
+        this.loadProductDetails(id);
+      }
+    });
+  }
+
+  loadProductDetails(id: number): void {
+    this.isLoadingDetails.set(true);
+    this.menuItemService.getProductById(id).subscribe({
+      next: (res: any) => {
+        this.isLoadingDetails.set(false);
+        const product = Array.isArray(res?.result)
+          ? res.result[0]
+          : Array.isArray(res)
+          ? res[0]
+          : res?.result ?? res;
+
+        if (product) {
+          this._applyProductData(product);
+        }
+      },
+      error: (err) => {
+        this.isLoadingDetails.set(false);
+        console.error('Failed to load menu product details:', err);
+      },
+    });
+  }
+
+  private _applyProductData(data: any): void {
+    const prev = this.item();
+    const normalized: MenuProductDetails = {
+      ...data,
+      id: data.id ?? data.productId ?? data.mostrequestesId ?? 0,
+      name: data.name || data.productName || prev?.name || '',
+      productName: data.productName || data.name || prev?.productName || '',
+      clientName: data.clientName || prev?.clientName || '',
+      serial: data.serial || prev?.serial || '',
+      menuCategoryName: data.menuCategoryName || prev?.menuCategoryName || '',
+      details: Array.isArray(data.details) ? data.details : (prev?.details || []),
+    };
+
+    this.item.set(normalized);
+
+    // Auto-select first size option if available
+    if (normalized.details && normalized.details.length > 0) {
+      const currentSelected = this.selectedDetail();
+      const existingMatch = currentSelected ? normalized.details.find((d) => d.id === currentSelected.id) : null;
+      this.selectedDetail.set(existingMatch || normalized.details[0]);
     } else {
-      this.router.navigate(['/home']);
+      this.selectedDetail.set(null);
+    }
+  }
+
+  selectDetail(detail: ProductDetailItem): void {
+    this.selectedDetail.set(detail);
+  }
+
+  getProductId(): number | null {
+    const current = this.item();
+    if (!current) return null;
+    return current.id || (current as any).productId || (current as any).mostrequestesId || null;
+  }
+
+  getProductSerial(): string {
+    const current = this.item();
+    return current?.serial || (current as any)?.serial || '';
+  }
+
+  getProductTitle(): string {
+    const current = this.item();
+    return current?.productName || current?.name || 'تفاصيل الصنف';
+  }
+
+  incrementQuantity(): void {
+    this.quantity.update((q) => q + 1);
+    if (this.isAddedToCart()) {
+      this.addToCart();
+    }
+  }
+
+  decrementQuantity(): void {
+    if (this.quantity() > 1) {
+      this.quantity.update((q) => q - 1);
+      if (this.isAddedToCart()) {
+        this.addToCart();
+      }
+    }
+  }
+
+  toggleFavorite(): void {
+    const id = this.getProductId();
+    if (id) {
+      this.favoritesService.toggleFavorite(id, this.item() as any);
     }
   }
 
   async shareItem(): Promise<void> {
-    const currentItem = this.item();
-    if (!currentItem) return;
-
+    const title = this.getProductTitle();
     if (navigator.share) {
       try {
         await navigator.share({
-          title: currentItem.productName,
-          text: `اطلب الآن: ${currentItem.productName}`,
+          title,
+          text: `اطلب الآن: ${title}`,
           url: window.location.href,
         });
         return;
       } catch {
-        // User cancelled or share dismissed
+        // User dismissed
       }
     }
 
@@ -58,108 +221,6 @@ export class MenuItemDetailsComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-    if (!this._cartService.cartData()) {
-      this._cartService.GetCartsByUserId().subscribe({ error: () => { } });
-    }
-
-    // Get state from navigation
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation?.extras?.state && navigation.extras.state['item']) {
-      this.item.set(navigation.extras.state['item']);
-    } else {
-      // Fallback: check history state
-      const state = history.state;
-      if (state && state.item) {
-        this.item.set(state.item);
-      } else {
-        // If no state, we could fetch from API using route param id
-        // For now, we will just log or handle missing data
-        console.warn('No item data found in navigation state');
-      }
-    }
-  }
-
-  getProductId(): number | null {
-    const current = this.item();
-    if (!current) return null;
-    const anyItem = current as any;
-    return anyItem.id ?? anyItem.productId ?? anyItem.mostrequestesId ?? anyItem.menuId ?? null;
-  }
-
-  getProductSerial(): string {
-    const current = this.item();
-    if (!current) return '';
-    const anyItem = current as any;
-    return anyItem.serial ?? '';
-  }
-
-  readonly isFavorite = computed(() => {
-    const id = this.getProductId();
-    return id ? this.favoritesService.isFavorite(id) : false;
-  });
-  readonly quantity = signal(1);
-  readonly selectedSize = signal('medium'); // 'small', 'medium', 'large'
-
-  // Mock addons state for UI
-  readonly addons = signal([
-    { id: 1, name: 'بطاطس مقلية مقرمشة', price: 25, selected: false, image: '/images/fries.jpg' },
-    { id: 2, name: 'بيبسي بارد 330 مل', price: 15, selected: false, image: '/images/pepsi.jpg' },
-    { id: 3, name: 'أصابع موزاريلا (4 قطع)', price: 35, selected: false, image: '/images/mozzarella.jpg' },
-    { id: 4, name: 'صوص بيج ماك إضافي', price: 10, selected: false, image: '/images/sauce.jpg' },
-  ]);
-
-  toggleFavorite(): void {
-    const id = this.getProductId();
-    if (id) {
-      this.favoritesService.toggleFavorite(id, this.item());
-    }
-  }
-
-  incrementQuantity(): void {
-    this.quantity.update(q => q + 1);
-  }
-
-  decrementQuantity(): void {
-    if (this.quantity() > 1) {
-      this.quantity.update(q => q - 1);
-    }
-  }
-
-  toggleAddon(id: number): void {
-    this.addons.update(addons =>
-      addons.map(addon => addon.id === id ? { ...addon, selected: !addon.selected } : addon)
-    );
-  }
-
-  // getTotalPrice(): number {
-  //   const currentItem = this.item();
-  //   if (!currentItem) return 0;
-
-  //   let basePrice = currentItem.price;
-  //   // Add size differences (mock)
-  //   if (this.selectedSize() === 'small') basePrice -= 20;
-  //   if (this.selectedSize() === 'large') basePrice += 25;
-
-  //   // Add selected addons
-  //   const addonsTotal = this.addons().filter(a => a.selected).reduce((sum, addon) => sum + addon.price, 0);
-
-  //   return (basePrice + addonsTotal) * this.quantity();
-  // }
-
-  readonly isAddingToCart = signal(false);
-  readonly _addedManually = signal(false);
-
-  // true if already in cart (on load) OR just added
-  readonly isAddedToCart = computed(() => {
-    const prodId = this.getProductId();
-    if (!prodId) return false;
-    return (
-      this._addedManually() ||
-      this._cartService.cartItems().some((it) => it.productId === prodId)
-    );
-  });
-
   addToCart(): void {
     const currentItem = this.item();
     const productId = this.getProductId();
@@ -168,44 +229,60 @@ export class MenuItemDetailsComponent implements OnInit {
     this.isAddingToCart.set(true);
 
     const serial = this.getProductSerial();
+    const detail = this.selectedDetail();
+    // Price null is safely sent as 0
+    const price = this.currentPrice() ?? 0;
 
-    this._cartService.addItem({
-      productId,
-      productPriceId: null,
-      quantity: this.quantity(),
-      serial,
-    }).subscribe({
-      next: () => {
-        this.isAddingToCart.set(false);
-        this._addedManually.set(true);
-      },
-      error: (err) => {
-        console.error('Error adding item to cart:', err);
-        this.isAddingToCart.set(false);
-      },
-    });
+    this._cartService
+      .addItem({
+        productId,
+        productPriceId: detail ? detail.id : null,
+        quantity: this.quantity(),
+        serial,
+        price,
+      })
+      .subscribe({
+        next: () => {
+          this.isAddingToCart.set(false);
+          const wasAlreadyAdded = this._addedManually();
+          this._addedManually.set(true);
+          const productName = this.getProductTitle();
+          const sizeTitle = detail?.title ? ` (${detail.title})` : '';
+          if (wasAlreadyAdded) {
+            this._toast.success(`تم تحديث كمية "${productName}${sizeTitle}" إلى ${this.quantity()}`);
+          } else {
+            this._toast.success(`تمت إضافة "${productName}${sizeTitle}" إلى السلة بنجاح`);
+          }
+        },
+        error: (err) => {
+          console.error('Error adding item to cart:', err);
+          this.isAddingToCart.set(false);
+          this._toast.error('تعذر إضافة الوجبة إلى السلة، يرجى المحاولة لاحقاً');
+        },
+      });
   }
 
-  getDiscount(item: any): string | number {
-    if (item.discountPercentage) return item.discountPercentage;
-    if (item.oldPrice && item.oldPrice > item.price) {
-      return ((item.oldPrice - item.price) / item.oldPrice * 100).toFixed(0);
+  getItemImageUrl(photoURL: string | null | undefined): string {
+    if (!photoURL) {
+      return '/images/default-meal.png';
     }
-    return 0;
-  }
-
-  getSmallPrice(item: any): number {
-    return (item?.price || 0) - 20;
-  }
-
-  getLargePrice(item: any): number {
-    return (item?.price || 0) + 25;
-  }
-
-  getSavings(item: any): number {
-    if (item?.oldPrice && item.oldPrice > item.price) {
-      return item.oldPrice - item.price;
+    if (photoURL.startsWith('http')) {
+      return photoURL;
     }
-    return 0;
+    const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
+    const serverHost = environment.apiUrl.replace(/\/api\/?$/, '');
+
+    if (cleanPath.startsWith('/DefaultImages') || cleanPath.startsWith('/UploadedFiles')) {
+      return `${serverHost}${encodeURI(cleanPath)}`;
+    }
+    return `${environment.filesUrl}${encodeURI(cleanPath)}`;
+  }
+
+  goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
 }

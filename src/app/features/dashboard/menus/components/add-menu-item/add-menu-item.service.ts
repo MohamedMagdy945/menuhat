@@ -4,7 +4,8 @@ import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../../../core/environments/environment';
 import { DASHBOARD_API_ENDPOINTS } from '../../../../../core/constants/dashboard-api.constants';
 import { SystemImageSuggestion } from '../../models/system-image-suggestion.model';
-import { CreateProductPayload } from '../../models/create-product-payload.model';
+import { AddMenuProductPayload } from '../../models/add-menu-product-payload.model';
+import { AddMenuProductResponse } from '../../models/add-menu-product-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,7 @@ export class AddMenuItemService {
   readonly errorMessage = signal<string | null>(null);
 
   /**
-   * Resolves the full URL to display system images in the frontend
+   * Resolves the full URL to display images in the frontend using environment.filesUrl
    */
   resolveImageUrl(imageUrl: string | null | undefined): string {
     if (!imageUrl) return '';
@@ -26,22 +27,8 @@ export class AddMenuItemService {
       return imageUrl;
     }
 
-    const baseOrigin = environment.apiUrl.replace(/\/api\/?$/, '');
-
-    // Already formatted path
-    if (imageUrl.startsWith('/DefaultImages') || imageUrl.startsWith('DefaultImages')) {
-      const path = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
-      return `${baseOrigin}${path}`;
-    }
-
-    if (imageUrl.startsWith('/')) {
-      return `${baseOrigin}${imageUrl}`;
-    }
-
-    // System images filename (e.g. "123ساندوتش كفتة" or "123كفتة مشوية.png")
-    const hasExtension = /\.(png|jpe?g|webp|gif|svg)$/i.test(imageUrl);
-    const fileName = hasExtension ? imageUrl : `${imageUrl}.png`;
-    return `${baseOrigin}/DefaultImages/${fileName}`;
+    const cleanPath = imageUrl.replace(/^\//, '');
+    return `${environment.filesUrl}/${cleanPath}`;
   }
 
   /**
@@ -89,25 +76,34 @@ export class AddMenuItemService {
   }
 
   /**
-   * Upload / Create new product
-   * POST: /api/Products
+   * Upload / Add new menu product
+   * POST: /api/MenuProducts/AddMenuProduct
    */
-  createProduct(payload: CreateProductPayload): Observable<any> {
+  addMenuProduct(payload: AddMenuProductPayload): Observable<AddMenuProductResponse> {
     this.isSubmitting.set(true);
     this.errorMessage.set(null);
 
-    return this.http.post<any>(DASHBOARD_API_ENDPOINTS.products, payload).pipe(
-      tap({
-        next: () => {
-          this.isSubmitting.set(false);
-        },
-        error: (err) => {
-          this.isSubmitting.set(false);
-          this.errorMessage.set(
-            err?.error?.message || err?.message || 'حدث خطأ أثناء حفظ الصنف'
-          );
-        },
-      })
-    );
+    return this.http
+      .post<AddMenuProductResponse>(DASHBOARD_API_ENDPOINTS.addMenuProduct, payload)
+      .pipe(
+        tap({
+          next: () => {
+            this.isSubmitting.set(false);
+          },
+          error: (err) => {
+            this.isSubmitting.set(false);
+            this.errorMessage.set(
+              err?.error?.message || err?.message || 'حدث خطأ أثناء حفظ الصنف'
+            );
+          },
+        })
+      );
+  }
+
+  /**
+   * Alias for addMenuProduct
+   */
+  createProduct(payload: AddMenuProductPayload): Observable<AddMenuProductResponse> {
+    return this.addMenuProduct(payload);
   }
 }

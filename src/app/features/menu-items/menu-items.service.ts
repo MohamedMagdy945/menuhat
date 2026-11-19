@@ -1,9 +1,10 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { finalize } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { environment } from '../../core/environments/environment';
 import { USE_GLOBAL_LOADING } from '../../core/loading/loading-context';
 import { MenuItem, MenuItemsResponse } from './models';
+import { MenuProductResponse } from './models/menu-product-response';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +20,13 @@ export class MenuItemService {
   readonly isLoading = this.isLoadingMostRequested;
 
   readonly error = signal<string | null>(null);
+
+  /**
+   * Fetches product details and sizes from /api/MenuProducts/:id
+   */
+  getProductById(id: number): Observable<MenuProductResponse> {
+    return this.http.get<MenuProductResponse>(`${this.apiUrl}/MenuProducts/${id}`);
+  }
 
   loadMostRequested({
     globalLoading = true,

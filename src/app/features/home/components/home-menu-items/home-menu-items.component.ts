@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MenuItemService } from '../../../menu-items/menu-item.service';
+import { MenuItemService } from '../../../menu-items/menu-items.service';
 import { MenuItem } from '../../../menu-items/models/menu-item';
 import { CarouselComponent } from '../../../../shared/components/carousel/carousel.component';
 import { HomeMenuItemCardComponent } from '../home-menu-item-card/home-menu-item-card.component';
