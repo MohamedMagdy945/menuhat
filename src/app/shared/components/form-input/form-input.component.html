@@ -28,7 +28,7 @@
 
     @if (isPasswordType) {
     <button type="button" (click)="togglePassword()"
-      class="absolute left-2.5 z-1 flex cursor-pointer items-center justify-center rounded-lg border-none bg-transparent p-1.5 text-slate-400 transition-all duration-200 hover:bg-slate-200 hover:text-slate-700"
+      class="absolute left-2.5 z-1 flex cursor-pointer items-center justify-center rounded-lg border-none bg-transparent p-1.5 text-slate-400 transition-all duration-200"
       [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
       <span class="material-symbols-sharp select-none leading-none text-[20px]">
         {{ showPassword ? 'visibility_off' : 'visibility' }}

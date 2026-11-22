@@ -1,10 +1,13 @@
 import {
-  Component,
-  input,
-  inject,
-  OnInit,
+  AfterViewInit,
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  inject,
+  input,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
   NgControl,
@@ -17,8 +20,9 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   templateUrl: './form-input.component.html',
   styleUrl: './form-input.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormInputComponent implements ControlValueAccessor, OnInit {
+export class FormInputComponent implements ControlValueAccessor, AfterViewInit {
   readonly label = input<string>('');
   readonly placeholder = input<string>('');
   readonly type = input<string>('text');
@@ -33,6 +37,7 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
 
   public readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
@@ -43,7 +48,15 @@ export class FormInputComponent implements ControlValueAccessor, OnInit {
     }
   }
 
-  ngOnInit(): void {}
+  /**
+   * Touched/dirty/status changes made by the parent (e.g. markAllAsTouched on submit)
+   * do not mark this OnPush view dirty, so listen to the control's events.
+   */
+  ngAfterViewInit(): void {
+    this.control?.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.cdr.markForCheck());
+  }
 
   get isPasswordType(): boolean {
     return this.type() === 'password';

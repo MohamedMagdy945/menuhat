@@ -2,8 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { Observable, switchMap, tap, finalize } from 'rxjs';
 import { environment } from '../../core/environments/environment';
-import { AddCartItem, AddCartResponse, CartMenuItem, CartMenuResponse } from './models/cart-item';
-import { MenuOrderDTO } from './models/order';
+import { AddCartItem } from './models/add-cart-item.model';
+import { AddCartResponse } from './models/add-cart-response.model';
+import { CartMenuItem } from './models/cart-menu-item.model';
+import { CartMenuResponse } from './models/cart-menu-response.model';
+import { MenuOrderDTO } from './models/menu-order-dto.model';
 
 @Injectable({
   providedIn: 'root'
@@ -70,34 +73,14 @@ export class CartService {
     return this.AddItemsAndRefreshCart(payload);
   }
 
-  removeItem(item: { productId: number; productPriceId?: number | null; id?: number; serial?: string }): Observable<CartMenuResponse> {
-    const currentItems = this.cartItems();
-    let payload: AddCartItem[] = currentItems
-      .filter((it) => {
-        if (item.id && it.id && it.id === item.id) return false;
-        if (it.productId === item.productId && it.productPriceId === item.productPriceId) return false;
-        return true;
-      })
-      .map((it) => ({
-        productId: it.productId,
-        productPriceId: it.productPriceId ?? null,
-        quantity: it.quantity,
-        serial: it.serial ?? '',
-        price: it.price ?? 0,
-      }));
-
-    // If deleting the last item in the cart, send quantity: 0 so API accepts the payload
-    if (payload.length === 0) {
-      payload = [{
-        productId: item.productId,
-        productPriceId: item.productPriceId ?? null,
-        quantity: 0,
-        serial: item.serial ?? '',
-        price: 0,
-      }];
-    }
-
-    return this.AddItemsAndRefreshCart(payload);
+  /**
+   * Deletes a single cart item by its cart-item id (DELETE /CartMenus/{id}),
+   * then refreshes the cart state.
+   */
+  removeItem(cartItemId: number): Observable<CartMenuResponse> {
+    return this._http
+      .delete(`${environment.apiUrl}/CartMenus/${cartItemId}`)
+      .pipe(switchMap(() => this.GetCartsByUserId()));
   }
 
   private _mergeItemIntoPayload(existing: CartMenuItem[], newItem: AddCartItem): AddCartItem[] {

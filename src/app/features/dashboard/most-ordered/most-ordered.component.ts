@@ -2,11 +2,9 @@ import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed } 
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MostOrderedService } from './most-ordered.service';
-import {
-  ProductStatItem,
-  MostOrderedPeriodFilter,
-  DateFilterType,
-} from './models/most-ordered.model';
+import { ProductStatItem } from './models/product-stat-item.model';
+import { MostOrderedPeriodFilter } from './models/most-ordered-period-filter.model';
+import { DateFilterType } from '../../../shared/models/date-filter-type.model';
 import { MostOrderedCardComponent } from './components/most-ordered-card/most-ordered-card.component';
 
 @Component({

@@ -1,25 +1,13 @@
-import { inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
-export const logedGuard: CanActivateFn = (route, state) => {
- 
-   const _Router = inject(Router); 
- 
-if(typeof localStorage !== 'undefined'){
-   console.log("localStorage.getItem('usertoken')", localStorage.getItem('usertoken'));
-  if(localStorage.getItem('usertoken') !== null){
-   console.log("1");
-     _Router.navigate(['/home']);
-     return false 
-   } 
-   else{
-         console.log("2-");
-    return true;
-   }
+/** Allows the route only for guests; logged-in users are redirected to /home. */
+export const logedGuard: CanActivateFn = () => {
+  const router = inject(Router);
+
+  if (isPlatformBrowser(inject(PLATFORM_ID)) && localStorage.getItem('usertoken') !== null) {
+    return router.createUrlTree(['/home']);
   }
-  else{
-    return true
- }
-   
- 
+  return true;
 };

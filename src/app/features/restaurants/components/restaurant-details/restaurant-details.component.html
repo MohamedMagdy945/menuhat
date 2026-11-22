@@ -36,7 +36,7 @@
           <div class="relative h-22 w-22 shrink-0 overflow-hidden rounded-2xl
                  border-3 border-white bg-white shadow-md sm:-mt-16 sm:h-28 sm:w-28 md:h-30 md:w-30">
             @if (data.main.logoURL) {
-            <img [src]="apiUrl + data.main.logoURL" (error)="$any($event.target).src = '/images/default-restaurant.png'" [alt]="data.main.clientName"
+            <img [src]="filesUrl + data.main.logoURL" (error)="$any($event.target).src = '/images/default-restaurant.png'" [alt]="data.main.clientName"
               class="h-full w-full rounded-full object-cover" />
             } @else {
             <div class="flex h-full w-full items-center justify-center rounded-full
@@ -213,7 +213,7 @@
       <!-- Add Rating Button (Only visible in reviews tab) -->
       @if (activeTab() === 'reviews') {
       <button type="button" (click)="isAddRatingModalOpen.set(true)"
-        class="hidden md:flex items-center gap-1 rounded-md border border-dashed border-orange-400 bg-orange-50 px-3 py-1.5 text-sm font-bold text-orange-500 transition-colors hover:bg-orange-100">
+        class="hidden md:flex items-center gap-1 rounded-md border border-dashed border-orange-400 bg-orange-50 px-3 py-1.5 text-sm font-bold text-orange-500 transition-colors">
         <span class="text-lg leading-none">+</span>
         إضافة تقييم
       </button>

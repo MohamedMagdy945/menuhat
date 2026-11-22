@@ -17,7 +17,9 @@ import { UserDataService } from '../../../../core/services/userData.service';
 import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
 import { ToastService } from '../../../../core/services/toast.service';
 import { environment } from '../../../../core/environments/environment';
-import { AddCartItem, CartMenuItem } from '../../models/cart-item';
+import { AddCartItem } from '../../models/add-cart-item.model';
+import { CartMenuItem } from '../../models/cart-menu-item.model';
+import { FILES_ORIGIN } from '../../../../core/constants/files.constants';
 
 @Component({
   selector: 'app-cart-dropdown',
@@ -36,7 +38,6 @@ export class CartDropdownComponent implements OnInit {
   private readonly _cdr = inject(ChangeDetectorRef);
   private readonly _elementRef = inject(ElementRef);
 
-  readonly apiUrl = environment.apiUrl;
   readonly filesUrl = environment.filesUrl;
 
   readonly variant = input<'desktop' | 'mobile-header'>('desktop');
@@ -140,7 +141,7 @@ export class CartDropdownComponent implements OnInit {
       return photoURL;
     }
     const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
-    const serverHost = this.apiUrl.replace(/\/api\/?$/, '');
+    const serverHost = FILES_ORIGIN;
 
     if (cleanPath.startsWith('/DefaultImages') || cleanPath.startsWith('/UploadedFiles')) {
       return `${serverHost}${encodeURI(cleanPath)}`;
@@ -167,39 +168,15 @@ export class CartDropdownComponent implements OnInit {
 
   removeItem(item: CartMenuItem, event: Event): void {
     event.stopPropagation();
-    const allItems = this.cartItems();
-    const isMatch = (it: CartMenuItem): boolean =>
-      it === item ||
-      (!!it.id && !!item.id && it.id === item.id) ||
-      (it.productId === item.productId && it.productPriceId === item.productPriceId);
 
-    let payload: AddCartItem[] = allItems
-      .filter((it) => !isMatch(it))
-      .map((it) => ({
-        productId: it.productId,
-        productPriceId: it.productPriceId ?? null,
-        quantity: it.quantity,
-        serial: it.serial ?? '',
-        price: it.price ?? 0,
-      }));
-
-    if (payload.length === 0) {
-      payload = [
-        {
-          productId: item.productId,
-          productPriceId: item.productPriceId ?? null,
-          quantity: 0,
-          serial: item.serial ?? '',
-          price: 0,
-        },
-      ];
-    }
-
-    this._cartService.AddItemsAndRefreshCart(payload).subscribe({
+    this._cartService.removeItem(item.id).subscribe({
       next: () => {
         this._toastService.success(`تم حذف "${item.productName}" من السلة`);
       },
-      error: (err) => console.error('Error removing item from cart:', err),
+      error: (err) => {
+        console.error('Error removing item from cart:', err);
+        this._toastService.error('تعذر حذف المنتج من السلة، يرجى المحاولة لاحقاً');
+      },
     });
   }
 

@@ -3,11 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../../core/environments/environment';
 import { DASHBOARD_API_ENDPOINTS } from '../../../../core/constants/dashboard-api.constants';
-import {
-  OrderCardData,
-  OwnerOrderDetails,
-  OrderItemDetail,
-} from '../models';
+import { OrderCardData } from '../models/order-card-data.model';
+import { OwnerOrderDetails } from '../models/owner-order-details.model';
+import { OrderItemDetail } from '../models/order-item-detail.model';
 
 @Injectable({
   providedIn: 'root',

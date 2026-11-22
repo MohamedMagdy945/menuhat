@@ -1,6 +1,6 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MenuRestaurantCardData } from '../../models/menu-restaurant-card.model';
+import { MenuRestaurantCardData } from '../../models/menu-restaurant-card-data.model';
 
 @Component({
   selector: 'app-menu-card',

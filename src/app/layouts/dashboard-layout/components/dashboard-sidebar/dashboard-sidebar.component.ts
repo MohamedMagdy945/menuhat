@@ -1,18 +1,7 @@
 import { Component, inject, ChangeDetectionStrategy, computed } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { DashboardService } from '../../../../features/dashboard/dashboard/dashboard.service';
-
-export interface SidebarNavItem {
-  id: string;
-  label: string;
-  icon: string;
-  route: string;
-  exact?: boolean;
-  badge?: string;
-  badgeVariant?: 'primary' | 'success' | 'warning' | 'info' | 'danger';
-  hasLiveIndicator?: boolean;
-}
-
+import { SidebarNavItem } from '../../models/sidebar-nav-item.model';
 @Component({
   selector: 'app-dashboard-sidebar',
   standalone: true,

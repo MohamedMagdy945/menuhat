@@ -1,9 +1,10 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
-import { Restaurant } from '../../../restaurants/models/restaurant';
+import { Restaurant } from '../../../restaurants/models/restaurant.model';
 import { RouterLink } from '@angular/router';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   selector: 'app-home-restaurant-card',
   styleUrl: './home-restaurant-card.component.css',
@@ -11,7 +12,7 @@ import { RouterLink } from '@angular/router';
 })
 export class HomeRestaurantCardComponent {
   readonly restaurant = input.required<Restaurant>();
-  readonly apiUrl = environment.filesUrl;
+  readonly filesUrl = environment.filesUrl;
   Math: any;
   readonly isFavorite = signal(false);
 

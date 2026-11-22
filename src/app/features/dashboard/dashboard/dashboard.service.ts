@@ -1,123 +1,13 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap, map, catchError, of } from 'rxjs';
-import { UserDataService } from '../../auth/services/user-storage.service';
+import { UserDataService } from '../../../core/services/userData.service';
 import { DASHBOARD_API_ENDPOINTS } from '../../../core/constants/dashboard-api.constants';
 import { environment } from '../../../core/environments/environment';
-
-export interface DashboardRestaurant {
-  id: number;
-  name: string;
-  location: string;
-  rating: number;
-  reviewsCount: number;
-  isOpen: boolean;
-  isVisible: boolean;
-  profileUrl: string;
-  coverUrl: string;
-  pdfUrl: string;
-  qrCodeUrl: string | null;
-  visitsCount: number;
-  backgroundColor?: string | null;
-  bgColor?: string | null;
-}
-
-export interface DashboardStatistics {
-  totalOrders: number;
-  newOrders: number;
-  preparingOrders: number;
-  completedOrders: number;
-  totalSales: number;
-  salesGrowthPercentage: number;
-}
-
-export interface DashboardOrder {
-  orderId?: number | string;
-  id?: string | number;
-  orderNumber?: string;
-  customerName?: string;
-  totalAmount?: number;
-  price?: number;
-  orderStatusId?: number;
-  orderStatusName?: string;
-  createdAt?: string;
-  time?: string;
-  status?: string;
-  statusLabel?: string;
-  statusColor?: string;
-  [key: string]: any;
-}
-
-export interface OrderCardData {
-  id: string | number;
-  orderNumber: string;
-  customerName: string;
-  time: string;
-  price: number;
-  formattedPrice: string;
-  status: string;
-  statusId?: number;
-  statusLabel: string;
-  statusColor: string;
-  isPending?: boolean;
-  phone?: string;
-  createdAt?: string;
-}
-
-export interface OrderItemDetail {
-  id: number | string;
-  name: string;
-  description: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  image: string;
-}
-
-export interface OwnerOrderDetails {
-  id: number | string;
-  orderCode: string;
-  statusId: number;
-  statusLabel: string;
-  statusVariant: 'warning' | 'success' | 'info' | 'danger' | 'default';
-  dateTime: string;
-  orderType: string;
-  customerName: string;
-  customerAddress: string;
-  customerPhone: string;
-  totalPrice: number;
-  currency: string;
-  itemsCount: number;
-  items: OrderItemDetail[];
-}
-
-export interface DashboardResponse {
-  restaurant: DashboardRestaurant;
-  statistics: DashboardStatistics;
-  currentOrders: DashboardOrder[];
-}
-
-export interface NavBadge {
-  text: string;
-  variant?: 'primary' | 'success' | 'warning' | 'info' | 'danger';
-}
-
-export interface NavItem {
-  id: string;
-  label: string;
-  icon: string;
-  route?: string;
-  badge?: NavBadge;
-  external?: boolean;
-}
-
-export interface NavGroup {
-  id: string;
-  title: string;
-  isCollapsible?: boolean;
-  isExpanded?: boolean;
-  items: NavItem[];
-}
+import { OrderCardData } from '../orders/models/order-card-data.model';
+import { OwnerOrderDetails } from '../orders/models/owner-order-details.model';
+import { OrderItemDetail } from '../orders/models/order-item-detail.model';
+import { DashboardResponse } from './models/dashboard-response.model';
 
 @Injectable({
   providedIn: 'root',

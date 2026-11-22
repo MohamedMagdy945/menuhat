@@ -1,13 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { DecimalPipe, NgClass } from '@angular/common';
-import { IOrder } from '../../../cart/models/order';
+import { IOrder } from '../../../cart/models/i-order.model';
 import { environment } from '../../../../core/environments/environment';
-
-export interface StatusConfig {
-  label: string;
-  classes: string;
-}
-
+import { StatusConfig } from '../../models/status-config.model';
 @Component({
   selector: 'app-order-item-card',
   imports: [NgClass, DecimalPipe],

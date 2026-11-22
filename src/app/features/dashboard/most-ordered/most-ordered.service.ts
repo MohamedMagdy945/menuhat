@@ -2,11 +2,9 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { DASHBOARD_API_ENDPOINTS } from '../../../core/constants/dashboard-api.constants';
-import {
-  ProductStatItem,
-  ProductStatsParams,
-  ProductStatsResponse,
-} from './models/most-ordered.model';
+import { ProductStatItem } from './models/product-stat-item.model';
+import { ProductStatsParams } from './models/product-stats-params.model';
+import { ProductStatsResponse } from './models/product-stats-response.model';
 
 @Injectable({
   providedIn: 'root',

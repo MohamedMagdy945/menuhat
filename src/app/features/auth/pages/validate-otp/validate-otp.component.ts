@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { timer, Subscription } from 'rxjs';
@@ -6,14 +6,9 @@ import { RegisterService } from '../../services/register.service';
 import { ToastService } from '../../../../core/services/toast.service';
 
 import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
-
-export interface ValidateOtpPayload {
-  email: string;
-  otp: string;
-  appId: number;
-}
-
+import { ValidateOtpPayload } from '../../models/validate-otp-payload.model';
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-validate-otp',
   standalone: true,
   imports: [CommonModule, RouterModule, LoadingButtonComponent],
@@ -24,24 +19,23 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly registerService = inject(RegisterService);
-  private readonly cdr = inject(ChangeDetectorRef);
   private readonly toast = inject(ToastService);
 
   get isVerifyDisabled(): boolean {
-    return this.otpDigits.join('').length < 6 || this.isLoading;
+    return this.otpDigits.join('').length < 6 || this.isLoading();
   }
 
-  email: string = '';
+  readonly email = signal<string>('');
   role: 'owner' | 'customer' = 'customer';
   otpDigits: string[] = ['', '', '', '', '', ''];
-  timeLeft: number = 55;
+  readonly timeLeft = signal<number>(55);
   private timerSubscription?: Subscription;
 
-  isLoading: boolean = false;
+  readonly isLoading = signal<boolean>(false);
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.email = params['email'] || '';
+      this.email.set(params['email'] || '');
       this.role = params['role'] === 'owner' ? 'owner' : 'customer';
     });
 
@@ -53,16 +47,15 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
   }
 
   startTimer(): void {
-    this.timeLeft = 55;
+    this.timeLeft.set(55);
     this.timerSubscription?.unsubscribe();
 
     this.timerSubscription = timer(0, 1000).subscribe(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
+      if (this.timeLeft() > 0) {
+        this.timeLeft.update((t) => t - 1);
       } else {
         this.timerSubscription?.unsubscribe();
       }
-      this.cdr.detectChanges();
     });
   }
 
@@ -127,15 +120,15 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.email) {
+    if (!this.email()) {
       this.toast.error('البريد الإلكتروني غير متاح، يرجى إعادة محاولة الإرسال');
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     const payload: ValidateOtpPayload = {
-      email: this.email,
+      email: this.email(),
       otp: otpCode,
       appId: 2
     };
@@ -146,7 +139,7 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
         const userTypeId = this.role === 'owner' ? 1 : 3;
         this.router.navigate(['/register'], {
           queryParams: {
-            email: this.email,
+            email: this.email(),
             userTypeId: userTypeId,
             role: this.role
           }
@@ -155,30 +148,30 @@ export class ValidateOtpComponent implements OnInit, OnDestroy {
 
       error: (err) => {
         this.toast.error(err.error?.message || 'رمز التحقق غير صحيح');
-        this.isLoading = false;
+        this.isLoading.set(false);
       }
     });
   }
 
   resendCode(): void {
-    if (!this.email) return;
+    if (!this.email()) return;
 
-    this.isLoading = true;
+    this.isLoading.set(true);
 
     const payload = {
-      email: this.email,
+      email: this.email(),
       appId: 2,
       isForRegister: true
     };
 
     this.registerService.sendemail(payload).subscribe({
       next: () => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.startTimer();
         this.toast.info('تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني');
       },
       error: (err) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         const msg = 'حدث خطأ أثناء إعادة إرسال الرمز';
         this.toast.error(msg);
       }

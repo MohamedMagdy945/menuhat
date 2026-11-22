@@ -1,5 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
-import { LocationAddress } from '../models/location-address';
+import { LocationAddress } from '../models/location-address.model';
 
 @Injectable({
     providedIn: 'root'

@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule, DecimalPipe, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -7,10 +7,12 @@ import { CartService } from '../../../cart/cart.service';
 import { MenuItemService } from '../../menu-items.service';
 import { FavoritesService } from '../../../favorites/favorites.service';
 import { ToastService } from '../../../../core/services/toast.service';
-import { MenuProductDetails } from '../../models/menu-product-details';
-import { ProductDetailItem } from '../../models/product-detail-item';
+import { MenuProductDetails } from '../../models/menu-product-details.model';
+import { ProductDetailItem } from '../../models/product-detail-item.model';
+import { FILES_ORIGIN } from '../../../../core/constants/files.constants';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-menu-item-details',
   standalone: true,
   imports: [CommonModule, FormsModule, DecimalPipe],
@@ -195,7 +197,7 @@ export class MenuItemDetailsComponent implements OnInit {
   toggleFavorite(): void {
     const id = this.getProductId();
     if (id) {
-      this.favoritesService.toggleFavorite(id, this.item() as any);
+      this.favoritesService.toggleFavorite(id, this.item());
     }
   }
 
@@ -270,7 +272,7 @@ export class MenuItemDetailsComponent implements OnInit {
       return photoURL;
     }
     const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
-    const serverHost = environment.apiUrl.replace(/\/api\/?$/, '');
+    const serverHost = FILES_ORIGIN;
 
     if (cleanPath.startsWith('/DefaultImages') || cleanPath.startsWith('/UploadedFiles')) {
       return `${serverHost}${encodeURI(cleanPath)}`;

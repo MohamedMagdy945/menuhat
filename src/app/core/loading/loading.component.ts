@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { LoadingService } from './loading.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   selector: 'app-loading',
   styleUrl: './loading.component.css',

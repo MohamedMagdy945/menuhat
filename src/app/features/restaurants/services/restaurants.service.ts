@@ -4,19 +4,10 @@ import { finalize } from 'rxjs';
 
 import { environment } from '../../../core/environments/environment';
 import { USE_GLOBAL_LOADING } from '../../../core/loading/loading-context';
-import { Restaurant } from '../models/restaurant';
-import { RestaurantQueryParams } from '../models/restaurant-query-params';
-import { RestaurantResponse } from '../models/restaurant-response';
-
-export interface LoadRestaurantsParams {
-  pageNumber?: number;
-  pageSize?: number;
-  PageNumber?: number;
-  PageSize?: number;
-  globalLoading?: boolean;
-  extraParams?: Partial<RestaurantQueryParams>;
-}
-
+import { Restaurant } from '../models/restaurant.model';
+import { RestaurantQueryParams } from '../models/restaurant-query-params.model';
+import { RestaurantResponse } from '../models/restaurant-response.model';
+import { LoadRestaurantsParams } from '../models/load-restaurants-params.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -240,8 +231,6 @@ export class RestaurantsService {
       PageNumber: pageNumber,
       PageSize: pageSize,
     };
-
-    console.log(`[RestaurantsService] GET ${endpoint} - Query Params:`, params);
 
     const context = new HttpContext().set(USE_GLOBAL_LOADING, globalLoading);
 

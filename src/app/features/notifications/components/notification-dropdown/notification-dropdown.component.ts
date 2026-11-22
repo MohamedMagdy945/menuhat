@@ -13,7 +13,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationsService } from '../../services/notifications.service';
-import { AppNotification } from '../../models/notification.model';
+import { AppNotification } from '../../models/app-notification.model';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
 import { environment } from '../../../../core/environments/environment';

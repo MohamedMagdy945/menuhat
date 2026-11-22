@@ -4,21 +4,8 @@ import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../../../core/environments/environment';
 import { DASHBOARD_API_ENDPOINTS } from '../../../../../core/constants/dashboard-api.constants';
 import { MenuSubCategory } from '../../models/menu-sub-category.model';
-
-export interface CreateSubCategoryDto {
-  id?: number;
-  name: string;
-  name_En?: string;
-  menuCategoryId: number;
-  description?: string;
-  description_En?: string;
-  catOrder?: number;
-  photoURL?: {
-    base64String: string;
-  } | null;
-  photoBase64?: string | null;
-}
-
+import { CreateSubCategoryDto } from '../../models/create-sub-category-dto.model';
+import { FILES_ORIGIN } from '../../../../../core/constants/files.constants';
 @Injectable({
   providedIn: 'root',
 })
@@ -38,7 +25,7 @@ export class MenuSubCategoriesService {
     if (!url) return '';
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
-    const baseOrigin = environment.apiUrl.replace(/\/api\/?$/, '');
+    const baseOrigin = FILES_ORIGIN;
 
     // Default Images (e.g. /DefaultImages/شاورما.png)
     if (url.startsWith('/DefaultImages') || url.startsWith('DefaultImages')) {

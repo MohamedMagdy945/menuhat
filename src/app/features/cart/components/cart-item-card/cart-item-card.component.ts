@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { CartMenuItem } from '../../models/cart-item';
+import { CartMenuItem } from '../../models/cart-menu-item.model';
 import { environment } from '../../../../core/environments/environment';
 
 @Component({

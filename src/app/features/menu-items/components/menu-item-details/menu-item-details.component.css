@@ -114,11 +114,6 @@
   transition: all 0.2s ease-in-out;
 }
 
-.addon-card:hover:not(.is-selected) {
-  border-color: #e5e7eb;
-  background-color: #fafafa;
-}
-
 .addon-card.is-selected {
   border-color: #f97316;
   background-color: #fff7ed; /* orange-50 */

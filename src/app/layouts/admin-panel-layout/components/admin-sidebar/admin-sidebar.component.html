@@ -1,0 +1,116 @@
+<!-- Backdrop for Mobile -->
+@if (isMobileOpen()) {
+  <div
+    class="fixed inset-0 z-30 bg-slate-900/50 lg:hidden"
+    (click)="close()"
+    aria-hidden="true"
+  ></div>
+}
+
+<aside
+  class="fixed inset-y-0 right-0 z-40 flex flex-col w-68 bg-white border-l border-gray-200 select-none max-lg:shadow-xl"
+  [class.max-lg:hidden]="!isMobileOpen()"
+  aria-label="قائمة لوحة التحكم"
+>
+  <!-- Brand Header -->
+  <div class="h-18 px-4 border-b border-gray-100 flex items-center justify-between shrink-0">
+    <a routerLink="/admin" class="flex items-center gap-2.5">
+      <div
+        class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-xs"
+      >
+        <span class="material-symbols-sharp text-2xl" aria-hidden="true">admin_panel_settings</span>
+      </div>
+      <div class="flex flex-col min-w-0">
+        <div class="flex items-center gap-1.5">
+          <span class="font-bold text-base text-slate-900 tracking-tight">مِنيوهات</span>
+          <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-md bg-orange-100 text-orange-700"
+            >لوحة التحكم</span
+          >
+        </div>
+        <span class="text-xs text-slate-400 font-medium truncate">إدارة المنصة</span>
+      </div>
+    </a>
+
+    <!-- Mobile Close Button -->
+    <button
+      type="button"
+      (click)="close()"
+      class="lg:hidden p-1.5 rounded-lg text-slate-400 cursor-pointer"
+      aria-label="إغلاق القائمة"
+    >
+      <span class="material-symbols-sharp text-xl">close</span>
+    </button>
+  </div>
+
+  <!-- Navigation -->
+  <nav
+    class="flex-1 overflow-y-auto overflow-x-hidden p-3 custom-scroll"
+    aria-label="روابط لوحة التحكم"
+  >
+    <ul class="flex flex-col gap-1 p-0 m-0 list-none" role="list">
+      @for (item of navItems; track item.id) {
+        <li>
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="is-active"
+            [routerLinkActiveOptions]="{ exact: !!item.exact }"
+            (click)="close()"
+            class="main-nav-item"
+          >
+            <span class="material-symbols-sharp main-nav-icon" aria-hidden="true">{{
+              item.icon
+            }}</span>
+            <span class="main-nav-label">{{ item.label }}</span>
+
+            @if (item.hasLiveIndicator) {
+              <span class="live-indicator" title="حالة حية"></span>
+            }
+
+            @if (item.badge) {
+              <span
+                class="main-nav-badge"
+                [class.badge-warning]="item.badgeVariant === 'warning'"
+                [class.badge-info]="item.badgeVariant === 'info'"
+                [class.badge-danger]="item.badgeVariant === 'danger'"
+                [class.badge-success]="item.badgeVariant === 'success'"
+              >
+                {{ item.badge }}
+              </span>
+            }
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <!-- User Footer -->
+  <footer class="p-3 border-t border-gray-100 bg-slate-50/70 shrink-0">
+    <div class="flex items-center gap-3 p-2.5 rounded-xl bg-white border border-gray-100 shadow-xs">
+      <div class="relative shrink-0">
+        <div
+          class="w-10 h-10 rounded-full bg-orange-500 text-white font-bold text-sm flex items-center justify-center shadow-xs"
+        >
+          {{ userInitials() }}
+        </div>
+        <span
+          class="absolute bottom-0 left-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white"
+        ></span>
+      </div>
+
+      <div class="flex flex-col min-w-0 flex-1">
+        <span class="text-sm font-semibold text-slate-800 truncate">{{ userName() }}</span>
+        <span class="text-xs text-slate-400 truncate">مدير النظام</span>
+      </div>
+
+      <button
+        type="button"
+        (click)="logout()"
+        class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 shrink-0 cursor-pointer"
+        aria-label="تسجيل الخروج"
+        title="تسجيل الخروج"
+      >
+        <span class="material-symbols-sharp text-[20px]">logout</span>
+      </button>
+    </div>
+  </footer>
+</aside>

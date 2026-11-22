@@ -1,7 +1,10 @@
-import { Component, inject } from '@angular/core';
-import { Toast, ToastService, ToastType } from '../../../core/services/toast.service';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Toast } from '../../../core/models/toast.model';
+import { ToastService } from '../../../core/services/toast.service';
+import { ToastType } from '../../../core/models/toast-type.model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-toast-container',
   standalone: true,
   templateUrl: './toast-container.component.html',

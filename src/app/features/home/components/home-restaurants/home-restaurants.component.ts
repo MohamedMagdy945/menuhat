@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 
 import { CarouselComponent } from '../../../../shared/components/carousel/carousel.component';
-import { Restaurant } from '../../../restaurants/models/restaurant';
+import { Restaurant } from '../../../restaurants/models/restaurant.model';
 import { HomeRestaurantCardComponent } from '../home-restaurant-card/home-restaurant-card.component';
 
 @Component({

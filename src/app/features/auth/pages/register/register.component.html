@@ -39,7 +39,7 @@
           </div>
 
           <label for="register-photo-input"
-            class="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-gray-600 text-white shadow-xs hover:bg-gray-800 transition"
+            class="absolute -bottom-0.5 -right-0.5 flex h-5 w-5 cursor-pointer items-center justify-center rounded-full bg-gray-600 text-white shadow-xs transition"
             title="اختيار صورة">
             <span class="material-symbols-sharp select-none leading-none text-[12px]">
               photo_camera
@@ -54,7 +54,7 @@
 
         @if (photoPreviewUrl !== defaultAvatar) {
         <button type="button" (click)="removePhoto(photoFileInput)"
-          class="mr-auto text-xs font-semibold text-red-500 hover:text-red-700 bg-transparent border-none cursor-pointer"
+          class="mr-auto text-xs font-semibold text-red-500 bg-transparent border-none cursor-pointer"
           title="إزالة الصورة">
           حذف الصورة
         </button>
@@ -182,7 +182,7 @@
       <!-- Submit Button -->
       <div class="mt-2">
         <app-loading-button type="submit" [text]="isOwner ? 'إنشاء حساب صاحب المطعم' : 'إنشاء حساب العميل'"
-          loadingText="جاري إنشاء الحساب..." [loading]="isLoading" [disabled]="form.invalid || isLoading"
+          loadingText="جاري إنشاء الحساب..." [loading]="isLoading()" [disabled]="form.invalid || isLoading()"
           [fullWidth]="true" />
       </div>
     </form>
@@ -191,10 +191,10 @@
     <div class="mt-6 flex items-center justify-center gap-1.5 text-sm">
       <span class="text-slate-500">لديك حساب بالفعل؟</span>
       <a routerLink="/login"
-        class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline">
+        class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200">
         <span>تسجيل الدخول</span>
         <span
-          class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1">
+          class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200">
           arrow_back
         </span>
       </a>

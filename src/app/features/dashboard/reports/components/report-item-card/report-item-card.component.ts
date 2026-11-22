@@ -1,6 +1,6 @@
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { DailyMenuOrderItem } from '../../models';
+import { DailyMenuOrderItem } from '../../models/daily-menu-order-item.model';
 
 @Component({
   selector: 'app-report-item-card',

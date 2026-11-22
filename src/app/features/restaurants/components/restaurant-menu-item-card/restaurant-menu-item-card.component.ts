@@ -1,11 +1,12 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
 import { RouterLink } from '@angular/router';
-import { RestaurantMenuProduct } from '../../models/restaurant-details';
+import { RestaurantMenuProduct } from '../../models/restaurant-menu-product.model';
 import { CartService } from '../../../cart/cart.service';
 import { FavoritesService } from '../../../favorites/favorites.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   selector: 'app-restaurant-menu-item-card',
   styleUrl: './restaurant-menu-item-card.component.css',
@@ -16,7 +17,7 @@ export class RestaurantMenuItemCardComponent {
   private readonly _favoritesService = inject(FavoritesService);
 
   readonly item = input.required<RestaurantMenuProduct>();
-  readonly apiUrl = environment.filesUrl;
+  readonly filesUrl = environment.filesUrl;
   readonly isAddingToCart = signal(false);
   readonly _addedManually = signal(false);
 

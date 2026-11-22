@@ -1,78 +1,61 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  inject,
-  signal,
-  computed,
-  input,
   ElementRef,
   HostListener,
-  ChangeDetectorRef,
-  OnInit,
-  ChangeDetectionStrategy,
+  computed,
+  inject,
+  input,
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { FavoritesService } from '../../favorites.service';
-import { FavoriteProduct } from '../../models';
-import { UserDataService } from '../../../../core/services/userData.service';
+import { DecimalPipe } from '@angular/common';
+import { Router } from '@angular/router';
+
 import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
-import { CartService } from '../../../cart/cart.service';
 import { ToastService } from '../../../../core/services/toast.service';
-import { environment } from '../../../../core/environments/environment';
+import { UserDataService } from '../../../../core/services/userData.service';
+import { resolveImageUrl } from '../../../../shared/utils/resolve-image-url';
+import { CartService } from '../../../cart/cart.service';
+import { FavoritesService } from '../../favorites.service';
+import { FavoriteProduct } from '../../models/favorite-product.model';
+import { favoritePrice } from '../../utils/favorite-pricing';
 
 @Component({
   selector: 'app-favorite-dropdown',
-  standalone: true,
-  imports: [CommonModule, DecimalPipe, RouterModule],
+  imports: [DecimalPipe],
   templateUrl: './favorite-dropdown.component.html',
   styleUrl: './favorite-dropdown.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FavoriteDropdownComponent implements OnInit {
-  private readonly _favoritesService = inject(FavoritesService);
-  private readonly _userDataService = inject(UserDataService);
+export class FavoriteDropdownComponent {
+  private readonly _favorites = inject(FavoritesService);
+  private readonly _userData = inject(UserDataService);
   private readonly _dropdownState = inject(DropdownStateService);
-  private readonly _cartService = inject(CartService);
-  private readonly _toastService = inject(ToastService);
+  private readonly _cart = inject(CartService);
+  private readonly _toast = inject(ToastService);
   private readonly _router = inject(Router);
-  private readonly _cdr = inject(ChangeDetectorRef);
-  private readonly _elementRef = inject(ElementRef);
-
-  readonly filesUrl = environment.filesUrl;
+  private readonly _elementRef = inject(ElementRef<HTMLElement>);
 
   readonly variant = input<'desktop' | 'mobile-header'>('desktop');
 
   readonly dropdownId = computed(() => `favorite-${this.variant()}`);
   readonly isOpen = computed(() => this._dropdownState.activeDropdown() === this.dropdownId());
-  readonly favorites = this._favoritesService.favorites;
+  readonly favorites = this._favorites.favorites;
   readonly favoritesCount = computed(() => this.favorites().length);
-  readonly isLoading = this._favoritesService.isLoading;
-
-  ngOnInit(): void {
-    if (this.isUserLoggedIn() && this.favorites().length === 0) {
-      this._favoritesService.loadFavorites();
-    }
-  }
-
-  isUserLoggedIn(): boolean {
-    return !!(this._userDataService.isAuthenticated() || this._userDataService.getToken());
-  }
+  readonly isLoading = this._favorites.isLoading;
 
   toggleDropdown(event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
+    event?.stopPropagation();
 
-    if (!this.isUserLoggedIn()) {
-      this._dropdownState.close(this.dropdownId());
+    if (!this._userData.getToken()) {
+      this.closeDropdown();
       this._router.navigate(['/login']);
       return;
     }
 
-    const nextState = this._dropdownState.toggle(this.dropdownId());
-
-    if (nextState && this.favorites().length === 0) {
-      this._favoritesService.loadFavorites(true);
+    const opened = this._dropdownState.toggle(this.dropdownId());
+    // Retry when opening after a failed or empty load.
+    if (opened && this.favorites().length === 0) {
+      this._favorites.loadFavorites();
     }
   }
 
@@ -81,88 +64,53 @@ export class FavoriteDropdownComponent implements OnInit {
   }
 
   goToFavorites(event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-    this._dropdownState.close(this.dropdownId());
+    event?.stopPropagation();
+    this.closeDropdown();
     this._router.navigate(['/favorites']);
+  }
+
+  goToProduct(productId: number, event?: Event): void {
+    event?.stopPropagation();
+    this.closeDropdown();
+    this._router.navigate(['/menu-items', productId]);
   }
 
   addToCart(item: FavoriteProduct, event: Event): void {
     event.stopPropagation();
-    this._cartService
-      .addItem({
-        productId: item.id,
-        productPriceId: null,
-        quantity: 1,
-        serial: '',
-      })
+    this._cart
+      .addItem({ productId: item.id, productPriceId: null, quantity: 1, serial: item.serial ?? '' })
       .subscribe({
-        next: () => {
-          this._toastService.success('تمت إضافة الوجبة إلى السلة');
-          this._cdr.markForCheck();
-        },
-        error: () => {
-          this._toastService.error('تعذر إضافة الوجبة إلى السلة');
-          this._cdr.markForCheck();
-        },
+        next: () => this._toast.success('تمت إضافة الوجبة إلى السلة'),
+        error: () => this._toast.error('تعذر إضافة الوجبة إلى السلة'),
       });
-  }
-
-  goToProduct(productId: number, event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-    this._dropdownState.close(this.dropdownId());
-    this._router.navigate(['/menu-items', productId]);
   }
 
   removeFavorite(item: FavoriteProduct, event: Event): void {
     event.stopPropagation();
-    this._favoritesService.toggleFavorite(item.id, item);
+    this._favorites.toggleFavorite(item.id, item);
+  }
+
+  isPending(item: FavoriteProduct): boolean {
+    return this._favorites.isPending(item.id);
   }
 
   getItemPrice(item: FavoriteProduct): number {
-    if (item.price !== null && item.price !== undefined) {
-      return item.price;
-    }
-    if (item.details && item.details.length > 0) {
-      return item.details[0].price;
-    }
-    return 0;
+    return favoritePrice(item);
   }
 
   getItemImageUrl(photoURL: string | null): string {
-    if (!photoURL) {
-      return '/images/default-meal.png';
-    }
-    if (photoURL.startsWith('http')) {
-      return photoURL;
-    }
-    const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
-    const serverHost = environment.apiUrl.replace(/\/api\/?$/, '');
-
-    if (cleanPath.startsWith('/DefaultImages') || cleanPath.startsWith('/UploadedFiles')) {
-      return `${serverHost}${encodeURI(cleanPath)}`;
-    }
-    return `${this.filesUrl}${encodeURI(cleanPath)}`;
+    return resolveImageUrl(photoURL, '/images/default-meal.png');
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (!this.isOpen()) return;
-    const target = event.target as HTMLElement;
-    if (!this._elementRef.nativeElement.contains(target)) {
-      this._dropdownState.close(this.dropdownId());
-      this._cdr.markForCheck();
+    if (this.isOpen() && !this._elementRef.nativeElement.contains(event.target as Node)) {
+      this.closeDropdown();
     }
   }
 
   @HostListener('document:keydown.escape')
   onEscape(): void {
-    if (this.isOpen()) {
-      this._dropdownState.close(this.dropdownId());
-      this._cdr.markForCheck();
-    }
+    if (this.isOpen()) this.closeDropdown();
   }
 }

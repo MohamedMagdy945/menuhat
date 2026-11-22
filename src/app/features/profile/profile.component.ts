@@ -19,16 +19,11 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { ProfileService } from './services/profile.service';
 import { UserDataService } from '../../core/services/userData.service';
-import { UserAddress } from './models/profile.model';
+import { UserAddress } from './models/user-address.model';
 import { environment } from '../../core/environments/environment';
 import { FormInputComponent } from '../../shared/components/form-input/form-input.component';
-
-export interface FaqItem {
-  question: string;
-  answer: string;
-  isOpen?: boolean;
-}
-
+import { FaqItem } from './models/faq-item.model';
+import { FILES_ORIGIN } from '../../core/constants/files.constants';
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -169,7 +164,7 @@ export class ProfileComponent implements OnInit {
       if (prof.photoURL.startsWith('http://') || prof.photoURL.startsWith('https://')) {
         return prof.photoURL;
       }
-      const baseUrl = environment.apiUrl.replace(/\/api\/?$/, '');
+      const baseUrl = FILES_ORIGIN;
       const cleanPath = prof.photoURL.startsWith('/') ? prof.photoURL : `/${prof.photoURL}`;
       return `${baseUrl}${cleanPath}`;
     }

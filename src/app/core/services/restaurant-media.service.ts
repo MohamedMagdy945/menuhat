@@ -2,16 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { DASHBOARD_API_ENDPOINTS } from '../constants/dashboard-api.constants';
-
-export interface AlbumItem {
-  id: number;
-  menuId?: number;
-  title?: string;
-  imageURL: string;
-  isCover?: boolean;
-  createdAt?: string;
-}
-
+import { AlbumItem } from '../models/album-item.model';
 @Injectable({
   providedIn: 'root',
 })

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   selector: 'app-menu-item-skeleton',
   styleUrl: './menu-item-skeleton.component.css',

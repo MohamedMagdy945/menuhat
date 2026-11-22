@@ -8,7 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { MenuCardComponent } from './components/menu-card/menu-card.component';
-import { MenuRestaurantCardData } from './models/menu-restaurant-card.model';
+import { MenuRestaurantCardData } from './models/menu-restaurant-card-data.model';
 import { DashboardService } from '../dashboard/dashboard.service';
 import { MenusService } from './menus.service';
 

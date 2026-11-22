@@ -11,11 +11,9 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NotificationsService } from './services/notifications.service';
 import { UserDataService } from '../../core/services/userData.service';
-import { AppNotification } from './models/notification.model';
+import { AppNotification } from './models/app-notification.model';
 import { NotificationCardComponent } from './components/notification-card/notification-card.component';
-
-export type NotificationTab = 'all' | 'unread' | 'orders' | 'menus';
-
+import { NotificationTab } from './models/notification-tab.model';
 @Component({
   selector: 'app-notifications',
   standalone: true,

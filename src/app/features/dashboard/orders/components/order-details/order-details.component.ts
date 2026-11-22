@@ -1,6 +1,6 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { OwnerOrderDetails } from '../../models';
+import { OwnerOrderDetails } from '../../models/owner-order-details.model';
 
 @Component({
   selector: 'app-order-details',

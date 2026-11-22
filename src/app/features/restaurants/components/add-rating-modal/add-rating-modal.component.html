@@ -1,7 +1,7 @@
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" id="modalOverlay">
   <div class="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl" dir="rtl">
     <!-- Close Button -->
-    <button class="absolute top-4 left-4 text-gray-400 hover:text-gray-600 text-2xl" id="closeBtn" aria-label="إغلاق" (click)="closeModal()">&times;</button>
+    <button class="absolute top-4 left-4 text-gray-400 text-2xl" id="closeBtn" aria-label="إغلاق" (click)="closeModal()">&times;</button>
 
     <!-- Header -->
     <div class="mb-4">
@@ -50,8 +50,8 @@
 
     <!-- Actions -->
     <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
-      <button class="w-full sm:w-auto px-6 py-2.5 rounded-lg font-bold bg-orange-500 text-white hover:bg-orange-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="submitBtn" (click)="submit()" [disabled]="!comment().trim()">نشر التقييم</button>
-      <button class="w-full sm:w-auto px-6 py-2.5 rounded-lg font-bold bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors" id="cancelBtn" (click)="closeModal()">إلغاء</button>
+      <button class="w-full sm:w-auto px-6 py-2.5 rounded-lg font-bold bg-orange-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed" id="submitBtn" (click)="submit()" [disabled]="!comment().trim()">نشر التقييم</button>
+      <button class="w-full sm:w-auto px-6 py-2.5 rounded-lg font-bold bg-gray-100 text-gray-700 transition-colors" id="cancelBtn" (click)="closeModal()">إلغاء</button>
     </div>
   </div>
 </div>

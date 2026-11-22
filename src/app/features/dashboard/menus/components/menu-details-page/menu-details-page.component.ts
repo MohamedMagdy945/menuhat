@@ -14,9 +14,9 @@ import { DashboardService } from '../../../dashboard/dashboard.service';
 import { MenusService } from '../../menus.service';
 import { MenuMainCategory } from '../../models/menu-main-category.model';
 import { MenuSubCategory } from '../../models/menu-sub-category.model';
-import { MenuRestaurantCardData } from '../../models/menu-restaurant-card.model';
+import { MenuRestaurantCardData } from '../../models/menu-restaurant-card-data.model';
 import { MenuViewSubSection } from '../../models/menu-view-sub-section.model';
-
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-menu-details-page',
@@ -28,6 +28,7 @@ import { MenuViewSubSection } from '../../models/menu-view-sub-section.model';
 })
 export class MenuDetailsPageComponent implements OnInit {
   protected readonly dashboardService = inject(DashboardService);
+  private readonly _toast = inject(ToastService);
   protected readonly menusService = inject(MenusService);
   private readonly router = inject(Router);
 
@@ -135,7 +136,7 @@ export class MenuDetailsPageComponent implements OnInit {
     if (pdf) {
       window.open(pdf, '_blank');
     } else {
-      alert('لم يتم رفع منيو ورقي (PDF) لهذا المطعم بعد.');
+      this._toast.info('لم يتم رفع منيو ورقي (PDF) لهذا المطعم بعد.');
     }
   }
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Restaurant } from '../../models/restaurant';
+import { Restaurant } from '../../models/restaurant.model';
 import { environment } from '../../../../core/environments/environment';
 
 @Component({
@@ -11,7 +11,7 @@ import { environment } from '../../../../core/environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RestaurantCardComponent {
-  readonly apiUrl = environment.filesUrl;
+  readonly filesUrl = environment.filesUrl;
   readonly defaultImage = '/images/default-restaurant.png';
 
   readonly restaurant = input.required<Restaurant>();

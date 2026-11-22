@@ -2,10 +2,11 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CommonDateService, DropdownItem } from '../../../../core/common-data/common-date';
+import { CommonDateService } from '../../../../core/common-data/common-date';
+import { DropdownItem } from '../../../../core/models/dropdown-item.model';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { CartService } from '../../cart.service';
-import { MenuOrderDTO } from '../../models/order';
+import { MenuOrderDTO } from '../../models/menu-order-dto.model';
 
 @Component({
   selector: 'app-order-checkout',

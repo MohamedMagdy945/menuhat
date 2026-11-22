@@ -1,8 +1,15 @@
 import { Routes } from '@angular/router';
 
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
-import { MainLayoutComponent } from './layouts/main-layout/main-layout.component.';
+import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
 import { DashboardLayoutComponent } from './layouts/dashboard-layout/dashboard-layout.component';
+import { AdminPanelLayoutComponent } from './layouts/admin-panel-layout/admin-panel-layout.component';
+import { authGuard } from './core/guards/auth.guard';
+
+/** Placeholder for admin sections until their real pages are built. */
+const loadAdminPlaceholder = () =>
+    import('./features/admin/admin-placeholder/admin-placeholder.component')
+        .then(m => m.AdminPlaceholderComponent);
 
 export const routes: Routes = [
 
@@ -347,6 +354,7 @@ export const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardLayoutComponent,
+        canActivate: [authGuard],
         children: [
             {
                 path: '',
@@ -467,10 +475,22 @@ export const routes: Routes = [
         ]
     },
 
+    // =====================================================
+    // Admin Panel Layout (platform administration)
+    // =====================================================
+
     {
         path: 'admin',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
+        component: AdminPanelLayoutComponent,
+        canActivate: [authGuard],
+        children: [
+            { path: '', data: { title: 'الرئيسية' }, loadComponent: loadAdminPlaceholder },
+            { path: 'restaurants', data: { title: 'المطاعم' }, loadComponent: loadAdminPlaceholder },
+            { path: 'users', data: { title: 'المستخدمين' }, loadComponent: loadAdminPlaceholder },
+            { path: 'orders', data: { title: 'الطلبات' }, loadComponent: loadAdminPlaceholder },
+            { path: 'reports', data: { title: 'التقارير' }, loadComponent: loadAdminPlaceholder },
+            { path: 'settings', data: { title: 'الإعدادات' }, loadComponent: loadAdminPlaceholder }
+        ]
     },
 
 

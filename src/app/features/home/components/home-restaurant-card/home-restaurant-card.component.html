@@ -6,7 +6,7 @@
       <div class="h-34 md:h-32">
         <div class="h-34 md:h-32 w-full overflow-hidden rounded-md">
           <img
-            [src]="restaurant().logoURL ? apiUrl + restaurant().logoURL : '/images/default-restaurant.png'"
+            [src]="restaurant().logoURL ? filesUrl + restaurant().logoURL : '/images/default-restaurant.png'"
             (error)="$any($event.target).src = '/images/default-restaurant.png'"
             [alt]="restaurant().clientName"
             class="h-full w-full object-contain"

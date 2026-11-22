@@ -1,16 +1,5 @@
-export interface AddMenuProductDetailPayload {
-  id?: number;
-  oneClickParentId?: string | null;
-  oneClickProductId?: string | null;
-  title: string;
-  title_En?: string | null;
-  price: number;
-}
-
-export interface AddMenuProductPhotoPayload {
-  base64String: string;
-}
-
+import { AddMenuProductPhotoPayload } from './add-menu-product-photo-payload.model';
+import { AddMenuProductDetailPayload } from './add-menu-product-detail-payload.model';
 export interface AddMenuProductPayload {
   name: string;
   name_En?: string;

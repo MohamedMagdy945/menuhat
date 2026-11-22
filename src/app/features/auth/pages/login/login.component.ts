@@ -1,15 +1,18 @@
-import { Component, inject, OnInit, signal, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { USER_TYPES } from '../../../../core/constants/user-types.constants';
 import { LoginService } from '../../services/login.service';
-import { LoginRequest, LoginResponse } from '../../models';
+import { LoginRequest } from '../../models/login-request.model';
+import { LoginResponse } from '../../models/login-response.model';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { FormInputComponent } from '../../../../shared/components/form-input/form-input.component';
 import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-login',
   standalone: true,
   imports: [
@@ -23,7 +26,6 @@ import { LoadingButtonComponent } from '../../../../shared/components/loading-bu
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
-
 
   private readonly _fb = inject(FormBuilder);
   private readonly _AuthServices = inject(LoginService);
@@ -90,9 +92,16 @@ export class LoginComponent implements OnInit {
           if (res && res.data) {
             this._userDataService.setUserData(res.data, res.data.token);
 
-            const isAdmin = res.data.userTypeId === 1 || !!res.data.businessOwner;
+            if (res.data.userTypeId === USER_TYPES.admin) {
+              // Platform admin -> admin panel layout
+              this.isLoading.set(false);
+              this._Router.navigate(['/admin']);
+              return;
+            }
 
-            if (isAdmin) {
+            const isOwner = res.data.userTypeId === USER_TYPES.owner || !!res.data.businessOwner;
+
+            if (isOwner) {
               // Admin/Owner: check if dashboard exists
               this._AuthServices.getOwnerDashboard(res.data.token).subscribe({
                 next: (dashRes) => {

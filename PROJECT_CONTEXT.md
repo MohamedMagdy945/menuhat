@@ -1,157 +1,186 @@
-# PROJECT_CONTEXT.md – Menuhat Architecture & Implementation Map
+# PROJECT_CONTEXT.md — Menuhat Architecture Map
 
-## 1. Project Overview
-
-**Menuhat** is a modern, responsive web application for online food ordering and restaurant management. It serves two primary audiences within a unified frontend:
-1. **End Consumers / Diners:** Browse restaurants, discover categories and meals, add items to cart, manage favorites, view orders, and track notifications in Arabic (RTL).
-2. **Restaurant Owners & Admins:** Access a comprehensive dashboard to configure digital menus, categories, subcategories, products, manage incoming orders, track sales reports, and contact support.
+Reference map of the **Menuhat** frontend as it is implemented. Rules for changing it are in `AGENTS.md`.
 
 ---
 
-## 2. Technology Stack & Key Dependencies
+## 1. Product
 
-- **Framework:** Angular 19+ (`@angular/core: ^22.1.0` / modern standalone architecture)
-- **Styling:** Tailwind CSS v4 (`@tailwindcss/postcss: ^4.3.3`)
-- **Typography:** Cairo font family (`@fontsource/cairo: ^5.3.0`)
-- **Icons:** Material Symbols Sharp (`material-symbols: ^0.47.6`) and inline SVGs
-- **Carousel & Sliders:** Swiper Elements (`swiper: ^14.2.0`)
-- **Reactive Programming:** RxJS `~7.8.0` + Angular Signals (`signal`, `computed`, `input`, `output`)
-- **Change Detection:** `ChangeDetectionStrategy.OnPush` across all components
+Menuhat is an Arabic (RTL) food-ordering web app with two audiences in one Angular app:
+
+1. **Customers** — browse restaurants and meals, manage a cart, favorites, orders, notifications, profile and delivery location.
+2. **Restaurant owners** — a back-office dashboard to build menus (categories → sub-categories → products), process orders, view reports and contact support.
 
 ---
 
-## 3. Directory Structure & Responsibilities
+## 2. Stack
+
+| Concern | Choice |
+|---|---|
+| Framework | Angular 22 (`@angular/*` ^22.1), standalone components, **zoneless** (no `zone.js`) |
+| Build | `@angular/build:application` (esbuild); dev server `@angular/build:dev-server` |
+| Language | TypeScript ~6.0 (`strict` is **not** enabled; `noImplicitReturns`, `noImplicitOverride`, `noPropertyAccessFromIndexSignature` are) |
+| Styling | Tailwind CSS v4 via `@tailwindcss/postcss` (`.postcssrc.json`), tokens in `src/styles.css` `@theme` |
+| Font / icons | Cairo (`@fontsource/cairo`), Material Symbols Sharp (`material-symbols`) |
+| Carousels | Swiper Elements (`swiper`) |
+| Reactivity | Angular signals + RxJS 7.8 (HTTP) |
+| Other | `@angular/cdk` (BreakpointObserver in `ResponsiveService`), Prettier |
+| Tests | **None configured** — no `test` target, no specs, Vitest not installed |
+
+There is no SSR. Guards and `UserDataService` still check `isPlatformBrowser` before touching `localStorage`.
+
+---
+
+## 3. Bootstrap
+
+- `src/main.ts` → `bootstrapApplication(App, appConfig)`.
+- `src/app/app.config.ts`: `provideBrowserGlobalErrorListeners()`, `provideAppInitializer(() => UserDataService.loadUserData())`, `provideRouter(routes)`, `provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor]))`.
+- `App` (`app.ts`/`app.html`) renders `<router-outlet>`, the global `<app-loading>` overlay and `<app-toast-container>`.
+
+---
+
+## 4. Directory layout
 
 ```
-e:/projects/menuhat/
-├── public/                     # Static assets (icons, default images)
-│   ├── icons/
-│   └── images/
-├── src/
-│   ├── app/
-│   │   ├── core/               # App-wide singleton services, interceptors, guards, constants
-│   │   │   ├── constants/      # API endpoints (e.g., dashboard-api.constants.ts)
-│   │   │   ├── environments/   # Environment configurations (apiUrl, filesUrl)
-│   │   │   ├── guards/         # Route protection (auth.guard.ts)
-│   │   │   ├── interceptors/   # HTTP interceptors (auth, loading)
-│   │   │   └── services/       # Global services (auth, toast, dropdown, location, responsive)
-│   │   ├── layouts/            # Page shell layouts
-│   │   │   ├── auth-layout/    # Minimal layout for login, register, OTP
-│   │   │   ├── main-layout/    # Consumer layout (desktop navbar, mobile navbar, footer)
-│   │   │   └── dashboard-layout/ # Admin/restaurant management layout (sidebar, header)
-│   │   ├── shared/             # Reusable UI components & pipes
-│   │   │   ├── components/     # FormInput, FormSelect, LoadingButton, ToastContainer, etc.
-│   │   │   └── pipes/
-│   │   └── features/           # Domain feature modules
-│   │       ├── auth/           # Login, Register, OTP verification, Mobile verification
-│   │       ├── cart/           # Cart page, CartDropdownComponent, CartService
-│   │       ├── dashboard/      # Restaurant dashboard: menus, orders, reports, support
-│   │       ├── favorites/      # Favorites page, FavoriteDropdownComponent, FavoritesService
-│   │       ├── home/           # Landing page, banners, popular items, restaurant sliders
-│   │       ├── menu-items/     # Product details page, meal customizations
-│   │       ├── my-orders/      # Order history and order status tracking
-│   │       ├── notifications/  # Notification dropdown and notifications center
-│   │       ├── offers/         # Special discounts and promotional meals
-│   │       ├── profile/        # User profile management and delivery addresses
-│   │       └── restaurants/    # Restaurant directory and restaurant menu view
-│   ├── styles.css              # Global styles, Tailwind v4 imports, @theme design tokens
-│   ├── main.ts                 # Bootstrap application entry point
-│   └── app/app.config.ts       # Application providers, routes, HTTP interceptors
-├── AGENTS.md                   # Permanent agent instructions and UI guidelines
-├── PROJECT_CONTEXT.md          # Architecture & project reference document (this file)
-└── GEMINI.md                   # Core project guidelines and user rules
+src/
+├── styles.css                     Tailwind import, @theme tokens, global/autofill styles
+├── main.ts
+└── app/
+    ├── app.ts | app.html | app.config.ts | app.routes.ts
+    ├── core/                      app-wide singletons
+    │   ├── common-data/           CommonDateService – governments / cities / order-status… dropdown APIs
+    │   ├── constants/             dashboard-api.constants.ts (DASHBOARD_API_ENDPOINTS), files.constants.ts (FILES_ORIGIN)
+    │   ├── environments/          environment.ts (apiUrl, filesUrl) – the only environment file
+    │   ├── guards/                auth.guard.ts, loged.guard.ts
+    │   ├── interceptors/          auth-interceptor.ts, loading.interceptor.ts
+    │   ├── loading/               LoadingComponent, LoadingService, USE_GLOBAL_LOADING context token
+    │   ├── models/                core-level models (one per file)
+    │   └── services/              UserDataService, ToastService, DropdownStateService, ResponsiveService,
+    │                              LocationService, MenuCategoriesService*, RestaurantMediaService*
+    ├── layouts/
+    │   ├── auth-layout/           minimal shell for auth pages
+    │   ├── main-layout/           customer shell: desktop-navbar, mobile-navbar, footer
+    │   ├── dashboard-layout/      owner shell: dashboard-sidebar, dashboard-header*; models/
+│   └── admin-panel-layout/    platform-admin shell: admin-sidebar (same design as dashboard-sidebar)
+    ├── shared/
+    │   ├── components/            form-input, form-select, loading-button, location-selector,
+    │   │                          toast-container, carousel, side-drawer*
+    │   ├── skeleton/              menu-item-, rating-, horizontal-card-skeleton*
+    │   └── models/                cross-feature models (FormSelectOption, DateFilterType, ResponsiveItems/Cols, pagination/PageData)
+    └── features/
+        ├── auth/                  pages/ (login, register, send-otp, validate-otp, send-mobile-verification), services/, models/
+        ├── home/                  landing page + sections, home cards, account-dropdown
+        ├── restaurants/           directory, restaurant details (categories, products, ratings, add-rating modal), services/
+        ├── menu-items/            product lists (most ordered) and product details page
+        ├── cart/                  cart page, cart-dropdown, cart-item-card, order-checkout, CartService
+        ├── favorites/             favorites page, favorite-dropdown, FavoritesService
+        ├── my-orders/             customer order history
+        ├── notifications/         notifications page + dropdown, NotificationsService
+        ├── offers/                pages/offers
+        ├── profile/               profile, addresses, password, ProfileService
+        └── dashboard/             owner back-office, one folder per sub-feature:
+            ├── dashboard/         overview (DashboardService – restaurant, stats, current orders, sidebar nav)
+            ├── menus/             menu details, categories, sub-categories, products, add-item, system-images modal
+            ├── orders/            order list/details, accept/reject modals, OrdersService
+            ├── most-ordered/      product stats
+            ├── reports/           sales reports (OwnerReportsService)
+            ├── support/           complaints form + tracking (SupportService)
+            └── restaurant/        create-restaurants (onboarding form, uses ClientsMenuService)
 ```
 
----
+`*` = implemented but not referenced anywhere yet (kept as work in progress): `MenuCategoriesService`, `RestaurantMediaService`, `DashboardHeaderComponent`, `SideDrawerComponent`, `HorizontalCardSkeletonComponent`, `features/dashboard/menus/components/menu-details` (`MenuDetailsComponent`), `CreateProductPayload` / `RestaurantRequest` models.
 
-## 4. Key Layouts & Routing Architecture
-
-Routes are defined in `src/app/app.routes.ts` and leverage lazy loading (`loadComponent`):
-
-### 4.1 Auth Layout (`AuthLayoutComponent`)
-- `/login` – User authentication
-- `/send-otp` / `/validate-otp` – OTP verification workflows
-- `/register` – New account creation
-- `/send-mobile-verification` – Phone number confirmation
-- `/create-restaurant` – Onboarding flow for restaurant partners
-
-### 4.2 Main Consumer Layout (`MainLayoutComponent`)
-- Wraps the customer-facing experience with:
-  - `DesktopNavbar` on desktop screens (`md:flex`)
-  - `MobileNavbar` + Mobile Header on small screens (`md:hidden`)
-  - `FooterComponent` at the bottom
-- Routes:
-  - `/` or `/home` – Main storefront
-  - `/cart` – Full shopping cart page
-  - `/favorites` – User's saved meals
-  - `/profile` – User account settings
-  - `/offers` – Restaurant offers and deals
-  - `/restaurants` & `/restaurants/:serial` – Restaurant listings and menu pages
-  - `/menu-items/:id` – Individual product page
-  - `/my-orders` – Customer order history
-  - `/notifications` – Customer notifications view
-
-### 4.3 Dashboard Layout (`DashboardLayoutComponent`)
-- Back-office administration for restaurant owners and staff:
-  - `/dashboard` – Operational overview metrics
-  - `/dashboard/menu` – Menu management
-  - `/dashboard/menu/details/:id` – Detailed menu configuration
-  - `/dashboard/menu/categories` & `/dashboard/menu/subcategories` – Category hierarchies
-  - `/dashboard/menu/add-item` – New product wizard with system image selector
-  - `/dashboard/orders` & `/dashboard/orders/:id` – Live order processing
-  - `/dashboard/most-ordered` – Top-selling items analytics
-  - `/dashboard/reports` – Sales and performance reports
-  - `/dashboard/support` – Technical support tickets
+Every feature keeps its types in `models/` — one `*.model.ts` per interface/type, no barrels (see `AGENTS.md` §3).
 
 ---
 
-## 5. Core Services & Cross-Cutting Architecture
+## 5. Routing (`src/app/app.routes.ts`)
 
-| Service | File Path | Responsibility |
+All pages are lazy (`loadComponent`). Many legacy aliases redirect to the canonical paths (e.g. `sendOtp`, `send-email` → `send-otp`; `verify-otp` → `validate-otp`; `register-owner` → `register`; `menus` → `menu`). Unknown paths redirect to `''`.
+
+### 5.1 `AuthLayoutComponent`
+`/login`, `/send-otp`, `/validate-otp`, `/register`, `/send-mobile-verification`, `/create-restaurant`.
+
+Sign-up flow: `send-otp?role=` (email) → `validate-otp?email&role` → `register?email&userTypeId&role` (stores session via `UserDataService`) → `send-mobile-verification?phone&role` → owner: `/create-restaurant`, customer: `/home`.
+Login (user types in `core/constants/user-types.constants.ts`): platform admins (`userTypeId === 2`, assumed) go to `/admin`; owners (`userTypeId === 1` or `businessOwner`) go to `/dashboard` (or `/create-restaurant` when they have no restaurant yet); customers go to `/home`.
+
+### 5.2 `MainLayoutComponent` (customer)
+`/` and `/home`, `/cart`, `/favorites`, `/profile`, `/offers`, `/restaurants`, `/restaurants/:serial`, `/most-ordered` (menu-items list), `/most-visited` and `/top-rated` (restaurants list with route `data`; `/trending` → `/most-visited`), `/menu-items/:id` (`/menu-items` → `/most-ordered`), `/my-orders`, `/notifications`.
+
+### 5.3 `DashboardLayoutComponent` (owner) — `canActivate: [authGuard]`
+`/dashboard`, `/dashboard/menu`, `/dashboard/menu/details[/:id]`, `/dashboard/menu/categories[/:id]`, `/dashboard/menu/subcategories[/:id]`, `/dashboard/menu/subcategories/:id/products`, `/dashboard/menu/products`, `/dashboard/menu/add-item`, `/dashboard/orders`, `/dashboard/orders/:id`, `/dashboard/most-ordered`, `/dashboard/reports`, `/dashboard/support`.
+
+### 5.4 `AdminPanelLayoutComponent` (platform admin) — `canActivate: [authGuard]`
+`/admin`, `/admin/restaurants`, `/admin/users`, `/admin/orders`, `/admin/reports`, `/admin/settings`. All currently render `features/admin/admin-placeholder` (title from route `data.title`); replace each `loadComponent` as real pages are built. The layout owns the mobile-drawer signal and passes it to `AdminSidebarComponent` via `input`/`output`; nav items live in the sidebar and reuse `SidebarNavItem` from `dashboard-layout/models`.
+
+---
+
+## 6. Cross-cutting services
+
+| Service / piece | Location | Responsibility |
 |---|---|---|
-| `UserDataService` | `core/services/userData.service.ts` | Manages auth token in `localStorage` (`'usertoken'`), decodes user payload, user state signal. |
-| `DropdownStateService` | `core/services/dropdown-state.service.ts` | Coordinates header dropdowns (Cart, Favorites, Notifications) so only one is active at a time. |
-| `ToastService` | `core/services/toast.service.ts` | Reactive signals-based toast dispatcher (`success`, `error`, `warning`, `info`). |
-| `ResponsiveService` | `core/services/responsive.service.ts` | Screen size signals (`isMobile()`, `isDesktop()`) for responsive layout switching. |
-| `LocationService` | `core/services/location.service.ts` | Manages customer delivery location, address selection, and geographic coordinates. |
-| `AuthInterceptor` | `core/interceptors/auth-interceptor.ts` | Injects `Authorization: Bearer <token>` and `Accept-Language: ar` to all HTTP requests. |
-| `LoadingInterceptor` | `core/interceptors/loading.interceptor.ts` | Tracks pending HTTP requests for global loading states. |
+| `UserDataService` | `core/services/userData.service.ts` | Session owner. Signals `currentUser`, `token`, `isAuthenticated`; `loadUserData`, `setUserData`, `getUserData`, `getUserId`, `getUserFullName`, `getToken`, `clearUserData`. Persists `localStorage['usertoken']` and `['userData']`. |
+| `authInterceptor` | `core/interceptors/auth-interceptor.ts` | Adds `Authorization: Bearer <usertoken>` (when present) and `Accept-Language: ar`. |
+| `loadingInterceptor` + `LoadingService` | `core/interceptors/`, `core/loading/` | Counts requests flagged with `USE_GLOBAL_LOADING` and shows the global overlay. |
+| `authGuard` / `logedGuard` | `core/guards/` | Token required (→ `/login`) / guests only (→ `/home`). Only `authGuard` is applied (dashboard, admin). |
+| `ToastService` | `core/services/toast.service.ts` | Signal list of toasts; `success`/`error`/`warning`/`info` (+ legacy `showToast`/`showAlert`), auto-dismiss. |
+| `DropdownStateService` | `core/services/dropdown-state.service.ts` | Single `activeDropdown` signal; `open`/`toggle`/`close`/`closeAll`/`isOpen`; closes all on `NavigationEnd`. |
+| `ResponsiveService` | `core/services/responsive.service.ts` | `isMobile` signal (CDK BreakpointObserver). |
+| `LocationService` | `core/services/location.service.ts` | Customer location (geolocation + OpenStreetMap Nominatim reverse geocoding), persisted in `localStorage`; `currentLocation`, `displayAddress`, `displayShortAddress`, `hasLocation`, `getSmartLocation()`. |
+| `CommonDateService` | `core/common-data/common-date.ts` | Lookup dropdowns (governments, cities, order status/types, fields, order conditions). |
+| `DashboardService` | `features/dashboard/dashboard/dashboard.service.ts` | Owner dashboard data, restaurant info, current orders mapping, sidebar navigation model; used by most dashboard pages and the dashboard layout. |
+
+Feature services (`CartService`, `FavoritesService`, `MenuItemService`, `RestaurantsService`, `ResuaurantProfileService`, `ClientsMenuService`, `NotificationsService`, `ProfileService`, `OrdersService`, `MenusService`, `MenuProductsService`, `MenuSubCategoriesService`, `AddMenuItemService`, `MostOrderedService`, `OwnerReportsService`, `SupportService`, `LoginService`, `RegisterService`, `PhoneVerificationService`) are `providedIn: 'root'` and keep their state in signals.
 
 ---
 
-## 6. Shared Component Library
+## 7. Shared UI components
 
-Reusable components live in `src/app/shared/components/`:
-- **`FormInputComponent`** (`form-input/`): Clean floating or bordered input with validation states and icon slots.
-- **`FormSelectComponent`** (`form-select/`): Standardized dropdown selector matching project design standards.
-- **`LoadingButtonComponent`** (`loading-button/`): Action button displaying a spinner when asynchronous actions run.
-- **`LocationSelectorComponent`** (`location-selector/`): Delivery address modal and map picker.
-- **`ToastContainerComponent`** (`toast-container/`): Floating viewport alert container rendering toasts from `ToastService`.
+| Component | Selector | Notes |
+|---|---|---|
+| `FormInputComponent` | `app-form-input` | ControlValueAccessor; label, icon slots, password toggle, Arabic error resolution (`customErrors`, `errorMessage`). Listens to `control.events` so OnPush errors update on submit. |
+| `FormSelectComponent` | `app-form-select` | ControlValueAccessor select with `FormSelectOption[]`; same error/refresh behavior. |
+| `LoadingButtonComponent` | `app-loading-button` | Submit button with spinner (`loading`, `text`, `loadingText`, `disabled`). |
+| `LocationSelectorComponent` | `app-location-selector` | Shows/refreshes the customer location via `LocationService`. |
+| `ToastContainerComponent` | `app-toast-container` | Renders `ToastService.toasts()` (mounted once in `App`). |
+| `CarouselComponent` | `app-carousel` / `app-horizontal-scroll` | Horizontal scroller with responsive column config (`ResponsiveItems`). |
+| Skeletons | `app-menu-item-skeleton`, `app-rating-skeleton` | Loading placeholders. |
 
----
-
-## 7. Backend & API Integration Protocols
-
-- **Environment Config:** `src/environments/environment.ts`
-  - `apiUrl`: `http://192.168.1.150:500/api`
-  - `filesUrl`: `http://192.168.1.150:500/UploadedFiles`
-- **Constants File:** `src/app/core/constants/dashboard-api.constants.ts` defines all backend route endpoints.
-- **Image URL Handling Protocol:**
-  - When backend returns relative paths (e.g. `/SuggestImages/default-product.png` or `ProductImages/...`):
-    ```typescript
-    getItemImageUrl(photoURL: string | null): string {
-      if (!photoURL) return '/images/default-meal.png';
-      if (photoURL.startsWith('http')) return photoURL;
-      const clean = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
-      return `${environment.filesUrl}${clean}`;
-    }
-    ```
-  - **Never use `environment.apiUrl` for image/asset loading.**
+Header dropdowns: `CartDropdownComponent`, `FavoriteDropdownComponent`, `NotificationDropdownComponent`, `AccountDropdownComponent` (all coordinated by `DropdownStateService`).
 
 ---
 
-## 8. Permanent Model Conventions
+## 8. Backend integration
 
-- Every model interface resides in its own isolated file in `models/` (e.g. `cart-item.model.ts`, `favorite-product.model.ts`).
-- **No barrel `index.ts` files** are allowed in `models/`.
-- Import directly from each file to prevent circular dependencies and broken compiler paths.
+- **Environment** (`core/environments/environment.ts`): `apiUrl = http://192.168.1.150:500/api`, `filesUrl = http://192.168.1.150:500/UploadedFiles` (production values `https://api.zahran4it.com/...` are kept commented out). Swagger: `http://192.168.1.150:500/swagger/index.html`.
+- **Endpoints:** owner/dashboard endpoints in `DASHBOARD_API_ENDPOINTS`; customer/auth services compose `` `${environment.apiUrl}/…` `` internally.
+- **Responses** are loosely typed; services typically unwrap `res.data ?? res.result ?? res` and map backend field names (`name`/`name_En`, `photoURL`, `menuMainCategoryName`, …) into the models.
+- **Images:**
+  ```ts
+  if (!path) return fallback;                                   // e.g. '/images/default-meal.png'
+  if (path.startsWith('http')) return path;
+  const clean = path.startsWith('/') ? path : `/${path}`;
+  if (clean.startsWith('/UploadedFiles') || clean.startsWith('/DefaultImages'))
+    return `${FILES_ORIGIN}${clean}`;                           // file-server origin
+  return `${environment.filesUrl}${clean}`;
+  ```
+  This resolver currently exists as small per-feature helpers (`getItemImageUrl` / `resolveImageUrl`) with minor variations; all derive hosts from `filesUrl` / `FILES_ORIGIN`, never `apiUrl`.
+- **App id:** auth/verification payloads send `appId: 2`.
+
+---
+
+## 9. Conventions snapshot
+
+Zoneless + `OnPush` everywhere; signals for async-rendered state; `input()`/`output()`; `inject()`; one model per `*.model.ts` file without barrels; no hover/active visual changes; toasts instead of `alert()`; session only via `UserDataService`. Full rules: `AGENTS.md`.
+
+---
+
+## 10. Known gaps
+
+- No unit-test setup (no `test` target / specs / Vitest).
+- Production build warns that the initial bundle (~713 kB) exceeds the 500 kB budget.
+- TypeScript `strict` mode is off; many API responses are typed `any`.
+- Image URL helpers are duplicated across features (behavior is consistent, code is not shared).
+- Destructive actions use the native `confirm()` dialog; no shared confirm modal exists.
+- Placeholders not yet implemented: Google login (`LoginComponent.loginWithGoogle`), cancel order / view order details in `my-orders`.
+- `logedGuard` is defined but intentionally not applied (see `AGENTS.md` §5).

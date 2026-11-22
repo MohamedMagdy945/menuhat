@@ -1,7 +1,7 @@
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { OrderCardData } from '../../dashboard.service';
+import { OrderCardData } from '../../../orders/models/order-card-data.model';
 
 @Component({
   selector: 'app-dashboard-order-card',

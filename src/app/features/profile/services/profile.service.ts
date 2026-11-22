@@ -3,12 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap, finalize, catchError, of, map } from 'rxjs';
 import { environment } from '../../../core/environments/environment';
 import { UserDataService } from '../../../core/services/userData.service';
-import {
-  UserProfile,
-  UpdateProfileRequest,
-  UserAddress,
-  ChangePasswordRequest,
-} from '../models/profile.model';
+import { UserProfile } from '../models/user-profile.model';
+import { UpdateProfileRequest } from '../models/update-profile-request.model';
+import { UserAddress } from '../models/user-address.model';
+import { ChangePasswordRequest } from '../models/change-password-request.model';
 
 @Injectable({
   providedIn: 'root',

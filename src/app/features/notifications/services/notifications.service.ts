@@ -1,7 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, of } from 'rxjs';
-import { AppNotification, NotificationsApiResponse } from '../models/notification.model';
+import { AppNotification } from '../models/app-notification.model';
+import { NotificationsApiResponse } from '../models/notifications-api-response.model';
 import { environment } from '../../../core/environments/environment';
 import { UserDataService } from '../../../core/services/userData.service';
 import { ToastService } from '../../../core/services/toast.service';

@@ -1,11 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-export interface CategoryItem {
-  id: number;
-  name: string;
-}
-
+import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { CategoryItem } from '../../models/category-item.model';
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-restaurant-categories',
   standalone: true,
   imports: [],
@@ -13,9 +9,9 @@ export interface CategoryItem {
   styleUrl: './restaurant-categories.component.css',
 })
 export class RestaurantCategoriesComponent {
-  @Input({ required: true }) categories: CategoryItem[] = [];
-  @Input({ required: true }) selectedCategory: number | null = null;
-  @Output() categorySelected = new EventEmitter<number | null>();
+  readonly categories = input.required<CategoryItem[]>();
+  readonly selectedCategory = input.required<number | null>();
+  readonly categorySelected = output<number | null>();
 
   onSelectCategory(categoryId: number | null): void {
     this.categorySelected.emit(categoryId);

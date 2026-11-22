@@ -2,12 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../environments/environment';
 import { Observable } from 'rxjs';
-
-export interface DropdownItem {
-  id: number;
-  name: string;
-}
-
+import { DropdownItem } from '../models/dropdown-item.model';
 @Injectable({
   providedIn: 'root',
 })

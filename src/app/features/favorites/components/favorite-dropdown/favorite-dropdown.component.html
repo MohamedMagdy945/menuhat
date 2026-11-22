@@ -1,204 +1,156 @@
 <div class="relative inline-block text-right">
   @if (variant() === 'mobile-header') {
-    <!-- Mobile Header Trigger Button -->
-    <button
-      type="button"
-      (click)="toggleDropdown($event)"
-      aria-label="المفضلة"
-      class="relative w-10 h-10 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
-      [class.ring-2]="isOpen()"
-      [class.ring-white/50]="isOpen()"
-      title="المفضلة"
-    >
-      <svg
-        class="w-5.5 h-5.5 text-white"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-        />
-      </svg>
-      @if (favoritesCount() > 0) {
-        <span
-          class="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 bg-white text-rose-600 text-[10px] font-extrabold rounded-full flex items-center justify-center shadow-xs"
-        >
-          {{ favoritesCount() > 99 ? '+99' : favoritesCount() }}
-        </span>
-      }
-    </button>
+  <!-- Mobile Header Trigger Button -->
+  <button type="button" (click)="toggleDropdown($event)" aria-label="المفضلة"
+    class="relative w-10 h-10 rounded-full bg-white/20 border border-white/25 flex items-center justify-center text-white cursor-pointer select-none shadow-sm"
+    [class.ring-2]="isOpen()" [class.ring-white/50]="isOpen()" title="المفضلة">
+    <span class="material-symbols-sharp text-xl text-white select-none leading-none">
+      favorite
+    </span>
+    @if (favoritesCount() > 0) {
+    <span
+      class="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 bg-white text-orange-600 text-[10px] font-semibold rounded-full flex items-center justify-center shadow-xs">
+      {{ favoritesCount() > 99 ? '+99' : favoritesCount() }}
+    </span>
+    }
+  </button>
   } @else {
-    <!-- Desktop Trigger Button -->
-    <button
-      type="button"
-      (click)="toggleDropdown($event)"
-      aria-label="قائمة المفضلة"
-      class="relative w-11 h-11 sm:w-11 sm:h-11 border border-gray-200 rounded-full bg-white flex items-center justify-center shadow-lg cursor-pointer select-none"
-      [class.ring-2]="isOpen()"
-      [class.ring-rose-400]="isOpen()"
-      title="المفضلة"
-    >
-      <div class="flex items-center justify-center transition-colors text-lg">
-        <span
-          class="material-symbols-sharp select-none leading-none"
-          [class.text-rose-500]="isOpen()"
-          [class.text-gray-600]="!isOpen()"
-        >favorite</span>
-      </div>
+  <!-- Desktop Trigger Button -->
+  <button type="button" (click)="toggleDropdown($event)" aria-label="قائمة المفضلة"
+    class="relative w-11 h-11 sm:w-11 sm:h-11 border border-gray-200 rounded-full bg-white flex items-center justify-center shadow-lg cursor-pointer select-none"
+    [class.ring-2]="isOpen()" [class.ring-orange-400]="isOpen()" title="المفضلة">
+    <div class="flex items-center justify-center transition-colors text-lg">
+      <span class="material-symbols-sharp select-none leading-none" [class.text-orange-500]="isOpen()"
+        [class.text-gray-600]="!isOpen()">favorite</span>
+    </div>
 
-      <!-- Badge Count -->
-      @if (favoritesCount() > 0) {
-        <span
-          class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-rose-500 to-red-600 text-white text-[11px] font-extrabold rounded-full flex items-center justify-center shadow-xs border-2 border-white"
-        >
-          {{ favoritesCount() > 99 ? '+99' : favoritesCount() }}
-        </span>
-      }
-    </button>
+    <!-- Badge Count -->
+    @if (favoritesCount() > 0) {
+    <span
+      class="absolute -top-1 -right-1 min-w-5 h-5 px-1 bg-linear-to-r from-orange-500 to-orange-600 text-white text-[11px] font-semibold rounded-full flex items-center justify-center shadow-xs border-2 border-white">
+      {{ favoritesCount() > 99 ? '+99' : favoritesCount() }}
+    </span>
+    }
+  </button>
   }
 
   <!-- Dropdown Panel -->
   @if (isOpen()) {
-    <!-- Backdrop for mobile -->
-    <div
-      class="dropdown-backdrop fixed inset-0 z-40 bg-black/20 sm:hidden"
-      (click)="closeDropdown()"
-    ></div>
+  <!-- Backdrop for mobile -->
+  <div class="dropdown-backdrop fixed inset-0 z-40 bg-black/20 sm:hidden" (click)="closeDropdown()"></div>
 
-    <!-- Triangle Caret pointing to button -->
-    <div
-      class="dropdown-caret hidden sm:block"
-      [class.is-mobile-header]="variant() === 'mobile-header'"
-      aria-hidden="true"
-    ></div>
+  <!-- Triangle Caret pointing to button -->
+  <div class="dropdown-caret hidden sm:block" [class.is-mobile-header]="variant() === 'mobile-header'"
+    aria-hidden="true"></div>
 
-    <div
-      class="favorite-dropdown-panel fixed sm:absolute inset-x-3 sm:inset-x-auto top-16 sm:top-full left-3 sm:left-0 right-3 sm:right-auto sm:mt-2 w-auto sm:w-96 rounded-2xl bg-white shadow-xl border border-gray-100 z-50 overflow-hidden text-right"
-    >
-      <!-- Dropdown Header -->
-      <div class="flex items-center justify-between px-4 py-3 bg-slate-50/90 border-b border-gray-100">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-sharp text-rose-500 text-[20px] select-none">favorite</span>
-          <span class="font-bold text-slate-800 text-sm">قائمة المفضلة</span>
-          @if (favoritesCount() > 0) {
-            <span class="text-xs bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full font-bold border border-rose-100">
-              {{ favoritesCount() }} وجبات
-            </span>
-          }
-        </div>
-
-        <button
-          type="button"
-          (click)="closeDropdown()"
-          class="text-slate-400 p-1 rounded-full cursor-pointer flex items-center justify-center"
-          aria-label="إغلاق"
-        >
-          <span class="material-symbols-sharp text-[18px]">close</span>
-        </button>
+  <div
+    class="favorite-dropdown-panel fixed sm:absolute inset-x-3 sm:inset-x-auto top-16 sm:top-full left-3 sm:left-0 right-3 sm:right-auto sm:mt-2 w-auto sm:w-96 rounded-2xl bg-white shadow-2xl border border-slate-200 z-50 overflow-hidden text-right">
+    <!-- Dropdown Header -->
+    <div class="flex items-center justify-between px-4 py-3.5 bg-slate-50 border-b border-gray-100">
+      <div class="flex items-center gap-2 text-lg">
+        <span class="material-symbols-sharp text-orange-500 select-none">favorite</span>
+        <span class="font-semibold text-slate-800">قائمة المفضلة</span>
+        @if (favoritesCount() > 0) {
+        <span
+          class="text-xs bg-orange-50 text-orange-600 px-2 py-0.5 rounded-full font-semibold border border-orange-100">
+          {{ favoritesCount() }} وجبات
+        </span>
+        }
       </div>
 
-      <!-- Dropdown Body -->
-      @if (isLoading()) {
-        <div class="py-12 flex flex-col items-center justify-center gap-2.5 text-slate-400 text-xs">
-          <span class="h-6 w-6 animate-spin rounded-full border-2 border-rose-500 border-t-transparent"></span>
-          <span class="font-medium">جاري تحميل المفضلة...</span>
+      <button type="button" (click)="closeDropdown()"
+        class="text-slate-400 p-1 rounded-full cursor-pointer flex items-center justify-center" aria-label="إغلاق">
+        <span class="material-symbols-sharp text-[18px]">close</span>
+      </button>
+    </div>
+
+    <!-- Dropdown Body -->
+    @if (isLoading()) {
+    <div class="py-12 flex flex-col items-center justify-center gap-2.5 text-slate-400 text-xs">
+      <span class="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"></span>
+      <span class="font-medium">جاري تحميل المفضلة...</span>
+    </div>
+    } @else if (favorites().length === 0) {
+    <div class="py-10 px-4 flex flex-col items-center justify-center text-center">
+      <div class="w-14 h-14 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center mb-2.5 mx-auto">
+        <span class="material-symbols-sharp text-3xl select-none">heart_broken</span>
+      </div>
+      <p class="font-semibold text-slate-800 text-sm">قائمة المفضلة فارغة</p>
+      <p class="text-xs text-slate-400 mt-1">تصفح الوجبات وأضف ما يعجبك إلى قائمتك المفضلة</p>
+    </div>
+    } @else {
+    <!-- Favorite Items List -->
+    <div class="max-h-80 overflow-y-auto divide-y divide-gray-100 favorite-items-scroll">
+      @for (item of favorites(); track item.id) {
+      <div (click)="goToProduct(item.id, $event)" class="flex items-center gap-3 p-2 cursor-pointer bg-white">
+        <!-- Item Image (Prominent & Clear) -->
+        <div
+          class="w-16 h-16 rounded-2xl overflow-hidden bg-slate-50 shrink-0 border border-gray-100 flex items-center justify-center">
+          <img [src]="getItemImageUrl(item.photoURL)" [alt]="item.productName" class="w-full h-full object-contain"
+            (error)="$any($event.target).src = '/images/default-meal.png'" />
         </div>
-      } @else if (favorites().length === 0) {
-        <div class="py-10 px-4 flex flex-col items-center justify-center text-center">
-          <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mb-2.5 mx-auto">
-            <span class="material-symbols-sharp text-3xl select-none">favorite_border</span>
+
+        <!-- Item Info -->
+        <div class="flex-1 min-w-0 text-right">
+          <h4 class="text-sm font-semibold text-slate-800 truncate" [title]="item.productName">
+            {{ item.productName }}
+          </h4>
+
+          <div class="flex items-center gap-1 text-sm text-slate-400 mt-0.5 truncate">
+            <span class="material-symbols-sharp text-[13px] text-orange-400 select-none">storefront</span>
+            <span class="truncate">{{ item.clientName }}</span>
           </div>
-          <p class="font-bold text-slate-800 text-sm">قائمة المفضلة فارغة</p>
-          <p class="text-xs text-slate-400 mt-1">تصفح الوجبات وأضف ما يعجبك إلى قائمتك المفضلة</p>
-        </div>
-      } @else {
-        <!-- Favorite Items List -->
-        <div class="max-h-80 overflow-y-auto divide-y divide-gray-100 favorite-items-scroll">
-          @for (item of favorites(); track item.id) {
-            <div
-              (click)="goToProduct(item.id, $event)"
-              class="flex items-center gap-3 p-3.5 cursor-pointer bg-white"
-            >
-              <!-- Item Image (Prominent & Clear) -->
-              <div class="w-20 h-20 rounded-2xl overflow-hidden bg-slate-50 shrink-0 border border-gray-100 flex items-center justify-center">
-                <img
-                  [src]="getItemImageUrl(item.photoURL)"
-                  [alt]="item.productName"
-                  class="w-full h-full object-cover"
-                  (error)="$any($event.target).src = '/images/default-meal.png'"
-                />
-              </div>
 
-              <!-- Item Info -->
-              <div class="flex-1 min-w-0 text-right">
-                <h4
-                  class="text-xs sm:text-sm font-bold text-slate-800 truncate"
-                  [title]="item.productName"
-                >
-                  {{ item.productName }}
-                </h4>
-
-                <div class="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5 truncate">
-                  <span class="material-symbols-sharp text-[13px] text-orange-400 select-none">storefront</span>
-                  <span class="truncate">{{ item.clientName }}</span>
-                </div>
-
-                <div class="flex items-center justify-between mt-1 text-xs">
-                  <span class="text-orange-500 font-bold">
-                    {{ getItemPrice(item) | number:'1.1-2' }} ج.م
-                  </span>
-                  @if (item.oldPrice && getItemPrice(item) && item.oldPrice > getItemPrice(item)) {
-                    <span class="text-[10px] text-slate-400 line-through">
-                      {{ item.oldPrice | number:'1.1-2' }} ج.م
-                    </span>
-                  }
-                </div>
-              </div>
-
-              <!-- Actions: Add to Cart & Remove from Favorites -->
-              <div class="flex items-center gap-1.5 shrink-0" (click)="$event.stopPropagation()">
-                <button
-                  type="button"
-                  (click)="addToCart(item, $event)"
-                  class="px-2.5 py-1.5 rounded-xl bg-orange-500 text-white font-bold text-xs flex items-center gap-1 cursor-pointer shadow-xs"
-                  title="إضافة للسلة"
-                >
-                  <span class="material-symbols-sharp text-[15px]">add_shopping_cart</span>
-                  <span>أضف</span>
-                </button>
-
-                <button
-                  type="button"
-                  (click)="removeFavorite(item, $event)"
-                  title="إزالة من المفضلة"
-                  class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0"
-                >
-                  <span class="material-symbols-sharp text-[16px]">favorite</span>
-                </button>
-              </div>
-            </div>
-          }
+          <div class="flex items-center justify-between mt-1 text-xs">
+            @if (item.oldPrice && getItemPrice(item) && item.oldPrice > getItemPrice(item)) {
+            <span class="text-slate-400 line-through">
+              {{ item.oldPrice | number:'1.1-2' }} ج.م
+            </span>
+            } @else {
+            <span></span>
+            }
+            <span class="text-orange-500 font-semibold">
+              {{ getItemPrice(item) | number:'1.1-2' }} ج.م
+            </span>
+          </div>
         </div>
 
-        <!-- Dropdown Footer -->
-        <div class="p-3.5 bg-slate-50/90 border-t border-gray-100 flex flex-col gap-2.5">
-          <!-- Go to Favorites Page -->
-          <button
-            type="button"
-            (click)="goToFavorites($event)"
-            class="w-full py-2.5 px-4 rounded-xl bg-orange-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-          >
-            <span>عرض كل المفضلة</span>
-            <span class="material-symbols-sharp text-base leading-none">arrow_back</span>
+        <!-- Actions: Add to Cart & Remove from Favorites -->
+        <div class="flex items-center gap-1.5 shrink-0" (click)="$event.stopPropagation()">
+          <button type="button" (click)="addToCart(item, $event)" title="إضافة للسلة"
+            class="flex items-center gap-1 rounded-full border border-slate-200 px-2.5 py-1 bg-white text-orange-500 text-xs font-semibold cursor-pointer">
+            <span class="material-symbols-sharp text-[15px]">add_shopping_cart</span>
+            <span>أضف</span>
+          </button>
+
+          <button type="button" (click)="removeFavorite(item, $event)" title="إزالة من المفضلة"
+            aria-label="إزالة من المفضلة" [disabled]="isPending(item)"
+            class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0">
+            <span class="material-symbols-sharp text-[16px]">delete</span>
           </button>
         </div>
+      </div>
       }
     </div>
+
+    <!-- Dropdown Footer -->
+    <div class="px-4 py-2 bg-slate-50 border-t border-gray-100 flex items-center justify-between gap-3">
+      <!-- Count Info -->
+      <div class="text-right">
+        <span class="text-sm font-semibold text-slate-400 block leading-tight">عدد الوجبات</span>
+        <span class="text-orange-500 text-base font-semibold">
+          {{ favoritesCount() }} <span class="text-xs">وجبة</span>
+        </span>
+      </div>
+
+      <!-- Compact Action Button -->
+      <button type="button" (click)="goToFavorites($event)"
+        class="px-4 py-2 rounded-xl bg-orange-500 text-white font-semibold text-sm flex items-center gap-1.5 shadow-xs cursor-pointer shrink-0">
+        <span>عرض كل المفضلة</span>
+        <span class="material-symbols-sharp text-sm leading-none">arrow_back</span>
+      </button>
+    </div>
+    }
+  </div>
   }
 </div>

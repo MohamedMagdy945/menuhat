@@ -1,18 +1,11 @@
-import {
-  Component,
-  inject,
-  signal,
-  computed,
-  ElementRef,
-  HostListener,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, inject, signal, computed, ElementRef, HostListener, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-account-dropdown',
   standalone: true,
   imports: [CommonModule],

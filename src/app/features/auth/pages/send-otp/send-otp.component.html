@@ -8,10 +8,10 @@
         <img src="/icons/menuhat-logo.svg" alt="Menuhat Logo" class="h-15 w-auto object-contain" />
       </a>
       <h1 class="mt-4 text-xl font-bold tracking-tight text-slate-900">
-        {{ role === 'owner' ? 'تسجيل حساب صاحب مطعم' : 'إنشاء حساب جديد' }}
+        {{ role() === 'owner' ? 'تسجيل حساب صاحب مطعم' : 'إنشاء حساب جديد' }}
       </h1>
       <p class="mt-1 font-semibold text-xs sm:text-sm text-gray-400">
-        {{ role === 'owner' ? 'أدخل بريدك الإلكتروني لتلقي رمز التحقق ومتابعة تسجيل مطعمك' : 'أدخل بريدك الإلكتروني لتلقي رمز التحقق ومتابعة التسجيل' }}
+        {{ role() === 'owner' ? 'أدخل بريدك الإلكتروني لتلقي رمز التحقق ومتابعة تسجيل مطعمك' : 'أدخل بريدك الإلكتروني لتلقي رمز التحقق ومتابعة التسجيل' }}
       </p>
     </div>
 
@@ -47,11 +47,11 @@
       <span class="text-slate-500">لديك حساب بالفعل؟</span>
       <a
         routerLink="/login"
-        class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200 hover:text-orange-700 hover:underline"
+        class="group inline-flex items-center gap-1 font-bold text-orange-600 no-underline transition-all duration-200"
       >
         <span>تسجيل الدخول</span>
         <span
-          class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200 group-hover:-translate-x-1"
+          class="material-symbols-sharp select-none leading-none text-[16px] transition-transform duration-200"
         >
           arrow_back
         </span>

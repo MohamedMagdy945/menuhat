@@ -2,36 +2,8 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { DASHBOARD_API_ENDPOINTS } from '../constants/dashboard-api.constants';
-
-export interface MenuMainCategory {
-  id: number;
-  rowNo?: number;
-  no?: number;
-  menuId?: number;
-  clientName?: string;
-  clientName_En?: string;
-  menuMainCategoryName: string;
-  menuMainCategoryName_En?: string;
-  photoURL?: string | null;
-  description?: string | null;
-  description_En?: string | null;
-  catOrder?: number | null;
-  name?: string;
-  name_En?: string;
-  notes?: string;
-  isActive?: boolean;
-}
-
-export interface MenuSubCategory {
-  id: number;
-  name: string;
-  name_En?: string;
-  menuMainCategoryId: number;
-  mainCategoryName?: string;
-  notes?: string;
-  isActive?: boolean;
-}
-
+import { MenuMainCategory } from '../models/menu-main-category.model';
+import { MenuSubCategory } from '../models/menu-sub-category.model';
 @Injectable({
   providedIn: 'root',
 })

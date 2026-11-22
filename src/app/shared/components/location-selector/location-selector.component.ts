@@ -1,7 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { LocationService } from '../../../core/services/location.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   selector: 'app-location-selector',
   styleUrl: './location-selector.component.css',
@@ -10,6 +12,7 @@ import { LocationService } from '../../../core/services/location.service';
 export class LocationSelectorComponent {
   private readonly locationService =
     inject(LocationService);
+  private readonly _toast = inject(ToastService);
 
   readonly isLoading =signal(false);
 
@@ -59,7 +62,7 @@ export class LocationSelectorComponent {
           ? error.message
           : 'تعذر تحديد الموقع الفعلي، يرجى تفعيل الـ GPS.';
 
-      alert(message);
+      this._toast.error(message);
 
     } finally {
 

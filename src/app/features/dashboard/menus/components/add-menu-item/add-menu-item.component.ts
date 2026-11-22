@@ -245,7 +245,7 @@ export class AddMenuItemComponent implements OnInit {
 
   removeSize(id: string): void {
     if (this.sizes().length <= 1) {
-      alert('يجب الإبقاء على حجم واحد على الأقل أو التحويل لخيار "سعر واحد"');
+      this.toast.warning('يجب الإبقاء على حجم واحد على الأقل أو التحويل لخيار "سعر واحد"');
       return;
     }
     this.sizes.update((list) => list.filter((s) => s.id !== id));

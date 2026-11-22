@@ -26,9 +26,3 @@ export interface MenuProduct {
   discountPercentage?: number;
   details?: MenuProductDetail[];
 }
-
-export interface MenuProductsResponse {
-  listWithDetails: MenuProduct[];
-  itemsCount: number;
-  totalPages: number;
-}

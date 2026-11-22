@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -10,9 +10,11 @@ import { LoadingButtonComponent } from '../../../../shared/components/loading-bu
 import { CommonDateService } from '../../../../core/common-data/common-date';
 import { RegisterService } from '../../services/register.service';
 import { ToastService } from '../../../../core/services/toast.service';
-import { RegisterRequest } from '../../models';
+import { UserDataService } from '../../../../core/services/userData.service';
+import { RegisterRequest } from '../../models/register-request.model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-register',
   standalone: true,
   imports: [
@@ -34,6 +36,7 @@ export class RegisterComponent implements OnInit {
   private readonly _router = inject(Router);
   private readonly _registerService = inject(RegisterService);
   private readonly _toast = inject(ToastService);
+  private readonly _userData = inject(UserDataService);
 
   readonly defaultAvatar = '/images/default-avatar.svg';
   photoPreviewUrl = this.defaultAvatar;
@@ -54,7 +57,7 @@ export class RegisterComponent implements OnInit {
   cities: { value: string; label: string }[] = [];
   isLoadingGovernorates = false;
   isLoadingCities = false;
-  isLoading = false;
+  readonly isLoading = signal<boolean>(false);
 
   readonly validationMessages = {
     fullName: {
@@ -239,7 +242,7 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     const rawValue = this.form.getRawValue();
     const { confirmPassword, ...cleanFormValue } = rawValue;
 
@@ -261,10 +264,9 @@ export class RegisterComponent implements OnInit {
 
     this._registerService.SetRegister(payload).subscribe({
       next: (res) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         if (res && res.data) {
-          localStorage.setItem('usertoken', res.data.token);
-          localStorage.setItem('userData', JSON.stringify(res.data));
+          this._userData.setUserData(res.data, res.data.token);
           const message = this.isOwner
             ? 'تم إنشاء حساب صاحب المطعم بنجاح! يرجى تأكيد رقم هاتفك'
             : 'تم إنشاء الحساب بنجاح! يرجى تأكيد رقم هاتفك';
@@ -278,7 +280,7 @@ export class RegisterComponent implements OnInit {
         }
       },
       error: (err: HttpErrorResponse) => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this._toast.error(err?.error?.message || 'تعذر إنشاء الحساب، يرجى المحاولة لاحقاً');
       }
     });

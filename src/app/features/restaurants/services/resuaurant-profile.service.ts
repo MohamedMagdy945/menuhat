@@ -2,8 +2,8 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../core/environments/environment';
-import { RestaurantRatingResponse } from '../models/restaurant-rating';
-import { RestaurantDetails } from '../models/restaurant-details';
+import { RestaurantRatingResponse } from '../models/restaurant-rating-response.model';
+import { RestaurantDetails } from '../models/restaurant-details.model';
 import { USE_GLOBAL_LOADING } from '../../../core/loading/loading-context';
 
 @Injectable({

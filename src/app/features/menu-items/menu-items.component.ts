@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MenuItemCard } from './components/menu-item-card/menu-item-card.component';
 import { MenuItemSkeletonComponent } from '../../shared/skeleton/menu-item-skeleton/menu-item-skeleton.component';
 import { MenuItemService } from './menu-items.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MenuItemCard, MenuItemSkeletonComponent],
   selector: 'app-meals',
   styleUrl: './menu-items.component.css',

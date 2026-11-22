@@ -7,7 +7,8 @@ import { OrderCardComponent } from './components/order-card/order-card.component
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
 import { AcceptOrderModalComponent } from './components/accept-order-modal/accept-order-modal.component';
 import { RejectOrderModalComponent } from './components/reject-order-modal/reject-order-modal.component';
-import { OrderCardData, OrderTab } from './models';
+import { OrderCardData } from './models/order-card-data.model';
+import { OrderTab } from './models/order-tab.model';
 import { OrdersService } from './services/orders.service';
 
 const PAGE_SIZE = 16;

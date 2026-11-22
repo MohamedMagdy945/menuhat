@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { LocationSelectorComponent } from '../../../../shared/components/location-selector/location-selector.component';
 import { CartDropdownComponent } from '../../../../features/cart/components/cart-dropdown/cart-dropdown.component';
@@ -7,6 +7,7 @@ import { NotificationDropdownComponent } from '../../../../features/notification
 import { AccountDropdownComponent } from '../../../../features/home/components/account-dropdown/account-dropdown.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterLink,
     RouterLinkActive,

@@ -1,0 +1,21 @@
+<div class="min-h-screen bg-background text-slate-800 antialiased flex flex-col relative">
+  <!-- Mobile Menu Trigger Button -->
+  <button
+    type="button"
+    (click)="openMobile()"
+    class="fixed top-4 right-4 z-30 lg:hidden w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-700 shadow-xs flex items-center justify-center cursor-pointer"
+    aria-label="فتح القائمة"
+  >
+    <span class="material-symbols-sharp text-2xl">menu</span>
+  </button>
+
+  <div class="flex flex-1 relative">
+    <app-admin-sidebar [isMobileOpen]="isMobileOpen()" (closed)="closeMobile()" />
+
+    <main class="flex-1 p-4 sm:p-6 lg:p-8 w-full lg:mr-68 flex flex-col items-center">
+      <div class="w-full max-w-7xl mx-auto">
+        <router-outlet />
+      </div>
+    </main>
+  </div>
+</div>

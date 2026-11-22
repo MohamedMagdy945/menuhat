@@ -1,24 +1,22 @@
 import {
+  AfterViewInit,
   Component,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  DestroyRef,
   inject,
   input,
   output,
   OnInit,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import {
   ControlValueAccessor,
   NgControl,
   FormsModule,
 } from '@angular/forms';
-
-export interface FormSelectOption {
-  value: any;
-  label: string;
-}
-
+import { FormSelectOption } from '../../models/form-select-option.model';
 @Component({
   selector: 'app-form-select',
   standalone: true,
@@ -27,7 +25,7 @@ export interface FormSelectOption {
   styleUrl: './form-select.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FormSelectComponent implements ControlValueAccessor, OnInit {
+export class FormSelectComponent implements ControlValueAccessor, OnInit, AfterViewInit {
   readonly label = input<string>('');
   readonly placeholder = input<string>('');
   readonly id = input<string>('');
@@ -44,6 +42,7 @@ export class FormSelectComponent implements ControlValueAccessor, OnInit {
 
   public readonly ngControl = inject(NgControl, { optional: true, self: true });
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroyRef = inject(DestroyRef);
 
   private onChange: (value: any) => void = () => {};
   private onTouched: () => void = () => {};
@@ -58,6 +57,16 @@ export class FormSelectComponent implements ControlValueAccessor, OnInit {
     if (this.disabledInput()) {
       this.disabled = true;
     }
+  }
+
+  /**
+   * Touched/dirty/status changes made by the parent (e.g. markAllAsTouched on submit)
+   * do not mark this OnPush view dirty, so listen to the control's events.
+   */
+  ngAfterViewInit(): void {
+    this.control?.events
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.cdr.markForCheck());
   }
 
   get control() {

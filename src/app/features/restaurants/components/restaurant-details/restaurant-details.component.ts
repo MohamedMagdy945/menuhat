@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { environment } from '../../../../core/environments/environment';
 import { ResuaurantProfileService } from '../../services/resuaurant-profile.service';
@@ -6,26 +6,16 @@ import { RestaurantMenuItemCardComponent } from '../restaurant-menu-item-card/re
 import { RestaurantCategoriesComponent } from '../restaurant-categories/restaurant-categories.component';
 import { RestaurantRatingsComponent } from '../restaurant-ratings/restaurant-ratings.component';
 import { DecimalPipe } from '@angular/common';
-import { RestaurantDetails } from '../../models/restaurant-details';
-import { RestaurantMenuCategory } from '../../models/restaurant-menu-category';
-import { RestaurantMenuProduct } from '../../models/restaurant-menu-product';
-import { RestaurantMenuSubCategory } from '../../models/restaurant-menu-sub-category';
+import { RestaurantDetails } from '../../models/restaurant-details.model';
+import { RestaurantMenuCategory } from '../../models/restaurant-menu-category.model';
+import { RestaurantMenuProduct } from '../../models/restaurant-menu-product.model';
+import { RestaurantMenuSubCategory } from '../../models/restaurant-menu-sub-category.model';
 
 import { AddRatingModalComponent } from '../add-rating-modal/add-rating-modal.component';
-
-interface StatItem {
-  icon: string;
-  label: string;
-  value: string;
-}
-
-interface DisplayMenuItem {
-  product: RestaurantMenuProduct;
-  categoryName: string;
-  subCategoryName: string;
-}
-
+import { StatItem } from '../../models/stat-item.model';
+import { DisplayMenuItem } from '../../models/display-menu-item.model';
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-restaurant-details',
   standalone: true,
   imports: [RestaurantMenuItemCardComponent, RestaurantCategoriesComponent, RestaurantRatingsComponent, DecimalPipe, AddRatingModalComponent],
@@ -36,7 +26,7 @@ export class RestaurantDetailsComponent {
   isAddedToCart() {
     throw new Error('Method not implemented.');
   }
-  readonly apiUrl = environment.filesUrl;
+  readonly filesUrl = environment.filesUrl;
   readonly selectedCategory = signal<number | null>(null);
   readonly selectedSubCategory = signal<number | null>(null);
   readonly activeTab = signal<'menu' | 'images' | 'reviews' | 'most-ordered'>('menu');

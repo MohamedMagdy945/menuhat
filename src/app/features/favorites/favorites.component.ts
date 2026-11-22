@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { FavoritesService } from './favorites.service';
-import { UserDataService } from '../auth/services/user-storage.service';
-import { FavoriteItemCardComponent } from './components/favorite-item-card/favorite-item-card.component';
+
+import { UserDataService } from '../../core/services/userData.service';
 import { MenuItemSkeletonComponent } from '../../shared/skeleton/menu-item-skeleton/menu-item-skeleton.component';
+import { FavoriteItemCardComponent } from './components/favorite-item-card/favorite-item-card.component';
+import { FavoritesService } from './favorites.service';
 
 @Component({
   selector: 'app-favorites',
@@ -12,14 +13,14 @@ import { MenuItemSkeletonComponent } from '../../shared/skeleton/menu-item-skele
   styleUrl: './favorites.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FavoritesComponent implements OnInit {
+export class FavoritesComponent {
   readonly favoritesService = inject(FavoritesService);
   readonly userDataService = inject(UserDataService);
 
   readonly searchQuery = signal<string>('');
-  readonly skeletonCards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  readonly skeletonCount = this.skeletonCards;
+  readonly skeletonCards = Array.from({ length: 12 }, (_, i) => i);
 
+  /** Favorites filtered by meal or restaurant name. Loading is handled by FavoritesService. */
   readonly filteredFavorites = computed(() => {
     const query = this.searchQuery().trim().toLowerCase();
     const list = this.favoritesService.favorites();
@@ -27,19 +28,11 @@ export class FavoritesComponent implements OnInit {
     return list.filter(
       (item) =>
         item.productName?.toLowerCase().includes(query) ||
-        item.clientName?.toLowerCase().includes(query)
+        item.clientName?.toLowerCase().includes(query),
     );
   });
 
-  ngOnInit(): void {
-    if (this.userDataService.getToken()) {
-      this.favoritesService.loadFavorites();
-    }
-  }
-
   refresh(): void {
-    if (this.userDataService.getToken()) {
-      this.favoritesService.loadFavorites(true);
-    }
+    this.favoritesService.loadFavorites(true);
   }
 }

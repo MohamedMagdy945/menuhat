@@ -1,21 +1,17 @@
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from './cart.service';
-import { AddCartItem, CartMenuItem } from './models/cart-item';
+import { AddCartItem } from './models/add-cart-item.model';
+import { CartMenuItem } from './models/cart-menu-item.model';
 import { environment } from '../../core/environments/environment';
 import { UserDataService } from '../../core/services/userData.service';
 import { ToastService } from '../../core/services/toast.service';
 import { CartItemCardComponent } from './components/cart-item-card/cart-item-card.component';
 import { OrderCheckoutComponent } from './components/order-checkout/order-checkout.component';
-
-export interface RestaurantCartGroup {
-  clientName: string;
-  serial: string;
-  items: CartMenuItem[];
-}
-
+import { RestaurantCartGroup } from './models/restaurant-cart-group.model';
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-cart',
   standalone: true,
   imports: [CommonModule, DecimalPipe, RouterModule, CartItemCardComponent, OrderCheckoutComponent],
@@ -145,7 +141,14 @@ export class CartComponent implements OnInit {
       : itemOrId;
 
     if (!item) return;
-    this.updateCartItem(item, 0);
+
+    this._cartService.removeItem(item.id).subscribe({
+      next: () => this._toast.success(`تم حذف "${item.productName}" من السلة`),
+      error: (err) => {
+        console.error('Error deleting cart item:', err);
+        this._toast.error('تعذر حذف المنتج من السلة، يرجى المحاولة لاحقاً');
+      },
+    });
   }
 
   getItemImageUrl(photoURL: string | null): string {

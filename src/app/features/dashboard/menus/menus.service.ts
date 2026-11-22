@@ -5,6 +5,7 @@ import { environment } from '../../../core/environments/environment';
 import { DASHBOARD_API_ENDPOINTS } from '../../../core/constants/dashboard-api.constants';
 import { MenuMainCategory } from './models/menu-main-category.model';
 import { MenuSubCategory } from './models/menu-sub-category.model';
+import { FILES_ORIGIN } from '../../../core/constants/files.constants';
 
 
 
@@ -31,7 +32,7 @@ export class MenusService {
         if (!url) return '';
         if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
-        const baseOrigin = environment.apiUrl.replace(/\/api\/?$/, '');
+        const baseOrigin = FILES_ORIGIN;
 
         // Default system images (e.g. /DefaultImages/بيتزا.png) are hosted on root origin
         if (url.startsWith('/DefaultImages') || url.startsWith('DefaultImages')) {

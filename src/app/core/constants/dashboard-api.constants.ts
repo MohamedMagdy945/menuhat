@@ -39,5 +39,4 @@ export const DASHBOARD_API_ENDPOINTS = {
   complaintsGetAll: `${environment.apiUrl}/Complaints/GetAll`,
 } as const;
 
-export type DashboardApiEndpointKey = keyof typeof DASHBOARD_API_ENDPOINTS;
 

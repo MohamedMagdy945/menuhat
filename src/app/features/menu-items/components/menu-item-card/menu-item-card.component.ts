@@ -1,10 +1,12 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from '../../../../core/environments/environment';
 import { RouterLink } from '@angular/router';
-import { MenuItem } from '../../models';
+import { MenuItem } from '../../models/menu-item.model';
 import { FavoritesService } from '../../../favorites/favorites.service';
+import { FILES_ORIGIN } from '../../../../core/constants/files.constants';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink],
   selector: 'app-menu-item-card',
   styleUrl: './menu-item-card.component.css',
@@ -14,7 +16,7 @@ export class MenuItemCard {
   private readonly favoritesService = inject(FavoritesService);
 
   readonly menuItem = input.required<MenuItem>();
-  readonly apiUrl = environment.filesUrl;
+  readonly filesUrl = environment.filesUrl;
   readonly Math = Math;
 
   getItemImageUrl(photoURL: string | null | undefined): string {
@@ -25,7 +27,7 @@ export class MenuItemCard {
       return photoURL;
     }
     const cleanPath = photoURL.startsWith('/') ? photoURL : `/${photoURL}`;
-    const serverHost = environment.apiUrl.replace(/\/api\/?$/, '');
+    const serverHost = FILES_ORIGIN;
 
     if (cleanPath.startsWith('/DefaultImages') || cleanPath.startsWith('/UploadedFiles')) {
       return `${serverHost}${encodeURI(cleanPath)}`;

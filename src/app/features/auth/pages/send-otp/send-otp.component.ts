@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -8,6 +8,7 @@ import { FormInputComponent } from '../../../../shared/components/form-input/for
 import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-send-otp',
   standalone: true,
   imports: [
@@ -27,7 +28,7 @@ export class SendOtpComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly toast = inject(ToastService);
 
-  role: 'owner' | 'customer' = 'customer';
+  readonly role = signal<'owner' | 'customer'>('customer');
   signupForm!: FormGroup;
   readonly isLoading = signal<boolean>(false);
 
@@ -44,7 +45,7 @@ export class SendOtpComponent implements OnInit {
     });
 
     this.route.queryParams.subscribe(params => {
-      this.role = params['role'] === 'owner' ? 'owner' : 'customer';
+      this.role.set(params['role'] === 'owner' ? 'owner' : 'customer');
     });
   }
 
@@ -73,7 +74,7 @@ export class SendOtpComponent implements OnInit {
         this.router.navigate(['/validate-otp'], {
           queryParams: {
             email: this.signupForm.value.email,
-            role: this.role
+            role: this.role()
           }
         });
       },

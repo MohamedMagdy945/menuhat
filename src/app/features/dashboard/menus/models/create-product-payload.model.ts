@@ -1,9 +1,4 @@
-export interface ProductPhotoPayload {
-  base64String?: string;
-  photoTitle?: string;
-  photoDiscription?: string;
-}
-
+import { ProductPhotoPayload } from './product-photo-payload.model';
 export interface CreateProductPayload {
   id?: number;
   name_Ar: string;

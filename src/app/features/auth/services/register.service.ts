@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../core/environments/environment';
-import { RegisterRequest } from '../models';
+import { RegisterRequest } from '../models/register-request.model';
 
 @Service()
 export class RegisterService {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -9,6 +9,7 @@ import { FormInputComponent } from '../../../../shared/components/form-input/for
 import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-send-mobile-verification',
   standalone: true,
   imports: [
@@ -38,7 +39,7 @@ export class SendMobileVerificationComponent implements OnInit, OnDestroy {
 
   // OTP State
   otpDigits: string[] = ['', '', '', '', '', ''];
-  timeLeft: number = 55;
+  readonly timeLeft = signal<number>(55);
   private timerSubscription?: Subscription;
 
   readonly validationMessages = {
@@ -113,12 +114,12 @@ export class SendMobileVerificationComponent implements OnInit, OnDestroy {
   }
 
   startTimer(): void {
-    this.timeLeft = 55;
+    this.timeLeft.set(55);
     this.timerSubscription?.unsubscribe();
 
     this.timerSubscription = timer(0, 1000).subscribe(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
+      if (this.timeLeft() > 0) {
+        this.timeLeft.update((t) => t - 1);
       } else {
         this.timerSubscription?.unsubscribe();
       }

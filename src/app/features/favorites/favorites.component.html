@@ -1,4 +1,4 @@
-<div class=" mx-auto px-4 py-6 space-y-6" dir="rtl">
+<div class=" mx-auto px-4 py-6 space-y-6">
   <!-- Page Header -->
   <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-gray-200">
     <div class="flex items-start gap-3.5">
@@ -88,7 +88,7 @@
     </div>
   } @else if (favoritesService.favorites().length > 0) {
     <!-- Favorites Grid -->
-    <div class="grid gap-4 sm:gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
+    <div class="grid  sm:gap-5 grid-cols-2 md:grid-cols-4  lg:grid-cols-5 xl:grid-cols-8">
       @for (item of filteredFavorites(); track item.id) {
         <app-favorite-item-card [item]="item" />
       } @empty {

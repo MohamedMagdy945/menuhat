@@ -6,17 +6,9 @@ import {
   output,
 } from '@angular/core';
 import { CommonModule, DatePipe, NgClass } from '@angular/common';
-import { AppNotification } from '../../models/notification.model';
+import { AppNotification } from '../../models/app-notification.model';
 import { environment } from '../../../../core/environments/environment';
-
-export interface NotificationStatusConfig {
-  bg: string;
-  text: string;
-  badgeBg: string;
-  badgeText: string;
-  label: string;
-}
-
+import { NotificationStatusConfig } from '../../models/notification-status-config.model';
 @Component({
   selector: 'app-notification-card',
   standalone: true,

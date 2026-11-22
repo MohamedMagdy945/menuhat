@@ -2,13 +2,11 @@ import { Component, ChangeDetectionStrategy, inject, OnInit, signal, computed } 
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OwnerReportsService } from './owner-reports.service';
-import {
-  ReportFilterPeriod,
-  ReportKpis,
-  DailyMenuOrderItem,
-  DailyMenuOrdersParams,
-  DateFilterType,
-} from './models';
+import { ReportFilterPeriod } from './models/report-filter-period.model';
+import { ReportKpis } from './models/report-kpis.model';
+import { DailyMenuOrderItem } from './models/daily-menu-order-item.model';
+import { DailyMenuOrdersParams } from './models/daily-menu-orders-params.model';
+import { DateFilterType } from '../../../shared/models/date-filter-type.model';
 import { ReportItemCardComponent } from './components/report-item-card/report-item-card.component';
 import { DashboardService } from '../dashboard/dashboard.service';
 

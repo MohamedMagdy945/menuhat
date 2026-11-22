@@ -8,9 +8,11 @@ import { FormInputComponent } from '../../../../shared/components/form-input/for
 import { FormSelectComponent } from '../../../../shared/components/form-select/form-select.component';
 import { LoadingButtonComponent } from '../../../../shared/components/loading-button/loading-button.component';
 import { CommonDateService } from '../../../../core/common-data/common-date';
-import { ClientsMenuService, CreateRestaurantRequest } from '../../../restaurants/services/clients-menu.service';
+import { ClientsMenuService } from '../../../restaurants/services/clients-menu.service';
+import { CreateRestaurantRequest } from '../../../restaurants/models/create-restaurant-request.model';
 import { ToastService } from '../../../../core/services/toast.service';
 import { DashboardService } from '../../dashboard/dashboard.service';
+import { UserDataService } from '../../../../core/services/userData.service';
 
 @Component({
   selector: 'app-create-restaurant',
@@ -35,6 +37,7 @@ export class CreateRestaurantComponent implements OnInit {
   private readonly _toast = inject(ToastService);
   private readonly _dashboardService = inject(DashboardService);
   private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _userData = inject(UserDataService);
 
   form!: FormGroup;
   readonly isLoading = signal<boolean>(false);
@@ -114,9 +117,8 @@ export class CreateRestaurantComponent implements OnInit {
 
   private tryPreloadUserData(): void {
     try {
-      const rawUser = localStorage.getItem('userData');
-      if (rawUser) {
-        const userData = JSON.parse(rawUser);
+      const userData = this._userData.getUserData();
+      if (userData) {
         if (userData.address) {
           this.form.patchValue({ address: userData.address });
         }

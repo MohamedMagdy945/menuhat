@@ -1,0 +1,99 @@
+:host {
+  display: block;
+}
+
+/* Custom Slim Scrollbar for Navigation */
+.custom-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+}
+
+/* Navigation Items */
+.main-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.75rem;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.main-nav-item:focus-visible {
+  outline: 2px solid #fdba74;
+  outline-offset: -1px;
+}
+
+.main-nav-item .main-nav-icon {
+  font-size: 1.25rem;
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.main-nav-item .main-nav-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Dynamic Active State */
+.main-nav-item.is-active {
+  background-color: #fff7ed;
+  color: #ea580c;
+  font-weight: 600;
+}
+
+.main-nav-item.is-active .main-nav-icon {
+  color: #ea580c;
+}
+
+/* Dynamic Live Status Indicator Dot */
+.main-nav-item .live-indicator {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: #10b981;
+  flex-shrink: 0;
+}
+
+/* Badges */
+.main-nav-item .main-nav-badge {
+  padding: 0.125rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  line-height: 1;
+  flex-shrink: 0;
+  background-color: #ea580c;
+  color: #ffffff;
+}
+
+.main-nav-item .main-nav-badge.badge-success {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.main-nav-item .main-nav-badge.badge-info {
+  background-color: #0ea5e9;
+  color: #ffffff;
+}
+
+.main-nav-item .main-nav-badge.badge-warning {
+  background-color: #f97316;
+  color: #ffffff;
+}
+
+.main-nav-item .main-nav-badge.badge-danger {
+  background-color: #ef4444;
+  color: #ffffff;
+}

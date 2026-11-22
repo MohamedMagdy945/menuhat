@@ -6,9 +6,7 @@
     "types": []
   },
   "include": [
-    "src/**/*.ts",
-    "src/app/features/restaurants/restaurants.component.ts",
-    "src/app/features/auth/register/components/register/.component.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "src/**/*.spec.ts"

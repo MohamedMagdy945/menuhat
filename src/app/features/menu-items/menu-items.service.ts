@@ -3,8 +3,9 @@ import { HttpClient, HttpContext } from '@angular/common/http';
 import { finalize, Observable } from 'rxjs';
 import { environment } from '../../core/environments/environment';
 import { USE_GLOBAL_LOADING } from '../../core/loading/loading-context';
-import { MenuItem, MenuItemsResponse } from './models';
-import { MenuProductResponse } from './models/menu-product-response';
+import { MenuItem } from './models/menu-item.model';
+import { MenuItemsResponse } from './models/menu-items-response.model';
+import { MenuProductResponse } from './models/menu-product-response.model';
 
 @Injectable({
   providedIn: 'root',

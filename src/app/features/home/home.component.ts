@@ -1,8 +1,4 @@
-import {
-  Component,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { ResponsiveService } from '../../core/services/responsive.service';
 import { LocationService } from '../../core/services/location.service';
@@ -16,6 +12,7 @@ import { HomeDesktopFirstSection } from './components/home-desktop-first-section
 import { MenuItemService } from '../menu-items/menu-items.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-home',
   imports: [
     HomeMenuItemsComponent,
@@ -94,10 +91,6 @@ export class HomeComponent implements OnInit {
         const location =
           await this.locationService.getSmartLocation();
 
-        console.log('Nearest Restaurants Location:', {
-          lat: location.lat,
-          lng: location.lng,
-        });
 
         if (
           location.lat === null ||

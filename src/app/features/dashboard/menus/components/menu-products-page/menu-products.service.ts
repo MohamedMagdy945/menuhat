@@ -3,7 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { environment } from '../../../../../core/environments/environment';
 import { DASHBOARD_API_ENDPOINTS } from '../../../../../core/constants/dashboard-api.constants';
-import { MenuProduct, MenuProductsResponse } from '../../models/menu-product.model';
+import { MenuProduct } from '../../models/menu-product.model';
+import { MenuProductsResponse } from '../../models/menu-products-response.model';
+import { FILES_ORIGIN } from '../../../../../core/constants/files.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +29,7 @@ export class MenuProductsService {
     if (!url) return '';
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
 
-    const baseOrigin = environment.apiUrl.replace(/\/api\/?$/, '');
+    const baseOrigin = FILES_ORIGIN;
 
     // Default Images (e.g. /DefaultImages/سندوتشات.png)
     if (url.startsWith('/DefaultImages') || url.startsWith('DefaultImages')) {

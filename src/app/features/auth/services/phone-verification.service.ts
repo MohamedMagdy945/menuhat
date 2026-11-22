@@ -2,18 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../core/environments/environment';
-
-export interface RecievePhoneVerificationPayload {
-  appId: number;
-  phone: string;
-}
-
-export interface CheckPhoneVerifiedPayload {
-  appId: number;
-  phone: string;
-  otp: string;
-}
-
+import { RecievePhoneVerificationPayload } from '../models/recieve-phone-verification-payload.model';
+import { CheckPhoneVerifiedPayload } from '../models/check-phone-verified-payload.model';
 @Injectable({
   providedIn: 'root'
 })

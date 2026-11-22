@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserDataService } from '../../../../core/services/userData.service';
 import { DropdownStateService } from '../../../../core/services/dropdown-state.service';
 
@@ -50,7 +51,10 @@ export class MobileNavbar {
 
   constructor() {
     this._router.events
-      .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
       .subscribe((event) => {
         this.currentUrl.set(event.urlAfterRedirects);
         this._dropdownState.close(this.dropdownId);

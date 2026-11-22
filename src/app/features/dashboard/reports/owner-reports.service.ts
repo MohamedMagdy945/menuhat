@@ -3,29 +3,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, catchError, map, of, tap } from 'rxjs';
 import { DASHBOARD_API_ENDPOINTS } from '../../../core/constants/dashboard-api.constants';
 import { environment } from '../../../core/environments/environment';
-import {
-  ReportParams,
-  ReportResponseDto,
-  ReportView,
-  ReportDailyItem,
-  ReportKpis,
-  DailyMenuOrdersParams,
-  DailyMenuOrderItem,
-  DailyMenuOrdersResponse,
-  DateFilterType,
-} from './models/report.model';
-
-export interface DailyOrderReportItem {
-  id: number | string;
-  date: string;
-  dayName: string;
-  totalOrders: number;
-  completedOrders: number;
-  cancelledOrders: number;
-  totalRevenue: number;
-  averageOrderValue: number;
-}
-
+import { ReportParams } from './models/report-params.model';
+import { ReportResponseDto } from './models/report-response-dto.model';
+import { ReportView } from './models/report-view.model';
+import { ReportDailyItem } from './models/report-daily-item.model';
+import { ReportKpis } from './models/report-kpis.model';
+import { DailyMenuOrdersParams } from './models/daily-menu-orders-params.model';
+import { DailyMenuOrderItem } from './models/daily-menu-order-item.model';
+import { DailyMenuOrdersResponse } from './models/daily-menu-orders-response.model';
+import { DateFilterType } from '../../../shared/models/date-filter-type.model';
+import { DailyOrderReportItem } from './models/daily-order-report-item.model';
 @Injectable({
   providedIn: 'root',
 })

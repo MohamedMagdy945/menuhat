@@ -11,16 +11,7 @@ import {
   signal,
   ViewChild,
 } from '@angular/core';
-
-export type ResponsiveItems = {
-  base?: number;
-  sm?: number;
-  md?: number;
-  lg?: number;
-  xl?: number;
-};
-export type ResponsiveCols = ResponsiveItems;
-
+import { ResponsiveItems } from '../../models/responsive-items.model';
 function parseItems(value: string | number | ResponsiveItems | null | undefined): ResponsiveItems | null {
   if (value === undefined || value === null || value === '') {
     return null;

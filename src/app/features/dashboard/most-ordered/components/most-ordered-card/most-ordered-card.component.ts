@@ -1,6 +1,6 @@
 import { Component, input, ChangeDetectionStrategy, computed } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { ProductStatItem } from '../../models/most-ordered.model';
+import { ProductStatItem } from '../../models/product-stat-item.model';
 
 @Component({
   selector: 'app-most-ordered-card',

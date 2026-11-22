@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 import { DASHBOARD_API_ENDPOINTS } from '../../../../core/constants/dashboard-api.constants';
 import { ComplaintItem } from '../models/complaint-item.model';
-import { SendComplaintPayload } from '../models/send-complaint.model';
+import { SendComplaintPayload } from '../models/send-complaint-payload.model';
 
 @Injectable({
   providedIn: 'root',

@@ -3,7 +3,7 @@ import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SupportService } from '../../services/support.service';
-import { SendComplaintPayload } from '../../models/send-complaint.model';
+import { SendComplaintPayload } from '../../models/send-complaint-payload.model';
 import { UserDataService } from '../../../../../core/services/userData.service';
 import { ToastService } from '../../../../../core/services/toast.service';
 

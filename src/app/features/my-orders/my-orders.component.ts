@@ -1,15 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IOrder } from '../cart/models/order';
+import { IOrder } from '../cart/models/i-order.model';
 import { CartService } from '../cart/cart.service';
 import { CommonDateService } from '../../core/common-data/common-date';
 import { OrderItemCardComponent } from './components/order-item-card/order-item-card.component';
-
-export interface FilterTab {
-  label: string;
-  value: number;
-}
-
+import { FilterTab } from './models/filter-tab.model';
 @Component({
   selector: 'app-my-orders',
   imports: [CommonModule, OrderItemCardComponent],
