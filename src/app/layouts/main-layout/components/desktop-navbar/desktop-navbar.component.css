@@ -1,13 +1,13 @@
 /* Clean & Semantic Naming */
 .nav-link {
-    border-radius: 0.9rem;
-    /* Equivalent to rounded-md in Tailwind */
-    transition: all 0.2s ease-in-out;
+  border-radius: 0.9rem;
+  /* Equivalent to rounded-md in Tailwind */
+  transition: all 0.2s ease-in-out;
 }
 
 .nav-link.active {
-    background-color: white;
-    color: oklch(70.5% 0.213 47.604);
-    font-weight: 700;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: white;
+  color: oklch(70.5% 0.213 47.604);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }

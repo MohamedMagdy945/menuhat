@@ -1,0 +1,156 @@
+@if (isOpen()) {
+  <div
+    class="fixed inset-0 z-[60] bg-black/40 flex items-end sm:items-center justify-center sm:p-4"
+    (click)="close()"
+  >
+    <div
+      class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl shadow-xl flex flex-col overflow-hidden text-right"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-label="إضافة رقم هاتف"
+    >
+      <!-- Handle -->
+      <div class="pt-3 flex justify-center sm:hidden">
+        <span class="w-12 h-1.5 rounded-full bg-gray-200"></span>
+      </div>
+
+      <!-- Header -->
+      <div class="flex items-center gap-3 px-5 pt-4 pb-3">
+        <div
+          class="w-12 h-12 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0"
+        >
+          <span
+            class="material-symbols-sharp text-2xl leading-none select-none"
+            aria-hidden="true"
+            >{{ step() === 'phone' ? 'add_call' : 'sms' }}</span
+          >
+        </div>
+        <div class="flex-1 min-w-0">
+          <h2 class="text-lg font-semibold text-slate-800">
+            {{ step() === 'phone' ? 'إضافة رقم هاتف' : 'رمز التحقق' }}
+          </h2>
+          <p class="text-xs text-slate-400">
+            @if (step() === 'phone') {
+              سنرسل رمز تحقق إلى الرقم لتأكيده
+            } @else {
+              أدخل الرمز المرسل إلى
+              <span dir="ltr" class="font-semibold text-slate-600">{{ phone() }}</span>
+            }
+          </p>
+        </div>
+        <button
+          type="button"
+          (click)="close()"
+          [disabled]="isLoading()"
+          class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer shrink-0"
+          aria-label="إغلاق"
+        >
+          <span class="material-symbols-sharp text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="px-5 pb-5 space-y-3">
+        @if (errorMessage()) {
+          <div
+            class="p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-xs font-semibold flex items-center gap-2"
+          >
+            <span class="material-symbols-sharp text-base shrink-0">error</span>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        @if (step() === 'phone') {
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+              >رقم الهاتف <span class="text-red-500">*</span></label
+            >
+            <input
+              type="tel"
+              dir="ltr"
+              inputmode="numeric"
+              autocomplete="tel"
+              [ngModel]="phone()"
+              (ngModelChange)="onPhoneInput($event)"
+              (keydown.enter)="sendCode()"
+              [disabled]="isLoading()"
+              placeholder="01xxxxxxxxx"
+              class="w-full px-3.5 py-3 rounded-xl border border-gray-200 text-base tracking-wider text-slate-800 text-right focus:outline-none focus:border-orange-500 bg-white"
+            />
+          </div>
+
+          <button
+            type="button"
+            (click)="sendCode()"
+            [disabled]="!isPhoneValid() || isLoading()"
+            class="w-full py-3 rounded-full bg-orange-500 text-white font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            @if (isLoading()) {
+              <span
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+              ></span>
+            }
+            <span>إرسال رمز التحقق</span>
+          </button>
+        } @else {
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5"
+              >رمز التحقق ({{ otpLength }} أرقام)</label
+            >
+            <input
+              type="text"
+              dir="ltr"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              [attr.maxlength]="otpLength"
+              [ngModel]="otp()"
+              (ngModelChange)="onOtpInput($event)"
+              (keydown.enter)="verifyCode()"
+              [disabled]="isLoading()"
+              placeholder="••••••"
+              class="w-full px-3.5 py-3 rounded-xl border border-gray-200 text-center text-xl tracking-[0.6em] font-semibold text-slate-800 focus:outline-none focus:border-orange-500 bg-white"
+            />
+          </div>
+
+          <button
+            type="button"
+            (click)="verifyCode()"
+            [disabled]="!isOtpComplete() || isLoading()"
+            class="w-full py-3 rounded-full bg-orange-500 text-white font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            @if (isLoading()) {
+              <span
+                class="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"
+              ></span>
+            }
+            <span>تأكيد الرقم</span>
+          </button>
+
+          <div class="flex items-center justify-between text-xs">
+            <button
+              type="button"
+              (click)="changePhone()"
+              [disabled]="isLoading()"
+              class="text-slate-500 font-semibold cursor-pointer"
+            >
+              تغيير الرقم
+            </button>
+            @if (timeLeft() > 0) {
+              <span class="text-slate-400">إعادة الإرسال بعد {{ timeLeft() }} ث</span>
+            } @else {
+              <button
+                type="button"
+                (click)="resendCode()"
+                [disabled]="isLoading()"
+                class="text-orange-500 font-semibold cursor-pointer"
+              >
+                إعادة إرسال الرمز
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

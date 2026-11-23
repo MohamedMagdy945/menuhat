@@ -1,503 +1,492 @@
-<div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-  <!-- Not Logged In State -->
+<div class="max-w-6xl mx-auto px-4 py-6 space-y-6">
   @if (!userDataService.getToken()) {
-    <div class="py-20 text-center bg-white rounded-2xl border border-gray-100 shadow-xs max-w-md mx-auto p-6">
-      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3">
+    <!-- Not logged in -->
+    <div class=" text-center bg-white rounded-2xl max-w-md mx-auto ">
+      <div
+        class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-50 text-orange-500 mb-3"
+      >
         <span class="material-symbols-sharp text-3xl select-none">account_circle</span>
       </div>
-      <h2 class="text-base font-bold text-slate-800">قم بتسجيل الدخول لعرض ملفك الشخصي</h2>
+      <h2 class="text-base font-semibold text-slate-800">قم بتسجيل الدخول لعرض ملفك الشخصي</h2>
       <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">
         سجّل دخولك لإدارة معلوماتك، متابعة طلباتك وتحديث عناوين التوصيل
       </p>
       <a
         routerLink="/login"
-        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs cursor-pointer"
+        class="mt-4 inline-flex items-center gap-2 rounded-xl bg-orange-500 px-5 py-2.5 text-sm font-semibold text-white cursor-pointer"
       >
         <span class="material-symbols-sharp text-[18px]">login</span>
         <span>تسجيل الدخول</span>
       </a>
     </div>
   } @else {
-    <!-- Notifications & Alerts -->
-    @if (successMessage()) {
-      <div class="flex items-center justify-between gap-2 p-3.5 rounded-xl bg-emerald-50 border  text-emerald-800 text-xs sm:text-sm font-medium">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-sharp text-[20px] text-emerald-600">check_circle</span>
-          <span>{{ successMessage() }}</span>
-        </div>
-        <button
-          type="button"
-          (click)="successMessage.set(null)"
-          class="text-emerald-700 cursor-pointer p-0.5 rounded-md"
+    <!-- ===== Header ===== -->
+    <section>
+      <!-- Banner -->
+      <div
+        class="relative rounded-2xl h-44  md:h-56 overflow-hidden bg-linear-to-r from-[#FFCB55] via-[#FFA52F] to-[#F47716]"
+      >
+
+
+        <!-- Illustration (left in RTL) -->
+        <div
+          class="absolute left-2 sm:left-8 md:left-25 bottom-0 h-full hidden sm:flex items-end pointer-events-none"
         >
-          <span class="material-symbols-sharp text-[16px]">close</span>
-        </button>
-      </div>
-    }
-
-    @if (errorMessage()) {
-      <div class="flex items-center justify-between gap-2 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs sm:text-sm font-medium">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-sharp text-[20px] text-red-600">error</span>
-          <span>{{ errorMessage() }}</span>
-        </div>
-        <button
-          type="button"
-          (click)="errorMessage.set(null)"
-          class="text-red-700 cursor-pointer p-0.5 rounded-md"
-        >
-          <span class="material-symbols-sharp text-[16px]">close</span>
-        </button>
-      </div>
-    }
-
-    <!-- ===== PROFILE HEADER (ELEGANT TWO-PART CARD) ===== -->
-    <div class=" overflow-hidden">
-      <!-- Top Banner -->
-      <div class="relative rounded-2xl h-44 sm:h-50 md:h-56 overflow-hidden bg-linear-to-r from-[#FFCB55] via-[#FFA52F] to-[#F47716]">
-        <!-- Soft Radial Glow Overlay -->
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_35%_45%,rgba(255,220,110,0.45),transparent_45%)] pointer-events-none"></div>
-
-        <!-- Food / Cart Illustration (Left in RTL) -->
-        <div class="absolute left-4 sm:left-8 md:left-14 bottom-0 h-full flex items-end pointer-events-none z-10">
           <img
             src="/images/banner-3.png"
-            alt="Profile Illustration"
-            class="h-35 md:h-46 object-contain drop-shadow-xl"
-            style="transform: scale(1.25); transform-origin: bottom left;"
+            alt=""
+            aria-hidden="true"
+            class="h-36 md:h-57 object-cover drop-shadow-xl select-none"
           />
         </div>
 
-        <!-- Banner Greeting (Right in RTL) -->
-        <div class="relative z-10 h-full flex flex-col justify-center items-start text-right px-6 sm:px-10 md:px-14 text-white max-w-sm sm:max-w-md md:max-w-lg">
+        <!-- Greeting (right in RTL) -->
+        <div
+          class="relative z-10 h-full flex flex-col justify-center items-start text-right px-6 sm:px-10 md:px-14 text-white max-w-md md:max-w-lg"
+        >
           <span
-            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white mb-2 border border-white/25 shadow-xs"
-            style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(6px);"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-white mb-2 bg-white/20 border border-white/25"
           >
-            <span class="material-symbols-sharp text-[14px]">restaurant_menu</span>
-            <span>منيوحات - حساب العميل</span>
+            <span class="material-symbols-sharp text-[16px]">restaurant_menu</span>
+            <span>منيوهات - حساب العميل</span>
           </span>
-          <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-white drop-shadow-xs leading-tight">
+          <h1 class="text-xl sm:text-2xl md:text-3xl font-semibold leading-tight">
             أهلاً بك في حسابك
           </h1>
-          <p class="text-xs sm:text-sm text-white/95 mt-1 leading-relaxed">
+          <p class="text-xs sm:text-sm text-white/90 mt-1 leading-relaxed">
             إدارة وتحديث بياناتك الشخصية وعناوين التوصيل بكل سهولة
           </p>
         </div>
       </div>
 
-      <!-- Bottom Profile Strip (Polished White Section) -->
-      <div class="px-6 sm:px-8 pb-5 pt-2 flex flex-col md:flex-row items-center md:items-end justify-between gap-4">
-        <!-- Right: Avatar + User Names & Email -->
-        <div class="flex items-center gap-4 sm:gap-5 flex-wrap justify-center md:justify-start">
-          <!-- Avatar Overlapping Banner -->
-          <div class="relative -mt-12 sm:-mt-14 shrink-0 z-20">
-            <div
-              class="w-24 h-24 sm:w-25 sm:h-25 rounded-full  bg-white shadow-lg ring-1 ring-gray-100 overflow-hidden flex items-center justify-center text-slate-500 font-extrabold text-3xl"
-            >
-              @if (avatarUrl()) {
-                <img
-                  [src]="avatarUrl()"
-                  alt="Avatar"
-                  class="w-full h-full object-cover"
-                  (error)="onImageError()"
-                />
-              } @else {
-                <span class="select-none">{{ userInitial() }}</span>
-              }
-            </div>
-
-            <!-- Camera Upload Button -->
-            <label
-              class="absolute bottom-1 left-1 w-8 h-8 rounded-full bg-slate-500 text-white flex items-center justify-center shadow-md cursor-pointer  border-white"
-              title="تغيير الصورة"
-            >
-              <span class="material-symbols-sharp text-[17px]">photo_camera</span>
-              <input type="file" accept="image/*" (change)="onAvatarChange($event)" class="hidden" />
-            </label>
+      <!-- Profile strip -->
+      <div class="px-4 sm:px-8 flex flex-col sm:flex-row items-center sm:items-end gap-3 sm:gap-5">
+        <!-- Avatar overlapping the banner -->
+        <div class="relative -mt-12 sm:-mt-14 shrink-0 z-20">
+          <div
+            class="w-22 h-22  rounded-full bg-orange-50 ring-4 ring-white shadow-lg overflow-hidden flex items-center justify-center text-4xl font-semibold text-orange-500"
+          >
+            @if (avatarUrl()) {
+              <img
+                [src]="avatarUrl()"
+                alt="الصورة الشخصية"
+                class="w-full h-full object-cover"
+                (error)="onImageError()"
+              />
+            } @else {
+              <span class="select-none">{{ userInitial() }}</span>
+            }
           </div>
-
-          <!-- User Details -->
-          <div class="text-center md:text-right pt-2 sm:pt-0">
-            <div class="flex items-center gap-2.5 justify-center md:justify-start flex-wrap">
-              <h2 class="text-xl sm:text-2xl font-bold text-slate-800">
-                {{ userFullName() }}
-              </h2>
-              <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-orange-50 text-orange-600 border border-orange-100">
-                &#64;{{ username() }}
-              </span>
-              <span class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                <span>نشط</span>
-              </span>
-            </div>
-
-            <div class="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mt-1.5 justify-center md:justify-start" dir="ltr">
-              <span class="material-symbols-sharp text-[16px] text-slate-400">mail</span>
-              <span>{{ userEmail() }}</span>
-            </div>
-          </div>
+          <label
+            class="absolute bottom-1 left-1 w-8 h-8 rounded-full bg-orange-500 text-white ring-2 ring-white shadow flex items-center justify-center cursor-pointer"
+            title="تغيير الصورة"
+          >
+            <span class="material-symbols-sharp text-[17px]">photo_camera</span>
+            <input type="file" accept="image/*" (change)="onAvatarChange($event)" class="hidden" />
+          </label>
         </div>
 
-        <!-- Left Actions -->
-        @if (profileService.profile()?.photo) {
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              (click)="deleteAvatar()"
-              class="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-red-50 text-red-600 border border-red-100 text-xs font-semibold cursor-pointer"
-            >
-              <span class="material-symbols-sharp text-[16px]">delete</span>
-              <span>حذف الصورة</span>
-            </button>
-          </div>
+    
+        @if (hasPhoto()) {
+          <button
+            type="button"
+            (click)="deleteAvatar()"
+            class="sm:pb-3 inline-flex items-center gap-1 text-xs font-semibold text-red-500 cursor-pointer shrink-0"
+          >
+            <span class="material-symbols-sharp text-[16px]">delete</span>
+            <span>حذف الصورة</span>
+          </button>
         }
       </div>
-    </div>
+    </section>
 
-    <!-- Main Content Layout (2 Columns) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      <!-- ===== RIGHT COLUMN: MAIN DETAILS (8 cols) ===== -->
-      <section class="lg:col-span-8 space-y-6">
-        <!-- 1. Personal Information Card -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 space-y-5">
-          <!-- Card Header -->
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
-              <span class="material-symbols-sharp text-[22px]">badge</span>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <!-- ===== Main column ===== -->
+      <div class="lg:col-span-2 space-y-3">
+        <!-- Personal info -->
+        <section class="bg-white rounded-2xl p-4">
+          <div class="flex items-center gap-2.5 mb-3">
+            <div
+              class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100"
+            >
+              <span class="material-symbols-sharp text-[20px]">badge</span>
             </div>
-            <div>
-              <h2 class="text-base sm:text-lg font-bold text-slate-900">المعلومات الشخصية</h2>
-              <p class="text-xs sm:text-sm text-slate-400">إدارة بياناتك وبيانات الاتصال الأساسية</p>
-            </div>
+            <h2 class="text-base font-semibold text-gray-900">المعلومات الشخصية</h2>
           </div>
 
-          <!-- 4 Fields using shared form-input component -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
-            <!-- Field 1: الاسم بالكامل -->
-            <app-form-input
-              [formControl]="fullNameControl"
-              label="الاسم بالكامل"
-              placeholder="أدخل الاسم بالكامل"
-            >
-              @if (!isEditingName()) {
-                <button
-                  label-extra
-                  type="button"
-                  (click)="startEditingName()"
-                  class="text-slate-400 cursor-pointer p-0.5 rounded-md inline-flex items-center gap-1 text-xs font-semibold"
-                  title="تعديل الاسم"
-                >
-                  <span class="material-symbols-sharp text-[16px]">edit</span>
-                  <span>تعديل</span>
-                </button>
-              } @else {
-                <div label-extra class="flex items-center gap-1.5">
+          <ul class="space-y-1">
+            <!-- Name -->
+            <li class="flex items-center gap-3 py-3.5">
+              <span
+                class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center shrink-0"
+              >
+                <span class="material-symbols-sharp text-[20px]">person</span>
+              </span>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-slate-400">الاسم بالكامل</p>
+                @if (isEditingName()) {
+                  <input
+                    type="text"
+                    [ngModel]="nameDraft()"
+                    (ngModelChange)="nameDraft.set($event)"
+                    (keydown.enter)="saveFullName()"
+                    (keydown.escape)="cancelEditingName()"
+                    [disabled]="isSaving()"
+                    class="mt-1 w-full px-3 py-2 rounded-xl border border-gray-200 text-sm text-slate-800 focus:outline-none focus:border-orange-500"
+                  />
+                } @else {
+                  <p class="text-sm font-semibold text-slate-800 truncate">
+                    {{ userFullName() || '—' }}
+                  </p>
+                }
+              </div>
+              @if (isEditingName()) {
+                <div class="flex items-center gap-3 shrink-0">
                   <button
                     type="button"
                     (click)="saveFullName()"
-                    [disabled]="isSaving() || fullNameControl.invalid"
-                    class="text-orange-500 font-bold text-xs cursor-pointer inline-flex items-center gap-0.5 disabled:opacity-50"
-                    title="حفظ"
+                    [disabled]="isSaving() || nameDraft().trim().length < 3"
+                    class="text-xs font-semibold text-orange-500 cursor-pointer disabled:opacity-50"
                   >
-                    <span class="material-symbols-sharp text-[16px]">check</span>
-                    <span>حفظ</span>
+                    حفظ
                   </button>
                   <button
                     type="button"
                     (click)="cancelEditingName()"
-                    class="text-slate-400 text-xs cursor-pointer inline-flex items-center gap-0.5 mr-1"
-                    title="إلغاء"
+                    class="text-xs font-semibold text-slate-400 cursor-pointer"
                   >
-                    <span class="material-symbols-sharp text-[16px]">close</span>
-                    <span>إلغاء</span>
+                    إلغاء
                   </button>
                 </div>
+              } @else {
+                <button
+                  type="button"
+                  (click)="startEditingName()"
+                  class="text-xs font-semibold text-orange-500 cursor-pointer shrink-0"
+                >
+                  تعديل
+                </button>
               }
-              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
-                person
-              </span>
-            </app-form-input>
+            </li>
 
-            <!-- Field 2: اسم المستخدم -->
-            <app-form-input
-              [formControl]="usernameControl"
-              label="اسم المستخدم"
-              placeholder="اسم المستخدم"
-            >
-              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
-                alternate_email
-              </span>
-            </app-form-input>
+            <!-- Username -->
+            @if (username()) {
+              <li class="flex items-center gap-3 py-2">
+                <span
+                  class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center shrink-0"
+                >
+                  <span class="material-symbols-sharp text-[20px]">alternate_email</span>
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-xs text-slate-400">اسم المستخدم</p>
+                  <p class="text-sm font-semibold text-slate-800 truncate text-right" dir="ltr">
+                    &#64;{{ username() }}
+                  </p>
+                </div>
+              </li>
+            }
 
-            <!-- Field 3: البريد الإلكتروني -->
-            <app-form-input
-              [formControl]="emailControl"
-              label="البريد الإلكتروني"
-              type="email"
-              placeholder="example@email.com"
-            >
-              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
-                mail
+            <!-- Email -->
+            <li class="flex items-center gap-3 py-2">
+              <span
+                class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center shrink-0"
+              >
+                <span class="material-symbols-sharp text-[20px]">mail</span>
               </span>
-            </app-form-input>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-slate-400">البريد الإلكتروني</p>
+                <p class="text-sm font-semibold text-slate-800 truncate text-right" dir="ltr">
+                  {{ userEmail() || '—' }}
+                </p>
+              </div>
+            </li>
 
-            <!-- Field 4: رقم الهاتف -->
-            <app-form-input
-              [formControl]="mobileControl"
-              label="رقم الهاتف"
-              placeholder="01xxxxxxxxx"
-            >
-              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
-                call
+            <!-- Password -->
+            <li class="flex items-center gap-3 py-2">
+              <span
+                class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center shrink-0"
+              >
+                <span class="material-symbols-sharp text-[20px]">lock</span>
               </span>
-            </app-form-input>
-          </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs text-slate-400">كلمة المرور</p>
+                <p class="text-sm font-semibold text-slate-800 tracking-widest">••••••••</p>
+              </div>
+              <button
+                type="button"
+                (click)="openChangePassword()"
+                class="text-xs font-semibold text-orange-500 cursor-pointer shrink-0"
+              >
+                تغيير
+              </button>
+            </li>
+          </ul>
+        </section>
 
-          <!-- Card Bottom Action: تغيير كلمة المرور -->
-          <div class="pt-1">
+        <!-- Phone numbers -->
+        <section class="bg-white rounded-2xl p-4">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2.5">
+              <div
+                class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100"
+              >
+                <span class="material-symbols-sharp text-[20px]">call</span>
+              </div>
+              <h2 class="text-base font-semibold text-gray-900">أرقام الهاتف</h2>
+            </div>
             <button
               type="button"
-              (click)="openChangePassword()"
-              class="inline-flex items-center gap-2 bg-white border border-gray-100 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer shadow-xs"
+              (click)="isAddPhoneOpen.set(true)"
+              class="inline-flex items-center gap-1 text-xs font-semibold text-orange-500 cursor-pointer"
             >
-              <span class="material-symbols-sharp text-[18px] text-orange-500">lock_reset</span>
-              <span>تغيير كلمة المرور</span>
+              <span class="material-symbols-sharp text-[18px]">add</span>
+              <span>إضافة رقم</span>
             </button>
           </div>
-        </div>
 
-        <!-- 2. Saved Addresses Card -->
-        <div class="bg-white rounded-2xl border border-gray-100 shadow-xs p-5 space-y-4">
-          <!-- Card Header -->
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0">
-                <span class="material-symbols-sharp text-[22px]">location_on</span>
-              </div>
-              <div>
-                <h2 class="text-base sm:text-lg font-bold text-slate-900">العناوين المحفوظة</h2>
-                <p class="text-xs sm:text-sm text-slate-400">إدارة وجهات توصيل طلباتك</p>
-              </div>
+          @if (isLoadingPhones() && phones().length === 0) {
+            <div class="py-6 flex justify-center">
+              <span
+                class="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"
+              ></span>
             </div>
+          } @else if (phones().length === 0) {
+            <p class="py-6 text-center text-sm text-slate-400">
+              لا يوجد رقم هاتف مؤكد، أضف رقمك وأكّده برمز التحقق
+            </p>
+          } @else {
+            <ul class="space-y-1">
+              @for (number of phones(); track number) {
+                <li class="flex items-center gap-2 py-2">
+                  <span
+                    class="w-9 h-9 rounded-xl bg-slate-50 text-slate-500 flex items-center justify-center shrink-0"
+                  >
+                    <span class="material-symbols-sharp text-[20px]">call</span>
+                  </span>
+                  <span class="flex-1 text-sm font-semibold text-slate-800 text-right" dir="ltr">{{
+                    number
+                  }}</span>
+                  <span
+                    class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 shrink-0"
+                  >
+                    <span
+                      class="material-symbols-sharp text-[16px]"
+                      style="font-variation-settings: 'FILL' 1"
+                      >verified</span
+                    >
+                    <span>مؤكد</span>
+                  </span>
+                </li>
+              }
+            </ul>
+          }
+        </section>
 
-            <!-- Add Address Button (+) -->
+        <!-- Addresses -->
+        <section class="bg-white rounded-2xl p-4">
+          <div class="flex items-center justify-between gap-3 mb-3">
+            <div class="flex items-center gap-2.5">
+              <div
+                class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100"
+              >
+                <span class="material-symbols-sharp text-[20px]">location_on</span>
+              </div>
+              <h2 class="text-base font-semibold text-gray-900">عناوين التوصيل</h2>
+            </div>
             <button
               type="button"
               (click)="openAddAddress()"
-              class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center border border-orange-100 cursor-pointer shadow-xs"
-              title="إضافة عنوان جديد"
+              class="inline-flex items-center gap-1 text-xs font-semibold text-orange-500 cursor-pointer"
             >
-              <span class="material-symbols-sharp text-[22px]">add</span>
+              <span class="material-symbols-sharp text-[18px]">add</span>
+              <span>إضافة عنوان</span>
             </button>
           </div>
 
-          <!-- Addresses Grid -->
-          @if (addresses().length > 0) {
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-              @for (addr of addresses(); track addr.id) {
-                <div class="bg-slate-50/70 border border-gray-100 rounded-xl p-4 flex flex-col justify-between space-y-3 shadow-xs">
-                  <!-- Address Type / Title -->
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-1.5 font-bold text-slate-800 text-sm">
-                      @if (addr.type === 'home' || addr.title === 'المنزل') {
-                        <span class="material-symbols-sharp text-[18px] text-slate-600">home</span>
-                        <span>المنزل</span>
-                      } @else if (addr.type === 'work' || addr.title === 'العمل') {
-                        <span class="material-symbols-sharp text-[18px] text-slate-600">business</span>
-                        <span>العمل</span>
-                      } @else {
-                        <span class="material-symbols-sharp text-[18px] text-slate-600">pin_drop</span>
-                        <span>{{ addr.title || 'عنوان التوصيل' }}</span>
-                      }
-                    </div>
-
-                    <!-- Actions: Edit & Delete -->
-                    <div class="flex items-center gap-1.5">
-                      <button
-                        type="button"
-                        (click)="openEditAddress(addr)"
-                        class="text-slate-400 cursor-pointer p-1 rounded-lg"
-                        title="تعديل العنوان"
-                      >
-                        <span class="material-symbols-sharp text-[16px]">edit</span>
-                      </button>
-
-                      <button
-                        type="button"
-                        (click)="deleteAddress(addr.id)"
-                        class="bg-red-50 text-red-500 rounded-full w-7 h-7 flex items-center justify-center cursor-pointer"
-                        title="حذف العنوان"
-                      >
-                        <span class="material-symbols-sharp text-[15px]">delete</span>
-                      </button>
-                    </div>
+          @if (isLoadingAddresses() && addresses().length === 0) {
+            <div class="py-6 flex justify-center">
+              <span
+                class="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"
+              ></span>
+            </div>
+          } @else if (addresses().length === 0) {
+            <p class="py-6 text-center text-sm text-slate-400">لا توجد عناوين توصيل محفوظة</p>
+          } @else {
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              @for (address of addresses(); track address.id) {
+                <div class="rounded-xl bg-slate-50 p-4 flex items-start gap-3">
+                  <span
+                    class="material-symbols-sharp text-[20px] text-orange-500 shrink-0 mt-0.5"
+                    style="font-variation-settings: 'FILL' 1"
+                    aria-hidden="true"
+                    >location_on</span
+                  >
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-slate-800">
+                      {{ addressLocation(address) || 'عنوان التوصيل' }}
+                    </p>
+                    @if (address.address) {
+                      <p class="text-xs text-slate-500 mt-1 break-words">{{ address.address }}</p>
+                    }
                   </div>
-
-                  <!-- Address Details -->
-                  <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                    {{ addr.address }}
-                  </p>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      (click)="openEditAddress(address)"
+                      class="w-8 h-8 rounded-full text-slate-400 flex items-center justify-center cursor-pointer"
+                      aria-label="تعديل العنوان"
+                    >
+                      <span class="material-symbols-sharp text-[18px]">edit</span>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="deleteAddress(address)"
+                      [disabled]="deletingAddressId() !== null"
+                      class="w-8 h-8 rounded-full text-red-400 flex items-center justify-center cursor-pointer disabled:opacity-50"
+                      aria-label="حذف العنوان"
+                    >
+                      @if (deletingAddressId() === address.id) {
+                        <span
+                          class="h-4 w-4 animate-spin rounded-full border-2 border-red-400 border-t-transparent"
+                        ></span>
+                      } @else {
+                        <span class="material-symbols-sharp text-[18px]">delete</span>
+                      }
+                    </button>
+                  </div>
                 </div>
               }
             </div>
-          } @else {
-            <div class="py-8 text-center text-slate-400 text-xs sm:text-sm bg-slate-50/50 rounded-xl border border-dashed border-gray-200">
-              <span class="material-symbols-sharp text-3xl text-slate-300 block mb-1">location_off</span>
-              <span>لا توجد عناوين توصيل مسجلة حالياً</span>
-            </div>
           }
-        </div>
-      </section>
+        </section>
+      </div>
 
-      <!-- ===== LEFT COLUMN: SIDEBAR (4 cols) ===== -->
-      <aside class="lg:col-span-4 space-y-6">
-        <!-- 1. Help & Support Section -->
-        <div class="space-y-2">
-          <!-- Section Header -->
-          <div class="flex items-center gap-1.5 px-1 font-semibold text-slate-800 text-sm">
-            <span class="material-symbols-sharp text-[18px] text-slate-700">info</span>
-            <span>المساعدة والدعم</span>
-          </div>
-
-          <!-- Section Card -->
-          <div class="bg-white rounded-2xl border border-gray-200 shadow-xs p-3 space-y-2">
-            <!-- FAQ Link Item -->
-            <button
-              type="button"
-              (click)="openFaqModal()"
-              class="w-full bg-slate-50/70 border border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer text-right shadow-xs"
+      <!-- ===== Side column ===== -->
+      <aside class="space-y-4">
+        <!-- Help -->
+        <section class="bg-white rounded-2xl p-4 space-y-1">
+          <div class="flex items-center gap-2.5 mb-2">
+            <div
+              class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100"
             >
-              <div class="flex items-center gap-2.5 font-semibold text-xs sm:text-sm text-slate-700">
-                <span class="material-symbols-sharp text-[18px] text-slate-500">help_outline</span>
-                <span>الأسئلة الشائعة</span>
-              </div>
-              <span class="material-symbols-sharp text-[18px] text-slate-400">chevron_left</span>
-            </button>
-
-            <!-- Submit Complaint Item -->
-            <button
-              type="button"
-              (click)="openComplaintModal()"
-              class="w-full bg-slate-50/70 border border-gray-200 rounded-xl p-3 flex items-center justify-between cursor-pointer text-right shadow-xs"
-            >
-              <div class="flex items-center gap-2.5 font-semibold text-xs sm:text-sm text-slate-700">
-                <span class="material-symbols-sharp text-[18px] text-slate-500">report_problem</span>
-                <span>تقديم شكوى</span>
-              </div>
-              <span class="material-symbols-sharp text-[18px] text-slate-400">chevron_left</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- 2. Contact Us Section -->
-        <div class="space-y-2">
-          <!-- Section Header -->
-          <div class="flex items-center gap-1.5 px-1 font-semibold text-slate-800 text-sm">
-            <span class="material-symbols-sharp text-[18px] text-slate-700">headset_mic</span>
-            <span>تواصل معنا</span>
-          </div>
-
-          <!-- Section Card -->
-          <div class="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 space-y-4">
-            <!-- Social Icons Row -->
-            <div class="flex items-center justify-center gap-3">
-              <!-- WhatsApp -->
-              <a
-                href="https://wa.me/201208434909"
-                target="_blank"
-                rel="noopener"
-                class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center cursor-pointer border border-emerald-100 shadow-xs"
-                title="واتساب"
-              >
-                <span class="material-symbols-sharp text-[18px]">chat</span>
-              </a>
-
-              <!-- Twitter / X -->
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener"
-                class="w-9 h-9 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center cursor-pointer border border-sky-100 shadow-xs"
-                title="منصة إكس"
-              >
-                <span class="material-symbols-sharp text-[18px]">share</span>
-              </a>
-
-              <!-- Instagram -->
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener"
-                class="w-9 h-9 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center cursor-pointer border border-pink-100 shadow-xs"
-                title="إنستغرام"
-              >
-                <span class="material-symbols-sharp text-[18px]">photo_camera</span>
-              </a>
-
-              <!-- Website -->
-              <a
-                href="/"
-                class="w-9 h-9 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center cursor-pointer border border-slate-200 shadow-xs"
-                title="الموقع الإلكتروني"
-              >
-                <span class="material-symbols-sharp text-[18px]">language</span>
-              </a>
+              <span class="material-symbols-sharp text-[20px]">support</span>
             </div>
-
-            <!-- Customer Support Phone Numbers -->
-            <div class="text-center space-y-1.5 pt-1">
-              <span class="text-xs text-slate-400 font-semibold block">رقم الدعم</span>
-              @for (phone of supportPhones; track $index) {
-                <a
-                  [href]="'tel:' + phone"
-                  class="block text-xs sm:text-sm font-bold text-slate-700 tracking-wider"
-                  dir="ltr"
-                >
-                  {{ phone }}
-                </a>
-              }
-            </div>
+            <h2 class="text-base font-semibold text-gray-900">المساعدة والدعم</h2>
           </div>
-        </div>
-
-        <!-- 3. End Session / Logout Card -->
-        <div class="bg-white rounded-2xl border border-gray-200 shadow-xs p-4 flex items-center justify-between gap-3">
-          <div class="min-w-0">
-            <h3 class="font-bold text-slate-800 text-sm">إنهاء الجلسة</h3>
-            <p class="text-xs text-slate-400 mt-0.5">تسجيل الخروج من هذا الجهاز</p>
-          </div>
-
           <button
             type="button"
-            (click)="logout()"
-            class="bg-red-50 text-red-500 border border-red-200/60 font-semibold text-xs px-3.5 py-2 rounded-xl inline-flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
-            title="تسجيل الخروج"
+            (click)="isFaqOpen.set(true)"
+            class="w-full flex items-center gap-3 p-3 rounded-xl text-right cursor-pointer"
           >
-            <span class="material-symbols-sharp text-[16px]">logout</span>
-            <span>تسجيل الخروج</span>
+            <span class="material-symbols-sharp text-[20px] text-slate-500">help</span>
+            <span class="flex-1 text-sm font-semibold text-slate-700">الأسئلة الشائعة</span>
+            <span class="material-symbols-sharp text-[18px] text-slate-300">chevron_left</span>
           </button>
-        </div>
+          <button
+            type="button"
+            (click)="openComplaintModal()"
+            class="w-full flex items-center gap-3 p-3 rounded-xl text-right cursor-pointer"
+          >
+            <span class="material-symbols-sharp text-[20px] text-slate-500">report</span>
+            <span class="flex-1 text-sm font-semibold text-slate-700">تقديم شكوى</span>
+            <span class="material-symbols-sharp text-[18px] text-slate-300">chevron_left</span>
+          </button>
+        </section>
+
+        <!-- Contact -->
+        <section class="bg-white rounded-2xl p-4 space-y-4">
+          <div class="flex items-center gap-2.5">
+            <div
+              class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100"
+            >
+              <span class="material-symbols-sharp text-[20px]">headset_mic</span>
+            </div>
+            <h2 class="text-base font-semibold text-gray-900">تواصل معنا</h2>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <a
+              href="https://wa.me/201208434909"
+              target="_blank"
+              rel="noopener"
+              class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center"
+              title="واتساب"
+            >
+              <span class="material-symbols-sharp text-[20px]">chat</span>
+            </a>
+            <a
+              href="https://twitter.com"
+              target="_blank"
+              rel="noopener"
+              class="w-10 h-10 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center"
+              title="منصة إكس"
+            >
+              <span class="material-symbols-sharp text-[20px]">share</span>
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener"
+              class="w-10 h-10 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center"
+              title="إنستغرام"
+            >
+              <span class="material-symbols-sharp text-[20px]">photo_camera</span>
+            </a>
+            <a
+              href="/"
+              class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center"
+              title="الموقع الإلكتروني"
+            >
+              <span class="material-symbols-sharp text-[20px]">language</span>
+            </a>
+          </div>
+          @for (phone of supportPhones; track phone) {
+            <a
+              [href]="'tel:' + phone"
+              class="flex items-center gap-3 rounded-xl bg-slate-50 p-3 text-sm"
+            >
+              <span class="material-symbols-sharp text-[20px] text-orange-500">support_agent</span>
+              <span class="flex-1 text-slate-500">رقم الدعم</span>
+              <span class="font-semibold text-slate-800" dir="ltr">{{ phone }}</span>
+            </a>
+          }
+        </section>
+
+        <!-- Logout -->
+        <button
+          type="button"
+          (click)="logout()"
+          class="w-full flex items-center justify-center gap-2 rounded-2xl bg-red-50 text-red-500 font-semibold text-sm py-3.5 cursor-pointer"
+        >
+          <span class="material-symbols-sharp text-[18px]">logout</span>
+          <span>تسجيل الخروج</span>
+        </button>
       </aside>
     </div>
 
-    <!-- ===== MODALS ===== -->
+    <!-- ===== Modals ===== -->
 
-    <!-- 1. Change Password Modal -->
+    <!-- Change password -->
     @if (isChangePasswordOpen()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-xs">
-        <div class="bg-white rounded-2xl border border-gray-200 shadow-md max-w-md w-full p-6 space-y-5">
+      <div
+        class="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center sm:p-4"
+        (click)="closeChangePassword()"
+      >
+        <div
+          class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4"
+          (click)="$event.stopPropagation()"
+          role="dialog"
+          aria-modal="true"
+          aria-label="تغيير كلمة المرور"
+        >
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 font-bold text-slate-800 text-base">
-              <span class="material-symbols-sharp text-orange-500 text-[20px]">lock_reset</span>
-              <span>تغيير كلمة المرور</span>
-            </div>
+            <h3 class="text-base font-semibold text-slate-800">تغيير كلمة المرور</h3>
             <button
               type="button"
               (click)="closeChangePassword()"
-              class="text-slate-400 cursor-pointer p-1 rounded-lg"
+              class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer"
+              aria-label="إغلاق"
             >
-              <span class="material-symbols-sharp text-[20px]">close</span>
+              <span class="material-symbols-sharp text-[18px]">close</span>
             </button>
           </div>
 
@@ -508,246 +497,210 @@
               type="password"
               placeholder="أدخل كلمة المرور الحالية"
             >
-              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
-                lock
-              </span>
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >lock</span
+              >
             </app-form-input>
-
             <app-form-input
               formControlName="newPassword"
               label="كلمة المرور الجديدة"
               type="password"
               placeholder="6 أحرف أو أكثر"
             >
-              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
-                lock_reset
-              </span>
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >lock_reset</span
+              >
             </app-form-input>
-
             <app-form-input
               formControlName="confirmPass"
               label="تأكيد كلمة المرور الجديدة"
               type="password"
               placeholder="أعد إدخال كلمة المرور"
             >
-              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]">
-                verified_user
-              </span>
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >verified_user</span
+              >
             </app-form-input>
 
             @if (passwordForm.hasError('mismatch') && passwordForm.get('confirmPass')?.touched) {
               <p class="text-xs text-red-500 -mt-2 mb-2">كلمتا المرور غير متطابقتين</p>
             }
 
-            <div class="flex items-center gap-2 pt-2">
-              <button
-                type="submit"
-                [disabled]="isSaving() || passwordForm.invalid"
-                class="flex-1 bg-orange-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl cursor-pointer disabled:opacity-50 inline-flex items-center justify-center gap-2 shadow-xs"
-              >
-                @if (isSaving()) {
-                  <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                }
-                <span>تحديث كلمة المرور</span>
-              </button>
-              <button
-                type="button"
-                (click)="closeChangePassword()"
-                class="bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-2.5 rounded-xl cursor-pointer shadow-xs"
-              >
-                إلغاء
-              </button>
-            </div>
+            <button
+              type="submit"
+              [disabled]="isSaving() || passwordForm.invalid"
+              class="w-full mt-2 bg-orange-500 text-white font-semibold text-sm py-3 rounded-xl cursor-pointer disabled:opacity-50 inline-flex items-center justify-center gap-2"
+            >
+              @if (isSaving()) {
+                <span
+                  class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+                ></span>
+              }
+              <span>تحديث كلمة المرور</span>
+            </button>
           </form>
         </div>
       </div>
     }
 
-    <!-- 2. Add / Edit Address Modal -->
+    <!-- Add / edit address -->
     @if (isAddressModalOpen()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-xs">
-        <div class="bg-white rounded-2xl border border-gray-200 shadow-md max-w-md w-full p-6 space-y-5">
+      <div
+        class="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center sm:p-4"
+        (click)="closeAddressModal()"
+      >
+        <div
+          class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4"
+          (click)="$event.stopPropagation()"
+          role="dialog"
+          aria-modal="true"
+          [attr.aria-label]="editingAddress() ? 'تعديل العنوان' : 'إضافة عنوان'"
+        >
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 font-bold text-slate-800 text-base">
-              <span class="material-symbols-sharp text-orange-500 text-[20px]">location_on</span>
-              <span>{{ editingAddress() ? 'تعديل العنوان' : 'إضافة عنوان جديد' }}</span>
-            </div>
+            <h3 class="text-base font-semibold text-slate-800">
+              {{ editingAddress() ? 'تعديل العنوان' : 'إضافة عنوان جديد' }}
+            </h3>
             <button
               type="button"
               (click)="closeAddressModal()"
-              class="text-slate-400 cursor-pointer p-1 rounded-lg"
+              class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer"
+              aria-label="إغلاق"
             >
-              <span class="material-symbols-sharp text-[20px]">close</span>
+              <span class="material-symbols-sharp text-[18px]">close</span>
             </button>
           </div>
-
-          <form [formGroup]="addressForm" (ngSubmit)="saveAddress()" class="space-y-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1.5">تصنيف العنوان</label>
-              <select
-                formControlName="title"
-                class="w-full rounded-2xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 focus:border-orange-500 focus:outline-none shadow-xs"
-              >
-                <option value="المنزل">المنزل</option>
-                <option value="العمل">العمل</option>
-                <option value="أخرى">أخرى</option>
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1.5">تفاصيل العنوان</label>
-              <textarea
-                rows="3"
-                formControlName="address"
-                placeholder="الشارع، رقم المبنى، الشقة، وأي معالم قريبة..."
-                class="w-full rounded-2xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none resize-none shadow-xs"
-              ></textarea>
-            </div>
-
-            <div class="flex items-center gap-2 pt-2">
-              <button
-                type="submit"
-                [disabled]="addressForm.invalid"
-                class="flex-1 bg-orange-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl cursor-pointer disabled:opacity-50 shadow-xs"
-              >
-                {{ editingAddress() ? 'حفظ التعديلات' : 'إضافة العنوان' }}
-              </button>
-              <button
-                type="button"
-                (click)="closeAddressModal()"
-                class="bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-2.5 rounded-xl cursor-pointer shadow-xs"
-              >
-                إلغاء
-              </button>
-            </div>
-          </form>
+          <app-address-form
+            [address]="editingAddress()"
+            (saved)="closeAddressModal()"
+            (cancelled)="closeAddressModal()"
+          />
         </div>
       </div>
     }
 
-    <!-- 3. FAQ Modal -->
+    <!-- FAQ -->
     @if (isFaqOpen()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-xs">
-        <div class="bg-white rounded-2xl border border-gray-200 shadow-md max-w-lg w-full p-6 space-y-5 max-h-[85vh] overflow-y-auto">
-          <div class="flex items-center justify-between border-b border-gray-200 pb-3">
-            <div class="flex items-center gap-2 font-bold text-slate-800 text-base">
-              <span class="material-symbols-sharp text-orange-500 text-[20px]">help_outline</span>
-              <span>الأسئلة الشائعة</span>
-            </div>
+      <div
+        class="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center sm:p-4"
+        (click)="isFaqOpen.set(false)"
+      >
+        <div
+          class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl p-5 space-y-4 max-h-[85vh] overflow-y-auto"
+          (click)="$event.stopPropagation()"
+          role="dialog"
+          aria-modal="true"
+          aria-label="الأسئلة الشائعة"
+        >
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-semibold text-slate-800">الأسئلة الشائعة</h3>
             <button
               type="button"
-              (click)="closeFaqModal()"
-              class="text-slate-400 cursor-pointer p-1 rounded-lg"
+              (click)="isFaqOpen.set(false)"
+              class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer"
+              aria-label="إغلاق"
             >
-              <span class="material-symbols-sharp text-[20px]">close</span>
+              <span class="material-symbols-sharp text-[18px]">close</span>
             </button>
           </div>
 
-          <div class="space-y-3">
+          <div class="space-y-1">
             @for (faq of faqs(); track $index) {
-              <div class="border border-gray-200 rounded-xl overflow-hidden bg-slate-50/50 shadow-xs">
+              <div>
                 <button
                   type="button"
                   (click)="toggleFaq($index)"
-                  class="w-full p-3.5 flex items-center justify-between text-right cursor-pointer"
+                  [attr.aria-expanded]="faq.isOpen"
+                  class="w-full py-3.5 flex items-center justify-between gap-3 text-right cursor-pointer"
                 >
-                  <span class="font-bold text-xs sm:text-sm text-slate-800">{{ faq.question }}</span>
-                  <span class="material-symbols-sharp text-[18px] text-slate-400">
-                    {{ faq.isOpen ? 'expand_less' : 'expand_more' }}
-                  </span>
+                  <span class="text-sm font-semibold text-slate-800">{{ faq.question }}</span>
+                  <span
+                    class="material-symbols-sharp text-[20px] text-slate-400 shrink-0"
+                    [class.rotate-180]="faq.isOpen"
+                    >expand_more</span
+                  >
                 </button>
                 @if (faq.isOpen) {
-                  <div class="px-3.5 pb-3.5 text-xs text-slate-600 leading-relaxed border-t border-gray-200 pt-2.5">
-                    {{ faq.answer }}
-                  </div>
+                  <p class="pb-3.5 text-sm text-slate-500 leading-relaxed">{{ faq.answer }}</p>
                 }
               </div>
             }
           </div>
-
-          <div class="pt-2">
-            <button
-              type="button"
-              (click)="closeFaqModal()"
-              class="w-full bg-orange-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl cursor-pointer shadow-xs"
-            >
-              إغلاق
-            </button>
-          </div>
         </div>
       </div>
     }
 
-    <!-- 4. Submit Complaint Modal -->
+    <!-- Complaint -->
     @if (isComplaintOpen()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-xs">
-        <div class="bg-white rounded-2xl border border-gray-200 shadow-md max-w-md w-full p-6 space-y-5">
+      <div
+        class="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center sm:p-4"
+        (click)="isComplaintOpen.set(false)"
+      >
+        <div
+          class="bg-white w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4"
+          (click)="$event.stopPropagation()"
+          role="dialog"
+          aria-modal="true"
+          aria-label="تقديم شكوى"
+        >
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2 font-bold text-slate-800 text-base">
-              <span class="material-symbols-sharp text-orange-500 text-[20px]">report_problem</span>
-              <span>تقديم شكوى أو مقترح</span>
-            </div>
+            <h3 class="text-base font-semibold text-slate-800">تقديم شكوى أو مقترح</h3>
             <button
               type="button"
-              (click)="closeComplaintModal()"
-              class="text-slate-400 cursor-pointer p-1 rounded-lg"
+              (click)="isComplaintOpen.set(false)"
+              class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer"
+              aria-label="إغلاق"
             >
-              <span class="material-symbols-sharp text-[20px]">close</span>
+              <span class="material-symbols-sharp text-[18px]">close</span>
             </button>
           </div>
 
           @if (complaintSubmitted()) {
             <div class="py-8 text-center space-y-2">
               <span class="material-symbols-sharp text-4xl text-emerald-500">check_circle</span>
-              <h3 class="font-bold text-slate-800 text-base">تم إرسال الشكوى بنجاح</h3>
+              <p class="font-semibold text-slate-800">تم إرسال الشكوى بنجاح</p>
               <p class="text-xs text-slate-400">سيتواصل معك فريق خدمة العملاء في أقرب وقت.</p>
             </div>
           } @else {
-            <form [formGroup]="complaintForm" (ngSubmit)="submitComplaint()" class="space-y-4">
+            <form [formGroup]="complaintForm" (ngSubmit)="submitComplaint()" class="space-y-3">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5">نوع الشكوى / الموضوع</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5">الموضوع</label>
                 <select
                   formControlName="subject"
-                  class="w-full rounded-2xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 focus:border-orange-500 focus:outline-none shadow-xs"
+                  class="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-orange-500 focus:outline-none"
                 >
                   <option value="خدمة التوصيل">خدمة التوصيل</option>
                   <option value="جودة الطعام والوجبات">جودة الطعام والوجبات</option>
                   <option value="تأخير الطلب">تأخير الطلب</option>
-                  <option value="مشكلة في الدفع">مشكلة في الدفع</option>
                   <option value="اقتراح عام">اقتراح عام</option>
                 </select>
               </div>
-
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1.5">تفاصيل الشكوى</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1.5">التفاصيل</label>
                 <textarea
                   rows="4"
                   formControlName="details"
-                  placeholder="يرجى كتابة تفاصيل الشكوى أو المقترح بوضوح..."
-                  class="w-full rounded-2xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none resize-none shadow-xs"
+                  placeholder="اكتب تفاصيل الشكوى أو المقترح بوضوح..."
+                  class="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none resize-none"
                 ></textarea>
               </div>
-
-              <div class="flex items-center gap-2 pt-2">
-                <button
-                  type="submit"
-                  [disabled]="complaintForm.invalid"
-                  class="flex-1 bg-orange-500 text-white font-bold text-sm px-5 py-2.5 rounded-xl cursor-pointer disabled:opacity-50 shadow-xs"
-                >
-                  إرسال الشكوى
-                </button>
-                <button
-                  type="button"
-                  (click)="closeComplaintModal()"
-                  class="bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-2.5 rounded-xl cursor-pointer shadow-xs"
-                >
-                  إلغاء
-                </button>
-              </div>
+              <button
+                type="submit"
+                [disabled]="complaintForm.invalid"
+                class="w-full bg-orange-500 text-white font-semibold text-sm py-3 rounded-xl cursor-pointer disabled:opacity-50"
+              >
+                إرسال
+              </button>
             </form>
           }
         </div>
       </div>
     }
+
+    <!-- Add & verify phone -->
+    <app-add-phone-dialog
+      [isOpen]="isAddPhoneOpen()"
+      (verified)="isAddPhoneOpen.set(false)"
+      (closed)="isAddPhoneOpen.set(false)"
+    />
   }
 </div>

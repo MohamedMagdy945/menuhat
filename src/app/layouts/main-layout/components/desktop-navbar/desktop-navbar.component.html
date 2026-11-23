@@ -1,5 +1,5 @@
 <!-- navbar.component.html -->
-<nav class="hidden md:block w-full ">
+<nav class="hidden md:block w-full">
   <!-- Top Row -->
   <div class="bg-[#e9ecef]">
     <div class="flex items-center justify-between gap-3 py-2 custom-container">
@@ -13,32 +13,7 @@
       <app-location-selector></app-location-selector>
 
       <!-- Search Bar -->
-      <div class="relative w-full max-w-md">
-        <input
-          type="text"
-          placeholder="بحث"
-          class="w-full py-3 pr-12 pl-5 border border-gray-100 bg-white text-gray-800 placeholder-gray-400 rounded-full shadow-lg focus:outline-none transition-shadow duration-200 text-sm font-normal"
-        />
-
-        <div
-          class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-slate-400"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2.5"
-            stroke="currentColor"
-            class="w-5 h-5"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607z"
-            />
-          </svg>
-        </div>
-      </div>
+      <app-search-bar variant="desktop" class="w-full max-w-md" />
       <!-- Right Actions Container -->
       <div class="flex items-center gap-2 shrink-0">
         <!-- Notification Dropdown -->
@@ -51,21 +26,20 @@
         <app-cart-dropdown></app-cart-dropdown>
 
         <!-- Language Button -->
-        <button
+        <!-- <button
           class="w-11 h-11 sm:w-11 sm:h-11 text-sm font-bold border border-gray-200 rounded-full bg-white flex items-center justify-center text-slate-700 shadow-lg cursor-pointer select-none"
         >
           EN
-        </button>
+        </button> -->
 
         <!-- Account Dropdown -->
         <app-account-dropdown></app-account-dropdown>
       </div>
-
     </div>
   </div>
 
   <!-- Bottom Nav Row -->
-  <div class="mt-4 custom-container py-2.5 border-t border-border rounded-2xl bg-[#e9ecef] ">
+  <div class="mt-4 custom-container py-2.5 border-t border-border rounded-2xl bg-[#e9ecef]">
     <div class="flex px-2 items-center justify-between overflow-x-auto scrollbar-hide">
       <!-- Primary Nav Items (right side) -->
       <ul class="flex items-center gap-1.5">
@@ -160,7 +134,6 @@
             <span>الأعلى تقييمًا</span>
           </a>
         </li>
-
       </ul>
 
       <!-- Secondary Nav Items (left side) -->

@@ -6,14 +6,14 @@
 
 <!-- product section -->
 @if (menuItemService.items().length > 0) {
-<div class="mt-4 px-4">
+<div class="mt-3 px-4">
   <app-home-menu-items />
 </div>
 }
 
 <!-- Trending Restaurants -->
 @if (restaurantsService.trends().length > 0) {
-<div class="mt-1 px-4">
+<div class="mt-3 px-4">
   <app-home-restaurants title="رائج الآن"
     [restaurants]="restaurantsService.trends()" />
 </div>
@@ -21,7 +21,7 @@
 
 <!-- restaurants section -->
 @if (restaurantsService.topVisits().length > 0) {
-<div class="mt-1 px-4">
+<div class="mt-3 px-4">
   <app-home-restaurants title="الأكثر زيارة"
     [restaurants]="restaurantsService.topVisits()" />
 </div>
@@ -29,7 +29,7 @@
 
 <!-- Nearest Restaurants -->
 @if (restaurantsService.nearestRestaurants().length > 0) {
-<div class="mt-1 px-4">
+<div class="mt-3 px-4">
   <app-home-restaurants title="الأقرب إلى منطقتك"
     [restaurants]="restaurantsService.nearestRestaurants()" />
 </div>
@@ -37,7 +37,7 @@
 
 <!-- Top Rated Restaurants -->
 @if (restaurantsService.topRates().length > 0) {
-<div class="mt-1 px-4">
+<div class="mt-3 px-4">
   <app-home-restaurants title="الأعلى تقييماً"
     [restaurants]="restaurantsService.topRates()" />
 </div>

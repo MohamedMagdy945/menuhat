@@ -5,7 +5,6 @@ import { environment } from '../../../core/environments/environment';
 import { UserDataService } from '../../../core/services/userData.service';
 import { UserProfile } from '../models/user-profile.model';
 import { UpdateProfileRequest } from '../models/update-profile-request.model';
-import { UserAddress } from '../models/user-address.model';
 import { ChangePasswordRequest } from '../models/change-password-request.model';
 
 @Injectable({
@@ -17,7 +16,6 @@ export class ProfileService {
   private readonly apiUrl = environment.apiUrl;
 
   readonly profile = signal<UserProfile | null>(null);
-  readonly addresses = signal<UserAddress[]>([]);
   readonly isLoading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
@@ -58,7 +56,9 @@ export class ProfileService {
   updateProfile(data: UpdateProfileRequest): Observable<any> {
     return this.http.put(`${this.apiUrl}/Profile/PutProfile`, data).pipe(
       tap(() => {
-        this.profile.update((p) => (p ? { ...p, fullName: data.fullName, defaultLang: data.defaultLang ?? p.defaultLang } : p));
+        this.profile.update((p) =>
+          p ? { ...p, fullName: data.fullName, defaultLang: data.defaultLang ?? p.defaultLang } : p,
+        );
         // Update user data in storage if applicable
         const current = this.userDataService.currentUser();
         if (current) {
@@ -87,13 +87,13 @@ export class ProfileService {
           this.profile.update((p) =>
             p
               ? {
-                ...p,
-                photo: {
-                  base64String,
-                  photoTitle: 'avatar.png',
-                  photoDiscription: 'User Profile Photo',
-                },
-              }
+                  ...p,
+                  photo: {
+                    base64String,
+                    photoTitle: 'avatar.png',
+                    photoDiscription: 'User Profile Photo',
+                  },
+                }
               : p,
           );
         }),
@@ -106,58 +106,9 @@ export class ProfileService {
   deletePhoto(): Observable<any> {
     return this.http.delete(`${this.apiUrl}/Profile/DeletePhoto`).pipe(
       tap(() => {
-        this.profile.update((p) => (p ? { ...p, photo: null } : p));
+        this.profile.update((p) => (p ? { ...p, photo: null, photoURL: null } : p));
       }),
     );
-  }
-
-  /**
-   * Loads user addresses from /api/Profile/GetAddressByUserId
-   */
-  loadAddresses(): Observable<UserAddress[]> {
-    return this.http.get<any>(`${this.apiUrl}/Profile/GetAddressByUserId`).pipe(
-      map((res: any) => {
-        if (Array.isArray(res)) return res;
-        if (Array.isArray(res?.result)) return res.result;
-        return [];
-      }),
-      tap((addresses) => {
-        this.addresses.set(addresses || []);
-      }),
-      catchError((err) => {
-        console.error('Error loading addresses:', err);
-        return of([]);
-      }),
-    );
-  }
-
-  /**
-   * Adds an address locally/reactively
-   */
-  addAddress(address: UserAddress): void {
-    this.addresses.update((list) => [
-      ...list,
-      {
-        ...address,
-        id: address.id || Date.now(),
-      },
-    ]);
-  }
-
-  /**
-   * Updates an address locally/reactively
-   */
-  updateAddress(address: UserAddress): void {
-    this.addresses.update((list) =>
-      list.map((item) => (item.id === address.id ? { ...item, ...address } : item)),
-    );
-  }
-
-  /**
-   * Deletes an address locally/reactively
-   */
-  deleteAddress(id: number): void {
-    this.addresses.update((list) => list.filter((item) => item.id !== id));
   }
 
   /**

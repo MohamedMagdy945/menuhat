@@ -1,0 +1,121 @@
+<div class="space-y-6 pt-12 lg:pt-0">
+  <!-- Page header (same pattern as the owner pages / المطاعم) -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+    <div class="flex items-center gap-3.5">
+      <div
+        class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs"
+      >
+        <span class="material-symbols-sharp text-2xl text-orange-500">dashboard</span>
+      </div>
+      <div>
+        <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">لوحة التحكم</h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-0.5">نظرة عامة على إحصائيات المنصة</p>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      (click)="load()"
+      [disabled]="isLoading()"
+      class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs w-fit disabled:opacity-50"
+    >
+      <span
+        class="material-symbols-sharp text-base text-slate-500"
+        [class.animate-spin]="isLoading()"
+        >refresh</span
+      >
+      <span>تحديث</span>
+    </button>
+  </div>
+
+  @if (error() && !stats()) {
+    <!-- Error -->
+    <div class="bg-white rounded-2xl p-8 text-center space-y-3">
+      <span class="material-symbols-sharp text-4xl text-rose-400">error</span>
+      <p class="text-sm font-semibold text-slate-700">{{ error() }}</p>
+      <button
+        type="button"
+        (click)="load()"
+        class="bg-orange-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl cursor-pointer"
+      >
+        إعادة المحاولة
+      </button>
+    </div>
+  } @else {
+    <!-- Menus -->
+    <ng-container
+      *ngTemplateOutlet="
+        group;
+        context: {
+          title: 'المنيوهات',
+          icon: 'restaurant_menu',
+          cards: menuCards,
+          cols: 'sm:grid-cols-2 xl:grid-cols-4',
+        }
+      "
+    />
+
+    <!-- People -->
+    <ng-container
+      *ngTemplateOutlet="
+        group;
+        context: {
+          title: 'المستخدمين',
+          icon: 'group',
+          cards: peopleCards,
+          cols: 'sm:grid-cols-2 xl:grid-cols-4',
+        }
+      "
+    />
+
+    <!-- Complaints (own row) -->
+    <ng-container
+      *ngTemplateOutlet="
+        group;
+        context: {
+          title: 'الشكاوى',
+          icon: 'support_agent',
+          cards: complaintCards,
+          cols: 'sm:grid-cols-2 xl:grid-cols-4',
+        }
+      "
+    />
+  }
+</div>
+
+<!-- A titled group of stat tiles -->
+<ng-template #group let-title="title" let-icon="icon" let-cards="cards" let-cols="cols">
+  <section class="space-y-3">
+    <div class="flex items-center gap-2.5">
+      <div
+        class="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center shrink-0 border border-orange-100"
+      >
+        <span class="material-symbols-sharp text-[20px]">{{ icon }}</span>
+      </div>
+      <h2 class="text-base font-semibold text-gray-900">{{ title }}</h2>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4" [class]="cols">
+      @for (card of cards; track card.key) {
+        <div class="bg-white rounded-2xl p-5 flex items-center gap-4">
+          <div
+            class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+            [class]="card.iconClasses"
+          >
+            <span class="material-symbols-sharp text-[24px]">{{ card.icon }}</span>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm text-slate-400 truncate">{{ card.label }}</p>
+            @if (isLoading() && !stats()) {
+              <span class="mt-1.5 block h-7 w-16 rounded-lg bg-slate-100 animate-pulse"></span>
+            } @else {
+              <p class="text-2xl font-semibold text-slate-800">
+                {{ valueOf(card) | number }}
+              </p>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</ng-template>

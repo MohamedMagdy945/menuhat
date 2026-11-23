@@ -1,65 +1,54 @@
-<article (click)="onView()"
-  class="bg-white rounded-lg border border-gray-100 p-3 flex items-stretch justify-between gap-3 cursor-pointer">
-  <!-- Right Part: Restaurant Logo & Info (Start in RTL) -->
-  <div class="flex items-start gap-3.5 min-w-0 flex-1">
-    <!-- Restaurant Image / Storefront Logo -->
-    <div
-      class="w-18 h-18 p-1 rounded-2xl bg-slate-50 border border-slate-100 shrink-0 flex items-center justify-center overflow-hidden self-start">
-      <img [src]="logoUrl()" (error)="$any($event.target).src = '/images/default-restaurant.png'"
-        [alt]="order().clientName ?? 'مطعم'" class="w-full h-full object-cover rounded-xl" />
-    </div>
+<article (click)="onView()" class="bg-white rounded-xl p-3 flex items-stretch gap-3 cursor-pointer">
+  <!-- Image (its own column) -->
+  <img
+    [src]="logoUrl()"
+    (error)="$any($event.target).src = '/images/default-restaurant.png'"
+    [alt]="order().clientName ?? 'مطعم'"
+    class="w-18 h-17 rounded-xl object-contain bg-slate-50 shrink-0 self-center"
+  />
 
-    <!-- Text Info -->
-    <div class="min-w-0 text-right space-y-1 flex-1">
-      <!-- Restaurant Name -->
-      <h3 class="font-semibold text-slate-800 truncate">
-        {{ order().clientName?.trim() || 'اسم المطعم' }}
-      </h3>
-
-      <!-- Order Serial / ID -->
-      <p class="text-sm text-slate-400">
-        طلب #{{ order().serialOrder || order().menuOrdersId }}
-      </p>
-
-      <!-- Total Price in Orange -->
-      @if (order().orderTotal) {
-      <p class="text-base font-bold text-orange-500 pt-0.5">
-        {{ order().orderTotal | number:'1.1-2' }} ج.م
-      </p>
+  <!-- Middle: name, type · items, price -->
+  <div class="flex-1 min-w-0 flex flex-col justify-center ">
+    <h3 class="font-semibold text-slate-800 truncate">
+      {{ order().clientName?.trim() || 'اسم المطعم' }}
+    </h3>
+    <p class="text-xs text-slate-400 truncate">
+      @if (orderType(); as type) {
+        {{ type.label }}
       }
-    </div>
+      @if (orderType() && itemsCount() > 0) {
+        ·
+      }
+      @if (itemsCount() > 0) {
+        {{ itemsCount() }} {{ itemsCount() === 1 ? 'صنف' : 'أصناف' }}
+      }
+    </p>
+    <p class="text-base font-semibold text-orange-500">
+      {{ order().orderTotal || 0 | number: '1.0-2' }} ج.م
+    </p>
   </div>
 
-  <!-- Left Part: Top Row (Date + Actions) & Bottom (Status Pill) -->
-  <div class="flex flex-col justify-between items-end shrink-0 self-stretch gap-2">
-    <!-- Top Row: Date & Actions (جنب الـ icon مش تحتها) -->
-    <div class="flex items-center gap-2" (click)="$event.stopPropagation()">
-      <!-- Date & Time with icon -->
-      @if (formattedDate()) {
-      <div class="flex items-center gap-1 text-xs text-slate-400 whitespace-nowrap">
-        <span class="material-symbols-sharp text-[14px]">schedule</span>
-        <span>{{ formattedDate() }}</span>
-      </div>
-      }
+  <!-- Left (in RTL): status on top, cancel + date at the bottom -->
+  <div class="shrink-0 flex flex-col items-end justify-between gap-2">
+    <span
+      class="text-xs font-semibold px-2.5 py-1 whitespace-nowrap"
+      [ngClass]="statusConfig().classes"
+      >{{ statusLabel() }}</span
+    >
 
+    <div class="flex flex-col items-end gap-1">
       @if (canCancel()) {
-      <button type="button" (click)="onCancel()"
-        class="bg-white border border-gray-200 text-slate-600 font-semibold text-xs px-3 py-1 rounded-xl cursor-pointer"
-        title="إلغاء الطلب">
-        إلغاء الطلب
-      </button>
+        <button
+          type="button"
+          (click)="onCancel(); $event.stopPropagation()"
+          class="text-xs font-semibold text-red-500 cursor-pointer"
+        >
+          إلغاء الطلب
+        </button>
       }
-
-      <button type="button" (click)="onView()" title="عرض التفاصيل"
-        class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center cursor-pointer">
-        <span class="material-symbols-sharp text-[16px]">open_in_new</span>
-      </button>
+      @if (formattedDate()) {
+        <span class="text-xs text-slate-400 whitespace-nowrap">{{ formattedDate() }}</span>
+      }
     </div>
-
-    <!-- Status Pill (Bottom Left) -->
-    <span class="text-xs px-3.5 py-2 rounded-xl font-semibold inline-flex items-center"
-      [ngClass]="statusConfig().classes">
-      {{ statusLabel() }}
-    </span>
   </div>
 </article>

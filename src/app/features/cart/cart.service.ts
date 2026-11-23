@@ -6,7 +6,6 @@ import { AddCartItem } from './models/add-cart-item.model';
 import { AddCartResponse } from './models/add-cart-response.model';
 import { CartMenuItem } from './models/cart-menu-item.model';
 import { CartMenuResponse } from './models/cart-menu-response.model';
-import { MenuOrderDTO } from './models/menu-order-dto.model';
 
 @Injectable({
   providedIn: 'root'
@@ -114,16 +113,4 @@ export class CartService {
     );
   }
 
-  createMenuOrder(orderDto: MenuOrderDTO): Observable<any> {
-    return this._http.post(`${environment.apiUrl}/MenusOrders`, orderDto).pipe(
-      tap(() => {
-        // Refresh cart state to empty after successful order
-        this.GetCartsByUserId().subscribe({ error: () => {} });
-      })
-    );
-  }
-
-  getUserAddresses(): Observable<any[]> {
-    return this._http.get<any[]>(`${environment.apiUrl}/Profile/GetAddressByUserId`);
-  }
 }

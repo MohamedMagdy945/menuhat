@@ -484,8 +484,22 @@ export const routes: Routes = [
         component: AdminPanelLayoutComponent,
         canActivate: [authGuard],
         children: [
-            { path: '', data: { title: 'الرئيسية' }, loadComponent: loadAdminPlaceholder },
-            { path: 'restaurants', data: { title: 'المطاعم' }, loadComponent: loadAdminPlaceholder },
+            {
+                path: '',
+                data: { title: 'الرئيسية' },
+                loadComponent: () =>
+                    import('./features/admin-panel/dashboard/admin-dashboard.component').then(
+                        (m) => m.AdminDashboardComponent,
+                    ),
+            },
+            {
+                path: 'restaurants',
+                data: { title: 'المطاعم' },
+                loadComponent: () =>
+                    import('./features/admin-panel/restaurants/admin-restaurants.component').then(
+                        (m) => m.AdminRestaurantsComponent,
+                    ),
+            },
             { path: 'users', data: { title: 'المستخدمين' }, loadComponent: loadAdminPlaceholder },
             { path: 'orders', data: { title: 'الطلبات' }, loadComponent: loadAdminPlaceholder },
             { path: 'reports', data: { title: 'التقارير' }, loadComponent: loadAdminPlaceholder },

@@ -49,7 +49,7 @@ src/
     ├── app.ts | app.html | app.config.ts | app.routes.ts
     ├── core/                      app-wide singletons
     │   ├── common-data/           CommonDateService – governments / cities / order-status… dropdown APIs
-    │   ├── constants/             dashboard-api.constants.ts (DASHBOARD_API_ENDPOINTS), files.constants.ts (FILES_ORIGIN)
+    │   ├── constants/             dashboard-api.constants.ts (DASHBOARD_API_ENDPOINTS), files.constants.ts (FILES_ORIGIN), app.constants.ts (APP_ID = 2), admin-api.constants.ts (ADMIN_API_ENDPOINTS)
     │   ├── environments/          environment.ts (apiUrl, filesUrl) – the only environment file
     │   ├── guards/                auth.guard.ts, loged.guard.ts
     │   ├── interceptors/          auth-interceptor.ts, loading.interceptor.ts
@@ -72,12 +72,14 @@ src/
         ├── home/                  landing page + sections, home cards, account-dropdown
         ├── restaurants/           directory, restaurant details (categories, products, ratings, add-rating modal), services/
         ├── menu-items/            product lists (most ordered) and product details page
-        ├── cart/                  cart page, cart-dropdown, cart-item-card, order-checkout, CartService
+        ├── cart/                  cart page, cart-dropdown, cart-item-card, order-checkout, CartService, MenuOrdersService (POST /MenusOrders = whole cart, /MenusOrders/Order/{menuId} = one restaurant); CheckoutContactService (addresses GET /Profile/GetAddressByUserId, POST /UsersAddress, DELETE /Profile/DeleteAddress/{id}; verified phones GET /PhoneVerifications/GetAllNumbersForUser/{APP_ID}); address-picker bottom sheet, address-form (add/edit, PUT /Profile/PutAddress/{id}; also used by profile), add-phone-dialog (also used by profile)
         ├── favorites/             favorites page, favorite-dropdown, FavoritesService
-        ├── my-orders/             customer order history
+        ├── search/                app-search-bar (navbar + mobile home) + result cards (search-restaurant-card, search-menu-item-card), utils/search-image-url
+        ├── my-orders/             customer order history, order-item-card, order-details sheet (from the list data), utils/ (status, date, image url)
         ├── notifications/         notifications page + dropdown, NotificationsService
         ├── offers/                pages/offers
-        ├── profile/               profile, addresses, password, ProfileService
+        ├── profile/               profile (info, verified phones, addresses via CheckoutContactService), password, ProfileService
+        ├── admin-panel/           platform admin pages: dashboard/ (GET /Admin/GetDashboardStats, stat tiles), restaurants/ (GET /Admin/GetAllMenu: search, government/city filters via shared app-form-select, pagination; components/restaurant-card, components/restaurant-edit-modal → GET /Admin/GetMenu/{id} + PUT /Admin/PutMenu/{id}; delete → DELETE /Admin/SoftDeleteMenu/{id}), utils/ (file url, time)
         └── dashboard/             owner back-office, one folder per sub-feature:
             ├── dashboard/         overview (DashboardService – restaurant, stats, current orders, sidebar nav)
             ├── menus/             menu details, categories, sub-categories, products, add-item, system-images modal
@@ -111,7 +113,7 @@ Login (user types in `core/constants/user-types.constants.ts`): platform admins 
 `/dashboard`, `/dashboard/menu`, `/dashboard/menu/details[/:id]`, `/dashboard/menu/categories[/:id]`, `/dashboard/menu/subcategories[/:id]`, `/dashboard/menu/subcategories/:id/products`, `/dashboard/menu/products`, `/dashboard/menu/add-item`, `/dashboard/orders`, `/dashboard/orders/:id`, `/dashboard/most-ordered`, `/dashboard/reports`, `/dashboard/support`.
 
 ### 5.4 `AdminPanelLayoutComponent` (platform admin) — `canActivate: [authGuard]`
-`/admin`, `/admin/restaurants`, `/admin/users`, `/admin/orders`, `/admin/reports`, `/admin/settings`. All currently render `features/admin/admin-placeholder` (title from route `data.title`); replace each `loadComponent` as real pages are built. The layout owns the mobile-drawer signal and passes it to `AdminSidebarComponent` via `input`/`output`; nav items live in the sidebar and reuse `SidebarNavItem` from `dashboard-layout/models`.
+`/admin`, `/admin/restaurants`, `/admin/users`, `/admin/orders`, `/admin/reports`, `/admin/settings`. `/admin` renders `features/admin-panel/dashboard` (platform stats), `/admin/restaurants` renders `features/admin-panel/restaurants`; the others still render `features/admin/admin-placeholder` (title from route `data.title`); replace each `loadComponent` as real pages are built. The layout owns the mobile-drawer signal and passes it to `AdminSidebarComponent` via `input`/`output`; nav items live in the sidebar and reuse `SidebarNavItem` from `dashboard-layout/models`.
 
 ---
 
@@ -130,7 +132,7 @@ Login (user types in `core/constants/user-types.constants.ts`): platform admins 
 | `CommonDateService` | `core/common-data/common-date.ts` | Lookup dropdowns (governments, cities, order status/types, fields, order conditions). |
 | `DashboardService` | `features/dashboard/dashboard/dashboard.service.ts` | Owner dashboard data, restaurant info, current orders mapping, sidebar navigation model; used by most dashboard pages and the dashboard layout. |
 
-Feature services (`CartService`, `FavoritesService`, `MenuItemService`, `RestaurantsService`, `ResuaurantProfileService`, `ClientsMenuService`, `NotificationsService`, `ProfileService`, `OrdersService`, `MenusService`, `MenuProductsService`, `MenuSubCategoriesService`, `AddMenuItemService`, `MostOrderedService`, `OwnerReportsService`, `SupportService`, `LoginService`, `RegisterService`, `PhoneVerificationService`) are `providedIn: 'root'` and keep their state in signals.
+Feature services (`CartService`, `MenuOrdersService`, `FavoritesService`, `MenuItemService`, `RestaurantsService`, `ResuaurantProfileService`, `ClientsMenuService`, `NotificationsService`, `ProfileService`, `OrdersService`, `MenusService`, `MenuProductsService`, `MenuSubCategoriesService`, `AddMenuItemService`, `MostOrderedService`, `OwnerReportsService`, `SupportService`, `LoginService`, `RegisterService`, `PhoneVerificationService`) are `providedIn: 'root'` and keep their state in signals.
 
 ---
 
@@ -147,6 +149,8 @@ Feature services (`CartService`, `FavoritesService`, `MenuItemService`, `Restaur
 | Skeletons | `app-menu-item-skeleton`, `app-rating-skeleton` | Loading placeholders. |
 
 Header dropdowns: `CartDropdownComponent`, `FavoriteDropdownComponent`, `NotificationDropdownComponent`, `AccountDropdownComponent` (all coordinated by `DropdownStateService`).
+
+Search: `SearchBarComponent` (`features/search/components/search-bar`, `app-search-bar`, `variant` `desktop`/`mobile`) is used in the desktop navbar and the mobile home hero. A type menu switches between restaurants (`ClientsMenuService.searchRestaurants` → `GET /ClientsMenus`) and products (`MenuItemService.searchProducts` → `GET /MenuProducts`); both send `SearchValue`/`PageNumber`/`PageSize` and return `PageData<SearchResultItem>`. Input is debounced (350 ms); the results list loads the next page on scroll. Its type menu and results panel are `DropdownStateService` ids `search-type-<variant>` / `search-results-<variant>`.
 
 ---
 

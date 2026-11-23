@@ -1,5 +1,5 @@
 <article (click)="onCardClick()"
-  class="bg-white rounded-2xl shadow-xs border border-gray-100 px-4 py-3  flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 cursor-pointer">
+  class="bg-white rounded-2xl shadow-2xs border border-gray-100 px-4 py-3  flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 cursor-pointer">
   <!-- Right Part: Icon + Text Info -->
   <div class="flex items-center gap-3.5 min-w-0 flex-1">
     <!-- Icon or Photo -->
@@ -22,11 +22,8 @@
     <div class="min-w-0 text-right space-y-1 flex-1">
       <!-- Top Line: Order Number + Status Badge + Unread Dot -->
       <div class="flex items-center gap-2">
-        @if (item().orderSerial) {
-        <span class=" text-slate-400 font-medium">طلب #{{ item().orderSerial }}</span>
-        }
 
-        <span class="text-sm px-2 py-1 rounded-md font-semibold" [ngClass]="statusConfig().badgeBg">
+        <span class="text-   px-2 py-1 rounded-md font-semibold" [ngClass]="statusConfig().badgeBg">
           {{ statusConfig().label }}
         </span>
 
@@ -36,9 +33,9 @@
       </div>
 
       <!-- Title -->
-      <h3 class="font-semibold text-slate-800 truncate">
+      <h4 class="font-semibold text-slate-800 truncate">
         {{ title() }}
-      </h3>
+      </h4>
 
       <!-- Description (Compact 1-line truncate) -->
       @if (description()) {

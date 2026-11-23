@@ -1,6 +1,6 @@
 <div class="w-full">
-  <!-- Viewport and Navigation Flex Container -->
-  <div class="flex items-center w-full gap-0 md:gap-2">
+  <!-- Viewport: content spans the full container width; arrows float over its edges -->
+  <div class="relative w-full">
     <!-- Right Arrow Button (>) -->
     @if (showArrows()) {
     <button
@@ -10,7 +10,7 @@
       (click)="onRightArrowClick()"
       [class.invisible]="!canScroll() && !moreComing()"
       [class.pointer-events-none]="!canScroll() && !moreComing()"
-      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-600 disabled:opacity-20 disabled:pointer-events-none cursor-pointer focus:outline-none transition-opacity"
+      class="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 z-10 h-9 w-9 items-center justify-center rounded-full bg-white shadow-md border border-gray-100 text-gray-600 disabled:opacity-0 disabled:pointer-events-none cursor-pointer focus:outline-none transition-opacity"
     >
       <span class="material-symbols-sharp select-none text-[26px] leading-none">chevron_right</span>
     </button>
@@ -19,7 +19,7 @@
     <!-- Scrollable Content Container -->
     <div
       #scrollContainer
-      class="@container scrollbar-hide flex-1 min-w-0 flex overflow-x-auto scroll-smooth snap-x snap-proximity py-2 select-none"
+      class="@container scrollbar-hide w-full min-w-0 flex overflow-x-auto scroll-smooth snap-x snap-proximity py-2 select-none"
       style="overflow-anchor: none; container-type: inline-size; -webkit-overflow-scrolling: touch"
       [dir]="isRtl() ? 'rtl' : 'ltr'"
       (scroll)="onScroll()"
@@ -46,7 +46,7 @@
       (click)="onLeftArrowClick()"
       [class.invisible]="!canScroll() && !moreComing()"
       [class.pointer-events-none]="!canScroll() && !moreComing()"
-      class="hidden md:flex shrink-0 h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-gray-600 disabled:opacity-20 disabled:pointer-events-none cursor-pointer focus:outline-none transition-opacity"
+      class="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 z-10 h-9 w-9 items-center justify-center rounded-full bg-white shadow-md border border-gray-100 text-gray-600 disabled:opacity-0 disabled:pointer-events-none cursor-pointer focus:outline-none transition-opacity"
     >
       <span class="material-symbols-sharp select-none text-[26px] leading-none">chevron_left</span>
     </button>

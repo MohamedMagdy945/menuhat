@@ -1,0 +1,153 @@
+<div class="relative w-full">
+  <!-- Bar (one pill): search icon | input | clear | type toggle (left in RTL) -->
+  <div
+    class="relative flex items-center bg-white border border-gray-100 rounded-full"
+    [class]="isMobile() ? 'h-12 pr-3.5 pl-1.5 shadow-sm' : 'h-12 pr-4 pl-1.5 shadow-lg'"
+  >
+    <!-- Search icon -->
+    <span
+      class="material-symbols-sharp text-xl leading-none select-none text-slate-400 shrink-0"
+      aria-hidden="true"
+      >search</span
+    >
+
+    <!-- Search Input -->
+    <input
+      #searchInput
+      type="text"
+      autocomplete="off"
+      aria-label="بحث"
+      [placeholder]="type() === 'restaurants' ? 'ابحث عن مطعم' : 'ابحث عن منتج'"
+      [value]="query()"
+      (input)="onInput($any($event.target).value)"
+      (keydown.enter)="onEnter($event)"
+      (focus)="onFocus()"
+      class="flex-1 min-w-0 h-full px-2.5 select-text bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none"
+      [class]="isMobile() ? 'font-medium' : 'font-normal'"
+    />
+
+    <!-- Clear button -->
+    @if (query()) {
+      <button
+        type="button"
+        (click)="clear()"
+        aria-label="مسح البحث"
+        class="shrink-0 px-1.5 flex items-center text-slate-400 cursor-pointer"
+      >
+        <span
+          class="material-symbols-sharp text-[22px] leading-none select-none"
+          style="font-variation-settings: 'FILL' 1"
+          aria-hidden="true"
+          >cancel</span
+        >
+      </button>
+    }
+
+    <!-- Divider -->
+    <span class="shrink-0 w-px h-6 bg-gray-200 mx-1" aria-hidden="true"></span>
+
+    <!-- Search Type Toggle -->
+    <button
+      type="button"
+      (click)="toggleTypeMenu($event)"
+      [attr.aria-label]="type() === 'restaurants' ? 'البحث في المطاعم' : 'البحث في المنتجات'"
+      [attr.aria-expanded]="isTypeMenuOpen()"
+      class="shrink-0 w-9 h-9 flex items-center justify-center rounded-full bg-orange-50 text-orange-500 cursor-pointer select-none"
+    >
+      <span class="material-symbols-sharp text-xl leading-none select-none" aria-hidden="true">
+        {{ type() === 'restaurants' ? 'storefront' : 'fastfood' }}
+      </span>
+    </button>
+
+    @if (isTypeMenuOpen()) {
+      <div
+        role="menu"
+        class="absolute top-full left-0 mt-2 w-44 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 text-right"
+      >
+        <button
+          type="button"
+          role="menuitemradio"
+          [attr.aria-checked]="type() === 'restaurants'"
+          (click)="selectType('restaurants')"
+          class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold cursor-pointer"
+          [class]="type() === 'restaurants' ? 'text-orange-500' : 'text-slate-800'"
+        >
+          <span
+            class="material-symbols-sharp text-2xl leading-none select-none"
+            [class]="type() === 'restaurants' ? 'text-orange-500' : 'text-slate-500'"
+            aria-hidden="true"
+            >storefront</span
+          >
+          <span>مطاعم</span>
+        </button>
+
+        <button
+          type="button"
+          role="menuitemradio"
+          [attr.aria-checked]="type() === 'products'"
+          (click)="selectType('products')"
+          class="w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold cursor-pointer"
+          [class]="type() === 'products' ? 'text-orange-500' : 'text-slate-800'"
+        >
+          <span
+            class="material-symbols-sharp text-2xl leading-none select-none"
+            [class]="type() === 'products' ? 'text-orange-500' : 'text-slate-500'"
+            aria-hidden="true"
+            >fastfood</span
+          >
+          <span>منتجات</span>
+        </button>
+      </div>
+    }
+  </div>
+
+  <!-- Results Panel -->
+  @if (isResultsOpen()) {
+    <div
+      class="bg-white rounded-2xl border border-gray-100 overflow-hidden text-right"
+      [class]="
+        isMobile() ? 'relative mt-3 shadow-sm' : 'absolute top-full inset-x-0 mt-2 z-50 shadow-xl'
+      "
+    >
+      @if (isLoading()) {
+        <div class="py-10 flex flex-col items-center justify-center gap-2.5 text-slate-400 text-xs">
+          <span
+            class="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"
+          ></span>
+          <span class="font-medium">جاري البحث...</span>
+        </div>
+      } @else if (results().length === 0) {
+        <div class="py-10 flex flex-col items-center justify-center gap-2 text-slate-400">
+          <span class="material-symbols-sharp text-4xl leading-none select-none" aria-hidden="true"
+            >search_off</span
+          >
+          <span class="text-sm font-medium">لا توجد نتائج</span>
+        </div>
+      } @else {
+        <ul
+          class="overflow-y-auto px-4"
+          [class]="isMobile() ? 'max-h-[55vh]' : 'max-h-96'"
+          (scroll)="onResultsScroll($event)"
+        >
+          @for (item of results(); track item.id) {
+            <li class="border-b border-gray-100 last:border-b-0">
+              @if (type() === 'restaurants') {
+                <app-search-restaurant-card [restaurant]="item" />
+              } @else {
+                <app-search-menu-item-card [menuItem]="item" />
+              }
+            </li>
+          }
+
+          @if (isLoadingMore()) {
+            <li class="py-3 flex items-center justify-center">
+              <span
+                class="h-5 w-5 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"
+              ></span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  }
+</div>

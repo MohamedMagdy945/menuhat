@@ -1,0 +1,186 @@
+@if (order(); as order) {
+  <div
+    class="fixed inset-0 z-50 bg-black/40 flex items-end sm:items-center justify-center sm:p-4"
+    (click)="close()"
+  >
+    <div
+      class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-xl max-h-[90vh] flex flex-col overflow-hidden text-right"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-label="تفاصيل الطلب"
+    >
+      <!-- Handle -->
+      <div class="pt-3 flex justify-center sm:hidden shrink-0">
+        <span class="w-12 h-1.5 rounded-full bg-gray-200"></span>
+      </div>
+
+      <!-- Header -->
+      <div
+        class="flex items-center justify-between gap-3 px-5 pt-4 pb-3 border-b border-gray-100 shrink-0"
+      >
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div
+            class="w-9 h-9 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0"
+          >
+            <span class="material-symbols-sharp text-xl leading-none" aria-hidden="true"
+              >receipt_long</span
+            >
+          </div>
+          <div class="min-w-0">
+            <h2 class="text-base font-semibold text-slate-800">تفاصيل الطلب</h2>
+            <p class="text-xs text-slate-400 truncate">
+              طلب #{{ order.serialOrder || order.menuOrdersId }}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="close()"
+          class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer shrink-0"
+          aria-label="إغلاق"
+        >
+          <span class="material-symbols-sharp text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="flex-1 overflow-y-auto p-5 space-y-4">
+        <!-- Restaurant & Status -->
+        <div class="flex items-center gap-3">
+          <div
+            class="w-14 h-14 p-1 rounded-2xl bg-slate-50 border border-slate-100 shrink-0 overflow-hidden"
+          >
+            <img
+              [src]="logoUrl()"
+              [alt]="order.clientName || 'مطعم'"
+              (error)="onImageError($event, '/images/default-restaurant.png')"
+              class="w-full h-full object-cover rounded-xl"
+            />
+          </div>
+          <div class="flex-1 min-w-0 space-y-1">
+            <h3 class="font-semibold text-slate-800 truncate">
+              {{ order.clientName?.trim() || 'اسم المطعم' }}
+            </h3>
+            @if (formattedDate()) {
+              <p class="flex items-center gap-1 text-xs text-slate-400">
+                <span class="material-symbols-sharp text-[14px]" aria-hidden="true">schedule</span>
+                <span>{{ formattedDate() }}</span>
+              </p>
+            }
+          </div>
+          <span
+            class="text-xs px-3 py-1.5 rounded-xl font-semibold shrink-0"
+            [ngClass]="statusConfig().classes"
+            >{{ statusLabel() }}</span
+          >
+        </div>
+
+        <!-- Order info -->
+        <div class="grid grid-cols-2 gap-2.5">
+          @if (orderType(); as type) {
+            <div class="p-3 rounded-xl bg-slate-50 border border-gray-100">
+              <p class="text-xs text-slate-400 mb-1">نوع الطلب</p>
+              <p class="flex items-center gap-1.5 text-sm font-semibold text-slate-800">
+                <span class="material-symbols-sharp text-base text-orange-500" aria-hidden="true">{{
+                  type.icon
+                }}</span>
+                <span>{{ type.label }}</span>
+              </p>
+            </div>
+          }
+          <div class="p-3 rounded-xl bg-slate-50 border border-gray-100">
+            <p class="text-xs text-slate-400 mb-1">عدد الأصناف</p>
+            <p class="text-sm font-semibold text-slate-800">{{ itemsCount() }}</p>
+          </div>
+        </div>
+
+        <!-- Cancellation reason -->
+        @if (isCancelled() && order.refuseReason) {
+          <div
+            class="p-3 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 text-xs font-medium flex items-start gap-2"
+          >
+            <span class="material-symbols-sharp text-base leading-none shrink-0" aria-hidden="true"
+              >info</span
+            >
+            <span>سبب الإلغاء: {{ order.refuseReason }}</span>
+          </div>
+        }
+
+        <!-- Items -->
+        <div>
+          <h4 class="text-sm font-semibold text-slate-800 mb-2">الأصناف</h4>
+          @if (lines().length === 0) {
+            <p class="py-6 text-center text-xs text-slate-400">لا توجد تفاصيل للأصناف</p>
+          } @else {
+            <ul class="rounded-2xl border border-gray-100 divide-y divide-gray-100">
+              @for (line of lines(); track line.id) {
+                <li class="flex items-center gap-3 p-3">
+                  <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden shrink-0">
+                    <img
+                      [src]="line.imageUrl"
+                      [alt]="line.name"
+                      loading="lazy"
+                      (error)="onImageError($event, '/images/default-meal.png')"
+                      class="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-slate-800 truncate">{{ line.name }}</p>
+                    <p class="text-xs text-slate-400">
+                      @if (line.size) {
+                        <span>{{ line.size }} • </span>
+                      }
+                      <span>{{ line.quantity }} × {{ line.price | number: '1.0-2' }} ج.م</span>
+                    </p>
+                  </div>
+                  <span class="text-sm font-semibold text-slate-800 shrink-0"
+                    >{{ line.total | number: '1.0-2' }} ج.م</span
+                  >
+                </li>
+              }
+            </ul>
+          }
+        </div>
+
+        <!-- Notes -->
+        @if (order.notes) {
+          <div class="p-3 rounded-xl bg-slate-50 border border-gray-100">
+            <p class="text-xs text-slate-400 mb-1">ملاحظات</p>
+            <p class="text-sm text-slate-700">{{ order.notes }}</p>
+          </div>
+        }
+
+        <!-- Total -->
+        <div
+          class="p-3.5 rounded-xl bg-orange-50/60 border border-orange-100 flex items-center justify-between"
+        >
+          <span class="text-sm font-semibold text-slate-700">الإجمالي</span>
+          <span class="text-base font-semibold text-orange-500"
+            >{{ total() | number: '1.0-2' }} ج.م</span
+          >
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="p-4 border-t border-gray-100 shrink-0 flex items-center gap-2">
+        @if (canCancel()) {
+          <button
+            type="button"
+            (click)="onCancel()"
+            class="flex-1 py-3 rounded-xl bg-red-50 text-red-500 font-semibold text-sm cursor-pointer"
+          >
+            إلغاء الطلب
+          </button>
+        }
+        <button
+          type="button"
+          (click)="close()"
+          class="flex-1 py-3 rounded-xl bg-white border border-gray-200 text-slate-700 font-semibold text-sm cursor-pointer"
+        >
+          إغلاق
+        </button>
+      </div>
+    </div>
+  </div>
+}

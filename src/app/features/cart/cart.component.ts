@@ -29,33 +29,25 @@ export class CartComponent implements OnInit {
   readonly cartItems = this._cartService.cartItems;
   readonly cartCount = this._cartService.cartCount;
 
-  // Fixed service fee and tax rate (14%)
-  readonly serviceFeeAmount = 25;
-  readonly taxRate = 0.14;
-
-  // Group items by Restaurant / Branch (clientName)
+  // Group items by restaurant menu (each group can be ordered on its own)
   readonly groupedItems = computed<RestaurantCartGroup[]>(() => {
-    const items = this.cartItems();
-    const map = new Map<string, CartMenuItem[]>();
+    const map = new Map<number | string, CartMenuItem[]>();
 
-    for (const item of items) {
-      const key = item.clientName?.trim() || 'المطعم';
+    for (const item of this.cartItems()) {
+      const key = item.menuId || item.clientName?.trim() || 'المطعم';
       if (!map.has(key)) {
         map.set(key, []);
       }
       map.get(key)!.push(item);
     }
 
-    const groups: RestaurantCartGroup[] = [];
-    for (const [clientName, groupItems] of map.entries()) {
-      groups.push({
-        clientName,
-        serial: groupItems[0]?.serial || '',
-        items: groupItems,
-      });
-    }
-
-    return groups;
+    return [...map.values()].map((groupItems) => ({
+      menuId: groupItems[0].menuId,
+      clientName: groupItems[0].clientName?.trim() || 'المطعم',
+      serial: groupItems[0].serial || '',
+      items: groupItems,
+      subtotal: groupItems.reduce((acc, item) => acc + item.total, 0),
+    }));
   });
 
   // Invoice calculations — based on all cart items
@@ -63,15 +55,8 @@ export class CartComponent implements OnInit {
     this.cartItems().reduce((acc, item) => acc + item.total, 0)
   );
 
-  readonly serviceFee = computed<number>(() =>
-    this.cartItems().length > 0 ? this.serviceFeeAmount : 0
-  );
-
-  readonly vat = computed<number>(() => this.subtotal() * this.taxRate);
-
-  readonly grandTotal = computed<number>(
-    () => this.subtotal() + this.serviceFee() + this.vat()
-  );
+  // No service fee or VAT: the total is the sum of the items.
+  readonly grandTotal = this.subtotal;
 
   ngOnInit(): void {
     if (!this.isLoggedIn()) {
@@ -163,6 +148,17 @@ export class CartComponent implements OnInit {
   }
 
   readonly isCheckoutModalOpen = signal<boolean>(false);
+  /** Restaurant being ordered on its own; null = order the whole cart. */
+  readonly checkoutGroup = signal<RestaurantCartGroup | null>(null);
+
+  readonly checkoutTotal = computed<number>(() => {
+    const group = this.checkoutGroup();
+    return group ? group.subtotal : this.grandTotal();
+  });
+
+  readonly checkoutItemCount = computed<number>(
+    () => this.checkoutGroup()?.items.length ?? this.cartItems().length
+  );
 
   addToCart(items: AddCartItem[]): void {
     this._cartService.AddItemsAndRefreshCart(items).subscribe({
@@ -170,16 +166,22 @@ export class CartComponent implements OnInit {
     });
   }
 
+  /** Orders every restaurant in the cart (POST /MenusOrders). */
   checkout(): void {
     if (this.cartItems().length === 0) return;
+    this.checkoutGroup.set(null);
+    this.isCheckoutModalOpen.set(true);
+  }
+
+  /** Orders only this restaurant's items (POST /MenusOrders/Order/{menuId}). */
+  checkoutRestaurant(group: RestaurantCartGroup): void {
+    if (!group.menuId || group.items.length === 0) return;
+    this.checkoutGroup.set(group);
     this.isCheckoutModalOpen.set(true);
   }
 
   closeCheckoutModal(): void {
     this.isCheckoutModalOpen.set(false);
-  }
-
-  onOrderSuccess(): void {
-    this.isCheckoutModalOpen.set(false);
+    this.checkoutGroup.set(null);
   }
 }

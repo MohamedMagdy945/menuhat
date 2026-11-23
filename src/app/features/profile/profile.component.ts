@@ -3,36 +3,37 @@ import {
   Component,
   OnInit,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
   FormsModule,
   ReactiveFormsModule,
   FormBuilder,
   FormGroup,
-  FormControl,
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ProfileService } from './services/profile.service';
 import { UserDataService } from '../../core/services/userData.service';
-import { UserAddress } from './models/user-address.model';
-import { environment } from '../../core/environments/environment';
+import { ToastService } from '../../core/services/toast.service';
 import { FormInputComponent } from '../../shared/components/form-input/form-input.component';
 import { FaqItem } from './models/faq-item.model';
 import { FILES_ORIGIN } from '../../core/constants/files.constants';
+import { CheckoutContactService } from '../cart/checkout-contact.service';
+import { CheckoutAddress } from '../cart/models/checkout-address.model';
+import { AddressFormComponent } from '../cart/components/address-form/address-form.component';
+import { AddPhoneDialogComponent } from '../cart/components/add-phone-dialog/add-phone-dialog.component';
+
 @Component({
   selector: 'app-profile',
-  standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterLink,
     FormInputComponent,
+    AddressFormComponent,
+    AddPhoneDialogComponent,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -41,92 +42,48 @@ import { FILES_ORIGIN } from '../../core/constants/files.constants';
 export class ProfileComponent implements OnInit {
   protected readonly profileService = inject(ProfileService);
   protected readonly userDataService = inject(UserDataService);
-  private readonly router = inject(Router);
-  private readonly fb = inject(FormBuilder);
+  private readonly _contactService = inject(CheckoutContactService);
+  private readonly _toast = inject(ToastService);
+  private readonly _router = inject(Router);
+  private readonly _fb = inject(FormBuilder);
 
-  // Status & feedback
-  readonly isSaving = signal<boolean>(false);
-  readonly successMessage = signal<string | null>(null);
-  readonly errorMessage = signal<string | null>(null);
+  readonly isSaving = signal(false);
 
-  // Modal / interactive state signals
-  readonly isEditingName = signal<boolean>(false);
-  readonly isChangePasswordOpen = signal<boolean>(false);
-  readonly isAddressModalOpen = signal<boolean>(false);
-  readonly editingAddress = signal<UserAddress | null>(null);
-  readonly isFaqOpen = signal<boolean>(false);
-  readonly isComplaintOpen = signal<boolean>(false);
-  readonly complaintSubmitted = signal<boolean>(false);
+  // Name editing
+  readonly isEditingName = signal(false);
+  readonly nameDraft = signal('');
 
-  // Image load error fallback
-  readonly avatarLoadError = signal<boolean>(false);
+  // Modals
+  readonly isChangePasswordOpen = signal(false);
+  readonly isAddressModalOpen = signal(false);
+  readonly editingAddress = signal<CheckoutAddress | null>(null);
+  readonly isAddPhoneOpen = signal(false);
+  readonly isFaqOpen = signal(false);
+  readonly isComplaintOpen = signal(false);
+  readonly complaintSubmitted = signal(false);
 
-  // Fallback demo addresses
-  private readonly defaultAddresses: UserAddress[] = [
-    {
-      id: 1,
-      title: 'المنزل',
-      type: 'home',
-      address: 'شارع 9، مبنى 45، شقة 12، الطابق الرابع، المعادي، القاهرة - بجوار محطة المترو',
-    },
-    {
-      id: 2,
-      title: 'العمل',
-      type: 'work',
-      address: 'القرية الذكية، مبنى B12، الدور الثاني، مكتب التقنية طريق القاهرة الإسكندرية الصحراوي، الجيزة',
-    },
-  ];
+  readonly deletingAddressId = signal<number | null>(null);
+  readonly avatarLoadError = signal(false);
 
-  // Profile shared form-input controls
-  readonly fullNameControl = new FormControl<string>(
-    { value: '', disabled: true },
-    {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(3)],
-    },
-  );
-
-  readonly usernameControl = new FormControl<string>(
-    { value: '', disabled: true },
-    { nonNullable: true },
-  );
-
-  readonly emailControl = new FormControl<string>(
-    { value: '', disabled: true },
-    { nonNullable: true },
-  );
-
-  readonly mobileControl = new FormControl<string>(
-    { value: '', disabled: true },
-    { nonNullable: true },
-  );
-
-  readonly passwordForm: FormGroup = this.fb.group(
+  readonly passwordForm: FormGroup = this._fb.group(
     {
       oldPassword: ['', [Validators.required]],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPass: ['', [Validators.required]],
     },
     {
-      validators: (group: FormGroup) => {
-        const pass = group.get('newPassword')?.value;
-        const confirm = group.get('confirmPass')?.value;
-        return pass === confirm ? null : { mismatch: true };
-      },
+      validators: (group: FormGroup) =>
+        group.get('newPassword')?.value === group.get('confirmPass')?.value
+          ? null
+          : { mismatch: true },
     },
   );
 
-  readonly addressForm: FormGroup = this.fb.group({
-    title: ['المنزل', [Validators.required]],
-    address: ['', [Validators.required, Validators.minLength(6)]],
-  });
-
-  readonly complaintForm: FormGroup = this.fb.group({
+  readonly complaintForm: FormGroup = this._fb.group({
     subject: ['خدمة التوصيل', [Validators.required]],
     details: ['', [Validators.required, Validators.minLength(10)]],
   });
 
-  // FAQ items
   readonly faqs = signal<FaqItem[]>([
     {
       question: 'ما هي مواعيد توصيل الطلبات؟',
@@ -135,140 +92,94 @@ export class ProfileComponent implements OnInit {
     },
     {
       question: 'كيف يمكنني متابعة حالة طلبي بعد التأكيد؟',
-      answer: 'يمكنك متابعة حالة الطلب خطوة بخطوة من شاشة "طلباتي"، حيث يظهر لك تحديث فوري لمرحلة التحضير وخروج المندوب.',
+      answer: 'يمكنك متابعة حالة الطلب من صفحة "طلباتي"، حيث يظهر لك تحديث لحالة الطلب أولاً بأول.',
       isOpen: false,
     },
     {
       question: 'ما هي وسائل الدفع المعتمدة؟',
-      answer: 'نوفر الدفع نقداً عند الاستلام، وكذلك الدفع الإلكتروني الآمن بواسطة بطاقات فيزا، ماستركارد، ومحافظ الهاتف الذكي.',
+      answer: 'الدفع نقداً عند الاستلام، وتكلفة التوصيل يحددها المطعم.',
       isOpen: false,
     },
     {
-      question: 'هل يمكنني تعديل العنوان أو إلغاء الطلب؟',
-      answer: 'يمكنك تعديل العنوان أو طلب الإلغاء قبل بدء المطعم في تحضير الوجبة من خلال التواصل السريع مع فريق الدعم الفني.',
+      question: 'هل يمكنني إلغاء الطلب؟',
+      answer: 'يمكنك إلغاء الطلب من صفحة "طلباتي" طالما أنه ما زال في انتظار قبول المطعم.',
       isOpen: false,
     },
   ]);
 
-  // Support numbers
-  readonly supportPhones = ['122223333222', '122223333222', '122223333222'];
+  // Support numbers (placeholder until the real numbers are provided)
+  readonly supportPhones = ['122223333222'];
 
-  // Computed data
+  // ---------- Profile data ----------
+  readonly profile = this.profileService.profile;
+  readonly addresses = this._contactService.addresses;
+  readonly isLoadingAddresses = this._contactService.isLoadingAddresses;
+  readonly phones = this._contactService.phones;
+  readonly isLoadingPhones = this._contactService.isLoadingPhones;
+
+  readonly userFullName = computed(
+    () => this.profile()?.fullName || this.userDataService.getUserFullName() || '',
+  );
+  readonly username = computed(() => this.profile()?.username || '');
+  readonly userEmail = computed(() => this.profile()?.email || '');
+  readonly userInitial = computed(() => this.userFullName().trim().charAt(0) || '؟');
+  /** Only when a photo actually loads (a broken photo falls back to the initial). */
+  readonly hasPhoto = computed(() => !!this.avatarUrl());
+
   readonly avatarUrl = computed(() => {
     if (this.avatarLoadError()) return '';
-    const prof = this.profileService.profile();
-    if (prof?.photo?.base64String) {
-      return prof.photo.base64String;
-    }
-    if (prof?.photoURL) {
-      if (prof.photoURL.startsWith('http://') || prof.photoURL.startsWith('https://')) {
-        return prof.photoURL;
-      }
-      const baseUrl = FILES_ORIGIN;
-      const cleanPath = prof.photoURL.startsWith('/') ? prof.photoURL : `/${prof.photoURL}`;
-      return `${baseUrl}${cleanPath}`;
-    }
-    return '';
+    const prof = this.profile();
+    if (prof?.photo?.base64String) return prof.photo.base64String;
+    const url = prof?.photoURL;
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    return `${FILES_ORIGIN}${url.startsWith('/') ? url : `/${url}`}`;
   });
 
-  readonly userFullName = computed(() => {
-    return this.profileService.profile()?.fullName || this.userDataService.getUserFullName() || 'عبد الرحمن';
-  });
+  ngOnInit(): void {
+    if (!this.userDataService.getToken()) return;
 
-  readonly username = computed(() => {
-    const u = this.profileService.profile()?.username;
-    if (u) return u;
-    const email = this.profileService.profile()?.email;
-    if (email) return email.split('@')[0];
-    return 'abdo';
-  });
-
-  readonly userEmail = computed(() => {
-    return this.profileService.profile()?.email || 'mr.kamer2000@gmail.com';
-  });
-
-  readonly userMobile = computed(() => {
-    return this.profileService.profile()?.mobile || '+20 120 843 4909';
-  });
-
-  readonly userInitial = computed(() => {
-    const name = this.userFullName();
-    return name.trim().charAt(0) || 'ع';
-  });
-
-  readonly addresses = computed<UserAddress[]>(() => {
-    const list = this.profileService.addresses();
-    if (list && list.length > 0) {
-      return list;
-    }
-    return this.defaultAddresses;
-  });
-
-  constructor() {
-    // Keep form controls in sync with reactive profile signals
-    effect(() => {
-      const name = this.userFullName();
-      if (!this.isEditingName()) {
-        this.fullNameControl.setValue(name);
-      }
-      const uname = this.username();
-      this.usernameControl.setValue(uname ? `@${uname}` : '@abdo');
-      this.emailControl.setValue(this.userEmail());
-      this.mobileControl.setValue(this.userMobile());
+    this.profileService.loadProfile().subscribe();
+    this._contactService.loadAddresses().subscribe({
+      error: (err) => console.error('Failed to load addresses:', err),
+    });
+    this._contactService.loadPhones().subscribe({
+      error: (err) => console.error('Failed to load phone numbers:', err),
     });
   }
 
-  ngOnInit(): void {
-    if (!this.userDataService.getToken()) {
-      return;
-    }
-
-    this.profileService.loadProfile().subscribe();
-    this.profileService.loadAddresses().subscribe();
-  }
-
-  // Edit name actions
+  // ---------- Name ----------
   startEditingName(): void {
-    this.fullNameControl.setValue(this.userFullName());
-    this.fullNameControl.enable();
+    this.nameDraft.set(this.userFullName());
     this.isEditingName.set(true);
-    this.clearMessages();
   }
 
   cancelEditingName(): void {
-    this.fullNameControl.setValue(this.userFullName());
-    this.fullNameControl.disable();
     this.isEditingName.set(false);
   }
 
   saveFullName(): void {
-    if (this.fullNameControl.invalid) return;
-
-    const newName = this.fullNameControl.value.trim();
-    if (!newName) return;
+    const newName = this.nameDraft().trim();
+    if (newName.length < 3 || this.isSaving()) return;
 
     this.isSaving.set(true);
-    this.clearMessages();
-
     this.profileService.updateProfile({ fullName: newName }).subscribe({
       next: () => {
         this.isSaving.set(false);
-        this.fullNameControl.disable();
         this.isEditingName.set(false);
-        this.successMessage.set('تم تعديل الاسم بالكامل بنجاح');
+        this._toast.success('تم تعديل الاسم بنجاح');
       },
       error: (err) => {
         this.isSaving.set(false);
-        this.errorMessage.set(err?.error?.message || 'تعذر تعديل الاسم، يرجى المحاولة مرة أخرى');
+        this._toast.error(err?.error?.message || 'تعذر تعديل الاسم، يرجى المحاولة مرة أخرى');
       },
     });
   }
 
-  // Change Password actions
+  // ---------- Password ----------
   openChangePassword(): void {
     this.passwordForm.reset();
     this.isChangePasswordOpen.set(true);
-    this.clearMessages();
   }
 
   closeChangePassword(): void {
@@ -282,37 +193,32 @@ export class ProfileComponent implements OnInit {
     }
 
     this.isSaving.set(true);
-    this.clearMessages();
-
     const { oldPassword, newPassword, confirmPass } = this.passwordForm.value;
 
     this.profileService.changePassword({ oldPassword, newPassword, confirmPass }).subscribe({
       next: () => {
         this.isSaving.set(false);
         this.isChangePasswordOpen.set(false);
-        this.successMessage.set('تم تغيير كلمة المرور بنجاح');
         this.passwordForm.reset();
+        this._toast.success('تم تغيير كلمة المرور بنجاح');
       },
       error: (err) => {
         this.isSaving.set(false);
-        this.errorMessage.set(err?.error?.message || 'فشل تغيير كلمة المرور، يرجى التأكد من كلمة المرور الحالية');
+        this._toast.error(
+          err?.error?.message || 'فشل تغيير كلمة المرور، يرجى التأكد من كلمة المرور الحالية',
+        );
       },
     });
   }
 
-  // Address actions
+  // ---------- Addresses ----------
   openAddAddress(): void {
     this.editingAddress.set(null);
-    this.addressForm.reset({ title: 'المنزل', address: '' });
     this.isAddressModalOpen.set(true);
   }
 
-  openEditAddress(addr: UserAddress): void {
-    this.editingAddress.set(addr);
-    this.addressForm.patchValue({
-      title: addr.title || 'المنزل',
-      address: addr.address || '',
-    });
+  openEditAddress(address: CheckoutAddress): void {
+    this.editingAddress.set(address);
     this.isAddressModalOpen.set(true);
   }
 
@@ -321,67 +227,40 @@ export class ProfileComponent implements OnInit {
     this.editingAddress.set(null);
   }
 
-  saveAddress(): void {
-    if (this.addressForm.invalid) {
-      this.addressForm.markAllAsTouched();
-      return;
-    }
-
-    const { title, address } = this.addressForm.value;
-    const current = this.editingAddress();
-
-    if (current) {
-      this.profileService.updateAddress({
-        ...current,
-        title,
-        address,
-      });
-      this.successMessage.set('تم تحديث العنوان بنجاح');
-    } else {
-      this.profileService.addAddress({
-        id: Date.now(),
-        title,
-        type: title === 'العمل' ? 'work' : 'home',
-        address,
-      });
-      this.successMessage.set('تمت إضافة العنوان الجديد بنجاح');
-    }
-
-    this.closeAddressModal();
-  }
-
-  deleteAddress(id?: number): void {
-    if (!id) return;
+  deleteAddress(address: CheckoutAddress): void {
+    if (this.deletingAddressId() !== null) return;
     if (!confirm('هل أنت متأكد من حذف هذا العنوان؟')) return;
 
-    this.profileService.deleteAddress(id);
-    this.successMessage.set('تم حذف العنوان بنجاح');
+    this.deletingAddressId.set(address.id);
+    this._contactService.deleteAddress(address.id).subscribe({
+      next: () => {
+        this.deletingAddressId.set(null);
+        this._toast.success('تم حذف العنوان');
+      },
+      error: (err) => {
+        console.error('Failed to delete address:', err);
+        this.deletingAddressId.set(null);
+        this._toast.error('تعذر حذف العنوان، حاول مرة أخرى');
+      },
+    });
   }
 
-  // FAQ Modal actions
-  openFaqModal(): void {
-    this.isFaqOpen.set(true);
+  addressLocation(address: CheckoutAddress): string {
+    return [address.govenmentName_Ar, address.cityName_Ar].filter(Boolean).join(' - ');
   }
 
-  closeFaqModal(): void {
-    this.isFaqOpen.set(false);
-  }
-
+  // ---------- FAQ ----------
   toggleFaq(index: number): void {
     this.faqs.update((items) =>
       items.map((item, i) => (i === index ? { ...item, isOpen: !item.isOpen } : item)),
     );
   }
 
-  // Complaint Modal actions
+  // ---------- Complaint ----------
   openComplaintModal(): void {
     this.complaintForm.reset({ subject: 'خدمة التوصيل', details: '' });
     this.complaintSubmitted.set(false);
     this.isComplaintOpen.set(true);
-  }
-
-  closeComplaintModal(): void {
-    this.isComplaintOpen.set(false);
   }
 
   submitComplaint(): void {
@@ -392,33 +271,27 @@ export class ProfileComponent implements OnInit {
 
     this.complaintSubmitted.set(true);
     setTimeout(() => {
-      this.closeComplaintModal();
-      this.successMessage.set('شكراً لك، تم استلام شكواك وسيتواصل معك فريق الدعم قريباً.');
+      this.isComplaintOpen.set(false);
+      this._toast.success('شكراً لك، تم استلام شكواك وسيتواصل معك فريق الدعم قريباً.');
     }, 1200);
   }
 
-  // Avatar upload & delete
+  // ---------- Avatar ----------
   onAvatarChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (!input.files || input.files.length === 0) return;
+    const file = input.files?.[0];
+    if (!file) return;
 
-    const file = input.files[0];
     const reader = new FileReader();
-
     reader.onload = () => {
-      const base64String = reader.result as string;
       this.avatarLoadError.set(false);
-      this.profileService.updatePhoto(base64String).subscribe({
-        next: () => {
-          this.successMessage.set('تم تحديث الصورة الشخصية بنجاح');
-        },
-        error: () => {
-          this.errorMessage.set('فشل رفع الصورة الشخصية');
-        },
+      this.profileService.updatePhoto(reader.result as string).subscribe({
+        next: () => this._toast.success('تم تحديث الصورة الشخصية'),
+        error: () => this._toast.error('فشل رفع الصورة الشخصية'),
       });
     };
-
     reader.readAsDataURL(file);
+    input.value = '';
   }
 
   onImageError(): void {
@@ -431,21 +304,14 @@ export class ProfileComponent implements OnInit {
     this.profileService.deletePhoto().subscribe({
       next: () => {
         this.avatarLoadError.set(false);
-        this.successMessage.set('تمت إزالة الصورة الشخصية');
+        this._toast.success('تمت إزالة الصورة الشخصية');
       },
-      error: () => {
-        this.errorMessage.set('فشل حذف الصورة');
-      },
+      error: () => this._toast.error('فشل حذف الصورة'),
     });
   }
 
   logout(): void {
     this.userDataService.clearUserData();
-    this.router.navigate(['/login']);
-  }
-
-  private clearMessages(): void {
-    this.successMessage.set(null);
-    this.errorMessage.set(null);
+    this._router.navigate(['/login']);
   }
 }

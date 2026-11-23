@@ -5,6 +5,7 @@ import { CartDropdownComponent } from '../../../../features/cart/components/cart
 import { FavoriteDropdownComponent } from '../../../../features/favorites/components/favorite-dropdown/favorite-dropdown.component';
 import { NotificationDropdownComponent } from '../../../../features/notifications/components/notification-dropdown/notification-dropdown.component';
 import { AccountDropdownComponent } from '../../../../features/home/components/account-dropdown/account-dropdown.component';
+import { SearchBarComponent } from '../../../../features/search/components/search-bar/search-bar.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,6 +17,7 @@ import { AccountDropdownComponent } from '../../../../features/home/components/a
     FavoriteDropdownComponent,
     CartDropdownComponent,
     AccountDropdownComponent,
+    SearchBarComponent,
   ],
   selector: 'app-desktop-navbar',
   styleUrl: './desktop-navbar.component.css',

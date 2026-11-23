@@ -1,13 +1,21 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IOrder } from '../cart/models/i-order.model';
 import { CartService } from '../cart/cart.service';
 import { CommonDateService } from '../../core/common-data/common-date';
 import { OrderItemCardComponent } from './components/order-item-card/order-item-card.component';
+import { OrderDetailsComponent } from './components/order-details/order-details.component';
 import { FilterTab } from './models/filter-tab.model';
 @Component({
   selector: 'app-my-orders',
-  imports: [CommonModule, OrderItemCardComponent],
+  imports: [CommonModule, OrderItemCardComponent, OrderDetailsComponent],
   templateUrl: './my-orders.component.html',
   styleUrl: './my-orders.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +28,12 @@ export class MyOrdersComponent implements OnInit {
   readonly isLoading = signal<boolean>(true);
   readonly activeStatus = signal<number>(0);
   readonly searchQuery = signal<string>('');
+
+  /** Order shown in the details sheet (null = closed). */
+  private readonly selectedOrderId = signal<number | null>(null);
+  readonly selectedOrder = computed<IOrder | null>(
+    () => this.ordersList().find((o) => o.menuOrdersId === this.selectedOrderId()) ?? null,
+  );
 
   readonly filterTabs = signal<FilterTab[]>([
     { label: 'الكل', value: 0 },
@@ -50,7 +64,7 @@ export class MyOrdersComponent implements OnInit {
         (order) =>
           order.serialOrder?.toLowerCase().includes(query) ||
           order.clientName?.toLowerCase().includes(query) ||
-          String(order.menuOrdersId).includes(query)
+          String(order.menuOrdersId).includes(query),
       );
     }
 
@@ -109,6 +123,10 @@ export class MyOrdersComponent implements OnInit {
   }
 
   onViewDetails(orderId: number): void {
-    console.log('View order details:', orderId);
+    this.selectedOrderId.set(orderId);
+  }
+
+  closeDetails(): void {
+    this.selectedOrderId.set(null);
   }
 }

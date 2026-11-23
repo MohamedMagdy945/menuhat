@@ -88,7 +88,7 @@
     </div>
   } @else if (favoritesService.favorites().length > 0) {
     <!-- Favorites Grid -->
-    <div class="grid  sm:gap-5 grid-cols-2 md:grid-cols-4  lg:grid-cols-5 xl:grid-cols-8">
+    <div class="grid gap-2 md:gap-5 grid-cols-2 md:grid-cols-4  lg:grid-cols-5 xl:grid-cols-8">
       @for (item of filteredFavorites(); track item.id) {
         <app-favorite-item-card [item]="item" />
       } @empty {

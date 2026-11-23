@@ -1,0 +1,150 @@
+@if (isOpen()) {
+  <div
+    class="fixed inset-0 z-[60] bg-black/40 flex items-end sm:items-center justify-center sm:p-4"
+    (click)="close()"
+  >
+    <!-- Sheet (bottom sheet on mobile, centered card on larger screens) -->
+    <div
+      class="bg-white w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl shadow-xl max-h-[85vh] flex flex-col overflow-hidden text-right"
+      (click)="$event.stopPropagation()"
+      role="dialog"
+      aria-modal="true"
+      aria-label="عنوان التوصيل"
+    >
+      <!-- Handle -->
+      <div class="pt-3 flex justify-center sm:hidden shrink-0">
+        <span class="w-12 h-1.5 rounded-full bg-gray-200"></span>
+      </div>
+
+      <!-- Header -->
+      <div class="flex items-center gap-3 px-5 pt-4 pb-3 shrink-0">
+        <div
+          class="w-12 h-12 rounded-full bg-orange-50 text-orange-500 flex items-center justify-center shrink-0"
+        >
+          <span
+            class="material-symbols-sharp text-2xl leading-none select-none"
+            style="font-variation-settings: 'FILL' 1"
+            aria-hidden="true"
+            >location_on</span
+          >
+        </div>
+        <div class="flex-1 min-w-0">
+          <h2 class="text-lg font-semibold text-slate-800">عنوان التوصيل</h2>
+          <p class="text-xs text-slate-400">اختر عنوان محفوظ أو أضف عنوان جديد</p>
+        </div>
+        <button
+          type="button"
+          (click)="close()"
+          class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center cursor-pointer shrink-0"
+          aria-label="إغلاق"
+        >
+          <span class="material-symbols-sharp text-[18px]">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="flex-1 overflow-y-auto px-5 pb-4 space-y-3">
+        @if (isAdding()) {
+          <!-- Add address form -->
+          <div class="rounded-2xl border border-orange-200 p-4 space-y-3">
+            <h3 class="text-sm font-semibold text-slate-800">عنوان جديد</h3>
+            <app-address-form
+              [cancellable]="addresses().length > 0"
+              (saved)="onAddressSaved($event)"
+              (cancelled)="isAdding.set(false)"
+            />
+          </div>
+        } @else {
+          <button
+            type="button"
+            (click)="openAddForm()"
+            class="w-full py-3 rounded-xl border border-orange-500 text-orange-500 font-semibold text-sm cursor-pointer"
+          >
+            إضافة عنوان جديد
+          </button>
+        }
+
+        @if (isLoading() && addresses().length === 0) {
+          <div class="py-8 flex items-center justify-center">
+            <span
+              class="h-6 w-6 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"
+            ></span>
+          </div>
+        }
+
+        <!-- Saved addresses -->
+        @for (address of addresses(); track address.id) {
+          <div
+            role="radio"
+            tabindex="0"
+            [attr.aria-checked]="pendingId() === address.id"
+            (click)="select(address.id)"
+            (keydown.enter)="select(address.id)"
+            (keydown.space)="$event.preventDefault(); select(address.id)"
+            class="flex items-start gap-3 p-4 rounded-2xl border cursor-pointer"
+            [class]="
+              pendingId() === address.id
+                ? 'border-orange-500 bg-orange-50/60'
+                : 'border-gray-100 bg-white'
+            "
+          >
+            <!-- Radio -->
+            <span
+              class="mt-0.5 w-6 h-6 shrink-0 rounded-full border-2 flex items-center justify-center"
+              [class]="pendingId() === address.id ? 'border-orange-500' : 'border-gray-300'"
+              aria-hidden="true"
+            >
+              @if (pendingId() === address.id) {
+                <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+              }
+            </span>
+
+            <!-- Details -->
+            <div class="flex-1 min-w-0 flex flex-col gap-1.5">
+              <span class="font-semibold text-slate-800 truncate">{{
+                address.fullName || 'عنوان'
+              }}</span>
+              @if (locationLine(address)) {
+                <span class="text-sm text-slate-600">{{ locationLine(address) }}</span>
+              }
+              @if (address.address) {
+                <span class="text-xs text-slate-400 break-words">{{ address.address }}</span>
+              }
+            </div>
+
+            <!-- Delete -->
+            <button
+              type="button"
+              (click)="deleteAddress(address, $event)"
+              [disabled]="deletingId() !== null"
+              class="bg-red-50 text-red-500 rounded-full w-9 h-9 shrink-0 flex items-center justify-center cursor-pointer disabled:opacity-50"
+              aria-label="حذف العنوان"
+            >
+              @if (deletingId() === address.id) {
+                <span
+                  class="h-4 w-4 animate-spin rounded-full border-2 border-red-500 border-t-transparent"
+                ></span>
+              } @else {
+                <span class="material-symbols-sharp text-lg leading-none">delete</span>
+              }
+            </button>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      @if (!isAdding()) {
+        <div class="p-4 border-t border-gray-100 shrink-0">
+          <button
+            type="button"
+            (click)="confirm()"
+            [disabled]="!pendingId()"
+            class="w-full py-3.5 rounded-full bg-orange-500 text-white font-semibold text-base cursor-pointer disabled:opacity-50"
+          >
+            تأكيد العنوان
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}
