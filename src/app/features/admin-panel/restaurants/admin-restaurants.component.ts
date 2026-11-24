@@ -19,21 +19,25 @@ import { AdminRestaurantRow } from './models/admin-restaurant-row.model';
 import { resolveAdminFileUrl } from '../utils/admin-file-url';
 import { formatWorkingHours } from '../utils/admin-time';
 import { ToastService } from '../../../core/services/toast.service';
+import { SearchInputComponent } from '../../../shared/components/search-input/search-input.component';
 import { FormSelectComponent } from '../../../shared/components/form-select/form-select.component';
 import { FormSelectOption } from '../../../shared/models/form-select-option.model';
+import { Router, RouterLink } from '@angular/router';
 import { AdminRestaurantCardComponent } from './components/restaurant-card/restaurant-card.component';
-import { AdminRestaurantEditModalComponent } from './components/restaurant-edit-modal/restaurant-edit-modal.component';
+import { ConfirmModalComponent } from './modals/confirm-modal/confirm-modal.component';
 
 const PAGE_SIZE = 20;
 
 @Component({
   selector: 'app-admin-restaurants',
   imports: [
+    SearchInputComponent,
     DecimalPipe,
     FormsModule,
     FormSelectComponent,
+    RouterLink,
     AdminRestaurantCardComponent,
-    AdminRestaurantEditModalComponent,
+    ConfirmModalComponent,
   ],
   templateUrl: './admin-restaurants.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +46,7 @@ export class AdminRestaurantsComponent implements OnInit {
   private readonly _restaurantsService = inject(AdminRestaurantsService);
   private readonly _commonData = inject(CommonDateService);
   private readonly _toast = inject(ToastService);
+  private readonly _router = inject(Router);
 
   // Data
   readonly menus = signal<AdminMenu[]>([]);
@@ -58,9 +63,13 @@ export class AdminRestaurantsComponent implements OnInit {
   readonly governments = signal<DropdownItem[]>([]);
   readonly cities = signal<DropdownItem[]>([]);
 
-  // Edit / delete
-  readonly editingMenu = signal<AdminMenu | null>(null);
+  // Delete
   readonly deletingId = signal<number | null>(null);
+  /** Restaurant waiting for confirmation in the confirm modal. */
+  readonly pendingDelete = signal<AdminMenu | null>(null);
+  readonly deleteMessage = computed(
+    () => `هل أنت متأكد من حذف "${this.pendingDelete()?.clientName ?? ''}"؟ يمكن استعادته لاحقًا.`,
+  );
 
   /** Options for the shared app-form-select; value 0 = "all". */
   readonly governmentOptions = computed<FormSelectOption[]>(() => [
@@ -205,23 +214,28 @@ export class AdminRestaurantsComponent implements OnInit {
   }
 
   // ---------- Edit / delete ----------
+  /** GetMenus / GetMenu do not return the address, so pass it to the edit page. */
   openEdit(menu: AdminMenu): void {
-    this.editingMenu.set(menu);
+    this._router.navigate(['/admin/restaurants', menu.serial, 'edit'], {
+      state: { address: menu.address ?? '' },
+    });
   }
 
-  onEditSaved(): void {
-    this.editingMenu.set(null);
-    this.load();
-  }
-
+  /** Opens the confirm modal; the delete runs from `confirmDelete()`. */
   deleteMenu(menu: AdminMenu): void {
     if (this.deletingId() !== null) return;
-    if (!confirm(`هل أنت متأكد من حذف "${menu.clientName}"؟`)) return;
+    this.pendingDelete.set(menu);
+  }
+
+  confirmDelete(): void {
+    const menu = this.pendingDelete();
+    if (!menu || this.deletingId() !== null) return;
 
     this.deletingId.set(menu.menuId);
     this._restaurantsService.softDeleteMenu(menu.menuId).subscribe({
       next: () => {
         this.deletingId.set(null);
+        this.pendingDelete.set(null);
         this._toast.success('تم حذف المطعم');
         // Stay on a valid page if this was the last card of the last page.
         const lastOnPage = this.menus().length === 1 && this.page() > 1;
@@ -230,6 +244,7 @@ export class AdminRestaurantsComponent implements OnInit {
       error: (err) => {
         console.error('Failed to delete menu:', err);
         this.deletingId.set(null);
+        this.pendingDelete.set(null);
         this._toast.error(err?.error?.message || 'تعذر حذف المطعم');
       },
     });

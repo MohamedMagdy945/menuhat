@@ -24,37 +24,39 @@
       </div>
     </div>
 
-    <button
-      type="button"
-      (click)="load()"
-      [disabled]="isLoading()"
-      class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs w-fit disabled:opacity-50"
-    >
-      <span
-        class="material-symbols-sharp text-base text-slate-500"
-        [class.animate-spin]="isLoading()"
-        >refresh</span
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        (click)="load()"
+        [disabled]="isLoading()"
+        class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl cursor-pointer flex items-center gap-1.5 shadow-xs w-fit disabled:opacity-50"
       >
-      <span>تحديث</span>
-    </button>
+        <span
+          class="material-symbols-sharp text-base text-slate-500"
+          [class.animate-spin]="isLoading()"
+          >refresh</span
+        >
+        <span>تحديث</span>
+      </button>
+      <a
+        routerLink="/admin/restaurants/new"
+        class="bg-orange-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-xs w-fit"
+      >
+        <span class="material-symbols-sharp text-base">add</span>
+        <span>إضافة مطعم</span>
+      </a>
+    </div>
   </div>
 
   <!-- Filters (shared app-form-select for the dropdowns) -->
-  <div class="bg-white rounded-2xl p-4 pb-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-3">
-    <div class="relative mb-4.5 sm:col-span-2 lg:col-span-2">
-      <span
-        class="material-symbols-sharp absolute inset-y-0 right-3.5 flex items-center text-[20px] text-slate-400 pointer-events-none"
-        >search</span
-      >
-      <input
-        type="text"
-        [ngModel]="search()"
-        (ngModelChange)="onSearch($event)"
-        placeholder="ابحث باسم المطعم..."
-        aria-label="بحث"
-        class="h-12 w-full pr-11 pl-4 rounded-2xl border-[1.5px] border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-[13px] placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white"
-      />
-    </div>
+  <div class="rounded-2xl p-4 pb-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-3">
+    <app-search-input
+      class="mb-4.5 sm:col-span-2 lg:col-span-2"
+      [value]="search()"
+      (valueChange)="onSearch($event)"
+      placeholder="ابحث باسم المطعم..."
+      [loading]="isLoading()"
+    />
 
     <app-form-select
       [ngModel]="governmentId() ?? 0"
@@ -134,7 +136,7 @@
   } @else {
     <!-- Restaurant cards -->
     <div
-      class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-8"
+      class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5"
       [class.opacity-60]="isLoading()"
     >
       @for (row of rows(); track row.menu.menuId) {
@@ -194,12 +196,15 @@
     }
   }
 
-  <!-- Edit restaurant -->
-  @if (editingMenu(); as menu) {
-    <app-admin-restaurant-edit-modal
-      [menu]="menu"
-      (saved)="onEditSaved()"
-      (closed)="editingMenu.set(null)"
-    />
-  }
+  <!-- Delete confirmation -->
+  <app-confirm-modal
+    [open]="!!pendingDelete()"
+    title="حذف المطعم"
+    [message]="deleteMessage()"
+    confirmText="حذف"
+    icon="delete"
+    [loading]="deletingId() !== null"
+    (confirmed)="confirmDelete()"
+    (cancelled)="pendingDelete.set(null)"
+  />
 </div>

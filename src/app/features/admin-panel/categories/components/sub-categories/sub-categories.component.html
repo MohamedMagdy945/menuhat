@@ -1,0 +1,181 @@
+<div class="space-y-5 max-w-6xl pt-12 lg:pt-0">
+  <!-- Page header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+    <div class="flex items-center gap-3.5 min-w-0">
+      <a
+        routerLink="/admin/categories"
+        class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-600 flex items-center justify-center shrink-0"
+        aria-label="رجوع إلى الأقسام"
+        title="رجوع"
+      >
+        <span class="material-symbols-sharp text-[22px]">arrow_forward</span>
+      </a>
+      <div
+        class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 overflow-hidden flex items-center justify-center shrink-0 shadow-xs"
+      >
+        @if (mainPhoto()) {
+          <img
+            [src]="mainPhoto()"
+            [alt]="main()?.menuMainCategoryName || ''"
+            class="w-full h-full object-cover"
+          />
+        } @else {
+          <span class="material-symbols-sharp text-2xl text-orange-500">account_tree</span>
+        }
+      </div>
+      <div class="min-w-0">
+        <div class="flex items-center gap-2.5">
+          <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 truncate">
+            الأقسام الفرعية
+          </h1>
+          @if (itemsCount() > 0) {
+            <span
+              class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-50 text-orange-600 border border-orange-100 shrink-0"
+            >
+              {{ itemsCount() | number }}
+            </span>
+          }
+        </div>
+        <p class="text-xs sm:text-sm text-slate-400 mt-0.5 truncate">
+          @if (main(); as m) {
+            {{ m.menuMainCategoryName || 'فارغ' }} · {{ m.clientName || 'فارغ' }}
+          } @else {
+            تحميل القسم الرئيسي...
+          }
+        </p>
+      </div>
+    </div>
+
+    @if (!mainNotFound()) {
+      <div class="flex items-center gap-2">
+        <a
+          [routerLink]="['/admin/categories', mainId, 'edit']"
+          class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-xs w-fit"
+        >
+          <span class="material-symbols-sharp text-base text-slate-500">edit</span>
+          <span>تعديل القسم الرئيسي</span>
+        </a>
+        <a
+          [routerLink]="['/admin/categories', mainId, 'subcategories', 'new']"
+          class="bg-orange-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-xs w-fit"
+        >
+          <span class="material-symbols-sharp text-base">add</span>
+          <span>إضافة قسم فرعي</span>
+        </a>
+      </div>
+    }
+  </div>
+
+  @if (mainNotFound()) {
+    <div class=" rounded-2xl p-10 text-center space-y-3">
+      <span class="material-symbols-sharp text-4xl text-slate-300">search_off</span>
+      <p class="text-sm font-semibold text-slate-700">لم يتم العثور على هذا القسم</p>
+      <a
+        routerLink="/admin/categories"
+        class="inline-block bg-orange-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl"
+      >
+        العودة إلى الأقسام
+      </a>
+    </div>
+  } @else {
+    <!-- Search -->
+    <div class="rounded-2xl p-4">
+      <app-search-input
+        [value]="search()"
+        (valueChange)="onSearch($event)"
+        placeholder="ابحث في الأقسام الفرعية..."
+        [loading]="isLoading()"
+      />
+    </div>
+
+    @if (error()) {
+      <div class="bg-white rounded-2xl p-8 text-center space-y-3">
+        <span class="material-symbols-sharp text-4xl text-rose-400">error</span>
+        <p class="text-sm font-semibold text-slate-700">{{ error() }}</p>
+        <button
+          type="button"
+          (click)="load()"
+          class="bg-orange-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl cursor-pointer"
+        >
+          إعادة المحاولة
+        </button>
+      </div>
+    } @else if (isLoading() && tiles().length === 0) {
+      <div class="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden">
+        <div class="h-10 bg-slate-50"></div>
+        <div>
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            <div class="flex items-center gap-3 px-4 py-3">
+              <span class="w-8 h-5 rounded-md bg-slate-100 animate-pulse shrink-0"></span>
+              <span class="w-10 h-10 rounded-lg bg-slate-100 animate-pulse shrink-0"></span>
+              <div class="flex-1 space-y-1.5">
+                <span class="block h-3 w-1/3 rounded bg-slate-100 animate-pulse"></span>
+                <span class="block h-2.5 w-1/4 rounded bg-slate-100 animate-pulse"></span>
+              </div>
+              <span class="w-24 h-8 rounded-lg bg-slate-100 animate-pulse shrink-0"></span>
+            </div>
+          }
+        </div>
+      </div>
+    } @else if (tiles().length === 0) {
+      <div class="bg-white rounded-2xl p-10 text-center space-y-3">
+        <span class="material-symbols-sharp text-4xl text-slate-300">account_tree</span>
+        <p class="text-sm font-semibold text-slate-600">
+          {{ search().trim() ? 'لا توجد نتائج' : 'لا توجد أقسام فرعية لهذا القسم بعد' }}
+        </p>
+        @if (!search().trim()) {
+          <a
+            [routerLink]="['/admin/categories', mainId, 'subcategories', 'new']"
+            class="inline-flex items-center gap-1.5 bg-orange-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl"
+          >
+            <span class="material-symbols-sharp text-base">add</span>
+            <span>إضافة قسم فرعي</span>
+          </a>
+        }
+      </div>
+    } @else {
+      <app-admin-category-table
+        [rows]="tiles()"
+        subtitleLabel="الوصف"
+        [deletingId]="deletingId()"
+        [loading]="isLoading()"
+        (delete)="askDelete($event)"
+      />
+
+      @if (totalPages() > 1) {
+        <nav class="flex items-center justify-center gap-2" aria-label="الصفحات">
+          <button
+            type="button"
+            (click)="goToPage(page() - 1)"
+            [disabled]="page() === 1 || isLoading()"
+            class="w-9 h-9 rounded-xl bg-white text-slate-600 flex items-center justify-center cursor-pointer disabled:opacity-40"
+            aria-label="الصفحة السابقة"
+          >
+            <span class="material-symbols-sharp text-[20px]">chevron_right</span>
+          </button>
+          <span class="text-sm text-slate-500">{{ page() }} / {{ totalPages() }}</span>
+          <button
+            type="button"
+            (click)="goToPage(page() + 1)"
+            [disabled]="page() === totalPages() || isLoading()"
+            class="w-9 h-9 rounded-xl bg-white text-slate-600 flex items-center justify-center cursor-pointer disabled:opacity-40"
+            aria-label="الصفحة التالية"
+          >
+            <span class="material-symbols-sharp text-[20px]">chevron_left</span>
+          </button>
+        </nav>
+      }
+    }
+  }
+
+  <app-confirm-modal
+    [open]="!!pendingDelete()"
+    title="حذف القسم الفرعي"
+    [message]="deleteMessage()"
+    confirmText="حذف"
+    icon="delete"
+    [loading]="deletingId() !== null"
+    (confirmed)="confirmDelete()"
+    (cancelled)="pendingDelete.set(null)"
+  />
+</div>

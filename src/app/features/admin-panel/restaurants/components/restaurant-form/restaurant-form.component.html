@@ -1,0 +1,406 @@
+<div class="space-y-5 pt-12 lg:pt-0">
+  <!-- Page header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-1">
+    <div class="flex items-center gap-3.5 min-w-0">
+      <a
+        routerLink="/admin/restaurants"
+        class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-600 flex items-center justify-center shrink-0"
+        aria-label="رجوع إلى المطاعم"
+        title="رجوع"
+      >
+        <span class="material-symbols-sharp text-[22px]">arrow_forward</span>
+      </a>
+      <div
+        class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs"
+      >
+        <span class="material-symbols-sharp text-2xl text-orange-500">{{
+          isEdit ? 'edit_square' : 'add_business'
+        }}</span>
+      </div>
+      <div class="min-w-0">
+        <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">
+          {{ isEdit ? 'تعديل المطعم' : 'إضافة مطعم' }}
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-0.5 truncate">
+          @if (isEdit) {
+            {{ summary()?.clientName || 'تحميل بيانات المطعم...' }}
+          } @else if (nextNumber()) {
+            سيتم إنشاء المطعم برقم #{{ nextNumber() }}
+          } @else {
+            إنشاء منيو جديد وربطه بحساب صاحب المطعم
+          }
+        </p>
+      </div>
+    </div>
+  </div>
+
+  @if (notFound()) {
+    <div class="bg-white rounded-2xl p-10 text-center space-y-3">
+      <span class="material-symbols-sharp text-4xl text-slate-300">search_off</span>
+      <p class="text-sm font-semibold text-slate-700">لم يتم العثور على هذا المطعم</p>
+      <a
+        routerLink="/admin/restaurants"
+        class="inline-block bg-orange-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl"
+      >
+        العودة إلى المطاعم
+      </a>
+    </div>
+  } @else {
+    <!-- Summary (edit) -->
+    @if (summary(); as s) {
+      <div
+        class="bg-white rounded-2xl p-4 shadow-xs flex flex-col md:flex-row md:items-center gap-4"
+      >
+        <div class="flex items-center gap-3 flex-1 min-w-0">
+          <div
+            class="w-14 h-14 rounded-xl bg-orange-50 overflow-hidden flex items-center justify-center shrink-0"
+          >
+            @if (logo()) {
+              <img [src]="logo()" [alt]="s.clientName" class="w-full h-full object-contain" />
+            } @else {
+              <span class="material-symbols-sharp text-2xl text-orange-500">storefront</span>
+            }
+          </div>
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <h2 class="font-semibold text-slate-800 truncate">{{ s.clientName }}</h2>
+              <span
+                class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
+                [class]="s.isOpen ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500'"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                {{ s.isOpen ? 'مفتوح' : 'مغلق' }}
+              </span>
+              <span
+                class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
+                [class]="s.isVisable ? 'bg-sky-50 text-sky-600' : 'bg-slate-100 text-slate-500'"
+              >
+                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                {{ s.isVisable ? 'ظاهر' : 'مخفي' }}
+              </span>
+            </div>
+            <p class="text-sm text-slate-400 truncate">
+              #{{ s.no }} · {{ s.serial }}
+              @if (summaryLocation()) {
+                · {{ summaryLocation() }}
+              }
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 md:w-[28rem] shrink-0">
+          <div class="rounded-xl bg-slate-50 p-2.5">
+            <p class="text-xs text-slate-500">الأقسام</p>
+            <p class="mt-1 text-sm font-semibold text-slate-800">
+              {{ categoriesCount() | number }}
+            </p>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-2.5">
+            <p class="text-xs text-slate-500">المنتجات</p>
+            <p class="mt-1 text-sm font-semibold text-slate-800">{{ productsCount() | number }}</p>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-2.5">
+            <p class="text-xs text-slate-500">الزيارات</p>
+            <p class="mt-1 text-sm font-semibold text-slate-800">{{ s.visitsCount | number }}</p>
+          </div>
+          <div class="rounded-xl bg-slate-50 p-2.5">
+            <p class="text-xs text-slate-500">التقييم</p>
+            <p class="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-800">
+              <span class="material-symbols-sharp text-[16px] text-amber-400">star</span>
+              {{ s.rate ?? 0 | number: '1.0-1' }}
+            </p>
+          </div>
+        </div>
+
+        <a
+          [href]="'/restaurants/' + s.serial"
+          target="_blank"
+          rel="noopener"
+          class="inline-flex items-center justify-center gap-1.5 bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-2 rounded-xl shrink-0"
+        >
+          <span class="material-symbols-sharp text-[18px]">open_in_new</span>
+          <span>صفحة المطعم</span>
+        </a>
+      </div>
+    }
+
+    <form
+      [formGroup]="form"
+      (ngSubmit)="save()"
+      class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start"
+      [class.opacity-60]="isLoading()"
+    >
+      <!-- Main fields -->
+      <div
+        class="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-5 shadow-xs divide-y divide-slate-100"
+      >
+        @if (!isEdit) {
+          <div class="py-5 first:pt-0 last:pb-0">
+            <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+              <span class="material-symbols-sharp text-[20px] text-orange-500">person</span>
+              صاحب المطعم
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+              <app-form-input
+                formControlName="userId"
+                label="رقم المستخدم (المالك)"
+                placeholder="مثال: 1069"
+                type="number"
+                [customErrors]="userIdErrors"
+              >
+                <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                  >badge</span
+                >
+              </app-form-input>
+
+              <label
+                class="flex items-center justify-between gap-3 h-12 mt-0 sm:mt-7 mb-4.5 px-4 rounded-2xl border-[1.5px] border-slate-200 bg-slate-50 cursor-pointer"
+              >
+                <span class="flex items-center gap-2 text-sm font-medium text-slate-700">
+                  <span class="material-symbols-sharp text-[20px] text-slate-400">visibility</span>
+                  ظاهر للعملاء
+                </span>
+                <input
+                  type="checkbox"
+                  formControlName="isVisable"
+                  class="w-5 h-5 accent-orange-500 cursor-pointer"
+                />
+              </label>
+            </div>
+            <p class="text-xs text-slate-400 -mt-2">
+              يجب أن يكون المستخدم صاحب مطعم وليس لديه منيو بالفعل.
+            </p>
+          </div>
+        }
+
+        <div class="py-5 first:pt-0 last:pb-0">
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">storefront</span>
+            البيانات الأساسية
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            <app-form-input
+              formControlName="clientName"
+              label="اسم المطعم"
+              placeholder="اسم المطعم"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >storefront</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="clientName_En"
+              label="الاسم بالإنجليزية"
+              placeholder="Restaurant name"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >translate</span
+              >
+            </app-form-input>
+
+            <app-form-select
+              formControlName="fieldId"
+              label="النشاط"
+              placeholder="اختر النشاط"
+              [options]="fieldOptions()"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >category</span
+              >
+            </app-form-select>
+
+            <app-form-select
+              formControlName="orderConditionId"
+              label="شروط الطلب"
+              placeholder="اختر شرط الطلب"
+              [options]="orderConditionOptions()"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >rule</span
+              >
+            </app-form-select>
+          </div>
+        </div>
+
+        <div class="py-5 first:pt-0 last:pb-0">
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">location_on</span>
+            الموقع
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            <app-form-select
+              formControlName="governmentId"
+              label="المحافظة"
+              placeholder="اختر المحافظة"
+              [options]="governmentOptions()"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >map</span
+              >
+            </app-form-select>
+
+            <app-form-select
+              formControlName="cityId"
+              label="المدينة"
+              placeholder="اختر المدينة"
+              [options]="cityOptions()"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >location_city</span
+              >
+            </app-form-select>
+
+            <app-form-input
+              formControlName="address"
+              label="العنوان"
+              placeholder="العنوان بالتفصيل"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >home_pin</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="address_En"
+              label="العنوان بالإنجليزية"
+              placeholder="Address"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >home_pin</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="latitude"
+              label="خط العرض (اختياري)"
+              placeholder="30.0444"
+              [customErrors]="coordinateErrors"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >my_location</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="longitude"
+              label="خط الطول (اختياري)"
+              placeholder="31.2357"
+              [customErrors]="coordinateErrors"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >my_location</span
+              >
+            </app-form-input>
+          </div>
+        </div>
+
+        <div class="py-5 first:pt-0 last:pb-0">
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">schedule</span>
+            ساعات العمل والملاحظات
+            @if (summaryHours()) {
+              <span class="text-xs font-medium text-slate-400">(الحالي: {{ summaryHours() }})</span>
+            }
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            <app-form-input formControlName="fromTime" label="يفتح من" type="time">
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >schedule</span
+              >
+            </app-form-input>
+
+            <app-form-input formControlName="toTime" label="يغلق في" type="time">
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >schedule</span
+              >
+            </app-form-input>
+
+            <div class="sm:col-span-2">
+              <app-form-input
+                formControlName="notes"
+                label="ملاحظات"
+                placeholder="ملاحظات (اختياري)"
+              >
+                <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                  >sticky_note_2</span
+                >
+              </app-form-input>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Media + actions -->
+      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-xs space-y-5 lg:sticky lg:top-4">
+        <div>
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">photo_library</span>
+            الملفات
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">
+            {{
+              isEdit
+                ? 'يتم حفظ الشعار وملف المنيو فور رفعهما أو حذفهما.'
+                : 'سيتم رفع الملفات مع إنشاء المطعم.'
+            }}
+          </p>
+        </div>
+
+        <app-admin-restaurant-media-field
+          label="الشعار"
+          hint="صورة حتى 5 ميجابايت"
+          icon="image"
+          accept="image/*"
+          [url]="logo()"
+          [busy]="logoBusy()"
+          [disabled]="isLoading() || isSaving()"
+          (fileSelected)="onFileSelected('logo', $event)"
+          (remove)="onFileRemove('logo')"
+        />
+
+        <app-admin-restaurant-media-field
+          label="ملف المنيو"
+          hint="PDF أو صورة"
+          icon="menu_book"
+          accept="application/pdf,image/*"
+          [url]="pdf()"
+          [busy]="pdfBusy()"
+          [disabled]="isLoading() || isSaving()"
+          (fileSelected)="onFileSelected('pdf', $event)"
+          (remove)="onFileRemove('pdf')"
+        />
+        <div class="pt-5 border-t border-slate-100 space-y-2">
+          <app-loading-button
+            type="submit"
+            [text]="isEdit ? 'حفظ التعديلات' : 'إضافة المطعم'"
+            loadingText="جاري الحفظ..."
+            [loading]="isSaving()"
+            [disabled]="isLoading() || logoBusy() || pdfBusy()"
+            [showArrow]="false"
+          />
+          <a
+            routerLink="/admin/restaurants"
+            class="flex items-center justify-center bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-3 rounded-xl"
+          >
+            إلغاء
+          </a>
+        </div>
+      </section>
+    </form>
+  }
+
+  <!-- File delete confirmation -->
+  <app-confirm-modal
+    [open]="!!pendingRemove()"
+    [title]="pendingRemove() === 'pdf' ? 'حذف ملف المنيو' : 'حذف الشعار'"
+    [message]="
+      pendingRemove() === 'pdf' ? 'سيتم حذف ملف المنيو نهائيًا.' : 'سيتم حذف شعار المطعم نهائيًا.'
+    "
+    confirmText="حذف"
+    icon="delete"
+    [loading]="logoBusy() || pdfBusy()"
+    (confirmed)="confirmFileRemove()"
+    (cancelled)="pendingRemove.set(null)"
+  />
+</div>

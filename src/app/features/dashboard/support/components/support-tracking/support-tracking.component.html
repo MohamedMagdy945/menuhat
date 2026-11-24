@@ -6,7 +6,7 @@
 
       <!-- Table Header -->
       <thead>
-        <tr class="border-b border-gray-100 bg-slate-50/60 text-slate-400 text-xs font-bold">
+        <tr class="border-b border-gray-100 bg-slate-50/60 text-slate-400 text-sm font-bold">
           <th scope="col" class="py-4 px-6">رقم الشكوى</th>
           <th scope="col" class="py-4 px-6">عنوان المشكلة</th>
           <th scope="col" class="py-4 px-6">رقم الهاتف</th>
@@ -23,7 +23,7 @@
 
             <!-- 1. رقم الشكوى (#IC-1042 Badge) -->
             <td class="py-4 px-6 whitespace-nowrap">
-              <span class="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold bg-orange-50 text-orange-600 border border-orange-100">
+              <span class="inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold bg-orange-50 text-orange-600 border border-orange-100">
                 {{ item.code }}
               </span>
             </td>
@@ -37,7 +37,7 @@
 
             <!-- 3. رقم الهاتف -->
             <td class="py-4 px-6 whitespace-nowrap">
-              <div class="flex items-center gap-1.5 text-xs text-slate-600 font-semibold" dir="ltr">
+              <div class="flex items-center gap-1.5 text-sm text-slate-600 font-semibold" dir="ltr">
                 <span>{{ item.phone }}</span>
                 <span class="material-symbols-sharp text-sm text-slate-400 select-none">call</span>
               </div>
@@ -45,7 +45,7 @@
 
             <!-- 4. تاريخ الإرسال -->
             <td class="py-4 px-6 whitespace-nowrap">
-              <div class="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+              <div class="flex items-center gap-1.5 text-sm text-slate-400 font-medium">
                 <span class="material-symbols-sharp text-sm text-slate-400 select-none">schedule</span>
                 <span>{{ item.date }}</span>
               </div>
@@ -55,37 +55,37 @@
             <td class="py-4 px-6 whitespace-nowrap text-center">
               @switch (item.status) {
                 @case ('قيد المعالجة') {
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-600 border border-amber-200">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-amber-50 text-amber-600 border border-amber-200">
                     <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                     <span>قيد المعالجة</span>
                   </span>
                 }
                 @case ('مستلم') {
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-600 border border-blue-200">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-blue-50 text-blue-600 border border-blue-200">
                     <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
                     <span>مستلم</span>
                   </span>
                 }
                 @case ('تم الحل') {
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
                     <span>تم الحل</span>
                   </span>
                 }
                 @case ('رفض') {
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-600 border border-rose-200">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-rose-50 text-rose-600 border border-rose-200">
                     <span class="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
                     <span>رفض</span>
                   </span>
                 }
                 @case ('قبول') {
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-600 border border-teal-200">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-teal-50 text-teal-600 border border-teal-200">
                     <span class="w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0"></span>
                     <span>قبول</span>
                   </span>
                 }
                 @default {
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-bold bg-slate-100 text-slate-600 border border-slate-200">
                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"></span>
                     <span>{{ item.status }}</span>
                   </span>
@@ -98,7 +98,7 @@
               <button
                 type="button"
                 (click)="openDetails(item)"
-                class="inline-flex items-center gap-1 text-xs font-bold text-orange-500 cursor-pointer transition-none"
+                class="inline-flex items-center gap-1 text-sm font-bold text-orange-500 cursor-pointer transition-none"
               >
                 <span class="material-symbols-sharp text-base select-none">visibility</span>
                 <span>عرض التفاصيل</span>
@@ -111,7 +111,7 @@
             <td colspan="6" class="py-12 text-center text-slate-400">
               <span class="material-symbols-sharp text-4xl text-slate-300 block mb-2 select-none">inbox</span>
               <p class="text-sm font-bold text-slate-600">لا توجد شكاوى مسجلة حالياً</p>
-              <p class="text-xs text-slate-400 mt-1">يمكنك تقديم شكوى جديدة وسيقوم فريق الدعم بمتابعتها</p>
+              <p class="text-sm text-slate-400 mt-1">يمكنك تقديم شكوى جديدة وسيقوم فريق الدعم بمتابعتها</p>
             </td>
           </tr>
         }

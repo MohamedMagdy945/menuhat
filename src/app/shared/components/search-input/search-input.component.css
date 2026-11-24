@@ -1,0 +1,6 @@
+/* Hide the browser's own clear button — the component renders its own. */
+.search-input::-webkit-search-cancel-button,
+.search-input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}

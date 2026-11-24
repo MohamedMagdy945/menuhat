@@ -32,6 +32,7 @@ export class AdminSidebarComponent {
   readonly navItems: SidebarNavItem[] = [
     { id: 'home', label: 'الرئيسية', icon: 'space_dashboard', route: '/admin', exact: true },
     { id: 'restaurants', label: 'المطاعم', icon: 'storefront', route: '/admin/restaurants' },
+    { id: 'categories', label: 'الأقسام', icon: 'category', route: '/admin/categories' },
     { id: 'users', label: 'المستخدمين', icon: 'group', route: '/admin/users' },
     { id: 'orders', label: 'الطلبات', icon: 'receipt_long', route: '/admin/orders' },
     { id: 'reports', label: 'التقارير', icon: 'bar_chart', route: '/admin/reports' },

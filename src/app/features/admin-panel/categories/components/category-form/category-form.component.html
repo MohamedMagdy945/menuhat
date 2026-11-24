@@ -1,0 +1,293 @@
+<div class="space-y-5 pt-12 lg:pt-0">
+  <!-- Page header -->
+  <div class="flex items-center gap-3.5 min-w-0 pb-1">
+    <a
+      routerLink="/admin/categories"
+      class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-600 flex items-center justify-center shrink-0"
+      aria-label="رجوع إلى الأقسام"
+      title="رجوع"
+    >
+      <span class="material-symbols-sharp text-[22px]">arrow_forward</span>
+    </a>
+    <div
+      class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs"
+    >
+      <span class="material-symbols-sharp text-2xl text-orange-500">{{
+        isEdit ? 'edit_square' : 'add_box'
+      }}</span>
+    </div>
+    <div class="min-w-0">
+      <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">
+        {{ isEdit ? 'تعديل القسم' : 'إضافة قسم' }}
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-400 mt-0.5 truncate">
+        @if (isEdit) {
+          @if (category(); as c) {
+            {{ c.menuMainCategoryName || 'فارغ' }} · {{ c.clientName || 'فارغ' }}
+          } @else {
+            تحميل بيانات القسم...
+          }
+        } @else if (nextNumber()) {
+          سيتم إنشاء القسم برقم #{{ nextNumber() }}
+        } @else {
+          إضافة قسم رئيسي جديد إلى منيو مطعم
+        }
+      </p>
+    </div>
+  </div>
+
+  @if (notFound()) {
+    <div class="bg-white rounded-2xl p-10 text-center space-y-3">
+      <span class="material-symbols-sharp text-4xl text-slate-300">search_off</span>
+      <p class="text-sm font-semibold text-slate-700">لم يتم العثور على هذا القسم</p>
+      <a
+        routerLink="/admin/categories"
+        class="inline-block bg-orange-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl"
+      >
+        العودة إلى الأقسام
+      </a>
+    </div>
+  } @else {
+    <form
+      [formGroup]="form"
+      (ngSubmit)="save()"
+      class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start"
+      [class.opacity-60]="isLoading()"
+    >
+      <!-- Main fields (one card) -->
+      <div
+        class="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-5 shadow-xs divide-y divide-slate-100"
+      >
+        <!-- Restaurant -->
+        <div class="pb-5">
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">storefront</span>
+            المطعم
+          </h3>
+
+          @if (isEdit) {
+            <div class="flex items-center gap-2 rounded-xl bg-slate-50 p-3">
+              <span class="material-symbols-sharp text-[20px] text-slate-400">storefront</span>
+              <span class="text-sm font-semibold text-slate-800 truncate">
+                {{ category()?.clientName || 'فارغ' }}
+              </span>
+              <span class="mr-auto text-xs text-slate-400">لا يمكن تغيير المطعم</span>
+            </div>
+          } @else if (selectedRestaurant(); as r) {
+            <div
+              class="flex items-center gap-3 rounded-2xl border-[1.5px] border-orange-200 bg-orange-50 p-3"
+            >
+              <div
+                class="w-11 h-11 rounded-xl bg-white overflow-hidden flex items-center justify-center shrink-0"
+              >
+                @if (restaurantLogo(r)) {
+                  <img
+                    [src]="restaurantLogo(r)"
+                    [alt]="r.clientName"
+                    class="w-full h-full object-contain"
+                  />
+                } @else {
+                  <span class="material-symbols-sharp text-xl text-orange-500">storefront</span>
+                }
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-slate-800 truncate">{{ r.clientName }}</p>
+                <p class="text-xs text-slate-500 truncate" dir="ltr">
+                  #{{ r.no }} · {{ r.serial }}
+                </p>
+              </div>
+              <button
+                type="button"
+                (click)="clearRestaurant()"
+                class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs px-3 py-2 rounded-xl cursor-pointer shrink-0"
+              >
+                تغيير
+              </button>
+            </div>
+          } @else {
+            <div class="relative">
+              <span
+                class="material-symbols-sharp absolute inset-y-0 right-3.5 flex items-center text-[20px] text-slate-400 pointer-events-none"
+                >search</span
+              >
+              <input
+                type="text"
+                [ngModel]="restaurantSearch()"
+                [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="onRestaurantSearch($event)"
+                placeholder="ابحث باسم المطعم..."
+                aria-label="ابحث عن المطعم"
+                class="h-12 w-full pr-11 pl-4 rounded-2xl border-[1.5px] bg-slate-50 text-sm text-slate-900 placeholder:text-[13px] placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white"
+                [class]="restaurantTouched() ? 'border-red-400' : 'border-slate-200'"
+              />
+            </div>
+            @if (restaurantTouched()) {
+              <p class="mt-1.5 text-xs text-red-500">اختر المطعم الذي سيُضاف إليه القسم</p>
+            }
+
+            <div
+              class="mt-3 rounded-2xl border border-slate-100 divide-y divide-slate-100 overflow-hidden"
+            >
+              @if (isSearchingRestaurants() && restaurantResults().length === 0) {
+                @for (i of [1, 2, 3]; track i) {
+                  <div class="flex items-center gap-3 p-3">
+                    <span class="w-9 h-9 rounded-lg bg-slate-100 animate-pulse shrink-0"></span>
+                    <span class="h-3 w-1/3 rounded bg-slate-100 animate-pulse"></span>
+                  </div>
+                }
+              } @else if (restaurantResults().length === 0) {
+                <p class="p-4 text-center text-sm text-slate-400">لا توجد نتائج</p>
+              } @else {
+                @for (r of restaurantResults(); track r.menuId) {
+                  <button
+                    type="button"
+                    (click)="selectRestaurant(r)"
+                    class="w-full flex items-center gap-3 p-3 text-right cursor-pointer bg-white"
+                    [class.opacity-60]="isSearchingRestaurants()"
+                  >
+                    <div
+                      class="w-9 h-9 rounded-lg bg-orange-50 overflow-hidden flex items-center justify-center shrink-0"
+                    >
+                      @if (restaurantLogo(r)) {
+                        <img
+                          [src]="restaurantLogo(r)"
+                          [alt]="r.clientName"
+                          class="w-full h-full object-contain"
+                        />
+                      } @else {
+                        <span class="material-symbols-sharp text-lg text-orange-500"
+                          >storefront</span
+                        >
+                      }
+                    </div>
+                    <span class="flex-1 min-w-0 text-sm font-semibold text-slate-800 truncate">{{
+                      r.clientName
+                    }}</span>
+                    <span class="text-xs text-slate-400 shrink-0">#{{ r.no }}</span>
+                  </button>
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Names -->
+        <div class="py-5">
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">category</span>
+            بيانات القسم
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            <app-form-input formControlName="name" label="اسم القسم" placeholder="مثال: الحلويات">
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >category</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="name_En"
+              label="الاسم بالإنجليزية"
+              placeholder="Desserts"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >translate</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="description"
+              label="الوصف"
+              placeholder="الوصف (اختياري)"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >notes</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="description_En"
+              label="الوصف بالإنجليزية"
+              placeholder="Description"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >notes</span
+              >
+            </app-form-input>
+
+            @if (isEdit) {
+              <app-form-input
+                formControlName="catOrder"
+                label="الترتيب"
+                placeholder="مثال: 1"
+                type="number"
+                [customErrors]="catOrderErrors"
+              >
+                <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                  >format_list_numbered</span
+                >
+              </app-form-input>
+            }
+          </div>
+          @if (!isEdit) {
+            <p class="text-xs text-slate-400">
+              يتم تحديد ترتيب القسم تلقائيًا ويمكن تعديله لاحقًا.
+            </p>
+          }
+        </div>
+      </div>
+
+      <!-- Photo + actions -->
+      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-xs space-y-5 lg:sticky lg:top-4">
+        <div>
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">image</span>
+            صورة القسم
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">
+            {{ isEdit ? 'يتم حفظ الصورة فور رفعها أو حذفها.' : 'سيتم رفع الصورة مع إنشاء القسم.' }}
+          </p>
+        </div>
+
+        <app-admin-restaurant-media-field
+          label="الصورة"
+          hint="حتى 5 ميجابايت"
+          icon="image"
+          accept="image/*"
+          [url]="photo()"
+          [busy]="photoBusy()"
+          [disabled]="isLoading() || isSaving()"
+          (fileSelected)="onPhotoSelected($event)"
+          (remove)="onPhotoRemove()"
+        />
+
+        <div class="pt-5 border-t border-slate-100 space-y-2">
+          <app-loading-button
+            type="submit"
+            [text]="isEdit ? 'حفظ التعديلات' : 'إضافة القسم'"
+            loadingText="جاري الحفظ..."
+            [loading]="isSaving()"
+            [disabled]="isLoading() || photoBusy()"
+            [showArrow]="false"
+          />
+          <a
+            routerLink="/admin/categories"
+            class="flex items-center justify-center bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-3 rounded-xl"
+          >
+            إلغاء
+          </a>
+        </div>
+      </section>
+    </form>
+  }
+
+  <app-confirm-modal
+    [open]="confirmPhotoDelete()"
+    title="حذف صورة القسم"
+    message="سيتم حذف صورة القسم نهائيًا."
+    confirmText="حذف"
+    icon="delete"
+    [loading]="photoBusy()"
+    (confirmed)="deletePhoto()"
+    (cancelled)="confirmPhotoDelete.set(false)"
+  />
+</div>

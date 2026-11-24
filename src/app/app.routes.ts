@@ -500,6 +500,78 @@ export const routes: Routes = [
                         (m) => m.AdminRestaurantsComponent,
                     ),
             },
+            {
+                path: 'restaurants/new',
+                data: { title: 'إضافة مطعم' },
+                loadComponent: () =>
+                    import('./features/admin-panel/restaurants/components/restaurant-form/restaurant-form.component').then(
+                        (m) => m.AdminRestaurantFormComponent,
+                    ),
+            },
+            {
+                path: 'restaurants/:id',
+                data: { title: 'تفاصيل المطعم' },
+                loadComponent: () =>
+                    import('./features/admin-panel/restaurants/components/restaurant-details/restaurant-details.component').then(
+                        (m) => m.AdminRestaurantDetailsComponent,
+                    ),
+            },
+            {
+                path: 'restaurants/:serial/edit',
+                data: { title: 'تعديل المطعم' },
+                loadComponent: () =>
+                    import('./features/admin-panel/restaurants/components/restaurant-form/restaurant-form.component').then(
+                        (m) => m.AdminRestaurantFormComponent,
+                    ),
+            },
+            {
+                path: 'categories',
+                data: { title: 'الأقسام' },
+                loadComponent: () =>
+                    import('./features/admin-panel/categories/admin-categories.component').then(
+                        (m) => m.AdminCategoriesComponent,
+                    ),
+            },
+            {
+                path: 'categories/new',
+                data: { title: 'إضافة قسم' },
+                loadComponent: () =>
+                    import('./features/admin-panel/categories/components/category-form/category-form.component').then(
+                        (m) => m.AdminCategoryFormComponent,
+                    ),
+            },
+            {
+                path: 'categories/:id/edit',
+                data: { title: 'تعديل القسم' },
+                loadComponent: () =>
+                    import('./features/admin-panel/categories/components/category-form/category-form.component').then(
+                        (m) => m.AdminCategoryFormComponent,
+                    ),
+            },
+            {
+                path: 'categories/:id/subcategories',
+                data: { title: 'الأقسام الفرعية' },
+                loadComponent: () =>
+                    import('./features/admin-panel/categories/components/sub-categories/sub-categories.component').then(
+                        (m) => m.AdminSubCategoriesComponent,
+                    ),
+            },
+            {
+                path: 'categories/:id/subcategories/new',
+                data: { title: 'إضافة قسم فرعي' },
+                loadComponent: () =>
+                    import('./features/admin-panel/categories/components/sub-category-form/sub-category-form.component').then(
+                        (m) => m.AdminSubCategoryFormComponent,
+                    ),
+            },
+            {
+                path: 'categories/:id/subcategories/:subId/edit',
+                data: { title: 'تعديل قسم فرعي' },
+                loadComponent: () =>
+                    import('./features/admin-panel/categories/components/sub-category-form/sub-category-form.component').then(
+                        (m) => m.AdminSubCategoryFormComponent,
+                    ),
+            },
             { path: 'users', data: { title: 'المستخدمين' }, loadComponent: loadAdminPlaceholder },
             { path: 'orders', data: { title: 'الطلبات' }, loadComponent: loadAdminPlaceholder },
             { path: 'reports', data: { title: 'التقارير' }, loadComponent: loadAdminPlaceholder },

@@ -1,0 +1,131 @@
+<div class="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm" [class.opacity-60]="loading()">
+      <thead>
+        <tr class="bg-slate-50 text-base font-semibold text-slate-600">
+          <th scope="col" class="font-semibold px-4 py-3 text-right w-16">#</th>
+          <th scope="col" class="font-semibold px-4 py-3 text-right">الاسم</th>
+          <th scope="col" class="font-semibold px-4 py-3 text-right hidden md:table-cell">
+            {{ subtitleLabel() }}
+          </th>
+          <th scope="col" class="font-semibold px-4 py-3 text-left w-px whitespace-nowrap">الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr>
+            <!-- Order -->
+            <td class="px-4 py-3">
+              @if (row.order !== null) {
+                <span
+                  class="inline-flex min-w-8 justify-center px-1.5 py-0.5 rounded-md bg-slate-100 text-sm font-bold text-slate-600"
+                  >{{ row.order }}</span
+                >
+              } @else {
+                <span class="text-sm text-slate-400">فارغ</span>
+              }
+            </td>
+
+            <!-- Photo + names -->
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <div
+                  class="w-10 h-10 rounded-lg bg-orange-50 overflow-hidden flex items-center justify-center shrink-0"
+                >
+                  @if (row.photoUrl) {
+                    <img
+                      [src]="row.photoUrl"
+                      [alt]="row.name || ''"
+                      (error)="onPhotoError($event)"
+                      loading="lazy"
+                      class="w-full h-full object-cover"
+                    />
+                  } @else {
+                    <span class="material-symbols-sharp text-lg text-orange-400">category</span>
+                  }
+                </div>
+                <div class="min-w-0">
+                  @if (row.openLink; as link) {
+                    <a
+                      [routerLink]="link"
+                      class="block font-semibold truncate max-w-56 sm:max-w-80"
+                      [class]="row.name ? 'text-slate-800' : 'text-slate-400'"
+                      >{{ row.name || 'فارغ' }}</a
+                    >
+                  } @else {
+                    <p
+                      class="font-semibold truncate max-w-56 sm:max-w-80"
+                      [class]="row.name ? 'text-slate-800' : 'text-slate-400'"
+                    >
+                      {{ row.name || 'فارغ' }}
+                    </p>
+                  }
+                  <p class="text-sm text-slate-400 truncate max-w-56 sm:max-w-80" dir="auto">
+                    {{ row.nameEn || 'فارغ' }}
+                  </p>
+                  <!-- Subtitle under the name on small screens -->
+                  <p class="md:hidden mt-0.5 text-base text-slate-600 truncate max-w-56">
+                    {{ row.subtitle || 'فارغ' }}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Subtitle -->
+            <td class="px-4 py-3 hidden md:table-cell">
+              <span
+                class="flex items-center gap-1.5 min-w-0 text-base"
+                [class]="row.subtitle ? 'text-slate-700' : 'text-slate-400'"
+              >
+                <span class="material-symbols-sharp text-[18px] text-slate-500 shrink-0">{{
+                  row.subtitleIcon
+                }}</span>
+                <span class="truncate max-w-72">{{ row.subtitle || 'فارغ' }}</span>
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="px-4 py-3">
+              <div class="flex items-center justify-end gap-1.5">
+                @if (row.openLink; as link) {
+                  <a
+                    [routerLink]="link"
+                    class="h-8 px-2.5 rounded-lg bg-orange-50 text-orange-600 text-sm font-semibold flex items-center gap-1 whitespace-nowrap"
+                    [attr.aria-label]="row.openLabel || 'فتح'"
+                  >
+                    <span class="material-symbols-sharp text-[16px]">account_tree</span>
+                    <span class="hidden sm:inline">{{ row.openLabel || 'فتح' }}</span>
+                  </a>
+                }
+                <a
+                  [routerLink]="row.editLink"
+                  class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0"
+                  title="تعديل"
+                  aria-label="تعديل"
+                >
+                  <span class="material-symbols-sharp text-[17px]">edit</span>
+                </a>
+                <button
+                  type="button"
+                  (click)="delete.emit(row.id)"
+                  [disabled]="deletingId() === row.id"
+                  class="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0 disabled:opacity-50"
+                  title="حذف"
+                  aria-label="حذف"
+                >
+                  @if (deletingId() === row.id) {
+                    <span
+                      class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-red-500 border-t-transparent"
+                    ></span>
+                  } @else {
+                    <span class="material-symbols-sharp text-[17px]">delete</span>
+                  }
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

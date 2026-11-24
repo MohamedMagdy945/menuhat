@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { AdminMenu } from '../../models/admin-menu.model';
 import { AdminRestaurantRow } from '../../models/admin-restaurant-row.model';
 
 /** One restaurant in the admin restaurants grid. */
 @Component({
   selector: 'app-admin-restaurant-card',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, RouterLink],
   templateUrl: './restaurant-card.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block' },

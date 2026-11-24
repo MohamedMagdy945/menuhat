@@ -1,0 +1,41 @@
+<!-- Same field style as app-form-input (slate-50 → white + orange border on focus). -->
+<div
+  class="group relative flex w-full items-center rounded-2xl border-[1.5px] border-slate-200 bg-slate-50 transition-colors duration-200 focus-within:border-orange-500 focus-within:bg-white"
+>
+  <span
+    class="pointer-events-none absolute right-3.5 flex items-center justify-center text-slate-400 transition-colors duration-200 group-focus-within:text-orange-500"
+  >
+    @if (loading()) {
+      <span
+        class="w-4.5 h-4.5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"
+      ></span>
+    } @else {
+      <span class="material-symbols-sharp select-none leading-none text-[20px]">search</span>
+    }
+  </span>
+
+  <input
+    #field
+    type="search"
+    [value]="value()"
+    (input)="onInput($event)"
+    (keydown.escape)="clear(field)"
+    [placeholder]="placeholder()"
+    [attr.aria-label]="ariaLabel()"
+    autocomplete="off"
+    enterkeyhint="search"
+    class="search-input h-12 w-full border-none bg-transparent pr-11 pl-11 text-sm text-slate-900 outline-none placeholder:text-[13px] placeholder:text-slate-400"
+  />
+
+  @if (value()) {
+    <button
+      type="button"
+      (click)="clear(field)"
+      class="absolute left-2.5 flex items-center justify-center rounded-lg p-1.5 text-slate-400 cursor-pointer"
+      aria-label="مسح البحث"
+      title="مسح"
+    >
+      <span class="material-symbols-sharp select-none leading-none text-[20px]">close</span>
+    </button>
+  }
+</div>

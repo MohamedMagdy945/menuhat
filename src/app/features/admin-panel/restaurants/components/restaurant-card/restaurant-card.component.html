@@ -1,8 +1,10 @@
-<article class="h-full bg-white rounded-2xl p-4 sm:p-5 flex flex-col gap-4">
+<article
+  class="h-full border border border-slate-50 bg-white rounded-2xl p-5 flex flex-col gap-4 shadow-2xs"
+>
   <!-- Header: logo, names, status -->
   <div class="flex items-start gap-3">
     <div
-      class="w-12 h-12 rounded-xl bg-orange-50 border border-orange-100 overflow-hidden flex items-center justify-center shrink-0"
+      class="w-16 h-16 rounded-xl bg-orange-50 overflow-hidden flex items-center justify-center shrink-0"
     >
       @if (row().logoUrl) {
         <img
@@ -13,27 +15,29 @@
           class="w-full h-full object-contain"
         />
       } @else {
-        <span class="material-symbols-sharp text-2xl text-orange-500">storefront</span>
+        <span class="material-symbols-sharp text-2xl border border-orange-100 text-orange-500"
+          >storefront</span
+        >
       }
     </div>
 
     <div class="flex-1 min-w-0">
-      <h3 class="font-semibold text-slate-800 truncate">{{ row().menu.clientName }}</h3>
-      <p class="text-xs text-slate-400 truncate" dir="ltr">
+      <h3 class="text-slate-800 truncate">{{ row().menu.clientName }}</h3>
+      <p class="text-slate-400 truncate">
         {{ row().menu.clientName_En || '#' + row().menu.serial }}
       </p>
     </div>
 
     <div class="flex flex-wrap justify-end gap-1.5 shrink-0">
       <span
-        class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
+        class="inline-flex items-center gap-1 text-sm px-2 py-0.5 rounded-full"
         [class]="row().menu.isOpen ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-500'"
       >
         <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
         {{ row().menu.isOpen ? 'مفتوح' : 'مغلق' }}
       </span>
       <span
-        class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full"
+        class="inline-flex items-center gap-1 text-sm font-semibold px-2 py-0.5 rounded-full"
         [class]="row().menu.isVisable ? 'bg-sky-50 text-sky-600' : 'bg-slate-100 text-slate-500'"
       >
         <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
@@ -43,13 +47,13 @@
   </div>
 
   <!-- Location + hours -->
-  <div class="space-y-1.5 text-xs text-slate-500">
+  <div class="space-y-1.5 text-sm text-slate-600">
     <p class="flex items-center gap-1.5">
-      <span class="material-symbols-sharp text-[16px] text-orange-500">location_on</span>
+      <span class="material-symbols-sharp text-orange-500">location_on</span>
       <span class="truncate">{{ row().location || row().menu.address || 'غير محدد' }}</span>
     </p>
     <p class="flex items-center gap-1.5">
-      <span class="material-symbols-sharp text-[16px] text-slate-400">schedule</span>
+      <span class="material-symbols-sharp text-slate-600">schedule</span>
       <span>ساعات العمل: {{ row().hours }}</span>
     </p>
   </div>
@@ -57,17 +61,17 @@
   <!-- Info tiles -->
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
     <div class="rounded-xl bg-slate-50 p-2.5">
-      <p class="text-[11px] text-slate-400">الزيارات</p>
+      <p class="text-sm text-slate-500">الزيارات</p>
       <p class="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-800">
-        <span class="material-symbols-sharp text-[16px] text-slate-400">visibility</span>
+        <span class="material-symbols-sharp text-[16px] text-slate-500">visibility</span>
         {{ row().menu.visitsCount | number }}
       </p>
     </div>
 
     <div class="rounded-xl bg-slate-50 p-2.5 min-w-0">
-      <p class="text-[11px] text-slate-400">الملاحظات</p>
+      <p class="text-sm text-slate-600">الملاحظات</p>
       <p
-        class="mt-1 text-xs font-medium truncate"
+        class="mt-1 text-sm font-medium truncate"
         [class]="row().menu.notes ? 'text-orange-600' : 'text-slate-400'"
         [title]="row().menu.notes || ''"
       >
@@ -76,7 +80,7 @@
     </div>
 
     <div class="rounded-xl bg-slate-50 p-2.5">
-      <p class="text-[11px] text-slate-400">ملف PDF</p>
+      <p class="text-sm text-slate-600">ملف PDF</p>
       @if (row().pdfUrl) {
         <a
           [href]="row().pdfUrl"
@@ -96,7 +100,7 @@
     </div>
 
     <div class="rounded-xl bg-slate-50 p-2.5">
-      <p class="text-[11px] text-slate-400">QR Code</p>
+      <p class="text-sm text-slate-600">QR Code</p>
       @if (row().qrUrl) {
         <a
           [href]="row().qrUrl"
@@ -118,8 +122,16 @@
 
   <!-- Footer -->
   <div class="mt-auto flex items-center justify-between gap-3">
-    <span class="text-[11px] text-slate-400">أُنشئ {{ row().createdLabel }}</span>
+    <span class="text-sm text-slate-400">أُنشئ {{ row().createdLabel }}</span>
     <div class="flex items-center gap-2">
+      <a
+        [routerLink]="['/admin/restaurants', row().menu.menuId]"
+        class="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center"
+        title="التفاصيل"
+        aria-label="تفاصيل المطعم"
+      >
+        <span class="material-symbols-sharp text-[20px]">visibility</span>
+      </a>
       <button
         type="button"
         (click)="edit.emit(row().menu)"
@@ -150,10 +162,11 @@
         [href]="'/restaurants/' + row().menu.serial"
         target="_blank"
         rel="noopener"
-        class="inline-flex items-center gap-1.5 bg-orange-500 text-white font-semibold text-sm px-4 py-2 rounded-xl"
+        class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center"
+        title="صفحة المطعم"
+        aria-label="صفحة المطعم"
       >
-        <span class="material-symbols-sharp text-[18px]">open_in_new</span>
-        <span>صفحة المطعم</span>
+        <span class="material-symbols-sharp text-[20px]">open_in_new</span>
       </a>
     </div>
   </div>
