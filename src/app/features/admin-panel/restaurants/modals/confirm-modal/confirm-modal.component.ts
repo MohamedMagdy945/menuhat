@@ -31,6 +31,9 @@ export class ConfirmModalComponent {
   readonly open = input(false);
   readonly title = input('تأكيد');
   readonly message = input('');
+  /** Name of the item the action targets (e.g. the restaurant), shown in its own box. */
+  readonly subject = input('');
+  readonly subjectIcon = input('');
   readonly confirmText = input('تأكيد');
   readonly cancelText = input('إلغاء');
   readonly icon = input('warning');
@@ -54,6 +57,8 @@ export class ConfirmModalComponent {
       open: this.open(),
       title: this.title(),
       message: this.message(),
+      subject: this.subject(),
+      subjectIcon: this.subjectIcon(),
       confirmText: this.confirmText(),
       cancelText: this.cancelText(),
       icon: this.icon(),

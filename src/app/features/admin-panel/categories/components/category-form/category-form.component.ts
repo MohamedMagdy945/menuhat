@@ -13,12 +13,14 @@ import { ConfirmModalComponent } from '../../../restaurants/modals/confirm-modal
 import { AdminMenu } from '../../../restaurants/models/admin-menu.model';
 import { AdminCategoriesService } from '../../admin-categories.service';
 import { AdminCategory } from '../../models/admin-category.model';
+import { AdminCategoryRestaurant } from '../../models/admin-category-restaurant.model';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 /**
  * Admin add / edit main category page.
  * - `/admin/categories/new`: pick a restaurant → PreparedForInsertMainCategory + PostMainCategory/{serial}.
+ *   `?menuId=` (opened from a restaurant) preselects that restaurant via GetMenu/{id}.
  * - `/admin/categories/:id/edit`: GetMainCategory/{id} → PutMainCategory/{id}; the photo is
  *   uploaded / deleted immediately (UpdatePhotoMainCategory / DeletePhotoMainCategory).
  */
@@ -43,8 +45,13 @@ export class AdminCategoryFormComponent implements OnInit {
   private readonly _router = inject(Router);
   private readonly _fb = inject(FormBuilder);
 
-  private readonly _id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id')) || 0;
+  private readonly _snapshot = inject(ActivatedRoute).snapshot;
+  private readonly _id = Number(this._snapshot.paramMap.get('id')) || 0;
   readonly isEdit = !!this._id;
+  /** Create: restaurant to preselect, from `?menuId=`. */
+  private readonly _menuId = Number(this._snapshot.queryParamMap.get('menuId')) || null;
+  /** Keeps the categories list filtered by the restaurant we came from. */
+  readonly backQueryParams = this._menuId ? { menuId: this._menuId } : {};
 
   readonly isLoading = signal(this.isEdit);
   readonly notFound = signal(false);
@@ -59,7 +66,8 @@ export class AdminCategoryFormComponent implements OnInit {
   readonly restaurantSearch = signal('');
   readonly restaurantResults = signal<AdminMenu[]>([]);
   readonly isSearchingRestaurants = signal(false);
-  readonly selectedRestaurant = signal<AdminMenu | null>(null);
+  readonly selectedRestaurant = signal<AdminCategoryRestaurant | null>(null);
+  readonly isLoadingRestaurant = signal(!this.isEdit && !!this._menuId);
   readonly restaurantTouched = signal(false);
   private readonly _restaurantQuery = new Subject<string>();
 
@@ -113,7 +121,27 @@ export class AdminCategoryFormComponent implements OnInit {
         error: (err) => console.error('Failed to prepare category insert:', err),
       });
       this._restaurantQuery.next('');
+      if (this._menuId) this.loadPreselectedRestaurant(this._menuId);
     }
+  }
+
+  private loadPreselectedRestaurant(menuId: number): void {
+    this._restaurantsService.getMenu(menuId).subscribe({
+      next: (menu) => {
+        this.isLoadingRestaurant.set(false);
+        if (!menu.serial) return;
+        this.selectedRestaurant.set({
+          serial: menu.serial,
+          clientName: menu.clientName ?? '',
+          no: menu.no ?? 0,
+          logoURL: menu.logoURL ?? null,
+        });
+      },
+      error: (err) => {
+        console.error('Failed to load preselected restaurant:', err);
+        this.isLoadingRestaurant.set(false);
+      },
+    });
   }
 
   private loadCategory(): void {
@@ -152,7 +180,7 @@ export class AdminCategoryFormComponent implements OnInit {
     this.selectedRestaurant.set(null);
   }
 
-  restaurantLogo(menu: AdminMenu): string {
+  restaurantLogo(menu: AdminCategoryRestaurant): string {
     return resolveAdminFileUrl(menu.logoURL);
   }
 
@@ -194,7 +222,7 @@ export class AdminCategoryFormComponent implements OnInit {
       next: () => {
         this.isSaving.set(false);
         this._toast.success(this.isEdit ? 'تم تحديث القسم' : 'تم إضافة القسم بنجاح');
-        this._router.navigate(['/admin/categories']);
+        this._router.navigate(['/admin/categories'], { queryParams: this.backQueryParams });
       },
       error: (err) => {
         console.error('Failed to save category:', err);

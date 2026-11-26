@@ -200,7 +200,9 @@
   <app-confirm-modal
     [open]="!!pendingDelete()"
     title="حذف المطعم"
-    [message]="deleteMessage()"
+    [message]="deleteMessage"
+    [subject]="pendingDelete()?.clientName ?? ''"
+    subjectIcon="storefront"
     confirmText="حذف"
     icon="delete"
     [loading]="deletingId() !== null"

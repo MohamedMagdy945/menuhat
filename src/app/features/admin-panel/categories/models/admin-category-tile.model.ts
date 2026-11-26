@@ -13,4 +13,8 @@ export interface AdminCategoryTile {
   /** When set, the name and an action button open this link (e.g. the sub categories of a main category). */
   openLink?: (string | number)[];
   openLabel?: string;
+  /** Material icon of the open button (default `account_tree`). */
+  openIcon?: string;
+  /** Query params of `openLink`. */
+  openQueryParams?: Record<string, number>;
 }

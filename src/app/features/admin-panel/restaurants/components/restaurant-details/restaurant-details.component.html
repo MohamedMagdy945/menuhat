@@ -11,9 +11,7 @@
         <span class="material-symbols-sharp text-[22px]">arrow_forward</span>
       </a>
       <div class="min-w-0">
-        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">
-          تفاصيل المطعم
-        </h1>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">تفاصيل المطعم</h1>
         <p class="text-sm text-slate-400 mt-0.5 truncate">
           {{ menu()?.clientName || 'عرض جميع بيانات المطعم' }}
         </p>
@@ -21,7 +19,7 @@
     </div>
 
     @if (menu(); as m) {
-      <div class="flex items-center gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <a
           routerLink="/admin/categories"
           [queryParams]="{ menuId: m.id ?? m.menuId }"
@@ -29,6 +27,22 @@
         >
           <span class="material-symbols-sharp text-base text-orange-500">category</span>
           <span>الأقسام</span>
+        </a>
+        <a
+          routerLink="/admin/categories/new"
+          [queryParams]="{ menuId: m.id ?? m.menuId }"
+          class="bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-xs"
+        >
+          <span class="material-symbols-sharp text-base text-orange-500">add</span>
+          <span>إضافة قسم</span>
+        </a>
+        <a
+          routerLink="/admin/products"
+          [queryParams]="{ menuId: m.id ?? m.menuId }"
+          class="bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-2.5 rounded-xl flex items-center gap-1.5 shadow-xs"
+        >
+          <span class="material-symbols-sharp text-base text-orange-500">restaurant_menu</span>
+          <span>المنتجات</span>
         </a>
         @if (m.serial) {
           <a

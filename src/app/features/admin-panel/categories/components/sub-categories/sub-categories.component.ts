@@ -77,6 +77,10 @@ export class AdminSubCategoriesComponent implements OnInit {
       subtitle: s.description,
       subtitleIcon: 'notes',
       editLink: ['/admin/categories', this.mainId, 'subcategories', s.id, 'edit'],
+      openLink: ['/admin/products'],
+      openQueryParams: { subCategoryId: s.id },
+      openLabel: 'المنتجات',
+      openIcon: 'restaurant_menu',
     })),
   );
 

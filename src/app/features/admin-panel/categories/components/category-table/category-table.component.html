@@ -8,7 +8,9 @@
           <th scope="col" class="font-semibold px-4 py-3 text-right hidden md:table-cell">
             {{ subtitleLabel() }}
           </th>
-          <th scope="col" class="font-semibold px-4 py-3 text-left w-px whitespace-nowrap">الإجراءات</th>
+          <th scope="col" class="font-semibold px-4 py-3 text-left w-px whitespace-nowrap">
+            الإجراءات
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -48,6 +50,7 @@
                   @if (row.openLink; as link) {
                     <a
                       [routerLink]="link"
+                      [queryParams]="row.openQueryParams ?? {}"
                       class="block font-semibold truncate max-w-56 sm:max-w-80"
                       [class]="row.name ? 'text-slate-800' : 'text-slate-400'"
                       >{{ row.name || 'فارغ' }}</a
@@ -90,10 +93,13 @@
                 @if (row.openLink; as link) {
                   <a
                     [routerLink]="link"
+                    [queryParams]="row.openQueryParams ?? {}"
                     class="h-8 px-2.5 rounded-lg bg-orange-50 text-orange-600 text-sm font-semibold flex items-center gap-1 whitespace-nowrap"
                     [attr.aria-label]="row.openLabel || 'فتح'"
                   >
-                    <span class="material-symbols-sharp text-[16px]">account_tree</span>
+                    <span class="material-symbols-sharp text-[16px]">{{
+                      row.openIcon || 'account_tree'
+                    }}</span>
                     <span class="hidden sm:inline">{{ row.openLabel || 'فتح' }}</span>
                   </a>
                 }

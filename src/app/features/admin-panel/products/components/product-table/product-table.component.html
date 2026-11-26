@@ -1,0 +1,138 @@
+<div class="bg-white rounded-2xl shadow-xs border border-slate-100 overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm" [class.opacity-60]="loading()">
+      <thead>
+        <tr class="bg-slate-50 text-base font-semibold text-slate-600">
+          <th scope="col" class="font-semibold px-4 py-3 text-right">المنتج</th>
+          <th scope="col" class="font-semibold px-4 py-3 text-right whitespace-nowrap">السعر</th>
+          <th scope="col" class="font-semibold px-4 py-3 text-right hidden md:table-cell">القسم</th>
+          @if (showRestaurant()) {
+            <th scope="col" class="font-semibold px-4 py-3 text-right hidden lg:table-cell">
+              المطعم
+            </th>
+          }
+          <th scope="col" class="font-semibold px-4 py-3 text-left w-px whitespace-nowrap">
+            الإجراءات
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.id) {
+          <tr>
+            <!-- Photo + names -->
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3 min-w-0">
+                <div
+                  class="w-11 h-11 rounded-lg bg-orange-50 overflow-hidden flex items-center justify-center shrink-0"
+                >
+                  @if (row.photoUrl) {
+                    <img
+                      [src]="row.photoUrl"
+                      [alt]="row.name || ''"
+                      (error)="onPhotoError($event)"
+                      loading="lazy"
+                      class="w-full h-full object-cover"
+                    />
+                  } @else {
+                    <span class="material-symbols-sharp text-lg text-orange-400">restaurant</span>
+                  }
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5 min-w-0">
+                    <a
+                      [routerLink]="row.editLink"
+                      [queryParams]="linkQueryParams()"
+                      class="block font-semibold truncate max-w-48 sm:max-w-72"
+                      [class]="row.name ? 'text-slate-800' : 'text-slate-400'"
+                      >{{ row.name || 'فارغ' }}</a
+                    >
+                    @if (row.isHidden) {
+                      <span
+                        class="px-1.5 py-0.5 rounded-md bg-slate-100 text-[11px] font-semibold text-slate-500 shrink-0"
+                        >مخفي</span
+                      >
+                    }
+                  </div>
+                  <p class="text-sm text-slate-400 truncate max-w-48 sm:max-w-72" dir="auto">
+                    {{ row.nameEn || 'فارغ' }}
+                  </p>
+                  <!-- Category under the name on small screens -->
+                  <p class="md:hidden mt-0.5 text-sm text-slate-600 truncate max-w-48">
+                    {{ row.subCategoryName || 'فارغ' }}
+                  </p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Price -->
+            <td class="px-4 py-3 whitespace-nowrap font-bold text-orange-500">
+              {{ row.priceLabel }}
+            </td>
+
+            <!-- Main › sub category -->
+            <td class="px-4 py-3 hidden md:table-cell">
+              <div class="min-w-0">
+                <p class="flex items-center gap-1 text-slate-700 truncate max-w-56">
+                  <span class="material-symbols-sharp text-[17px] text-slate-400 shrink-0"
+                    >segment</span
+                  >
+                  <span class="truncate">{{ row.subCategoryName || 'فارغ' }}</span>
+                </p>
+                <p class="flex items-center gap-1 text-xs text-slate-400 truncate max-w-56">
+                  <span class="material-symbols-sharp text-[15px] shrink-0">account_tree</span>
+                  <span class="truncate">{{ row.categoryName || 'فارغ' }}</span>
+                </p>
+              </div>
+            </td>
+
+            <!-- Restaurant -->
+            @if (showRestaurant()) {
+              <td class="px-4 py-3 hidden lg:table-cell">
+                <span
+                  class="flex items-center gap-1.5 min-w-0"
+                  [class]="row.restaurantName ? 'text-slate-700' : 'text-slate-400'"
+                >
+                  <span class="material-symbols-sharp text-[18px] text-slate-500 shrink-0"
+                    >storefront</span
+                  >
+                  <span class="truncate max-w-48">{{ row.restaurantName || 'فارغ' }}</span>
+                </span>
+              </td>
+            }
+
+            <!-- Actions -->
+            <td class="px-4 py-3">
+              <div class="flex items-center justify-end gap-1.5">
+                <a
+                  [routerLink]="row.editLink"
+                  [queryParams]="linkQueryParams()"
+                  class="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center shrink-0"
+                  title="تعديل"
+                  aria-label="تعديل"
+                >
+                  <span class="material-symbols-sharp text-[17px]">edit</span>
+                </a>
+                <button
+                  type="button"
+                  (click)="delete.emit(row.id)"
+                  [disabled]="deletingId() === row.id"
+                  class="w-8 h-8 rounded-lg bg-red-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0 disabled:opacity-50"
+                  title="حذف"
+                  aria-label="حذف"
+                >
+                  @if (deletingId() === row.id) {
+                    <span
+                      class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-red-500 border-t-transparent"
+                    ></span>
+                  } @else {
+                    <span class="material-symbols-sharp text-[17px]">delete</span>
+                  }
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

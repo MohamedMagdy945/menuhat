@@ -69,4 +69,29 @@ export const ADMIN_API_ENDPOINTS = {
   deleteSubCategoryPhoto: `${environment.apiUrl}/Admin/DeletePhotoSubCategory`,
   /** DELETE /{id} — removes the sub category */
   deleteSubCategory: `${environment.apiUrl}/Admin/DeleteSubCategory`,
+
+  // ---------- Products ----------
+  /**
+   * GET (paged) ?SortField=Id&SortDirection&PageNumber&PageSize&SearchValue&MenuId&MenuCategoryId&MenuSubCategoryId
+   * → { listWithDetails: AdminProduct[], itemsCount, totalPages }. SearchValue matches the Arabic product name only.
+   */
+  allProducts: `${environment.apiUrl}/Admin/GetAllProducts`,
+  /** GET /{id} → { result: [AdminProductRecord], rank, totalCount } (an array of one); 404 when missing */
+  productById: `${environment.apiUrl}/Admin/GetProduct`,
+  /** GET → { id, rank, totalCount } before adding a product */
+  preparedForInsertProduct: `${environment.apiUrl}/Admin/PreparedForInsertProduct`,
+  /** POST /{menuSerial} ← AdminProductRequest (sizes in `details`, photo as a data URL) */
+  createProduct: `${environment.apiUrl}/Admin/AddMenuProduct`,
+  /** PUT /{id} ← AdminProductRequest */
+  updateProduct: `${environment.apiUrl}/Admin/UpdateMenuProduct`,
+  /** POST ?MenuProductId= ← AdminProductPriceRequest — adds one size/price to a product */
+  addProductPrice: `${environment.apiUrl}/Admin/AddMenuProductPrice`,
+  /** DELETE /{id} — removes one size/price (detail id) */
+  deleteProductPrice: `${environment.apiUrl}/Admin/DeleteProductPrice`,
+  /** PUT /{id} ← { base64String: dataUrl } */
+  updateProductPhoto: `${environment.apiUrl}/Admin/UpdatePhotoProduct`,
+  /** DELETE /{id} — removes the photo only */
+  deleteProductPhoto: `${environment.apiUrl}/Admin/DeletePhotoProduct`,
+  /** DELETE /{id} — removes the product */
+  deleteProduct: `${environment.apiUrl}/Admin/DeleteProduct`,
 } as const;

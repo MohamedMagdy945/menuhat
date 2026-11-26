@@ -67,9 +67,7 @@ export class AdminRestaurantsComponent implements OnInit {
   readonly deletingId = signal<number | null>(null);
   /** Restaurant waiting for confirmation in the confirm modal. */
   readonly pendingDelete = signal<AdminMenu | null>(null);
-  readonly deleteMessage = computed(
-    () => `هل أنت متأكد من حذف "${this.pendingDelete()?.clientName ?? ''}"؟ يمكن استعادته لاحقًا.`,
-  );
+  readonly deleteMessage = 'هل أنت متأكد من حذف هذا المطعم؟ يمكن استعادته لاحقًا.';
 
   /** Options for the shared app-form-select; value 0 = "all". */
   readonly governmentOptions = computed<FormSelectOption[]>(() => [

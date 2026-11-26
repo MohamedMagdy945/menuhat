@@ -1,0 +1,561 @@
+<div class="space-y-5 pt-12 lg:pt-0">
+  <!-- Page header -->
+  <div class="flex items-center gap-3.5 min-w-0 pb-1">
+    <a
+      routerLink="/admin/products"
+      [queryParams]="backQueryParams"
+      class="w-10 h-10 rounded-xl bg-white border border-gray-200 text-slate-600 flex items-center justify-center shrink-0"
+      aria-label="رجوع إلى المنتجات"
+      title="رجوع"
+    >
+      <span class="material-symbols-sharp text-[22px]">arrow_forward</span>
+    </a>
+    <div
+      class="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0 shadow-xs"
+    >
+      <span class="material-symbols-sharp text-2xl text-orange-500">{{
+        isEdit ? 'edit_square' : 'add_box'
+      }}</span>
+    </div>
+    <div class="min-w-0">
+      <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900">
+        {{ isEdit ? 'تعديل المنتج' : 'إضافة منتج' }}
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-400 mt-0.5 truncate">
+        @if (isEdit) {
+          {{ restaurant()?.clientName || 'تحميل بيانات المنتج...' }}
+        } @else if (nextNumber()) {
+          سيتم إنشاء المنتج برقم #{{ nextNumber() }}
+        } @else {
+          إضافة منتج جديد إلى قسم فرعي في منيو مطعم
+        }
+      </p>
+    </div>
+  </div>
+
+  @if (notFound()) {
+    <div class="bg-white rounded-2xl p-10 text-center space-y-3">
+      <span class="material-symbols-sharp text-4xl text-slate-300">search_off</span>
+      <p class="text-sm font-semibold text-slate-700">لم يتم العثور على هذا المنتج</p>
+      <a
+        routerLink="/admin/products"
+        [queryParams]="backQueryParams"
+        class="inline-block bg-orange-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl"
+      >
+        العودة إلى المنتجات
+      </a>
+    </div>
+  } @else {
+    <form
+      [formGroup]="form"
+      (ngSubmit)="save()"
+      class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start"
+      [class.opacity-60]="isLoading()"
+    >
+      <!-- Main fields (one card) -->
+      <div
+        class="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-5 shadow-xs divide-y divide-slate-100"
+      >
+        <!-- Restaurant -->
+        <div class="pb-5">
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">storefront</span>
+            المطعم
+          </h3>
+
+          @if (isEdit) {
+            <div class="flex items-center gap-2 rounded-xl bg-slate-50 p-3">
+              <span class="material-symbols-sharp text-[20px] text-slate-400">storefront</span>
+              <span class="text-sm font-semibold text-slate-800 truncate">
+                {{ restaurant()?.clientName || 'فارغ' }}
+              </span>
+              <span class="mr-auto text-xs text-slate-400">لا يمكن تغيير المطعم</span>
+            </div>
+          } @else if (isLoading()) {
+            <div class="flex items-center gap-3 rounded-2xl border-[1.5px] border-slate-100 p-3">
+              <span class="w-11 h-11 rounded-xl bg-slate-100 animate-pulse shrink-0"></span>
+              <div class="flex-1 space-y-1.5">
+                <span class="block h-3 w-1/3 rounded bg-slate-100 animate-pulse"></span>
+                <span class="block h-2.5 w-1/4 rounded bg-slate-100 animate-pulse"></span>
+              </div>
+            </div>
+          } @else if (restaurant(); as r) {
+            <div
+              class="flex items-center gap-3 rounded-2xl border-[1.5px] border-orange-200 bg-orange-50 p-3"
+            >
+              <div
+                class="w-11 h-11 rounded-xl bg-white overflow-hidden flex items-center justify-center shrink-0"
+              >
+                @if (restaurantLogo(r)) {
+                  <img
+                    [src]="restaurantLogo(r)"
+                    [alt]="r.clientName"
+                    class="w-full h-full object-contain"
+                  />
+                } @else {
+                  <span class="material-symbols-sharp text-xl text-orange-500">storefront</span>
+                }
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-slate-800 truncate">{{ r.clientName }}</p>
+                <p class="text-xs text-slate-500 truncate" dir="ltr">
+                  #{{ r.no }} · {{ r.serial }}
+                </p>
+              </div>
+              <button
+                type="button"
+                (click)="clearRestaurant()"
+                class="bg-white border border-gray-200 text-slate-700 font-semibold text-xs px-3 py-2 rounded-xl cursor-pointer shrink-0"
+              >
+                تغيير
+              </button>
+            </div>
+          } @else {
+            <div class="relative">
+              <span
+                class="material-symbols-sharp absolute inset-y-0 right-3.5 flex items-center text-[20px] text-slate-400 pointer-events-none"
+                >search</span
+              >
+              <input
+                type="text"
+                [ngModel]="restaurantSearch()"
+                [ngModelOptions]="{ standalone: true }"
+                (ngModelChange)="onRestaurantSearch($event)"
+                placeholder="ابحث باسم المطعم..."
+                aria-label="ابحث عن المطعم"
+                class="h-12 w-full pr-11 pl-4 rounded-2xl border-[1.5px] bg-slate-50 text-sm text-slate-900 placeholder:text-[13px] placeholder:text-slate-400 focus:outline-none focus:border-orange-500 focus:bg-white"
+                [class]="restaurantTouched() ? 'border-red-400' : 'border-slate-200'"
+              />
+            </div>
+            @if (restaurantTouched()) {
+              <p class="mt-1.5 text-xs text-red-500">اختر المطعم الذي سيُضاف إليه المنتج</p>
+            }
+
+            <div
+              class="mt-3 rounded-2xl border border-slate-100 divide-y divide-slate-100 overflow-hidden"
+            >
+              @if (isSearchingRestaurants() && restaurantResults().length === 0) {
+                @for (i of [1, 2, 3]; track i) {
+                  <div class="flex items-center gap-3 p-3">
+                    <span class="w-9 h-9 rounded-lg bg-slate-100 animate-pulse shrink-0"></span>
+                    <span class="h-3 w-1/3 rounded bg-slate-100 animate-pulse"></span>
+                  </div>
+                }
+              } @else if (restaurantResults().length === 0) {
+                <p class="p-4 text-center text-sm text-slate-400">لا توجد نتائج</p>
+              } @else {
+                @for (r of restaurantResults(); track r.menuId) {
+                  <button
+                    type="button"
+                    (click)="selectRestaurant(r)"
+                    class="w-full flex items-center gap-3 p-3 text-right cursor-pointer bg-white"
+                    [class.opacity-60]="isSearchingRestaurants()"
+                  >
+                    <div
+                      class="w-9 h-9 rounded-lg bg-orange-50 overflow-hidden flex items-center justify-center shrink-0"
+                    >
+                      @if (restaurantLogo(r)) {
+                        <img
+                          [src]="restaurantLogo(r)"
+                          [alt]="r.clientName"
+                          class="w-full h-full object-contain"
+                        />
+                      } @else {
+                        <span class="material-symbols-sharp text-lg text-orange-500"
+                          >storefront</span
+                        >
+                      }
+                    </div>
+                    <span class="flex-1 min-w-0 text-sm font-semibold text-slate-800 truncate">{{
+                      r.clientName
+                    }}</span>
+                    <span class="text-xs text-slate-400 shrink-0">#{{ r.no }}</span>
+                  </button>
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Main + sub category -->
+        <div class="py-5">
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">account_tree</span>
+            القسم
+          </h3>
+          @if (!restaurant() && !isEdit) {
+            <p class="rounded-xl bg-slate-50 p-3 text-sm text-slate-400">
+              اختر المطعم أولًا لعرض أقسامه.
+            </p>
+          } @else {
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+              <app-form-select
+                formControlName="menuCategoryId"
+                label="القسم الرئيسي"
+                [placeholder]="
+                  isLoadingCategories()
+                    ? 'جاري التحميل...'
+                    : categoryOptions().length
+                      ? 'اختر القسم الرئيسي'
+                      : 'لا توجد أقسام لهذا المطعم'
+                "
+                [options]="categoryOptions()"
+                (selectionChange)="onCategoryChange($event)"
+              >
+                <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                  >account_tree</span
+                >
+              </app-form-select>
+
+              <app-form-select
+                formControlName="menuSubCategoryId"
+                label="القسم الفرعي"
+                [placeholder]="
+                  isLoadingSubs()
+                    ? 'جاري التحميل...'
+                    : !form.controls.menuCategoryId.value
+                      ? 'اختر القسم الرئيسي أولًا'
+                      : subOptions().length
+                        ? 'اختر القسم الفرعي'
+                        : 'لا توجد أقسام فرعية'
+                "
+                [options]="subOptions()"
+              >
+                <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                  >segment</span
+                >
+              </app-form-select>
+            </div>
+            @if (
+              form.controls.menuCategoryId.value && !isLoadingSubs() && subOptions().length === 0
+            ) {
+              <a
+                [routerLink]="[
+                  '/admin/categories',
+                  form.controls.menuCategoryId.value,
+                  'subcategories',
+                  'new',
+                ]"
+                class="inline-flex items-center gap-1 text-sm font-semibold text-orange-500"
+              >
+                <span class="material-symbols-sharp text-[18px]">add</span>
+                إضافة قسم فرعي لهذا القسم
+              </a>
+            }
+          }
+        </div>
+
+        <!-- Names -->
+        <div class="py-5">
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800 mb-4">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">restaurant</span>
+            بيانات المنتج
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+            <app-form-input
+              formControlName="name"
+              label="اسم المنتج"
+              placeholder="مثال: شاورما فراخ"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >restaurant</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="name_En"
+              label="الاسم بالإنجليزية"
+              placeholder="Chicken shawarma"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >translate</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="description"
+              label="الوصف"
+              placeholder="الوصف (اختياري)"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >notes</span
+              >
+            </app-form-input>
+
+            <app-form-input
+              formControlName="description_En"
+              label="الوصف بالإنجليزية"
+              placeholder="Description"
+            >
+              <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                >notes</span
+              >
+            </app-form-input>
+          </div>
+        </div>
+
+        <!-- Pricing -->
+        <div class="pt-5">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h3 class="flex items-center gap-2 font-semibold text-slate-800">
+              <span class="material-symbols-sharp text-[20px] text-orange-500">sell</span>
+              السعر
+            </h3>
+            <div
+              class="inline-flex rounded-xl bg-slate-100 p-1"
+              role="radiogroup"
+              aria-label="نوع التسعير"
+            >
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="pricingMode() === 'single'"
+                (click)="setPricingMode('single')"
+                class="px-3 py-1.5 rounded-lg text-sm font-semibold cursor-pointer"
+                [class]="
+                  pricingMode() === 'single'
+                    ? 'bg-white text-orange-600 shadow-xs'
+                    : 'text-slate-500'
+                "
+              >
+                سعر واحد
+              </button>
+              <button
+                type="button"
+                role="radio"
+                [attr.aria-checked]="pricingMode() === 'multiple'"
+                (click)="setPricingMode('multiple')"
+                class="px-3 py-1.5 rounded-lg text-sm font-semibold cursor-pointer"
+                [class]="
+                  pricingMode() === 'multiple'
+                    ? 'bg-white text-orange-600 shadow-xs'
+                    : 'text-slate-500'
+                "
+              >
+                أحجام متعددة
+              </button>
+            </div>
+          </div>
+
+          @if (pricingMode() === 'single') {
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4">
+              <app-form-input
+                formControlName="price"
+                label="السعر (ج.م)"
+                placeholder="مثال: 75"
+                type="number"
+                [customErrors]="priceErrors"
+              >
+                <span input-icon class="material-symbols-sharp select-none leading-none text-[20px]"
+                  >payments</span
+                >
+              </app-form-input>
+            </div>
+          } @else if (!isEdit) {
+            <!-- Create: sizes sent with the product -->
+            <div formArrayName="sizes" class="space-y-3">
+              @for (size of sizes.controls; track size; let i = $index) {
+                <div
+                  [formGroupName]="i"
+                  class="rounded-2xl border border-slate-100 bg-slate-50/50 p-3 pb-0"
+                >
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold text-slate-500">حجم {{ i + 1 }}</span>
+                    @if (sizes.length > 1) {
+                      <button
+                        type="button"
+                        (click)="removeSizeRow(i)"
+                        class="w-7 h-7 rounded-full bg-red-50 text-red-500 flex items-center justify-center cursor-pointer"
+                        aria-label="حذف الحجم"
+                        title="حذف الحجم"
+                      >
+                        <span class="material-symbols-sharp text-[16px]">close</span>
+                      </button>
+                    }
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-3">
+                    <app-form-input
+                      formControlName="title"
+                      label="الحجم"
+                      placeholder="مثال: كبير"
+                    />
+                    <app-form-input
+                      formControlName="title_En"
+                      label="بالإنجليزية"
+                      placeholder="Large"
+                    />
+                    <app-form-input
+                      formControlName="price"
+                      label="السعر (ج.م)"
+                      placeholder="مثال: 90"
+                      type="number"
+                      [customErrors]="priceErrors"
+                    />
+                  </div>
+                </div>
+              }
+              <button
+                type="button"
+                (click)="addSizeRow()"
+                class="w-full flex items-center justify-center gap-1.5 rounded-2xl border border-dashed border-orange-200 bg-orange-50/50 text-orange-600 font-semibold text-sm py-3 cursor-pointer"
+              >
+                <span class="material-symbols-sharp text-[18px]">add</span>
+                إضافة حجم
+              </button>
+            </div>
+          } @else {
+            <!-- Edit: sizes saved immediately -->
+            <p class="text-xs text-slate-400 mb-3">يتم حفظ الأحجام فور إضافتها أو حذفها.</p>
+
+            @if (savedSizes().length) {
+              <ul class="rounded-2xl border border-slate-100 divide-y divide-slate-100 mb-3">
+                @for (s of savedSizes(); track s.id) {
+                  <li class="flex items-center gap-3 px-3 py-2.5">
+                    <span class="material-symbols-sharp text-[18px] text-slate-400"
+                      >straighten</span
+                    >
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-semibold text-slate-800 truncate">
+                        {{ s.title || 'فارغ' }}
+                      </p>
+                      @if (s.title_En) {
+                        <p class="text-xs text-slate-400 truncate" dir="auto">{{ s.title_En }}</p>
+                      }
+                    </div>
+                    <span class="font-bold text-orange-500 whitespace-nowrap"
+                      >{{ s.price ?? '—' }} ج.م</span
+                    >
+                    <button
+                      type="button"
+                      (click)="askDeleteSize(s)"
+                      [disabled]="deletingSizeId() === s.id"
+                      class="w-8 h-8 rounded-full bg-red-50 text-red-500 flex items-center justify-center cursor-pointer shrink-0 disabled:opacity-50"
+                      aria-label="حذف الحجم"
+                      title="حذف الحجم"
+                    >
+                      @if (deletingSizeId() === s.id) {
+                        <span
+                          class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-red-500 border-t-transparent"
+                        ></span>
+                      } @else {
+                        <span class="material-symbols-sharp text-[17px]">delete</span>
+                      }
+                    </button>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="rounded-xl bg-slate-50 p-3 text-sm text-slate-400 mb-3">
+                لا توجد أحجام بعد، أضف حجمًا واحدًا على الأقل.
+              </p>
+            }
+
+            <div
+              [formGroup]="newSize"
+              class="rounded-2xl border border-dashed border-orange-200 bg-orange-50/40 p-3 pb-0"
+            >
+              <p class="text-xs font-semibold text-orange-600 mb-2">حجم جديد</p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-3">
+                <app-form-input formControlName="title" label="الحجم" placeholder="مثال: كبير" />
+                <app-form-input
+                  formControlName="title_En"
+                  label="بالإنجليزية"
+                  placeholder="Large"
+                />
+                <app-form-input
+                  formControlName="price"
+                  label="السعر (ج.م)"
+                  placeholder="مثال: 90"
+                  type="number"
+                  [customErrors]="priceErrors"
+                />
+              </div>
+              <div class="pb-3">
+                <button
+                  type="button"
+                  (click)="addSavedSize()"
+                  [disabled]="isAddingSize() || isLoading()"
+                  class="bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-2 rounded-xl cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                >
+                  @if (isAddingSize()) {
+                    <span
+                      class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-orange-500 border-t-transparent"
+                    ></span>
+                  } @else {
+                    <span class="material-symbols-sharp text-[18px] text-orange-500">add</span>
+                  }
+                  إضافة الحجم
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Photo + actions -->
+      <section class="bg-white rounded-2xl p-4 sm:p-5 shadow-xs space-y-5 lg:sticky lg:top-4">
+        <div>
+          <h3 class="flex items-center gap-2 font-semibold text-slate-800">
+            <span class="material-symbols-sharp text-[20px] text-orange-500">image</span>
+            صورة المنتج
+          </h3>
+          <p class="text-xs text-slate-400 mt-1">
+            {{ isEdit ? 'يتم حفظ الصورة فور رفعها أو حذفها.' : 'سيتم رفع الصورة مع إنشاء المنتج.' }}
+          </p>
+        </div>
+
+        <app-admin-restaurant-media-field
+          label="الصورة"
+          hint="حتى 5 ميجابايت"
+          icon="image"
+          accept="image/*"
+          [url]="photo()"
+          [busy]="photoBusy()"
+          [disabled]="isLoading() || isSaving()"
+          (fileSelected)="onPhotoSelected($event)"
+          (remove)="onPhotoRemove()"
+        />
+
+        <div class="pt-5 border-t border-slate-100 space-y-2">
+          <app-loading-button
+            type="submit"
+            [text]="isEdit ? 'حفظ التعديلات' : 'إضافة المنتج'"
+            loadingText="جاري الحفظ..."
+            [loading]="isSaving()"
+            [disabled]="isLoading() || photoBusy() || isAddingSize()"
+            [showArrow]="false"
+          />
+          <a
+            routerLink="/admin/products"
+            [queryParams]="backQueryParams"
+            class="flex items-center justify-center bg-white border border-gray-200 text-slate-700 font-semibold text-sm px-4 py-3 rounded-xl"
+          >
+            إلغاء
+          </a>
+        </div>
+      </section>
+    </form>
+  }
+
+  <app-confirm-modal
+    [open]="confirmPhotoDelete()"
+    title="حذف صورة المنتج"
+    message="سيتم حذف صورة المنتج نهائيًا."
+    confirmText="حذف"
+    icon="delete"
+    [loading]="photoBusy()"
+    (confirmed)="deletePhoto()"
+    (cancelled)="confirmPhotoDelete.set(false)"
+  />
+
+  <app-confirm-modal
+    [open]="!!pendingSizeDelete()"
+    title="حذف الحجم"
+    [message]="'سيتم حذف الحجم «' + (pendingSizeDelete()?.title ?? '') + '» نهائيًا.'"
+    confirmText="حذف"
+    icon="delete"
+    [loading]="deletingSizeId() !== null"
+    (confirmed)="deleteSavedSize()"
+    (cancelled)="pendingSizeDelete.set(null)"
+  />
+</div>

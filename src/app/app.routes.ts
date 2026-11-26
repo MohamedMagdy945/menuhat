@@ -572,6 +572,30 @@ export const routes: Routes = [
                         (m) => m.AdminSubCategoryFormComponent,
                     ),
             },
+            {
+                path: 'products',
+                data: { title: 'المنتجات' },
+                loadComponent: () =>
+                    import('./features/admin-panel/products/admin-products.component').then(
+                        (m) => m.AdminProductsComponent,
+                    ),
+            },
+            {
+                path: 'products/new',
+                data: { title: 'إضافة منتج' },
+                loadComponent: () =>
+                    import('./features/admin-panel/products/components/product-form/product-form.component').then(
+                        (m) => m.AdminProductFormComponent,
+                    ),
+            },
+            {
+                path: 'products/:id/edit',
+                data: { title: 'تعديل المنتج' },
+                loadComponent: () =>
+                    import('./features/admin-panel/products/components/product-form/product-form.component').then(
+                        (m) => m.AdminProductFormComponent,
+                    ),
+            },
             { path: 'users', data: { title: 'المستخدمين' }, loadComponent: loadAdminPlaceholder },
             { path: 'orders', data: { title: 'الطلبات' }, loadComponent: loadAdminPlaceholder },
             { path: 'reports', data: { title: 'التقارير' }, loadComponent: loadAdminPlaceholder },
